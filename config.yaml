@@ -1,0 +1,7 @@
+package: v1
+output: pkg/apis/devgraph/v1/api.go
+generate:
+  models: true
+  client: true
+output-options:
+  nullable-type: true 
