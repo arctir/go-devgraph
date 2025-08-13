@@ -257,17 +257,21 @@ type HTTPValidationError struct {
 
 // MCPEndpointCreate defines model for MCPEndpointCreate.
 type MCPEndpointCreate struct {
-	Description *string `json:"description,omitempty"`
-	Name        string  `json:"name"`
-	Url         string  `json:"url"`
+	Description  *string            `json:"description,omitempty"`
+	DevgraphAuth *bool              `json:"devgraph_auth,omitempty"`
+	Headers      *map[string]string `json:"headers,omitempty"`
+	Name         string             `json:"name"`
+	Url          string             `json:"url"`
 }
 
 // MCPEndpointResponse defines model for MCPEndpointResponse.
 type MCPEndpointResponse struct {
-	Description *string            `json:"description,omitempty"`
-	Id          openapi_types.UUID `json:"id"`
-	Name        string             `json:"name"`
-	Url         string             `json:"url"`
+	Description  *string            `json:"description,omitempty"`
+	DevgraphAuth *bool              `json:"devgraph_auth,omitempty"`
+	Headers      *map[string]string `json:"headers,omitempty"`
+	Id           openapi_types.UUID `json:"id"`
+	Name         string             `json:"name"`
+	Url          string             `json:"url"`
 }
 
 // ModelCreate defines model for ModelCreate.
@@ -996,7 +1000,7 @@ type ClientInterface interface {
 	CreateModel(ctx context.Context, body CreateModelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteModel request
-	DeleteModel(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteModel(ctx context.Context, modelId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetModel request
 	GetModel(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1487,8 +1491,8 @@ func (c *Client) CreateModel(ctx context.Context, body CreateModelJSONRequestBod
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteModel(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteModelRequest(c.Server, modelName)
+func (c *Client) DeleteModel(ctx context.Context, modelId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteModelRequest(c.Server, modelId)
 	if err != nil {
 		return nil, err
 	}
@@ -2780,12 +2784,12 @@ func NewCreateModelRequestWithBody(server string, contentType string, body io.Re
 }
 
 // NewDeleteModelRequest generates requests for DeleteModel
-func NewDeleteModelRequest(server string, modelName string) (*http.Request, error) {
+func NewDeleteModelRequest(server string, modelId string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "model_name", runtime.ParamLocationPath, modelName)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "model_id", runtime.ParamLocationPath, modelId)
 	if err != nil {
 		return nil, err
 	}
@@ -3189,7 +3193,7 @@ type ClientWithResponsesInterface interface {
 	CreateModelWithResponse(ctx context.Context, body CreateModelJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateModelResponse, error)
 
 	// DeleteModelWithResponse request
-	DeleteModelWithResponse(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*DeleteModelResponse, error)
+	DeleteModelWithResponse(ctx context.Context, modelId string, reqEditors ...RequestEditorFn) (*DeleteModelResponse, error)
 
 	// GetModelWithResponse request
 	GetModelWithResponse(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*GetModelResponse, error)
@@ -4346,8 +4350,8 @@ func (c *ClientWithResponses) CreateModelWithResponse(ctx context.Context, body 
 }
 
 // DeleteModelWithResponse request returning *DeleteModelResponse
-func (c *ClientWithResponses) DeleteModelWithResponse(ctx context.Context, modelName string, reqEditors ...RequestEditorFn) (*DeleteModelResponse, error) {
-	rsp, err := c.DeleteModel(ctx, modelName, reqEditors...)
+func (c *ClientWithResponses) DeleteModelWithResponse(ctx context.Context, modelId string, reqEditors ...RequestEditorFn) (*DeleteModelResponse, error) {
+	rsp, err := c.DeleteModel(ctx, modelId, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
