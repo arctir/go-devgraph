@@ -31,10 +31,9 @@ const (
 
 // ApiTokenCreate defines model for ApiTokenCreate.
 type ApiTokenCreate struct {
-	EnvironmentId string    `json:"environment_id"`
-	ExpiresAt     *string   `json:"expires_at,omitempty"`
-	Name          string    `json:"name"`
-	Scopes        *[]string `json:"scopes,omitempty"`
+	ExpiresAt *string   `json:"expires_at,omitempty"`
+	Name      string    `json:"name"`
+	Scopes    *[]string `json:"scopes,omitempty"`
 }
 
 // ApiTokenResponse defines model for ApiTokenResponse.
