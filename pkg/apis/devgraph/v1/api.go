@@ -1006,8 +1006,8 @@ type ClientInterface interface {
 	// GetSubscriptions request
 	GetSubscriptions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetTokensSystemApiV1TokensGet request
-	GetTokensSystemApiV1TokensGet(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetTokens request
+	GetTokens(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateTokenWithBody request with any body
 	CreateTokenWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1525,8 +1525,8 @@ func (c *Client) GetSubscriptions(ctx context.Context, reqEditors ...RequestEdit
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetTokensSystemApiV1TokensGet(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetTokensSystemApiV1TokensGetRequest(c.Server)
+func (c *Client) GetTokens(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTokensRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -2876,8 +2876,8 @@ func NewGetSubscriptionsRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewGetTokensSystemApiV1TokensGetRequest generates requests for GetTokensSystemApiV1TokensGet
-func NewGetTokensSystemApiV1TokensGetRequest(server string) (*http.Request, error) {
+// NewGetTokensRequest generates requests for GetTokens
+func NewGetTokensRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -3199,8 +3199,8 @@ type ClientWithResponsesInterface interface {
 	// GetSubscriptionsWithResponse request
 	GetSubscriptionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSubscriptionsResponse, error)
 
-	// GetTokensSystemApiV1TokensGetWithResponse request
-	GetTokensSystemApiV1TokensGetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetTokensSystemApiV1TokensGetResponse, error)
+	// GetTokensWithResponse request
+	GetTokensWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetTokensResponse, error)
 
 	// CreateTokenWithBodyWithResponse request with any body
 	CreateTokenWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTokenResponse, error)
@@ -3916,14 +3916,14 @@ func (r GetSubscriptionsResponse) StatusCode() int {
 	return 0
 }
 
-type GetTokensSystemApiV1TokensGetResponse struct {
+type GetTokensResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *interface{}
+	JSON200      *[]ApiTokenResponse
 }
 
 // Status returns HTTPResponse.Status
-func (r GetTokensSystemApiV1TokensGetResponse) Status() string {
+func (r GetTokensResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -3931,7 +3931,7 @@ func (r GetTokensSystemApiV1TokensGetResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetTokensSystemApiV1TokensGetResponse) StatusCode() int {
+func (r GetTokensResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4374,13 +4374,13 @@ func (c *ClientWithResponses) GetSubscriptionsWithResponse(ctx context.Context, 
 	return ParseGetSubscriptionsResponse(rsp)
 }
 
-// GetTokensSystemApiV1TokensGetWithResponse request returning *GetTokensSystemApiV1TokensGetResponse
-func (c *ClientWithResponses) GetTokensSystemApiV1TokensGetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetTokensSystemApiV1TokensGetResponse, error) {
-	rsp, err := c.GetTokensSystemApiV1TokensGet(ctx, reqEditors...)
+// GetTokensWithResponse request returning *GetTokensResponse
+func (c *ClientWithResponses) GetTokensWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetTokensResponse, error) {
+	rsp, err := c.GetTokens(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetTokensSystemApiV1TokensGetResponse(rsp)
+	return ParseGetTokensResponse(rsp)
 }
 
 // CreateTokenWithBodyWithResponse request with arbitrary body returning *CreateTokenResponse
@@ -5364,22 +5364,22 @@ func ParseGetSubscriptionsResponse(rsp *http.Response) (*GetSubscriptionsRespons
 	return response, nil
 }
 
-// ParseGetTokensSystemApiV1TokensGetResponse parses an HTTP response from a GetTokensSystemApiV1TokensGetWithResponse call
-func ParseGetTokensSystemApiV1TokensGetResponse(rsp *http.Response) (*GetTokensSystemApiV1TokensGetResponse, error) {
+// ParseGetTokensResponse parses an HTTP response from a GetTokensWithResponse call
+func ParseGetTokensResponse(rsp *http.Response) (*GetTokensResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetTokensSystemApiV1TokensGetResponse{
+	response := &GetTokensResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
+		var dest []ApiTokenResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
