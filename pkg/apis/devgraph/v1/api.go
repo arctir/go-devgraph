@@ -38,14 +38,13 @@ type ApiTokenCreate struct {
 
 // ApiTokenResponse defines model for ApiTokenResponse.
 type ApiTokenResponse struct {
-	Active        *bool              `json:"active,omitempty"`
-	EnvironmentId openapi_types.UUID `json:"environment_id"`
-	ExpiresAt     *string            `json:"expires_at,omitempty"`
-	Id            openapi_types.UUID `json:"id"`
-	Name          string             `json:"name"`
-	Scopes        *[]string          `json:"scopes,omitempty"`
-	Token         string             `json:"token"`
-	UserId        string             `json:"user_id"`
+	Active    *bool              `json:"active,omitempty"`
+	ExpiresAt *string            `json:"expires_at,omitempty"`
+	Id        openapi_types.UUID `json:"id"`
+	Name      string             `json:"name"`
+	Scopes    *[]string          `json:"scopes,omitempty"`
+	Token     string             `json:"token"`
+	UserId    string             `json:"user_id"`
 }
 
 // ChatMessage defines model for ChatMessage.
