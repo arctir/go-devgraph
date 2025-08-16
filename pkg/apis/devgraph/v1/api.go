@@ -934,6 +934,9 @@ type ClientInterface interface {
 
 	CreateEntityDefinition(ctx context.Context, body CreateEntityDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteEntityDefinition request
+	DeleteEntityDefinition(ctx context.Context, definitionId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateEntityRelationWithBody request with any body
 	CreateEntityRelationWithBody(ctx context.Context, params *CreateEntityRelationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1203,6 +1206,18 @@ func (c *Client) CreateEntityDefinitionWithBody(ctx context.Context, contentType
 
 func (c *Client) CreateEntityDefinition(ctx context.Context, body CreateEntityDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateEntityDefinitionRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteEntityDefinition(ctx context.Context, definitionId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteEntityDefinitionRequest(c.Server, definitionId)
 	if err != nil {
 		return nil, err
 	}
@@ -2124,6 +2139,40 @@ func NewCreateEntityDefinitionRequestWithBody(server string, contentType string,
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteEntityDefinitionRequest generates requests for DeleteEntityDefinition
+func NewDeleteEntityDefinitionRequest(server string, definitionId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "definition_id", runtime.ParamLocationPath, definitionId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/entities/definitions/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -3127,6 +3176,9 @@ type ClientWithResponsesInterface interface {
 
 	CreateEntityDefinitionWithResponse(ctx context.Context, body CreateEntityDefinitionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEntityDefinitionResponse, error)
 
+	// DeleteEntityDefinitionWithResponse request
+	DeleteEntityDefinitionWithResponse(ctx context.Context, definitionId int, reqEditors ...RequestEditorFn) (*DeleteEntityDefinitionResponse, error)
+
 	// CreateEntityRelationWithBodyWithResponse request with any body
 	CreateEntityRelationWithBodyWithResponse(ctx context.Context, params *CreateEntityRelationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEntityRelationResponse, error)
 
@@ -3459,6 +3511,28 @@ func (r CreateEntityDefinitionResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateEntityDefinitionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteEntityDefinitionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteEntityDefinitionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteEntityDefinitionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4146,6 +4220,15 @@ func (c *ClientWithResponses) CreateEntityDefinitionWithResponse(ctx context.Con
 	return ParseCreateEntityDefinitionResponse(rsp)
 }
 
+// DeleteEntityDefinitionWithResponse request returning *DeleteEntityDefinitionResponse
+func (c *ClientWithResponses) DeleteEntityDefinitionWithResponse(ctx context.Context, definitionId int, reqEditors ...RequestEditorFn) (*DeleteEntityDefinitionResponse, error) {
+	rsp, err := c.DeleteEntityDefinition(ctx, definitionId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteEntityDefinitionResponse(rsp)
+}
+
 // CreateEntityRelationWithBodyWithResponse request with arbitrary body returning *CreateEntityRelationResponse
 func (c *ClientWithResponses) CreateEntityRelationWithBodyWithResponse(ctx context.Context, params *CreateEntityRelationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEntityRelationResponse, error) {
 	rsp, err := c.CreateEntityRelationWithBody(ctx, params, contentType, body, reqEditors...)
@@ -4755,6 +4838,32 @@ func ParseCreateEntityDefinitionResponse(rsp *http.Response) (*CreateEntityDefin
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteEntityDefinitionResponse parses an HTTP response from a DeleteEntityDefinitionWithResponse call
+func ParseDeleteEntityDefinitionResponse(rsp *http.Response) (*DeleteEntityDefinitionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteEntityDefinitionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
