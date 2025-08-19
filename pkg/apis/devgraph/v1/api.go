@@ -248,6 +248,38 @@ type EnvironmentResponse struct {
 	SubscriptionId      openapi_types.UUID `json:"subscription_id"`
 }
 
+// EnvironmentUserBulkInvite defines model for EnvironmentUserBulkInvite.
+type EnvironmentUserBulkInvite struct {
+	Invitations []EnvironmentUserInvite `json:"invitations"`
+}
+
+// EnvironmentUserCreate defines model for EnvironmentUserCreate.
+type EnvironmentUserCreate struct {
+	EmailAddress string  `json:"email_address"`
+	Role         *string `json:"role,omitempty"`
+}
+
+// EnvironmentUserInvite defines model for EnvironmentUserInvite.
+type EnvironmentUserInvite struct {
+	EmailAddress string  `json:"email_address"`
+	Role         *string `json:"role,omitempty"`
+}
+
+// EnvironmentUserResponse defines model for EnvironmentUserResponse.
+type EnvironmentUserResponse struct {
+	CreatedAt    int    `json:"created_at"`
+	EmailAddress string `json:"email_address"`
+	Id           string `json:"id"`
+	Role         string `json:"role"`
+	Status       string `json:"status"`
+	UpdatedAt    int    `json:"updated_at"`
+}
+
+// EnvironmentUserUpdate defines model for EnvironmentUserUpdate.
+type EnvironmentUserUpdate struct {
+	Role string `json:"role"`
+}
+
 // HTTPValidationError defines model for HTTPValidationError.
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
@@ -255,21 +287,23 @@ type HTTPValidationError struct {
 
 // MCPEndpointCreate defines model for MCPEndpointCreate.
 type MCPEndpointCreate struct {
-	Description  *string            `json:"description,omitempty"`
-	DevgraphAuth *bool              `json:"devgraph_auth,omitempty"`
-	Headers      *map[string]string `json:"headers,omitempty"`
-	Name         string             `json:"name"`
-	Url          string             `json:"url"`
+	Description       *string            `json:"description,omitempty"`
+	DevgraphAuth      *bool              `json:"devgraph_auth,omitempty"`
+	Headers           *map[string]string `json:"headers,omitempty"`
+	Name              string             `json:"name"`
+	SupportsResources *bool              `json:"supports_resources,omitempty"`
+	Url               string             `json:"url"`
 }
 
 // MCPEndpointResponse defines model for MCPEndpointResponse.
 type MCPEndpointResponse struct {
-	Description  *string            `json:"description,omitempty"`
-	DevgraphAuth *bool              `json:"devgraph_auth,omitempty"`
-	Headers      *map[string]string `json:"headers,omitempty"`
-	Id           openapi_types.UUID `json:"id"`
-	Name         string             `json:"name"`
-	Url          string             `json:"url"`
+	Description       *string            `json:"description,omitempty"`
+	DevgraphAuth      *bool              `json:"devgraph_auth,omitempty"`
+	Headers           *map[string]string `json:"headers,omitempty"`
+	Id                openapi_types.UUID `json:"id"`
+	Name              string             `json:"name"`
+	SupportsResources *bool              `json:"supports_resources,omitempty"`
+	Url               string             `json:"url"`
 }
 
 // ModelCreate defines model for ModelCreate.
@@ -452,6 +486,18 @@ type CreateEntityJSONRequestBody = Entity
 
 // CreateEnvironmentJSONRequestBody defines body for CreateEnvironment for application/json ContentType.
 type CreateEnvironmentJSONRequestBody = EnvironmentCreate
+
+// CreateEnvironmentUserJSONRequestBody defines body for CreateEnvironmentUser for application/json ContentType.
+type CreateEnvironmentUserJSONRequestBody = EnvironmentUserCreate
+
+// BulkInviteEnvironmentUsersJSONRequestBody defines body for BulkInviteEnvironmentUsers for application/json ContentType.
+type BulkInviteEnvironmentUsersJSONRequestBody = EnvironmentUserBulkInvite
+
+// InviteEnvironmentUserJSONRequestBody defines body for InviteEnvironmentUser for application/json ContentType.
+type InviteEnvironmentUserJSONRequestBody = EnvironmentUserInvite
+
+// UpdateEnvironmentUserJSONRequestBody defines body for UpdateEnvironmentUser for application/json ContentType.
+type UpdateEnvironmentUserJSONRequestBody = EnvironmentUserUpdate
 
 // CreateMcpendpointJSONRequestBody defines body for CreateMcpendpoint for application/json ContentType.
 type CreateMcpendpointJSONRequestBody = MCPEndpointCreate
@@ -983,6 +1029,35 @@ type ClientInterface interface {
 	// GetEnvironmentStatus request
 	GetEnvironmentStatus(ctx context.Context, envId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListEnvironmentUsers request
+	ListEnvironmentUsers(ctx context.Context, environmentId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateEnvironmentUserWithBody request with any body
+	CreateEnvironmentUserWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateEnvironmentUser(ctx context.Context, environmentId string, body CreateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkInviteEnvironmentUsersWithBody request with any body
+	BulkInviteEnvironmentUsersWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkInviteEnvironmentUsers(ctx context.Context, environmentId string, body BulkInviteEnvironmentUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InviteEnvironmentUserWithBody request with any body
+	InviteEnvironmentUserWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	InviteEnvironmentUser(ctx context.Context, environmentId string, body InviteEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteEnvironmentUser request
+	DeleteEnvironmentUser(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetEnvironmentUser request
+	GetEnvironmentUser(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateEnvironmentUserWithBody request with any body
+	UpdateEnvironmentUserWithBody(ctx context.Context, environmentId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateEnvironmentUser(ctx context.Context, environmentId string, userId string, body UpdateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetMcpendpoints request
 	GetMcpendpoints(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1393,6 +1468,138 @@ func (c *Client) CreateEnvironment(ctx context.Context, body CreateEnvironmentJS
 
 func (c *Client) GetEnvironmentStatus(ctx context.Context, envId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetEnvironmentStatusRequest(c.Server, envId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListEnvironmentUsers(ctx context.Context, environmentId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListEnvironmentUsersRequest(c.Server, environmentId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvironmentUserWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvironmentUserRequestWithBody(c.Server, environmentId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvironmentUser(ctx context.Context, environmentId string, body CreateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvironmentUserRequest(c.Server, environmentId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkInviteEnvironmentUsersWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkInviteEnvironmentUsersRequestWithBody(c.Server, environmentId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkInviteEnvironmentUsers(ctx context.Context, environmentId string, body BulkInviteEnvironmentUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkInviteEnvironmentUsersRequest(c.Server, environmentId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InviteEnvironmentUserWithBody(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInviteEnvironmentUserRequestWithBody(c.Server, environmentId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InviteEnvironmentUser(ctx context.Context, environmentId string, body InviteEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInviteEnvironmentUserRequest(c.Server, environmentId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteEnvironmentUser(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteEnvironmentUserRequest(c.Server, environmentId, userId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetEnvironmentUser(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetEnvironmentUserRequest(c.Server, environmentId, userId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateEnvironmentUserWithBody(ctx context.Context, environmentId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateEnvironmentUserRequestWithBody(c.Server, environmentId, userId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateEnvironmentUser(ctx context.Context, environmentId string, userId string, body UpdateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateEnvironmentUserRequest(c.Server, environmentId, userId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2684,6 +2891,317 @@ func NewGetEnvironmentStatusRequest(server string, envId string) (*http.Request,
 	return req, nil
 }
 
+// NewListEnvironmentUsersRequest generates requests for ListEnvironmentUsers
+func NewListEnvironmentUsersRequest(server string, environmentId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateEnvironmentUserRequest calls the generic CreateEnvironmentUser builder with application/json body
+func NewCreateEnvironmentUserRequest(server string, environmentId string, body CreateEnvironmentUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateEnvironmentUserRequestWithBody(server, environmentId, "application/json", bodyReader)
+}
+
+// NewCreateEnvironmentUserRequestWithBody generates requests for CreateEnvironmentUser with any type of body
+func NewCreateEnvironmentUserRequestWithBody(server string, environmentId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBulkInviteEnvironmentUsersRequest calls the generic BulkInviteEnvironmentUsers builder with application/json body
+func NewBulkInviteEnvironmentUsersRequest(server string, environmentId string, body BulkInviteEnvironmentUsersJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkInviteEnvironmentUsersRequestWithBody(server, environmentId, "application/json", bodyReader)
+}
+
+// NewBulkInviteEnvironmentUsersRequestWithBody generates requests for BulkInviteEnvironmentUsers with any type of body
+func NewBulkInviteEnvironmentUsersRequestWithBody(server string, environmentId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users/bulk-invite", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewInviteEnvironmentUserRequest calls the generic InviteEnvironmentUser builder with application/json body
+func NewInviteEnvironmentUserRequest(server string, environmentId string, body InviteEnvironmentUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewInviteEnvironmentUserRequestWithBody(server, environmentId, "application/json", bodyReader)
+}
+
+// NewInviteEnvironmentUserRequestWithBody generates requests for InviteEnvironmentUser with any type of body
+func NewInviteEnvironmentUserRequestWithBody(server string, environmentId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users/invite", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteEnvironmentUserRequest generates requests for DeleteEnvironmentUser
+func NewDeleteEnvironmentUserRequest(server string, environmentId string, userId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetEnvironmentUserRequest generates requests for GetEnvironmentUser
+func NewGetEnvironmentUserRequest(server string, environmentId string, userId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateEnvironmentUserRequest calls the generic UpdateEnvironmentUser builder with application/json body
+func NewUpdateEnvironmentUserRequest(server string, environmentId string, userId string, body UpdateEnvironmentUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateEnvironmentUserRequestWithBody(server, environmentId, userId, "application/json", bodyReader)
+}
+
+// NewUpdateEnvironmentUserRequestWithBody generates requests for UpdateEnvironmentUser with any type of body
+func NewUpdateEnvironmentUserRequestWithBody(server string, environmentId string, userId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "environment_id", runtime.ParamLocationPath, environmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/api/v1/environments/%s/users/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetMcpendpointsRequest generates requests for GetMcpendpoints
 func NewGetMcpendpointsRequest(server string) (*http.Request, error) {
 	var err error
@@ -3405,6 +3923,35 @@ type ClientWithResponsesInterface interface {
 	// GetEnvironmentStatusWithResponse request
 	GetEnvironmentStatusWithResponse(ctx context.Context, envId string, reqEditors ...RequestEditorFn) (*GetEnvironmentStatusResponse, error)
 
+	// ListEnvironmentUsersWithResponse request
+	ListEnvironmentUsersWithResponse(ctx context.Context, environmentId string, reqEditors ...RequestEditorFn) (*ListEnvironmentUsersResponse, error)
+
+	// CreateEnvironmentUserWithBodyWithResponse request with any body
+	CreateEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvironmentUserResponse, error)
+
+	CreateEnvironmentUserWithResponse(ctx context.Context, environmentId string, body CreateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvironmentUserResponse, error)
+
+	// BulkInviteEnvironmentUsersWithBodyWithResponse request with any body
+	BulkInviteEnvironmentUsersWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkInviteEnvironmentUsersResponse, error)
+
+	BulkInviteEnvironmentUsersWithResponse(ctx context.Context, environmentId string, body BulkInviteEnvironmentUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkInviteEnvironmentUsersResponse, error)
+
+	// InviteEnvironmentUserWithBodyWithResponse request with any body
+	InviteEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InviteEnvironmentUserResponse, error)
+
+	InviteEnvironmentUserWithResponse(ctx context.Context, environmentId string, body InviteEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*InviteEnvironmentUserResponse, error)
+
+	// DeleteEnvironmentUserWithResponse request
+	DeleteEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*DeleteEnvironmentUserResponse, error)
+
+	// GetEnvironmentUserWithResponse request
+	GetEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*GetEnvironmentUserResponse, error)
+
+	// UpdateEnvironmentUserWithBodyWithResponse request with any body
+	UpdateEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateEnvironmentUserResponse, error)
+
+	UpdateEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, body UpdateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateEnvironmentUserResponse, error)
+
 	// GetMcpendpointsWithResponse request
 	GetMcpendpointsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMcpendpointsResponse, error)
 
@@ -3935,6 +4482,166 @@ func (r GetEnvironmentStatusResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetEnvironmentStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListEnvironmentUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListEnvironmentUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListEnvironmentUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateEnvironmentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateEnvironmentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateEnvironmentUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkInviteEnvironmentUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *[]EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkInviteEnvironmentUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkInviteEnvironmentUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type InviteEnvironmentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r InviteEnvironmentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InviteEnvironmentUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteEnvironmentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteEnvironmentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteEnvironmentUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetEnvironmentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetEnvironmentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetEnvironmentUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateEnvironmentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EnvironmentUserResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateEnvironmentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateEnvironmentUserResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4583,6 +5290,101 @@ func (c *ClientWithResponses) GetEnvironmentStatusWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetEnvironmentStatusResponse(rsp)
+}
+
+// ListEnvironmentUsersWithResponse request returning *ListEnvironmentUsersResponse
+func (c *ClientWithResponses) ListEnvironmentUsersWithResponse(ctx context.Context, environmentId string, reqEditors ...RequestEditorFn) (*ListEnvironmentUsersResponse, error) {
+	rsp, err := c.ListEnvironmentUsers(ctx, environmentId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListEnvironmentUsersResponse(rsp)
+}
+
+// CreateEnvironmentUserWithBodyWithResponse request with arbitrary body returning *CreateEnvironmentUserResponse
+func (c *ClientWithResponses) CreateEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvironmentUserResponse, error) {
+	rsp, err := c.CreateEnvironmentUserWithBody(ctx, environmentId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvironmentUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateEnvironmentUserWithResponse(ctx context.Context, environmentId string, body CreateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvironmentUserResponse, error) {
+	rsp, err := c.CreateEnvironmentUser(ctx, environmentId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvironmentUserResponse(rsp)
+}
+
+// BulkInviteEnvironmentUsersWithBodyWithResponse request with arbitrary body returning *BulkInviteEnvironmentUsersResponse
+func (c *ClientWithResponses) BulkInviteEnvironmentUsersWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkInviteEnvironmentUsersResponse, error) {
+	rsp, err := c.BulkInviteEnvironmentUsersWithBody(ctx, environmentId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkInviteEnvironmentUsersResponse(rsp)
+}
+
+func (c *ClientWithResponses) BulkInviteEnvironmentUsersWithResponse(ctx context.Context, environmentId string, body BulkInviteEnvironmentUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkInviteEnvironmentUsersResponse, error) {
+	rsp, err := c.BulkInviteEnvironmentUsers(ctx, environmentId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkInviteEnvironmentUsersResponse(rsp)
+}
+
+// InviteEnvironmentUserWithBodyWithResponse request with arbitrary body returning *InviteEnvironmentUserResponse
+func (c *ClientWithResponses) InviteEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InviteEnvironmentUserResponse, error) {
+	rsp, err := c.InviteEnvironmentUserWithBody(ctx, environmentId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInviteEnvironmentUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) InviteEnvironmentUserWithResponse(ctx context.Context, environmentId string, body InviteEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*InviteEnvironmentUserResponse, error) {
+	rsp, err := c.InviteEnvironmentUser(ctx, environmentId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInviteEnvironmentUserResponse(rsp)
+}
+
+// DeleteEnvironmentUserWithResponse request returning *DeleteEnvironmentUserResponse
+func (c *ClientWithResponses) DeleteEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*DeleteEnvironmentUserResponse, error) {
+	rsp, err := c.DeleteEnvironmentUser(ctx, environmentId, userId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteEnvironmentUserResponse(rsp)
+}
+
+// GetEnvironmentUserWithResponse request returning *GetEnvironmentUserResponse
+func (c *ClientWithResponses) GetEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, reqEditors ...RequestEditorFn) (*GetEnvironmentUserResponse, error) {
+	rsp, err := c.GetEnvironmentUser(ctx, environmentId, userId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetEnvironmentUserResponse(rsp)
+}
+
+// UpdateEnvironmentUserWithBodyWithResponse request with arbitrary body returning *UpdateEnvironmentUserResponse
+func (c *ClientWithResponses) UpdateEnvironmentUserWithBodyWithResponse(ctx context.Context, environmentId string, userId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateEnvironmentUserResponse, error) {
+	rsp, err := c.UpdateEnvironmentUserWithBody(ctx, environmentId, userId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateEnvironmentUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateEnvironmentUserWithResponse(ctx context.Context, environmentId string, userId string, body UpdateEnvironmentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateEnvironmentUserResponse, error) {
+	rsp, err := c.UpdateEnvironmentUser(ctx, environmentId, userId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateEnvironmentUserResponse(rsp)
 }
 
 // GetMcpendpointsWithResponse request returning *GetMcpendpointsResponse
@@ -5397,6 +6199,230 @@ func ParseGetEnvironmentStatusResponse(rsp *http.Response) (*GetEnvironmentStatu
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListEnvironmentUsersResponse parses an HTTP response from a ListEnvironmentUsersWithResponse call
+func ParseListEnvironmentUsersResponse(rsp *http.Response) (*ListEnvironmentUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListEnvironmentUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []EnvironmentUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateEnvironmentUserResponse parses an HTTP response from a CreateEnvironmentUserWithResponse call
+func ParseCreateEnvironmentUserResponse(rsp *http.Response) (*CreateEnvironmentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateEnvironmentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest EnvironmentUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkInviteEnvironmentUsersResponse parses an HTTP response from a BulkInviteEnvironmentUsersWithResponse call
+func ParseBulkInviteEnvironmentUsersResponse(rsp *http.Response) (*BulkInviteEnvironmentUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkInviteEnvironmentUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest []EnvironmentUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInviteEnvironmentUserResponse parses an HTTP response from a InviteEnvironmentUserWithResponse call
+func ParseInviteEnvironmentUserResponse(rsp *http.Response) (*InviteEnvironmentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InviteEnvironmentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest EnvironmentUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteEnvironmentUserResponse parses an HTTP response from a DeleteEnvironmentUserWithResponse call
+func ParseDeleteEnvironmentUserResponse(rsp *http.Response) (*DeleteEnvironmentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteEnvironmentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetEnvironmentUserResponse parses an HTTP response from a GetEnvironmentUserWithResponse call
+func ParseGetEnvironmentUserResponse(rsp *http.Response) (*GetEnvironmentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetEnvironmentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvironmentUserResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateEnvironmentUserResponse parses an HTTP response from a UpdateEnvironmentUserWithResponse call
+func ParseUpdateEnvironmentUserResponse(rsp *http.Response) (*UpdateEnvironmentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateEnvironmentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvironmentUserResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
