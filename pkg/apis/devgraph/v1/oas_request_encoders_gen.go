@@ -165,7 +165,7 @@ func encodeCreateModelproviderRequest(
 	return nil
 }
 
-func encodeCreateOAuthServiceAPIV1OAuthServicesPostRequest(
+func encodeCreateOAuthServiceRequest(
 	req *OAuthServiceCreate,
 	r *http.Request,
 ) error {
@@ -207,7 +207,7 @@ func encodeDeleteEntityRelationRequest(
 	return nil
 }
 
-func encodeExchangeCodeForTokenAPIV1OAuthTokenPostRequest(
+func encodeExchangeOAuthTokenRequest(
 	req *OAuthTokenExchange,
 	r *http.Request,
 ) error {
@@ -221,7 +221,7 @@ func encodeExchangeCodeForTokenAPIV1OAuthTokenPostRequest(
 	return nil
 }
 
-func encodeGetAuthorizationURLAPIV1OAuthAuthorizePostRequest(
+func encodeGetOAuthAuthorizationURLRequest(
 	req *OAuthAuthorizationRequest,
 	r *http.Request,
 ) error {
@@ -295,7 +295,7 @@ func encodeUpdateEnvironmentUserRequest(
 	return nil
 }
 
-func encodeUpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRequest(
+func encodeUpdateOAuthServiceRequest(
 	req *OAuthServiceUpdate,
 	r *http.Request,
 ) error {

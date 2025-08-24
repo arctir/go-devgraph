@@ -1616,48 +1616,6 @@ func (s *ChatVisibility) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON as json.
-func (s DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON) Encode(e *jx.Encoder) {
-	unwrapped := jx.Raw(s)
-
-	if len(unwrapped) != 0 {
-		e.Raw(unwrapped)
-	}
-}
-
-// Decode decodes DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON from json.
-func (s *DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON to nil")
-	}
-	var unwrapped jx.Raw
-	if err := func() error {
-		v, err := d.RawAppend(nil)
-		unwrapped = jx.Raw(v)
-		if err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return errors.Wrap(err, "alias")
-	}
-	*s = DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON(unwrapped)
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *Entity) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -5436,8 +5394,8 @@ func (s *ListEnvironmentUsersOKApplicationJSON) UnmarshalJSON(data []byte) error
 	return s.Decode(d)
 }
 
-// Encode encodes ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON as json.
-func (s ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) Encode(e *jx.Encoder) {
+// Encode encodes ListOAuthTokensOKApplicationJSON as json.
+func (s ListOAuthTokensOKApplicationJSON) Encode(e *jx.Encoder) {
 	unwrapped := jx.Raw(s)
 
 	if len(unwrapped) != 0 {
@@ -5445,10 +5403,10 @@ func (s ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) Encode(e *jx.Encoder
 	}
 }
 
-// Decode decodes ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON from json.
-func (s *ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) Decode(d *jx.Decoder) error {
+// Decode decodes ListOAuthTokensOKApplicationJSON from json.
+func (s *ListOAuthTokensOKApplicationJSON) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON to nil")
+		return errors.New("invalid: unable to decode ListOAuthTokensOKApplicationJSON to nil")
 	}
 	var unwrapped jx.Raw
 	if err := func() error {
@@ -5461,19 +5419,19 @@ func (s *ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) Decode(d *jx.Decode
 	}(); err != nil {
 		return errors.Wrap(err, "alias")
 	}
-	*s = ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON(unwrapped)
+	*s = ListOAuthTokensOKApplicationJSON(unwrapped)
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) MarshalJSON() ([]byte, error) {
+func (s ListOAuthTokensOKApplicationJSON) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) UnmarshalJSON(data []byte) error {
+func (s *ListOAuthTokensOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -11984,48 +11942,6 @@ func (s PostChatMessagesCreatedApplicationJSON) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PostChatMessagesCreatedApplicationJSON) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON as json.
-func (s RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON) Encode(e *jx.Encoder) {
-	unwrapped := jx.Raw(s)
-
-	if len(unwrapped) != 0 {
-		e.Raw(unwrapped)
-	}
-}
-
-// Decode decodes RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON from json.
-func (s *RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON to nil")
-	}
-	var unwrapped jx.Raw
-	if err := func() error {
-		v, err := d.RawAppend(nil)
-		unwrapped = jx.Raw(v)
-		if err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return errors.Wrap(err, "alias")
-	}
-	*s = RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON(unwrapped)
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

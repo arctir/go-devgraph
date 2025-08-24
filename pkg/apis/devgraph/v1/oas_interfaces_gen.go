@@ -45,8 +45,8 @@ type CreateModelproviderRes interface {
 	createModelproviderRes()
 }
 
-type CreateOAuthServiceAPIV1OAuthServicesPostRes interface {
-	createOAuthServiceAPIV1OAuthServicesPostRes()
+type CreateOAuthServiceRes interface {
+	createOAuthServiceRes()
 }
 
 type CreateTokenRes interface {
@@ -85,16 +85,12 @@ type DeleteModelproviderRes interface {
 	deleteModelproviderRes()
 }
 
-type DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes interface {
-	deleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes()
+type DeleteOAuthServiceRes interface {
+	deleteOAuthServiceRes()
 }
 
-type ExchangeCodeForTokenAPIV1OAuthTokenPostRes interface {
-	exchangeCodeForTokenAPIV1OAuthTokenPostRes()
-}
-
-type GetAuthorizationURLAPIV1OAuthAuthorizePostRes interface {
-	getAuthorizationURLAPIV1OAuthAuthorizePostRes()
+type ExchangeOAuthTokenRes interface {
+	exchangeOAuthTokenRes()
 }
 
 type GetChatMessagesRes interface {
@@ -157,8 +153,12 @@ type GetModelsRes interface {
 	getModelsRes()
 }
 
-type GetOAuthServiceAPIV1OAuthServicesServiceIDGetRes interface {
-	getOAuthServiceAPIV1OAuthServicesServiceIDGetRes()
+type GetOAuthAuthorizationURLRes interface {
+	getOAuthAuthorizationURLRes()
+}
+
+type GetOAuthServiceRes interface {
+	getOAuthServiceRes()
 }
 
 type GetSubscriptionsRes interface {
@@ -177,12 +177,12 @@ type ListEnvironmentUsersRes interface {
 	listEnvironmentUsersRes()
 }
 
-type ListOAuthServicesAPIV1OAuthServicesGetRes interface {
-	listOAuthServicesAPIV1OAuthServicesGetRes()
+type ListOAuthServicesRes interface {
+	listOAuthServicesRes()
 }
 
-type ListUserTokensAPIV1OAuthTokensGetRes interface {
-	listUserTokensAPIV1OAuthTokensGetRes()
+type ListOAuthTokensRes interface {
+	listOAuthTokensRes()
 }
 
 type PostChatMessagesRes interface {
@@ -197,8 +197,8 @@ type PostStripeWebhookRes interface {
 	postStripeWebhookRes()
 }
 
-type RevokeTokenAPIV1OAuthTokensServiceNameDeleteRes interface {
-	revokeTokenAPIV1OAuthTokensServiceNameDeleteRes()
+type RevokeOAuthTokenRes interface {
+	revokeOAuthTokenRes()
 }
 
 type UpdateChatRes interface {
@@ -209,6 +209,6 @@ type UpdateEnvironmentUserRes interface {
 	updateEnvironmentUserRes()
 }
 
-type UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRes interface {
-	updateOAuthServiceAPIV1OAuthServicesServiceIDPutRes()
+type UpdateOAuthServiceRes interface {
+	updateOAuthServiceRes()
 }

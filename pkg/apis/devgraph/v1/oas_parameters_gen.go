@@ -74,8 +74,8 @@ type DeleteModelproviderParams struct {
 	ProviderID uuid.UUID
 }
 
-// DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteParams is parameters of delete_oauth_service_api_v1_oauth_services__service_id__delete operation.
-type DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteParams struct {
+// DeleteOAuthServiceParams is parameters of delete_oauth_service operation.
+type DeleteOAuthServiceParams struct {
 	ServiceID uuid.UUID
 }
 
@@ -142,8 +142,8 @@ type GetModelproviderParams struct {
 	ProviderID uuid.UUID
 }
 
-// GetOAuthServiceAPIV1OAuthServicesServiceIDGetParams is parameters of get_oauth_service_api_v1_oauth_services__service_id__get operation.
-type GetOAuthServiceAPIV1OAuthServicesServiceIDGetParams struct {
+// GetOAuthServiceParams is parameters of get_oauth_service operation.
+type GetOAuthServiceParams struct {
 	ServiceID uuid.UUID
 }
 
@@ -157,8 +157,8 @@ type ListEnvironmentUsersParams struct {
 	EnvironmentID uuid.UUID
 }
 
-// ListOAuthServicesAPIV1OAuthServicesGetParams is parameters of list_oauth_services_api_v1_oauth_services_get operation.
-type ListOAuthServicesAPIV1OAuthServicesGetParams struct {
+// ListOAuthServicesParams is parameters of list_oauth_services operation.
+type ListOAuthServicesParams struct {
 	// Only return active services.
 	ActiveOnly OptBool
 }
@@ -180,8 +180,8 @@ type PostStripeWebhookParams struct {
 	StripeSignature string
 }
 
-// RevokeTokenAPIV1OAuthTokensServiceNameDeleteParams is parameters of revoke_token_api_v1_oauth_tokens__service_name__delete operation.
-type RevokeTokenAPIV1OAuthTokensServiceNameDeleteParams struct {
+// RevokeOAuthTokenParams is parameters of revoke_oauth_token operation.
+type RevokeOAuthTokenParams struct {
 	ServiceName string
 }
 
@@ -196,7 +196,7 @@ type UpdateEnvironmentUserParams struct {
 	UserID        string
 }
 
-// UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutParams is parameters of update_oauth_service_api_v1_oauth_services__service_id__put operation.
-type UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutParams struct {
+// UpdateOAuthServiceParams is parameters of update_oauth_service operation.
+type UpdateOAuthServiceParams struct {
 	ServiceID uuid.UUID
 }

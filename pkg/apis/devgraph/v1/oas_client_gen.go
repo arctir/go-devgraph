@@ -91,12 +91,12 @@ type Invoker interface {
 	//
 	// POST /system/api/v1/modelproviders
 	CreateModelprovider(ctx context.Context, request *ModelProviderCreate) (CreateModelproviderRes, error)
-	// CreateOAuthServiceAPIV1OAuthServicesPost invokes create_oauth_service_api_v1_oauth_services_post operation.
+	// CreateOAuthService invokes create_oauth_service operation.
 	//
 	// Create Oauth Service.
 	//
 	// POST /api/v1/oauth/services
-	CreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceAPIV1OAuthServicesPostRes, error)
+	CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error)
 	// CreateToken invokes create_token operation.
 	//
 	// Create Token.
@@ -151,24 +151,18 @@ type Invoker interface {
 	//
 	// DELETE /system/api/v1/modelproviders/{provider_id}
 	DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error)
-	// DeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete invokes delete_oauth_service_api_v1_oauth_services__service_id__delete operation.
+	// DeleteOAuthService invokes delete_oauth_service operation.
 	//
 	// Delete Oauth Service.
 	//
 	// DELETE /api/v1/oauth/services/{service_id}
-	DeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx context.Context, params DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteParams) (DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes, error)
-	// ExchangeCodeForTokenAPIV1OAuthTokenPost invokes exchange_code_for_token_api_v1_oauth_token_post operation.
+	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
+	// ExchangeOAuthToken invokes exchange_oauth_token operation.
 	//
 	// Exchange Code For Token.
 	//
 	// POST /api/v1/oauth/token
-	ExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context, request *OAuthTokenExchange) (ExchangeCodeForTokenAPIV1OAuthTokenPostRes, error)
-	// GetAuthorizationURLAPIV1OAuthAuthorizePost invokes get_authorization_url_api_v1_oauth_authorize_post operation.
-	//
-	// Get Authorization Url.
-	//
-	// POST /api/v1/oauth/authorize
-	GetAuthorizationURLAPIV1OAuthAuthorizePost(ctx context.Context, request *OAuthAuthorizationRequest) (GetAuthorizationURLAPIV1OAuthAuthorizePostRes, error)
+	ExchangeOAuthToken(ctx context.Context, request *OAuthTokenExchange) (ExchangeOAuthTokenRes, error)
 	// GetChat invokes get_chat operation.
 	//
 	// Get Chat.
@@ -263,12 +257,18 @@ type Invoker interface {
 	//
 	// GET /system/api/v1/models
 	GetModels(ctx context.Context) (GetModelsRes, error)
-	// GetOAuthServiceAPIV1OAuthServicesServiceIDGet invokes get_oauth_service_api_v1_oauth_services__service_id__get operation.
+	// GetOAuthAuthorizationURL invokes get_oauth_authorization_url operation.
+	//
+	// Get Authorization Url.
+	//
+	// POST /api/v1/oauth/authorize
+	GetOAuthAuthorizationURL(ctx context.Context, request *OAuthAuthorizationRequest) (GetOAuthAuthorizationURLRes, error)
+	// GetOAuthService invokes get_oauth_service operation.
 	//
 	// Get Oauth Service.
 	//
 	// GET /api/v1/oauth/services/{service_id}
-	GetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx context.Context, params GetOAuthServiceAPIV1OAuthServicesServiceIDGetParams) (GetOAuthServiceAPIV1OAuthServicesServiceIDGetRes, error)
+	GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
 	// Get Subscriptions.
@@ -293,18 +293,18 @@ type Invoker interface {
 	//
 	// GET /system/api/v1/environments/{environment_id}/users
 	ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error)
-	// ListOAuthServicesAPIV1OAuthServicesGet invokes list_oauth_services_api_v1_oauth_services_get operation.
+	// ListOAuthServices invokes list_oauth_services operation.
 	//
 	// List Oauth Services.
 	//
 	// GET /api/v1/oauth/services
-	ListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context, params ListOAuthServicesAPIV1OAuthServicesGetParams) (ListOAuthServicesAPIV1OAuthServicesGetRes, error)
-	// ListUserTokensAPIV1OAuthTokensGet invokes list_user_tokens_api_v1_oauth_tokens_get operation.
+	ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (ListOAuthServicesRes, error)
+	// ListOAuthTokens invokes list_oauth_tokens operation.
 	//
 	// List User Tokens.
 	//
 	// GET /api/v1/oauth/tokens
-	ListUserTokensAPIV1OAuthTokensGet(ctx context.Context) (ListUserTokensAPIV1OAuthTokensGetRes, error)
+	ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error)
 	// PostChatMessages invokes post_chat_messages operation.
 	//
 	// Post Chat Messages.
@@ -323,12 +323,12 @@ type Invoker interface {
 	//
 	// POST /system/api/v1/webhooks/stripe
 	PostStripeWebhook(ctx context.Context, params PostStripeWebhookParams) (PostStripeWebhookRes, error)
-	// RevokeTokenAPIV1OAuthTokensServiceNameDelete invokes revoke_token_api_v1_oauth_tokens__service_name__delete operation.
+	// RevokeOAuthToken invokes revoke_oauth_token operation.
 	//
 	// Revoke Token.
 	//
 	// DELETE /api/v1/oauth/tokens/{service_name}
-	RevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx context.Context, params RevokeTokenAPIV1OAuthTokensServiceNameDeleteParams) (RevokeTokenAPIV1OAuthTokensServiceNameDeleteRes, error)
+	RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (RevokeOAuthTokenRes, error)
 	// UpdateChat invokes update_chat operation.
 	//
 	// Update Chat.
@@ -341,12 +341,12 @@ type Invoker interface {
 	//
 	// PUT /system/api/v1/environments/{environment_id}/users/{user_id}
 	UpdateEnvironmentUser(ctx context.Context, request *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error)
-	// UpdateOAuthServiceAPIV1OAuthServicesServiceIDPut invokes update_oauth_service_api_v1_oauth_services__service_id__put operation.
+	// UpdateOAuthService invokes update_oauth_service operation.
 	//
 	// Update Oauth Service.
 	//
 	// PUT /api/v1/oauth/services/{service_id}
-	UpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutParams) (UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRes, error)
+	UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error)
 }
 
 // Client implements OAS client.
@@ -1340,17 +1340,17 @@ func (c *Client) sendCreateModelprovider(ctx context.Context, request *ModelProv
 	return result, nil
 }
 
-// CreateOAuthServiceAPIV1OAuthServicesPost invokes create_oauth_service_api_v1_oauth_services_post operation.
+// CreateOAuthService invokes create_oauth_service operation.
 //
 // Create Oauth Service.
 //
 // POST /api/v1/oauth/services
-func (c *Client) CreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceAPIV1OAuthServicesPostRes, error) {
-	res, err := c.sendCreateOAuthServiceAPIV1OAuthServicesPost(ctx, request)
+func (c *Client) CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error) {
+	res, err := c.sendCreateOAuthService(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Context, request *OAuthServiceCreate) (res CreateOAuthServiceAPIV1OAuthServicesPostRes, err error) {
+func (c *Client) sendCreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (res CreateOAuthServiceRes, err error) {
 	// Validate request before sending.
 	if err := func() error {
 		if err := request.Validate(); err != nil {
@@ -1370,7 +1370,7 @@ func (c *Client) sendCreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Contex
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeCreateOAuthServiceAPIV1OAuthServicesPostRequest(request, r); err != nil {
+	if err := encodeCreateOAuthServiceRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -1379,7 +1379,7 @@ func (c *Client) sendCreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Contex
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, CreateOAuthServiceAPIV1OAuthServicesPostOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, CreateOAuthServiceOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -1413,7 +1413,7 @@ func (c *Client) sendCreateOAuthServiceAPIV1OAuthServicesPost(ctx context.Contex
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeCreateOAuthServiceAPIV1OAuthServicesPostResponse(resp)
+	result, err := decodeCreateOAuthServiceResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -2286,17 +2286,17 @@ func (c *Client) sendDeleteModelprovider(ctx context.Context, params DeleteModel
 	return result, nil
 }
 
-// DeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete invokes delete_oauth_service_api_v1_oauth_services__service_id__delete operation.
+// DeleteOAuthService invokes delete_oauth_service operation.
 //
 // Delete Oauth Service.
 //
 // DELETE /api/v1/oauth/services/{service_id}
-func (c *Client) DeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx context.Context, params DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteParams) (DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes, error) {
-	res, err := c.sendDeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx, params)
+func (c *Client) DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error) {
+	res, err := c.sendDeleteOAuthService(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendDeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx context.Context, params DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteParams) (res DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes, err error) {
+func (c *Client) sendDeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (res DeleteOAuthServiceRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -2331,7 +2331,7 @@ func (c *Client) sendDeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx con
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, DeleteOAuthServiceOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -2365,7 +2365,7 @@ func (c *Client) sendDeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx con
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeDeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteResponse(resp)
+	result, err := decodeDeleteOAuthServiceResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -2373,17 +2373,17 @@ func (c *Client) sendDeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete(ctx con
 	return result, nil
 }
 
-// ExchangeCodeForTokenAPIV1OAuthTokenPost invokes exchange_code_for_token_api_v1_oauth_token_post operation.
+// ExchangeOAuthToken invokes exchange_oauth_token operation.
 //
 // Exchange Code For Token.
 //
 // POST /api/v1/oauth/token
-func (c *Client) ExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context, request *OAuthTokenExchange) (ExchangeCodeForTokenAPIV1OAuthTokenPostRes, error) {
-	res, err := c.sendExchangeCodeForTokenAPIV1OAuthTokenPost(ctx, request)
+func (c *Client) ExchangeOAuthToken(ctx context.Context, request *OAuthTokenExchange) (ExchangeOAuthTokenRes, error) {
+	res, err := c.sendExchangeOAuthToken(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context, request *OAuthTokenExchange) (res ExchangeCodeForTokenAPIV1OAuthTokenPostRes, err error) {
+func (c *Client) sendExchangeOAuthToken(ctx context.Context, request *OAuthTokenExchange) (res ExchangeOAuthTokenRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -2394,7 +2394,7 @@ func (c *Client) sendExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeExchangeCodeForTokenAPIV1OAuthTokenPostRequest(request, r); err != nil {
+	if err := encodeExchangeOAuthTokenRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -2403,7 +2403,7 @@ func (c *Client) sendExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, ExchangeCodeForTokenAPIV1OAuthTokenPostOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, ExchangeOAuthTokenOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -2437,88 +2437,7 @@ func (c *Client) sendExchangeCodeForTokenAPIV1OAuthTokenPost(ctx context.Context
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeExchangeCodeForTokenAPIV1OAuthTokenPostResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetAuthorizationURLAPIV1OAuthAuthorizePost invokes get_authorization_url_api_v1_oauth_authorize_post operation.
-//
-// Get Authorization Url.
-//
-// POST /api/v1/oauth/authorize
-func (c *Client) GetAuthorizationURLAPIV1OAuthAuthorizePost(ctx context.Context, request *OAuthAuthorizationRequest) (GetAuthorizationURLAPIV1OAuthAuthorizePostRes, error) {
-	res, err := c.sendGetAuthorizationURLAPIV1OAuthAuthorizePost(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendGetAuthorizationURLAPIV1OAuthAuthorizePost(ctx context.Context, request *OAuthAuthorizationRequest) (res GetAuthorizationURLAPIV1OAuthAuthorizePostRes, err error) {
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
-	}
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/api/v1/oauth/authorize"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeGetAuthorizationURLAPIV1OAuthAuthorizePostRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityOAuth2PasswordBearer(ctx, GetAuthorizationURLAPIV1OAuthAuthorizePostOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeGetAuthorizationURLAPIV1OAuthAuthorizePostResponse(resp)
+	result, err := decodeExchangeOAuthTokenResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3935,17 +3854,98 @@ func (c *Client) sendGetModels(ctx context.Context) (res GetModelsRes, err error
 	return result, nil
 }
 
-// GetOAuthServiceAPIV1OAuthServicesServiceIDGet invokes get_oauth_service_api_v1_oauth_services__service_id__get operation.
+// GetOAuthAuthorizationURL invokes get_oauth_authorization_url operation.
+//
+// Get Authorization Url.
+//
+// POST /api/v1/oauth/authorize
+func (c *Client) GetOAuthAuthorizationURL(ctx context.Context, request *OAuthAuthorizationRequest) (GetOAuthAuthorizationURLRes, error) {
+	res, err := c.sendGetOAuthAuthorizationURL(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendGetOAuthAuthorizationURL(ctx context.Context, request *OAuthAuthorizationRequest) (res GetOAuthAuthorizationURLRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/oauth/authorize"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetOAuthAuthorizationURLRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetOAuthAuthorizationURLOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetOAuthAuthorizationURLResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetOAuthService invokes get_oauth_service operation.
 //
 // Get Oauth Service.
 //
 // GET /api/v1/oauth/services/{service_id}
-func (c *Client) GetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx context.Context, params GetOAuthServiceAPIV1OAuthServicesServiceIDGetParams) (GetOAuthServiceAPIV1OAuthServicesServiceIDGetRes, error) {
-	res, err := c.sendGetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx, params)
+func (c *Client) GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error) {
+	res, err := c.sendGetOAuthService(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx context.Context, params GetOAuthServiceAPIV1OAuthServicesServiceIDGetParams) (res GetOAuthServiceAPIV1OAuthServicesServiceIDGetRes, err error) {
+func (c *Client) sendGetOAuthService(ctx context.Context, params GetOAuthServiceParams) (res GetOAuthServiceRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -3980,7 +3980,7 @@ func (c *Client) sendGetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx context.C
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, GetOAuthServiceAPIV1OAuthServicesServiceIDGetOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetOAuthServiceOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -4014,7 +4014,7 @@ func (c *Client) sendGetOAuthServiceAPIV1OAuthServicesServiceIDGet(ctx context.C
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeGetOAuthServiceAPIV1OAuthServicesServiceIDGetResponse(resp)
+	result, err := decodeGetOAuthServiceResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4339,17 +4339,17 @@ func (c *Client) sendListEnvironmentUsers(ctx context.Context, params ListEnviro
 	return result, nil
 }
 
-// ListOAuthServicesAPIV1OAuthServicesGet invokes list_oauth_services_api_v1_oauth_services_get operation.
+// ListOAuthServices invokes list_oauth_services operation.
 //
 // List Oauth Services.
 //
 // GET /api/v1/oauth/services
-func (c *Client) ListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context, params ListOAuthServicesAPIV1OAuthServicesGetParams) (ListOAuthServicesAPIV1OAuthServicesGetRes, error) {
-	res, err := c.sendListOAuthServicesAPIV1OAuthServicesGet(ctx, params)
+func (c *Client) ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (ListOAuthServicesRes, error) {
+	res, err := c.sendListOAuthServices(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context, params ListOAuthServicesAPIV1OAuthServicesGetParams) (res ListOAuthServicesAPIV1OAuthServicesGetRes, err error) {
+func (c *Client) sendListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (res ListOAuthServicesRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -4386,7 +4386,7 @@ func (c *Client) sendListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context,
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, ListOAuthServicesAPIV1OAuthServicesGetOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListOAuthServicesOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -4420,7 +4420,7 @@ func (c *Client) sendListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context,
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeListOAuthServicesAPIV1OAuthServicesGetResponse(resp)
+	result, err := decodeListOAuthServicesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4428,17 +4428,17 @@ func (c *Client) sendListOAuthServicesAPIV1OAuthServicesGet(ctx context.Context,
 	return result, nil
 }
 
-// ListUserTokensAPIV1OAuthTokensGet invokes list_user_tokens_api_v1_oauth_tokens_get operation.
+// ListOAuthTokens invokes list_oauth_tokens operation.
 //
 // List User Tokens.
 //
 // GET /api/v1/oauth/tokens
-func (c *Client) ListUserTokensAPIV1OAuthTokensGet(ctx context.Context) (ListUserTokensAPIV1OAuthTokensGetRes, error) {
-	res, err := c.sendListUserTokensAPIV1OAuthTokensGet(ctx)
+func (c *Client) ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error) {
+	res, err := c.sendListOAuthTokens(ctx)
 	return res, err
 }
 
-func (c *Client) sendListUserTokensAPIV1OAuthTokensGet(ctx context.Context) (res ListUserTokensAPIV1OAuthTokensGetRes, err error) {
+func (c *Client) sendListOAuthTokens(ctx context.Context) (res ListOAuthTokensRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -4455,7 +4455,7 @@ func (c *Client) sendListUserTokensAPIV1OAuthTokensGet(ctx context.Context) (res
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, ListUserTokensAPIV1OAuthTokensGetOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListOAuthTokensOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -4489,7 +4489,7 @@ func (c *Client) sendListUserTokensAPIV1OAuthTokensGet(ctx context.Context) (res
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeListUserTokensAPIV1OAuthTokensGetResponse(resp)
+	result, err := decodeListOAuthTokensResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4734,17 +4734,17 @@ func (c *Client) sendPostStripeWebhook(ctx context.Context, params PostStripeWeb
 	return result, nil
 }
 
-// RevokeTokenAPIV1OAuthTokensServiceNameDelete invokes revoke_token_api_v1_oauth_tokens__service_name__delete operation.
+// RevokeOAuthToken invokes revoke_oauth_token operation.
 //
 // Revoke Token.
 //
 // DELETE /api/v1/oauth/tokens/{service_name}
-func (c *Client) RevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx context.Context, params RevokeTokenAPIV1OAuthTokensServiceNameDeleteParams) (RevokeTokenAPIV1OAuthTokensServiceNameDeleteRes, error) {
-	res, err := c.sendRevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx, params)
+func (c *Client) RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (RevokeOAuthTokenRes, error) {
+	res, err := c.sendRevokeOAuthToken(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendRevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx context.Context, params RevokeTokenAPIV1OAuthTokensServiceNameDeleteParams) (res RevokeTokenAPIV1OAuthTokensServiceNameDeleteRes, err error) {
+func (c *Client) sendRevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (res RevokeOAuthTokenRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
@@ -4779,7 +4779,7 @@ func (c *Client) sendRevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx context.Co
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, RevokeTokenAPIV1OAuthTokensServiceNameDeleteOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, RevokeOAuthTokenOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -4813,7 +4813,7 @@ func (c *Client) sendRevokeTokenAPIV1OAuthTokensServiceNameDelete(ctx context.Co
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeRevokeTokenAPIV1OAuthTokensServiceNameDeleteResponse(resp)
+	result, err := decodeRevokeOAuthTokenResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5029,17 +5029,17 @@ func (c *Client) sendUpdateEnvironmentUser(ctx context.Context, request *Environ
 	return result, nil
 }
 
-// UpdateOAuthServiceAPIV1OAuthServicesServiceIDPut invokes update_oauth_service_api_v1_oauth_services__service_id__put operation.
+// UpdateOAuthService invokes update_oauth_service operation.
 //
 // Update Oauth Service.
 //
 // PUT /api/v1/oauth/services/{service_id}
-func (c *Client) UpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutParams) (UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRes, error) {
-	res, err := c.sendUpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx, request, params)
+func (c *Client) UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error) {
+	res, err := c.sendUpdateOAuthService(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutParams) (res UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRes, err error) {
+func (c *Client) sendUpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (res UpdateOAuthServiceRes, err error) {
 	// Validate request before sending.
 	if err := func() error {
 		if err := request.Validate(); err != nil {
@@ -5077,7 +5077,7 @@ func (c *Client) sendUpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx contex
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeUpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRequest(request, r); err != nil {
+	if err := encodeUpdateOAuthServiceRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -5086,7 +5086,7 @@ func (c *Client) sendUpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx contex
 		var satisfied bitset
 		{
 
-			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutOperation, r); {
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateOAuthServiceOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -5120,7 +5120,7 @@ func (c *Client) sendUpdateOAuthServiceAPIV1OAuthServicesServiceIDPut(ctx contex
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeUpdateOAuthServiceAPIV1OAuthServicesServiceIDPutResponse(resp)
+	result, err := decodeUpdateOAuthServiceResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

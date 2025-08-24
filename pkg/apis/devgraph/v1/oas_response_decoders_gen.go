@@ -1009,10 +1009,10 @@ func decodeCreateModelproviderResponse(resp *http.Response) (res CreateModelprov
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeCreateOAuthServiceAPIV1OAuthServicesPostResponse(resp *http.Response) (res CreateOAuthServiceAPIV1OAuthServicesPostRes, _ error) {
+func decodeCreateOAuthServiceResponse(resp *http.Response) (res CreateOAuthServiceRes, _ error) {
 	switch resp.StatusCode {
-	case 200:
-		// Code 200.
+	case 201:
+		// Code 201.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -1057,7 +1057,7 @@ func decodeCreateOAuthServiceAPIV1OAuthServicesPostResponse(resp *http.Response)
 		}
 	case 404:
 		// Code 404.
-		return &CreateOAuthServiceAPIV1OAuthServicesPostNotFound{}, nil
+		return &CreateOAuthServiceNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -1651,46 +1651,14 @@ func decodeDeleteModelproviderResponse(resp *http.Response) (res DeleteModelprov
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeDeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteResponse(resp *http.Response) (res DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes, _ error) {
+func decodeDeleteOAuthServiceResponse(resp *http.Response) (res DeleteOAuthServiceRes, _ error) {
 	switch resp.StatusCode {
-	case 200:
-		// Code 200.
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			return &response, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
+	case 204:
+		// Code 204.
+		return &DeleteOAuthServiceNoContent{}, nil
 	case 404:
 		// Code 404.
-		return &DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteNotFound{}, nil
+		return &DeleteOAuthServiceNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -1739,7 +1707,7 @@ func decodeDeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteResponse(resp *htt
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeExchangeCodeForTokenAPIV1OAuthTokenPostResponse(resp *http.Response) (res ExchangeCodeForTokenAPIV1OAuthTokenPostRes, _ error) {
+func decodeExchangeOAuthTokenResponse(resp *http.Response) (res ExchangeOAuthTokenRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -1787,95 +1755,7 @@ func decodeExchangeCodeForTokenAPIV1OAuthTokenPostResponse(resp *http.Response) 
 		}
 	case 404:
 		// Code 404.
-		return &ExchangeCodeForTokenAPIV1OAuthTokenPostNotFound{}, nil
-	case 422:
-		// Code 422.
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response HTTPValidationError
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			// Validate response.
-			if err := func() error {
-				if err := response.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return res, errors.Wrap(err, "validate")
-			}
-			return &response, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
-	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
-}
-
-func decodeGetAuthorizationURLAPIV1OAuthAuthorizePostResponse(resp *http.Response) (res GetAuthorizationURLAPIV1OAuthAuthorizePostRes, _ error) {
-	switch resp.StatusCode {
-	case 200:
-		// Code 200.
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response OAuthAuthorizationResponse
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			return &response, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
-	case 404:
-		// Code 404.
-		return &GetAuthorizationURLAPIV1OAuthAuthorizePostNotFound{}, nil
+		return &ExchangeOAuthTokenNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -3096,7 +2976,95 @@ func decodeGetModelsResponse(resp *http.Response) (res GetModelsRes, _ error) {
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeGetOAuthServiceAPIV1OAuthServicesServiceIDGetResponse(resp *http.Response) (res GetOAuthServiceAPIV1OAuthServicesServiceIDGetRes, _ error) {
+func decodeGetOAuthAuthorizationURLResponse(resp *http.Response) (res GetOAuthAuthorizationURLRes, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response OAuthAuthorizationResponse
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		return &GetOAuthAuthorizationURLNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+}
+
+func decodeGetOAuthServiceResponse(resp *http.Response) (res GetOAuthServiceRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -3144,7 +3112,7 @@ func decodeGetOAuthServiceAPIV1OAuthServicesServiceIDGetResponse(resp *http.Resp
 		}
 	case 404:
 		// Code 404.
-		return &GetOAuthServiceAPIV1OAuthServicesServiceIDGetNotFound{}, nil
+		return &GetOAuthServiceNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -3484,7 +3452,7 @@ func decodeListEnvironmentUsersResponse(resp *http.Response) (res ListEnvironmen
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeListOAuthServicesAPIV1OAuthServicesGetResponse(resp *http.Response) (res ListOAuthServicesAPIV1OAuthServicesGetRes, _ error) {
+func decodeListOAuthServicesResponse(resp *http.Response) (res ListOAuthServicesRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -3532,7 +3500,7 @@ func decodeListOAuthServicesAPIV1OAuthServicesGetResponse(resp *http.Response) (
 		}
 	case 404:
 		// Code 404.
-		return &ListOAuthServicesAPIV1OAuthServicesGetNotFound{}, nil
+		return &ListOAuthServicesNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -3581,7 +3549,7 @@ func decodeListOAuthServicesAPIV1OAuthServicesGetResponse(resp *http.Response) (
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeListUserTokensAPIV1OAuthTokensGetResponse(resp *http.Response) (res ListUserTokensAPIV1OAuthTokensGetRes, _ error) {
+func decodeListOAuthTokensResponse(resp *http.Response) (res ListOAuthTokensRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -3597,7 +3565,7 @@ func decodeListUserTokensAPIV1OAuthTokensGetResponse(resp *http.Response) (res L
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON
+			var response ListOAuthTokensOKApplicationJSON
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -3620,7 +3588,7 @@ func decodeListUserTokensAPIV1OAuthTokensGetResponse(resp *http.Response) (res L
 		}
 	case 404:
 		// Code 404.
-		return &ListUserTokensAPIV1OAuthTokensGetNotFound{}, nil
+		return &ListOAuthTokensNotFound{}, nil
 	}
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
@@ -3898,46 +3866,14 @@ func decodePostStripeWebhookResponse(resp *http.Response) (res PostStripeWebhook
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeRevokeTokenAPIV1OAuthTokensServiceNameDeleteResponse(resp *http.Response) (res RevokeTokenAPIV1OAuthTokensServiceNameDeleteRes, _ error) {
+func decodeRevokeOAuthTokenResponse(resp *http.Response) (res RevokeOAuthTokenRes, _ error) {
 	switch resp.StatusCode {
-	case 200:
-		// Code 200.
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			return &response, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
+	case 204:
+		// Code 204.
+		return &RevokeOAuthTokenNoContent{}, nil
 	case 404:
 		// Code 404.
-		return &RevokeTokenAPIV1OAuthTokensServiceNameDeleteNotFound{}, nil
+		return &RevokeOAuthTokenNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -4171,7 +4107,7 @@ func decodeUpdateEnvironmentUserResponse(resp *http.Response) (res UpdateEnviron
 	return res, validate.UnexpectedStatusCode(resp.StatusCode)
 }
 
-func decodeUpdateOAuthServiceAPIV1OAuthServicesServiceIDPutResponse(resp *http.Response) (res UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutRes, _ error) {
+func decodeUpdateOAuthServiceResponse(resp *http.Response) (res UpdateOAuthServiceRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -4219,7 +4155,7 @@ func decodeUpdateOAuthServiceAPIV1OAuthServicesServiceIDPutResponse(resp *http.R
 		}
 	case 404:
 		// Code 404.
-		return &UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutNotFound{}, nil
+		return &UpdateOAuthServiceNotFound{}, nil
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))

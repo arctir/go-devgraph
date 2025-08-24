@@ -865,11 +865,10 @@ type CreateModelproviderNotFound struct{}
 
 func (*CreateModelproviderNotFound) createModelproviderRes() {}
 
-// CreateOAuthServiceAPIV1OAuthServicesPostNotFound is response for CreateOAuthServiceAPIV1OAuthServicesPost operation.
-type CreateOAuthServiceAPIV1OAuthServicesPostNotFound struct{}
+// CreateOAuthServiceNotFound is response for CreateOAuthService operation.
+type CreateOAuthServiceNotFound struct{}
 
-func (*CreateOAuthServiceAPIV1OAuthServicesPostNotFound) createOAuthServiceAPIV1OAuthServicesPostRes() {
-}
+func (*CreateOAuthServiceNotFound) createOAuthServiceRes() {}
 
 // CreateTokenNotFound is response for CreateToken operation.
 type CreateTokenNotFound struct{}
@@ -956,16 +955,15 @@ type DeleteModelproviderNotFound struct{}
 
 func (*DeleteModelproviderNotFound) deleteModelproviderRes() {}
 
-// DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteNotFound is response for DeleteOAuthServiceAPIV1OAuthServicesServiceIDDelete operation.
-type DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteNotFound struct{}
+// DeleteOAuthServiceNoContent is response for DeleteOAuthService operation.
+type DeleteOAuthServiceNoContent struct{}
 
-func (*DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteNotFound) deleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes() {
-}
+func (*DeleteOAuthServiceNoContent) deleteOAuthServiceRes() {}
 
-type DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON jx.Raw
+// DeleteOAuthServiceNotFound is response for DeleteOAuthService operation.
+type DeleteOAuthServiceNotFound struct{}
 
-func (*DeleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteOKApplicationJSON) deleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes() {
-}
+func (*DeleteOAuthServiceNotFound) deleteOAuthServiceRes() {}
 
 // Ref: #/components/schemas/Entity
 type Entity struct {
@@ -2127,17 +2125,10 @@ func (s *EnvironmentUserUpdate) SetRole(val string) {
 	s.Role = val
 }
 
-// ExchangeCodeForTokenAPIV1OAuthTokenPostNotFound is response for ExchangeCodeForTokenAPIV1OAuthTokenPost operation.
-type ExchangeCodeForTokenAPIV1OAuthTokenPostNotFound struct{}
+// ExchangeOAuthTokenNotFound is response for ExchangeOAuthToken operation.
+type ExchangeOAuthTokenNotFound struct{}
 
-func (*ExchangeCodeForTokenAPIV1OAuthTokenPostNotFound) exchangeCodeForTokenAPIV1OAuthTokenPostRes() {
-}
-
-// GetAuthorizationURLAPIV1OAuthAuthorizePostNotFound is response for GetAuthorizationURLAPIV1OAuthAuthorizePost operation.
-type GetAuthorizationURLAPIV1OAuthAuthorizePostNotFound struct{}
-
-func (*GetAuthorizationURLAPIV1OAuthAuthorizePostNotFound) getAuthorizationURLAPIV1OAuthAuthorizePostRes() {
-}
+func (*ExchangeOAuthTokenNotFound) exchangeOAuthTokenRes() {}
 
 // GetChatMessagesNotFound is response for GetChatMessages operation.
 type GetChatMessagesNotFound struct{}
@@ -2255,11 +2246,15 @@ type GetModelsOKApplicationJSON []ModelResponse
 
 func (*GetModelsOKApplicationJSON) getModelsRes() {}
 
-// GetOAuthServiceAPIV1OAuthServicesServiceIDGetNotFound is response for GetOAuthServiceAPIV1OAuthServicesServiceIDGet operation.
-type GetOAuthServiceAPIV1OAuthServicesServiceIDGetNotFound struct{}
+// GetOAuthAuthorizationURLNotFound is response for GetOAuthAuthorizationURL operation.
+type GetOAuthAuthorizationURLNotFound struct{}
 
-func (*GetOAuthServiceAPIV1OAuthServicesServiceIDGetNotFound) getOAuthServiceAPIV1OAuthServicesServiceIDGetRes() {
-}
+func (*GetOAuthAuthorizationURLNotFound) getOAuthAuthorizationURLRes() {}
+
+// GetOAuthServiceNotFound is response for GetOAuthService operation.
+type GetOAuthServiceNotFound struct{}
+
+func (*GetOAuthServiceNotFound) getOAuthServiceRes() {}
 
 // GetSubscriptionsNotFound is response for GetSubscriptions operation.
 type GetSubscriptionsNotFound struct{}
@@ -2294,51 +2289,51 @@ func (s *HTTPValidationError) SetDetail(val []ValidationError) {
 	s.Detail = val
 }
 
-func (*HTTPValidationError) bulkInviteEnvironmentUsersRes()                          {}
-func (*HTTPValidationError) createChatRes()                                          {}
-func (*HTTPValidationError) createChatTitleRes()                                     {}
-func (*HTTPValidationError) createEntityDefinitionRes()                              {}
-func (*HTTPValidationError) createEntityRelationRes()                                {}
-func (*HTTPValidationError) createEntityRes()                                        {}
-func (*HTTPValidationError) createEnvironmentRes()                                   {}
-func (*HTTPValidationError) createEnvironmentUserRes()                               {}
-func (*HTTPValidationError) createMcpendpointRes()                                   {}
-func (*HTTPValidationError) createModelRes()                                         {}
-func (*HTTPValidationError) createModelproviderRes()                                 {}
-func (*HTTPValidationError) createOAuthServiceAPIV1OAuthServicesPostRes()            {}
-func (*HTTPValidationError) createTokenRes()                                         {}
-func (*HTTPValidationError) deleteChatRes()                                          {}
-func (*HTTPValidationError) deleteEntityDefinitionRes()                              {}
-func (*HTTPValidationError) deleteEntityRelationRes()                                {}
-func (*HTTPValidationError) deleteEntityRes()                                        {}
-func (*HTTPValidationError) deleteEnvironmentUserRes()                               {}
-func (*HTTPValidationError) deleteMcpendpointRes()                                   {}
-func (*HTTPValidationError) deleteModelRes()                                         {}
-func (*HTTPValidationError) deleteModelproviderRes()                                 {}
-func (*HTTPValidationError) deleteOAuthServiceAPIV1OAuthServicesServiceIDDeleteRes() {}
-func (*HTTPValidationError) exchangeCodeForTokenAPIV1OAuthTokenPostRes()             {}
-func (*HTTPValidationError) getAuthorizationURLAPIV1OAuthAuthorizePostRes()          {}
-func (*HTTPValidationError) getChatMessagesRes()                                     {}
-func (*HTTPValidationError) getChatRes()                                             {}
-func (*HTTPValidationError) getChatsRes()                                            {}
-func (*HTTPValidationError) getEntitiesRes()                                         {}
-func (*HTTPValidationError) getEntityRes()                                           {}
-func (*HTTPValidationError) getEnvironmentStatusRes()                                {}
-func (*HTTPValidationError) getEnvironmentUserRes()                                  {}
-func (*HTTPValidationError) getMcpendpointRes()                                      {}
-func (*HTTPValidationError) getModelRes()                                            {}
-func (*HTTPValidationError) getModelproviderRes()                                    {}
-func (*HTTPValidationError) getOAuthServiceAPIV1OAuthServicesServiceIDGetRes()       {}
-func (*HTTPValidationError) inviteEnvironmentUserRes()                               {}
-func (*HTTPValidationError) listEnvironmentUsersRes()                                {}
-func (*HTTPValidationError) listOAuthServicesAPIV1OAuthServicesGetRes()              {}
-func (*HTTPValidationError) postChatMessagesRes()                                    {}
-func (*HTTPValidationError) postClerkWebhookRes()                                    {}
-func (*HTTPValidationError) postStripeWebhookRes()                                   {}
-func (*HTTPValidationError) revokeTokenAPIV1OAuthTokensServiceNameDeleteRes()        {}
-func (*HTTPValidationError) updateChatRes()                                          {}
-func (*HTTPValidationError) updateEnvironmentUserRes()                               {}
-func (*HTTPValidationError) updateOAuthServiceAPIV1OAuthServicesServiceIDPutRes()    {}
+func (*HTTPValidationError) bulkInviteEnvironmentUsersRes() {}
+func (*HTTPValidationError) createChatRes()                 {}
+func (*HTTPValidationError) createChatTitleRes()            {}
+func (*HTTPValidationError) createEntityDefinitionRes()     {}
+func (*HTTPValidationError) createEntityRelationRes()       {}
+func (*HTTPValidationError) createEntityRes()               {}
+func (*HTTPValidationError) createEnvironmentRes()          {}
+func (*HTTPValidationError) createEnvironmentUserRes()      {}
+func (*HTTPValidationError) createMcpendpointRes()          {}
+func (*HTTPValidationError) createModelRes()                {}
+func (*HTTPValidationError) createModelproviderRes()        {}
+func (*HTTPValidationError) createOAuthServiceRes()         {}
+func (*HTTPValidationError) createTokenRes()                {}
+func (*HTTPValidationError) deleteChatRes()                 {}
+func (*HTTPValidationError) deleteEntityDefinitionRes()     {}
+func (*HTTPValidationError) deleteEntityRelationRes()       {}
+func (*HTTPValidationError) deleteEntityRes()               {}
+func (*HTTPValidationError) deleteEnvironmentUserRes()      {}
+func (*HTTPValidationError) deleteMcpendpointRes()          {}
+func (*HTTPValidationError) deleteModelRes()                {}
+func (*HTTPValidationError) deleteModelproviderRes()        {}
+func (*HTTPValidationError) deleteOAuthServiceRes()         {}
+func (*HTTPValidationError) exchangeOAuthTokenRes()         {}
+func (*HTTPValidationError) getChatMessagesRes()            {}
+func (*HTTPValidationError) getChatRes()                    {}
+func (*HTTPValidationError) getChatsRes()                   {}
+func (*HTTPValidationError) getEntitiesRes()                {}
+func (*HTTPValidationError) getEntityRes()                  {}
+func (*HTTPValidationError) getEnvironmentStatusRes()       {}
+func (*HTTPValidationError) getEnvironmentUserRes()         {}
+func (*HTTPValidationError) getMcpendpointRes()             {}
+func (*HTTPValidationError) getModelRes()                   {}
+func (*HTTPValidationError) getModelproviderRes()           {}
+func (*HTTPValidationError) getOAuthAuthorizationURLRes()   {}
+func (*HTTPValidationError) getOAuthServiceRes()            {}
+func (*HTTPValidationError) inviteEnvironmentUserRes()      {}
+func (*HTTPValidationError) listEnvironmentUsersRes()       {}
+func (*HTTPValidationError) listOAuthServicesRes()          {}
+func (*HTTPValidationError) postChatMessagesRes()           {}
+func (*HTTPValidationError) postClerkWebhookRes()           {}
+func (*HTTPValidationError) postStripeWebhookRes()          {}
+func (*HTTPValidationError) revokeOAuthTokenRes()           {}
+func (*HTTPValidationError) updateChatRes()                 {}
+func (*HTTPValidationError) updateEnvironmentUserRes()      {}
+func (*HTTPValidationError) updateOAuthServiceRes()         {}
 
 // InviteEnvironmentUserNotFound is response for InviteEnvironmentUser operation.
 type InviteEnvironmentUserNotFound struct{}
@@ -2354,19 +2349,19 @@ type ListEnvironmentUsersOKApplicationJSON []EnvironmentUserResponse
 
 func (*ListEnvironmentUsersOKApplicationJSON) listEnvironmentUsersRes() {}
 
-// ListOAuthServicesAPIV1OAuthServicesGetNotFound is response for ListOAuthServicesAPIV1OAuthServicesGet operation.
-type ListOAuthServicesAPIV1OAuthServicesGetNotFound struct{}
+// ListOAuthServicesNotFound is response for ListOAuthServices operation.
+type ListOAuthServicesNotFound struct{}
 
-func (*ListOAuthServicesAPIV1OAuthServicesGetNotFound) listOAuthServicesAPIV1OAuthServicesGetRes() {}
+func (*ListOAuthServicesNotFound) listOAuthServicesRes() {}
 
-// ListUserTokensAPIV1OAuthTokensGetNotFound is response for ListUserTokensAPIV1OAuthTokensGet operation.
-type ListUserTokensAPIV1OAuthTokensGetNotFound struct{}
+// ListOAuthTokensNotFound is response for ListOAuthTokens operation.
+type ListOAuthTokensNotFound struct{}
 
-func (*ListUserTokensAPIV1OAuthTokensGetNotFound) listUserTokensAPIV1OAuthTokensGetRes() {}
+func (*ListOAuthTokensNotFound) listOAuthTokensRes() {}
 
-type ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON jx.Raw
+type ListOAuthTokensOKApplicationJSON jx.Raw
 
-func (*ListUserTokensAPIV1OAuthTokensGetOKApplicationJSON) listUserTokensAPIV1OAuthTokensGetRes() {}
+func (*ListOAuthTokensOKApplicationJSON) listOAuthTokensRes() {}
 
 // Ref: #/components/schemas/MCPEndpointCreate
 type MCPEndpointCreate struct {
@@ -3376,7 +3371,7 @@ func (s *OAuthAuthorizationResponse) SetState(val string) {
 	s.State = val
 }
 
-func (*OAuthAuthorizationResponse) getAuthorizationURLAPIV1OAuthAuthorizePostRes() {}
+func (*OAuthAuthorizationResponse) getOAuthAuthorizationURLRes() {}
 
 // Ref: #/components/schemas/OAuthServiceCreate
 type OAuthServiceCreate struct {
@@ -3977,7 +3972,7 @@ func (s *OAuthServiceListResponse) SetTotal(val int) {
 	s.Total = val
 }
 
-func (*OAuthServiceListResponse) listOAuthServicesAPIV1OAuthServicesGetRes() {}
+func (*OAuthServiceListResponse) listOAuthServicesRes() {}
 
 // Ref: #/components/schemas/OAuthServiceResponse
 type OAuthServiceResponse struct {
@@ -4137,9 +4132,9 @@ func (s *OAuthServiceResponse) SetUpdatedAt(val time.Time) {
 	s.UpdatedAt = val
 }
 
-func (*OAuthServiceResponse) createOAuthServiceAPIV1OAuthServicesPostRes()         {}
-func (*OAuthServiceResponse) getOAuthServiceAPIV1OAuthServicesServiceIDGetRes()    {}
-func (*OAuthServiceResponse) updateOAuthServiceAPIV1OAuthServicesServiceIDPutRes() {}
+func (*OAuthServiceResponse) createOAuthServiceRes() {}
+func (*OAuthServiceResponse) getOAuthServiceRes()    {}
+func (*OAuthServiceResponse) updateOAuthServiceRes() {}
 
 // OAuthServiceResponseDescription represents sum type.
 type OAuthServiceResponseDescription struct {
@@ -5678,7 +5673,7 @@ func (s *OAuthTokenResponse) SetScopes(val []string) {
 	s.Scopes = val
 }
 
-func (*OAuthTokenResponse) exchangeCodeForTokenAPIV1OAuthTokenPostRes() {}
+func (*OAuthTokenResponse) exchangeOAuthTokenRes() {}
 
 // OAuthTokenResponseExpiresIn represents sum type.
 type OAuthTokenResponseExpiresIn struct {
@@ -8100,16 +8095,15 @@ type PostStripeWebhookNotFound struct{}
 
 func (*PostStripeWebhookNotFound) postStripeWebhookRes() {}
 
-// RevokeTokenAPIV1OAuthTokensServiceNameDeleteNotFound is response for RevokeTokenAPIV1OAuthTokensServiceNameDelete operation.
-type RevokeTokenAPIV1OAuthTokensServiceNameDeleteNotFound struct{}
+// RevokeOAuthTokenNoContent is response for RevokeOAuthToken operation.
+type RevokeOAuthTokenNoContent struct{}
 
-func (*RevokeTokenAPIV1OAuthTokensServiceNameDeleteNotFound) revokeTokenAPIV1OAuthTokensServiceNameDeleteRes() {
-}
+func (*RevokeOAuthTokenNoContent) revokeOAuthTokenRes() {}
 
-type RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON jx.Raw
+// RevokeOAuthTokenNotFound is response for RevokeOAuthToken operation.
+type RevokeOAuthTokenNotFound struct{}
 
-func (*RevokeTokenAPIV1OAuthTokensServiceNameDeleteOKApplicationJSON) revokeTokenAPIV1OAuthTokensServiceNameDeleteRes() {
-}
+func (*RevokeOAuthTokenNotFound) revokeOAuthTokenRes() {}
 
 // Ref: #/components/schemas/SubscriptionResponse
 type SubscriptionResponse struct {
@@ -8228,11 +8222,10 @@ type UpdateEnvironmentUserNotFound struct{}
 
 func (*UpdateEnvironmentUserNotFound) updateEnvironmentUserRes() {}
 
-// UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutNotFound is response for UpdateOAuthServiceAPIV1OAuthServicesServiceIDPut operation.
-type UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutNotFound struct{}
+// UpdateOAuthServiceNotFound is response for UpdateOAuthService operation.
+type UpdateOAuthServiceNotFound struct{}
 
-func (*UpdateOAuthServiceAPIV1OAuthServicesServiceIDPutNotFound) updateOAuthServiceAPIV1OAuthServicesServiceIDPutRes() {
-}
+func (*UpdateOAuthServiceNotFound) updateOAuthServiceRes() {}
 
 // Ref: #/components/schemas/ValidationError
 type ValidationError struct {
