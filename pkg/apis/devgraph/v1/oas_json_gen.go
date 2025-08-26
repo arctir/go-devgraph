@@ -5477,15 +5477,22 @@ func (s *MCPEndpointCreate) encodeFields(e *jx.Encoder) {
 			s.SupportsResources.Encode(e)
 		}
 	}
+	{
+		if s.OAuthServiceID.Set {
+			e.FieldStart("oauth_service_id")
+			s.OAuthServiceID.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointCreate = [6]string{
+var jsonFieldsNameOfMCPEndpointCreate = [7]string{
 	0: "name",
 	1: "url",
 	2: "description",
 	3: "headers",
 	4: "devgraph_auth",
 	5: "supports_resources",
+	6: "oauth_service_id",
 }
 
 // Decode decodes MCPEndpointCreate from json.
@@ -5561,6 +5568,16 @@ func (s *MCPEndpointCreate) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"supports_resources\"")
+			}
+		case "oauth_service_id":
+			if err := func() error {
+				s.OAuthServiceID.Reset()
+				if err := s.OAuthServiceID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"oauth_service_id\"")
 			}
 		default:
 			return d.Skip()
@@ -5723,6 +5740,55 @@ func (s *MCPEndpointCreateHeaders) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MCPEndpointCreateOAuthServiceID as json.
+func (s MCPEndpointCreateOAuthServiceID) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case UUIDMCPEndpointCreateOAuthServiceID:
+		json.EncodeUUID(e, s.UUID)
+	case NullMCPEndpointCreateOAuthServiceID:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointCreateOAuthServiceID from json.
+func (s *MCPEndpointCreateOAuthServiceID) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointCreateOAuthServiceID to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointCreateOAuthServiceID
+	case jx.String:
+		v, err := json.DecodeUUID(d)
+		s.UUID = v
+		if err != nil {
+			return err
+		}
+		s.Type = UUIDMCPEndpointCreateOAuthServiceID
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointCreateOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointCreateOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *MCPEndpointResponse) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -5768,9 +5834,15 @@ func (s *MCPEndpointResponse) encodeFields(e *jx.Encoder) {
 			s.SupportsResources.Encode(e)
 		}
 	}
+	{
+		if s.OAuthServiceID.Set {
+			e.FieldStart("oauth_service_id")
+			s.OAuthServiceID.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointResponse = [7]string{
+var jsonFieldsNameOfMCPEndpointResponse = [8]string{
 	0: "id",
 	1: "name",
 	2: "url",
@@ -5778,6 +5850,7 @@ var jsonFieldsNameOfMCPEndpointResponse = [7]string{
 	4: "headers",
 	5: "devgraph_auth",
 	6: "supports_resources",
+	7: "oauth_service_id",
 }
 
 // Decode decodes MCPEndpointResponse from json.
@@ -5865,6 +5938,16 @@ func (s *MCPEndpointResponse) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"supports_resources\"")
+			}
+		case "oauth_service_id":
+			if err := func() error {
+				s.OAuthServiceID.Reset()
+				if err := s.OAuthServiceID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"oauth_service_id\"")
 			}
 		default:
 			return d.Skip()
@@ -6023,6 +6106,617 @@ func (s MCPEndpointResponseHeaders) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MCPEndpointResponseHeaders) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointResponseOAuthServiceID as json.
+func (s MCPEndpointResponseOAuthServiceID) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case UUIDMCPEndpointResponseOAuthServiceID:
+		json.EncodeUUID(e, s.UUID)
+	case NullMCPEndpointResponseOAuthServiceID:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointResponseOAuthServiceID from json.
+func (s *MCPEndpointResponseOAuthServiceID) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointResponseOAuthServiceID to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointResponseOAuthServiceID
+	case jx.String:
+		v, err := json.DecodeUUID(d)
+		s.UUID = v
+		if err != nil {
+			return err
+		}
+		s.Type = UUIDMCPEndpointResponseOAuthServiceID
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointResponseOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointResponseOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MCPEndpointUpdate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MCPEndpointUpdate) encodeFields(e *jx.Encoder) {
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.URL.Set {
+			e.FieldStart("url")
+			s.URL.Encode(e)
+		}
+	}
+	{
+		if s.Description.Set {
+			e.FieldStart("description")
+			s.Description.Encode(e)
+		}
+	}
+	{
+		if s.Headers.Set {
+			e.FieldStart("headers")
+			s.Headers.Encode(e)
+		}
+	}
+	{
+		if s.DevgraphAuth.Set {
+			e.FieldStart("devgraph_auth")
+			s.DevgraphAuth.Encode(e)
+		}
+	}
+	{
+		if s.SupportsResources.Set {
+			e.FieldStart("supports_resources")
+			s.SupportsResources.Encode(e)
+		}
+	}
+	{
+		if s.OAuthServiceID.Set {
+			e.FieldStart("oauth_service_id")
+			s.OAuthServiceID.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMCPEndpointUpdate = [7]string{
+	0: "name",
+	1: "url",
+	2: "description",
+	3: "headers",
+	4: "devgraph_auth",
+	5: "supports_resources",
+	6: "oauth_service_id",
+}
+
+// Decode decodes MCPEndpointUpdate from json.
+func (s *MCPEndpointUpdate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdate to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "url":
+			if err := func() error {
+				s.URL.Reset()
+				if err := s.URL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"url\"")
+			}
+		case "description":
+			if err := func() error {
+				s.Description.Reset()
+				if err := s.Description.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"description\"")
+			}
+		case "headers":
+			if err := func() error {
+				s.Headers.Reset()
+				if err := s.Headers.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"headers\"")
+			}
+		case "devgraph_auth":
+			if err := func() error {
+				s.DevgraphAuth.Reset()
+				if err := s.DevgraphAuth.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"devgraph_auth\"")
+			}
+		case "supports_resources":
+			if err := func() error {
+				s.SupportsResources.Reset()
+				if err := s.SupportsResources.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"supports_resources\"")
+			}
+		case "oauth_service_id":
+			if err := func() error {
+				s.OAuthServiceID.Reset()
+				if err := s.OAuthServiceID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"oauth_service_id\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPEndpointUpdate")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MCPEndpointUpdate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateDescription as json.
+func (s MCPEndpointUpdateDescription) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringMCPEndpointUpdateDescription:
+		e.Str(s.String)
+	case NullMCPEndpointUpdateDescription:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateDescription from json.
+func (s *MCPEndpointUpdateDescription) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateDescription to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateDescription
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringMCPEndpointUpdateDescription
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateDescription) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateDevgraphAuth as json.
+func (s MCPEndpointUpdateDevgraphAuth) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case BoolMCPEndpointUpdateDevgraphAuth:
+		e.Bool(s.Bool)
+	case NullMCPEndpointUpdateDevgraphAuth:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateDevgraphAuth from json.
+func (s *MCPEndpointUpdateDevgraphAuth) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateDevgraphAuth to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Bool:
+		v, err := d.Bool()
+		s.Bool = bool(v)
+		if err != nil {
+			return err
+		}
+		s.Type = BoolMCPEndpointUpdateDevgraphAuth
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateDevgraphAuth
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateDevgraphAuth) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateDevgraphAuth) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateHeaders as json.
+func (s MCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders:
+		s.MCPEndpointUpdateHeaders0.Encode(e)
+	case NullMCPEndpointUpdateHeaders:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateHeaders from json.
+func (s *MCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateHeaders to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateHeaders
+	case jx.Object:
+		if err := s.MCPEndpointUpdateHeaders0.Decode(d); err != nil {
+			return err
+		}
+		s.Type = MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s MCPEndpointUpdateHeaders0) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s MCPEndpointUpdateHeaders0) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes MCPEndpointUpdateHeaders0 from json.
+func (s *MCPEndpointUpdateHeaders0) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateHeaders0 to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPEndpointUpdateHeaders0")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateHeaders0) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateHeaders0) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateName as json.
+func (s MCPEndpointUpdateName) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringMCPEndpointUpdateName:
+		e.Str(s.String)
+	case NullMCPEndpointUpdateName:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateName from json.
+func (s *MCPEndpointUpdateName) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateName to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateName
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringMCPEndpointUpdateName
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateName) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateName) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateOAuthServiceID as json.
+func (s MCPEndpointUpdateOAuthServiceID) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case UUIDMCPEndpointUpdateOAuthServiceID:
+		json.EncodeUUID(e, s.UUID)
+	case NullMCPEndpointUpdateOAuthServiceID:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateOAuthServiceID from json.
+func (s *MCPEndpointUpdateOAuthServiceID) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateOAuthServiceID to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateOAuthServiceID
+	case jx.String:
+		v, err := json.DecodeUUID(d)
+		s.UUID = v
+		if err != nil {
+			return err
+		}
+		s.Type = UUIDMCPEndpointUpdateOAuthServiceID
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateSupportsResources as json.
+func (s MCPEndpointUpdateSupportsResources) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case BoolMCPEndpointUpdateSupportsResources:
+		e.Bool(s.Bool)
+	case NullMCPEndpointUpdateSupportsResources:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateSupportsResources from json.
+func (s *MCPEndpointUpdateSupportsResources) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateSupportsResources to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Bool:
+		v, err := d.Bool()
+		s.Bool = bool(v)
+		if err != nil {
+			return err
+		}
+		s.Type = BoolMCPEndpointUpdateSupportsResources
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateSupportsResources
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateSupportsResources) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateSupportsResources) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateURL as json.
+func (s MCPEndpointUpdateURL) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringMCPEndpointUpdateURL:
+		e.Str(s.String)
+	case NullMCPEndpointUpdateURL:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes MCPEndpointUpdateURL from json.
+func (s *MCPEndpointUpdateURL) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MCPEndpointUpdateURL to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullMCPEndpointUpdateURL
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringMCPEndpointUpdateURL
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MCPEndpointUpdateURL) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MCPEndpointUpdateURL) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -6794,8 +7488,8 @@ func (s *OAuthAuthorizationRequest) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *OAuthAuthorizationRequest) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("service_name")
-		e.Str(s.ServiceName)
+		e.FieldStart("service_id")
+		json.EncodeUUID(e, s.ServiceID)
 	}
 	{
 		if s.Scopes.Set {
@@ -6818,7 +7512,7 @@ func (s *OAuthAuthorizationRequest) encodeFields(e *jx.Encoder) {
 }
 
 var jsonFieldsNameOfOAuthAuthorizationRequest = [4]string{
-	0: "service_name",
+	0: "service_id",
 	1: "scopes",
 	2: "redirect_uri",
 	3: "state",
@@ -6833,17 +7527,17 @@ func (s *OAuthAuthorizationRequest) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "service_name":
+		case "service_id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.ServiceName = string(v)
+				v, err := json.DecodeUUID(d)
+				s.ServiceID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"service_name\"")
+				return errors.Wrap(err, "decode field \"service_id\"")
 			}
 		case "scopes":
 			if err := func() error {
@@ -9544,8 +10238,8 @@ func (s *OAuthTokenExchange) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *OAuthTokenExchange) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("service_name")
-		e.Str(s.ServiceName)
+		e.FieldStart("service_id")
+		json.EncodeUUID(e, s.ServiceID)
 	}
 	{
 		e.FieldStart("code")
@@ -9566,7 +10260,7 @@ func (s *OAuthTokenExchange) encodeFields(e *jx.Encoder) {
 }
 
 var jsonFieldsNameOfOAuthTokenExchange = [4]string{
-	0: "service_name",
+	0: "service_id",
 	1: "code",
 	2: "state",
 	3: "redirect_uri",
@@ -9581,17 +10275,17 @@ func (s *OAuthTokenExchange) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "service_name":
+		case "service_id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.ServiceName = string(v)
+				v, err := json.DecodeUUID(d)
+				s.ServiceID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"service_name\"")
+				return errors.Wrap(err, "decode field \"service_id\"")
 			}
 		case "code":
 			requiredBitSet[0] |= 1 << 1
@@ -10870,6 +11564,39 @@ func (s *OptMCPEndpointCreateHeaders) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MCPEndpointCreateOAuthServiceID as json.
+func (o OptMCPEndpointCreateOAuthServiceID) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointCreateOAuthServiceID from json.
+func (o *OptMCPEndpointCreateOAuthServiceID) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointCreateOAuthServiceID to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointCreateOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointCreateOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes MCPEndpointResponseDescription as json.
 func (o OptMCPEndpointResponseDescription) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -10933,6 +11660,270 @@ func (s OptMCPEndpointResponseHeaders) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptMCPEndpointResponseHeaders) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointResponseOAuthServiceID as json.
+func (o OptMCPEndpointResponseOAuthServiceID) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointResponseOAuthServiceID from json.
+func (o *OptMCPEndpointResponseOAuthServiceID) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointResponseOAuthServiceID to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointResponseOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointResponseOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateDescription as json.
+func (o OptMCPEndpointUpdateDescription) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateDescription from json.
+func (o *OptMCPEndpointUpdateDescription) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateDescription to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateDescription) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateDevgraphAuth as json.
+func (o OptMCPEndpointUpdateDevgraphAuth) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateDevgraphAuth from json.
+func (o *OptMCPEndpointUpdateDevgraphAuth) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateDevgraphAuth to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateDevgraphAuth) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateDevgraphAuth) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateHeaders as json.
+func (o OptMCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateHeaders from json.
+func (o *OptMCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateHeaders to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateName as json.
+func (o OptMCPEndpointUpdateName) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateName from json.
+func (o *OptMCPEndpointUpdateName) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateName to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateName) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateName) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateOAuthServiceID as json.
+func (o OptMCPEndpointUpdateOAuthServiceID) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateOAuthServiceID from json.
+func (o *OptMCPEndpointUpdateOAuthServiceID) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateOAuthServiceID to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateOAuthServiceID) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateOAuthServiceID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateSupportsResources as json.
+func (o OptMCPEndpointUpdateSupportsResources) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateSupportsResources from json.
+func (o *OptMCPEndpointUpdateSupportsResources) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateSupportsResources to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateSupportsResources) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateSupportsResources) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MCPEndpointUpdateURL as json.
+func (o OptMCPEndpointUpdateURL) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MCPEndpointUpdateURL from json.
+func (o *OptMCPEndpointUpdateURL) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMCPEndpointUpdateURL to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMCPEndpointUpdateURL) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMCPEndpointUpdateURL) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

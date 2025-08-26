@@ -196,6 +196,11 @@ type UpdateEnvironmentUserParams struct {
 	UserID        string
 }
 
+// UpdateMcpendpointParams is parameters of update_mcpendpoint operation.
+type UpdateMcpendpointParams struct {
+	McpendpointID uuid.UUID
+}
+
 // UpdateOAuthServiceParams is parameters of update_oauth_service operation.
 type UpdateOAuthServiceParams struct {
 	ServiceID uuid.UUID

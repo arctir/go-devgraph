@@ -2333,6 +2333,7 @@ func (*HTTPValidationError) postStripeWebhookRes()          {}
 func (*HTTPValidationError) revokeOAuthTokenRes()           {}
 func (*HTTPValidationError) updateChatRes()                 {}
 func (*HTTPValidationError) updateEnvironmentUserRes()      {}
+func (*HTTPValidationError) updateMcpendpointRes()          {}
 func (*HTTPValidationError) updateOAuthServiceRes()         {}
 
 // InviteEnvironmentUserNotFound is response for InviteEnvironmentUser operation.
@@ -2365,12 +2366,13 @@ func (*ListOAuthTokensOKApplicationJSON) listOAuthTokensRes() {}
 
 // Ref: #/components/schemas/MCPEndpointCreate
 type MCPEndpointCreate struct {
-	Name              string                          `json:"name"`
-	URL               string                          `json:"url"`
-	Description       OptMCPEndpointCreateDescription `json:"description"`
-	Headers           OptMCPEndpointCreateHeaders     `json:"headers"`
-	DevgraphAuth      OptBool                         `json:"devgraph_auth"`
-	SupportsResources OptBool                         `json:"supports_resources"`
+	Name              string                             `json:"name"`
+	URL               string                             `json:"url"`
+	Description       OptMCPEndpointCreateDescription    `json:"description"`
+	Headers           OptMCPEndpointCreateHeaders        `json:"headers"`
+	DevgraphAuth      OptBool                            `json:"devgraph_auth"`
+	SupportsResources OptBool                            `json:"supports_resources"`
+	OAuthServiceID    OptMCPEndpointCreateOAuthServiceID `json:"oauth_service_id"`
 }
 
 // GetName returns the value of Name.
@@ -2403,6 +2405,11 @@ func (s *MCPEndpointCreate) GetSupportsResources() OptBool {
 	return s.SupportsResources
 }
 
+// GetOAuthServiceID returns the value of OAuthServiceID.
+func (s *MCPEndpointCreate) GetOAuthServiceID() OptMCPEndpointCreateOAuthServiceID {
+	return s.OAuthServiceID
+}
+
 // SetName sets the value of Name.
 func (s *MCPEndpointCreate) SetName(val string) {
 	s.Name = val
@@ -2431,6 +2438,11 @@ func (s *MCPEndpointCreate) SetDevgraphAuth(val OptBool) {
 // SetSupportsResources sets the value of SupportsResources.
 func (s *MCPEndpointCreate) SetSupportsResources(val OptBool) {
 	s.SupportsResources = val
+}
+
+// SetOAuthServiceID sets the value of OAuthServiceID.
+func (s *MCPEndpointCreate) SetOAuthServiceID(val OptMCPEndpointCreateOAuthServiceID) {
+	s.OAuthServiceID = val
 }
 
 // MCPEndpointCreateDescription represents sum type.
@@ -2512,15 +2524,84 @@ func (s *MCPEndpointCreateHeaders) init() MCPEndpointCreateHeaders {
 	return m
 }
 
+// MCPEndpointCreateOAuthServiceID represents sum type.
+type MCPEndpointCreateOAuthServiceID struct {
+	Type MCPEndpointCreateOAuthServiceIDType // switch on this field
+	UUID uuid.UUID
+	Null struct{}
+}
+
+// MCPEndpointCreateOAuthServiceIDType is oneOf type of MCPEndpointCreateOAuthServiceID.
+type MCPEndpointCreateOAuthServiceIDType string
+
+// Possible values for MCPEndpointCreateOAuthServiceIDType.
+const (
+	UUIDMCPEndpointCreateOAuthServiceID MCPEndpointCreateOAuthServiceIDType = "uuid.UUID"
+	NullMCPEndpointCreateOAuthServiceID MCPEndpointCreateOAuthServiceIDType = "struct{}"
+)
+
+// IsUUID reports whether MCPEndpointCreateOAuthServiceID is uuid.UUID.
+func (s MCPEndpointCreateOAuthServiceID) IsUUID() bool {
+	return s.Type == UUIDMCPEndpointCreateOAuthServiceID
+}
+
+// IsNull reports whether MCPEndpointCreateOAuthServiceID is struct{}.
+func (s MCPEndpointCreateOAuthServiceID) IsNull() bool {
+	return s.Type == NullMCPEndpointCreateOAuthServiceID
+}
+
+// SetUUID sets MCPEndpointCreateOAuthServiceID to uuid.UUID.
+func (s *MCPEndpointCreateOAuthServiceID) SetUUID(v uuid.UUID) {
+	s.Type = UUIDMCPEndpointCreateOAuthServiceID
+	s.UUID = v
+}
+
+// GetUUID returns uuid.UUID and true boolean if MCPEndpointCreateOAuthServiceID is uuid.UUID.
+func (s MCPEndpointCreateOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
+	if !s.IsUUID() {
+		return v, false
+	}
+	return s.UUID, true
+}
+
+// NewUUIDMCPEndpointCreateOAuthServiceID returns new MCPEndpointCreateOAuthServiceID from uuid.UUID.
+func NewUUIDMCPEndpointCreateOAuthServiceID(v uuid.UUID) MCPEndpointCreateOAuthServiceID {
+	var s MCPEndpointCreateOAuthServiceID
+	s.SetUUID(v)
+	return s
+}
+
+// SetNull sets MCPEndpointCreateOAuthServiceID to struct{}.
+func (s *MCPEndpointCreateOAuthServiceID) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointCreateOAuthServiceID
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointCreateOAuthServiceID is struct{}.
+func (s MCPEndpointCreateOAuthServiceID) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointCreateOAuthServiceID returns new MCPEndpointCreateOAuthServiceID from struct{}.
+func NewNullMCPEndpointCreateOAuthServiceID(v struct{}) MCPEndpointCreateOAuthServiceID {
+	var s MCPEndpointCreateOAuthServiceID
+	s.SetNull(v)
+	return s
+}
+
 // Ref: #/components/schemas/MCPEndpointResponse
 type MCPEndpointResponse struct {
-	ID                uuid.UUID                         `json:"id"`
-	Name              string                            `json:"name"`
-	URL               string                            `json:"url"`
-	Description       OptMCPEndpointResponseDescription `json:"description"`
-	Headers           OptMCPEndpointResponseHeaders     `json:"headers"`
-	DevgraphAuth      OptBool                           `json:"devgraph_auth"`
-	SupportsResources OptBool                           `json:"supports_resources"`
+	ID                uuid.UUID                            `json:"id"`
+	Name              string                               `json:"name"`
+	URL               string                               `json:"url"`
+	Description       OptMCPEndpointResponseDescription    `json:"description"`
+	Headers           OptMCPEndpointResponseHeaders        `json:"headers"`
+	DevgraphAuth      OptBool                              `json:"devgraph_auth"`
+	SupportsResources OptBool                              `json:"supports_resources"`
+	OAuthServiceID    OptMCPEndpointResponseOAuthServiceID `json:"oauth_service_id"`
 }
 
 // GetID returns the value of ID.
@@ -2558,6 +2639,11 @@ func (s *MCPEndpointResponse) GetSupportsResources() OptBool {
 	return s.SupportsResources
 }
 
+// GetOAuthServiceID returns the value of OAuthServiceID.
+func (s *MCPEndpointResponse) GetOAuthServiceID() OptMCPEndpointResponseOAuthServiceID {
+	return s.OAuthServiceID
+}
+
 // SetID sets the value of ID.
 func (s *MCPEndpointResponse) SetID(val uuid.UUID) {
 	s.ID = val
@@ -2593,8 +2679,14 @@ func (s *MCPEndpointResponse) SetSupportsResources(val OptBool) {
 	s.SupportsResources = val
 }
 
+// SetOAuthServiceID sets the value of OAuthServiceID.
+func (s *MCPEndpointResponse) SetOAuthServiceID(val OptMCPEndpointResponseOAuthServiceID) {
+	s.OAuthServiceID = val
+}
+
 func (*MCPEndpointResponse) createMcpendpointRes() {}
 func (*MCPEndpointResponse) getMcpendpointRes()    {}
+func (*MCPEndpointResponse) updateMcpendpointRes() {}
 
 // MCPEndpointResponseDescription represents sum type.
 type MCPEndpointResponseDescription struct {
@@ -2673,6 +2765,632 @@ func (s *MCPEndpointResponseHeaders) init() MCPEndpointResponseHeaders {
 		*s = m
 	}
 	return m
+}
+
+// MCPEndpointResponseOAuthServiceID represents sum type.
+type MCPEndpointResponseOAuthServiceID struct {
+	Type MCPEndpointResponseOAuthServiceIDType // switch on this field
+	UUID uuid.UUID
+	Null struct{}
+}
+
+// MCPEndpointResponseOAuthServiceIDType is oneOf type of MCPEndpointResponseOAuthServiceID.
+type MCPEndpointResponseOAuthServiceIDType string
+
+// Possible values for MCPEndpointResponseOAuthServiceIDType.
+const (
+	UUIDMCPEndpointResponseOAuthServiceID MCPEndpointResponseOAuthServiceIDType = "uuid.UUID"
+	NullMCPEndpointResponseOAuthServiceID MCPEndpointResponseOAuthServiceIDType = "struct{}"
+)
+
+// IsUUID reports whether MCPEndpointResponseOAuthServiceID is uuid.UUID.
+func (s MCPEndpointResponseOAuthServiceID) IsUUID() bool {
+	return s.Type == UUIDMCPEndpointResponseOAuthServiceID
+}
+
+// IsNull reports whether MCPEndpointResponseOAuthServiceID is struct{}.
+func (s MCPEndpointResponseOAuthServiceID) IsNull() bool {
+	return s.Type == NullMCPEndpointResponseOAuthServiceID
+}
+
+// SetUUID sets MCPEndpointResponseOAuthServiceID to uuid.UUID.
+func (s *MCPEndpointResponseOAuthServiceID) SetUUID(v uuid.UUID) {
+	s.Type = UUIDMCPEndpointResponseOAuthServiceID
+	s.UUID = v
+}
+
+// GetUUID returns uuid.UUID and true boolean if MCPEndpointResponseOAuthServiceID is uuid.UUID.
+func (s MCPEndpointResponseOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
+	if !s.IsUUID() {
+		return v, false
+	}
+	return s.UUID, true
+}
+
+// NewUUIDMCPEndpointResponseOAuthServiceID returns new MCPEndpointResponseOAuthServiceID from uuid.UUID.
+func NewUUIDMCPEndpointResponseOAuthServiceID(v uuid.UUID) MCPEndpointResponseOAuthServiceID {
+	var s MCPEndpointResponseOAuthServiceID
+	s.SetUUID(v)
+	return s
+}
+
+// SetNull sets MCPEndpointResponseOAuthServiceID to struct{}.
+func (s *MCPEndpointResponseOAuthServiceID) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointResponseOAuthServiceID
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointResponseOAuthServiceID is struct{}.
+func (s MCPEndpointResponseOAuthServiceID) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointResponseOAuthServiceID returns new MCPEndpointResponseOAuthServiceID from struct{}.
+func NewNullMCPEndpointResponseOAuthServiceID(v struct{}) MCPEndpointResponseOAuthServiceID {
+	var s MCPEndpointResponseOAuthServiceID
+	s.SetNull(v)
+	return s
+}
+
+// Ref: #/components/schemas/MCPEndpointUpdate
+type MCPEndpointUpdate struct {
+	Name              OptMCPEndpointUpdateName              `json:"name"`
+	URL               OptMCPEndpointUpdateURL               `json:"url"`
+	Description       OptMCPEndpointUpdateDescription       `json:"description"`
+	Headers           OptMCPEndpointUpdateHeaders           `json:"headers"`
+	DevgraphAuth      OptMCPEndpointUpdateDevgraphAuth      `json:"devgraph_auth"`
+	SupportsResources OptMCPEndpointUpdateSupportsResources `json:"supports_resources"`
+	OAuthServiceID    OptMCPEndpointUpdateOAuthServiceID    `json:"oauth_service_id"`
+}
+
+// GetName returns the value of Name.
+func (s *MCPEndpointUpdate) GetName() OptMCPEndpointUpdateName {
+	return s.Name
+}
+
+// GetURL returns the value of URL.
+func (s *MCPEndpointUpdate) GetURL() OptMCPEndpointUpdateURL {
+	return s.URL
+}
+
+// GetDescription returns the value of Description.
+func (s *MCPEndpointUpdate) GetDescription() OptMCPEndpointUpdateDescription {
+	return s.Description
+}
+
+// GetHeaders returns the value of Headers.
+func (s *MCPEndpointUpdate) GetHeaders() OptMCPEndpointUpdateHeaders {
+	return s.Headers
+}
+
+// GetDevgraphAuth returns the value of DevgraphAuth.
+func (s *MCPEndpointUpdate) GetDevgraphAuth() OptMCPEndpointUpdateDevgraphAuth {
+	return s.DevgraphAuth
+}
+
+// GetSupportsResources returns the value of SupportsResources.
+func (s *MCPEndpointUpdate) GetSupportsResources() OptMCPEndpointUpdateSupportsResources {
+	return s.SupportsResources
+}
+
+// GetOAuthServiceID returns the value of OAuthServiceID.
+func (s *MCPEndpointUpdate) GetOAuthServiceID() OptMCPEndpointUpdateOAuthServiceID {
+	return s.OAuthServiceID
+}
+
+// SetName sets the value of Name.
+func (s *MCPEndpointUpdate) SetName(val OptMCPEndpointUpdateName) {
+	s.Name = val
+}
+
+// SetURL sets the value of URL.
+func (s *MCPEndpointUpdate) SetURL(val OptMCPEndpointUpdateURL) {
+	s.URL = val
+}
+
+// SetDescription sets the value of Description.
+func (s *MCPEndpointUpdate) SetDescription(val OptMCPEndpointUpdateDescription) {
+	s.Description = val
+}
+
+// SetHeaders sets the value of Headers.
+func (s *MCPEndpointUpdate) SetHeaders(val OptMCPEndpointUpdateHeaders) {
+	s.Headers = val
+}
+
+// SetDevgraphAuth sets the value of DevgraphAuth.
+func (s *MCPEndpointUpdate) SetDevgraphAuth(val OptMCPEndpointUpdateDevgraphAuth) {
+	s.DevgraphAuth = val
+}
+
+// SetSupportsResources sets the value of SupportsResources.
+func (s *MCPEndpointUpdate) SetSupportsResources(val OptMCPEndpointUpdateSupportsResources) {
+	s.SupportsResources = val
+}
+
+// SetOAuthServiceID sets the value of OAuthServiceID.
+func (s *MCPEndpointUpdate) SetOAuthServiceID(val OptMCPEndpointUpdateOAuthServiceID) {
+	s.OAuthServiceID = val
+}
+
+// MCPEndpointUpdateDescription represents sum type.
+type MCPEndpointUpdateDescription struct {
+	Type   MCPEndpointUpdateDescriptionType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// MCPEndpointUpdateDescriptionType is oneOf type of MCPEndpointUpdateDescription.
+type MCPEndpointUpdateDescriptionType string
+
+// Possible values for MCPEndpointUpdateDescriptionType.
+const (
+	StringMCPEndpointUpdateDescription MCPEndpointUpdateDescriptionType = "string"
+	NullMCPEndpointUpdateDescription   MCPEndpointUpdateDescriptionType = "struct{}"
+)
+
+// IsString reports whether MCPEndpointUpdateDescription is string.
+func (s MCPEndpointUpdateDescription) IsString() bool {
+	return s.Type == StringMCPEndpointUpdateDescription
+}
+
+// IsNull reports whether MCPEndpointUpdateDescription is struct{}.
+func (s MCPEndpointUpdateDescription) IsNull() bool {
+	return s.Type == NullMCPEndpointUpdateDescription
+}
+
+// SetString sets MCPEndpointUpdateDescription to string.
+func (s *MCPEndpointUpdateDescription) SetString(v string) {
+	s.Type = StringMCPEndpointUpdateDescription
+	s.String = v
+}
+
+// GetString returns string and true boolean if MCPEndpointUpdateDescription is string.
+func (s MCPEndpointUpdateDescription) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringMCPEndpointUpdateDescription returns new MCPEndpointUpdateDescription from string.
+func NewStringMCPEndpointUpdateDescription(v string) MCPEndpointUpdateDescription {
+	var s MCPEndpointUpdateDescription
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateDescription to struct{}.
+func (s *MCPEndpointUpdateDescription) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateDescription
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateDescription is struct{}.
+func (s MCPEndpointUpdateDescription) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateDescription returns new MCPEndpointUpdateDescription from struct{}.
+func NewNullMCPEndpointUpdateDescription(v struct{}) MCPEndpointUpdateDescription {
+	var s MCPEndpointUpdateDescription
+	s.SetNull(v)
+	return s
+}
+
+// MCPEndpointUpdateDevgraphAuth represents sum type.
+type MCPEndpointUpdateDevgraphAuth struct {
+	Type MCPEndpointUpdateDevgraphAuthType // switch on this field
+	Bool bool
+	Null struct{}
+}
+
+// MCPEndpointUpdateDevgraphAuthType is oneOf type of MCPEndpointUpdateDevgraphAuth.
+type MCPEndpointUpdateDevgraphAuthType string
+
+// Possible values for MCPEndpointUpdateDevgraphAuthType.
+const (
+	BoolMCPEndpointUpdateDevgraphAuth MCPEndpointUpdateDevgraphAuthType = "bool"
+	NullMCPEndpointUpdateDevgraphAuth MCPEndpointUpdateDevgraphAuthType = "struct{}"
+)
+
+// IsBool reports whether MCPEndpointUpdateDevgraphAuth is bool.
+func (s MCPEndpointUpdateDevgraphAuth) IsBool() bool {
+	return s.Type == BoolMCPEndpointUpdateDevgraphAuth
+}
+
+// IsNull reports whether MCPEndpointUpdateDevgraphAuth is struct{}.
+func (s MCPEndpointUpdateDevgraphAuth) IsNull() bool {
+	return s.Type == NullMCPEndpointUpdateDevgraphAuth
+}
+
+// SetBool sets MCPEndpointUpdateDevgraphAuth to bool.
+func (s *MCPEndpointUpdateDevgraphAuth) SetBool(v bool) {
+	s.Type = BoolMCPEndpointUpdateDevgraphAuth
+	s.Bool = v
+}
+
+// GetBool returns bool and true boolean if MCPEndpointUpdateDevgraphAuth is bool.
+func (s MCPEndpointUpdateDevgraphAuth) GetBool() (v bool, ok bool) {
+	if !s.IsBool() {
+		return v, false
+	}
+	return s.Bool, true
+}
+
+// NewBoolMCPEndpointUpdateDevgraphAuth returns new MCPEndpointUpdateDevgraphAuth from bool.
+func NewBoolMCPEndpointUpdateDevgraphAuth(v bool) MCPEndpointUpdateDevgraphAuth {
+	var s MCPEndpointUpdateDevgraphAuth
+	s.SetBool(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateDevgraphAuth to struct{}.
+func (s *MCPEndpointUpdateDevgraphAuth) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateDevgraphAuth
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateDevgraphAuth is struct{}.
+func (s MCPEndpointUpdateDevgraphAuth) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateDevgraphAuth returns new MCPEndpointUpdateDevgraphAuth from struct{}.
+func NewNullMCPEndpointUpdateDevgraphAuth(v struct{}) MCPEndpointUpdateDevgraphAuth {
+	var s MCPEndpointUpdateDevgraphAuth
+	s.SetNull(v)
+	return s
+}
+
+// MCPEndpointUpdateHeaders represents sum type.
+type MCPEndpointUpdateHeaders struct {
+	Type                      MCPEndpointUpdateHeadersType // switch on this field
+	MCPEndpointUpdateHeaders0 MCPEndpointUpdateHeaders0
+	Null                      struct{}
+}
+
+// MCPEndpointUpdateHeadersType is oneOf type of MCPEndpointUpdateHeaders.
+type MCPEndpointUpdateHeadersType string
+
+// Possible values for MCPEndpointUpdateHeadersType.
+const (
+	MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders MCPEndpointUpdateHeadersType = "MCPEndpointUpdateHeaders0"
+	NullMCPEndpointUpdateHeaders                      MCPEndpointUpdateHeadersType = "struct{}"
+)
+
+// IsMCPEndpointUpdateHeaders0 reports whether MCPEndpointUpdateHeaders is MCPEndpointUpdateHeaders0.
+func (s MCPEndpointUpdateHeaders) IsMCPEndpointUpdateHeaders0() bool {
+	return s.Type == MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
+}
+
+// IsNull reports whether MCPEndpointUpdateHeaders is struct{}.
+func (s MCPEndpointUpdateHeaders) IsNull() bool { return s.Type == NullMCPEndpointUpdateHeaders }
+
+// SetMCPEndpointUpdateHeaders0 sets MCPEndpointUpdateHeaders to MCPEndpointUpdateHeaders0.
+func (s *MCPEndpointUpdateHeaders) SetMCPEndpointUpdateHeaders0(v MCPEndpointUpdateHeaders0) {
+	s.Type = MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
+	s.MCPEndpointUpdateHeaders0 = v
+}
+
+// GetMCPEndpointUpdateHeaders0 returns MCPEndpointUpdateHeaders0 and true boolean if MCPEndpointUpdateHeaders is MCPEndpointUpdateHeaders0.
+func (s MCPEndpointUpdateHeaders) GetMCPEndpointUpdateHeaders0() (v MCPEndpointUpdateHeaders0, ok bool) {
+	if !s.IsMCPEndpointUpdateHeaders0() {
+		return v, false
+	}
+	return s.MCPEndpointUpdateHeaders0, true
+}
+
+// NewMCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders returns new MCPEndpointUpdateHeaders from MCPEndpointUpdateHeaders0.
+func NewMCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders(v MCPEndpointUpdateHeaders0) MCPEndpointUpdateHeaders {
+	var s MCPEndpointUpdateHeaders
+	s.SetMCPEndpointUpdateHeaders0(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateHeaders to struct{}.
+func (s *MCPEndpointUpdateHeaders) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateHeaders
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateHeaders is struct{}.
+func (s MCPEndpointUpdateHeaders) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateHeaders returns new MCPEndpointUpdateHeaders from struct{}.
+func NewNullMCPEndpointUpdateHeaders(v struct{}) MCPEndpointUpdateHeaders {
+	var s MCPEndpointUpdateHeaders
+	s.SetNull(v)
+	return s
+}
+
+type MCPEndpointUpdateHeaders0 map[string]string
+
+func (s *MCPEndpointUpdateHeaders0) init() MCPEndpointUpdateHeaders0 {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+// MCPEndpointUpdateName represents sum type.
+type MCPEndpointUpdateName struct {
+	Type   MCPEndpointUpdateNameType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// MCPEndpointUpdateNameType is oneOf type of MCPEndpointUpdateName.
+type MCPEndpointUpdateNameType string
+
+// Possible values for MCPEndpointUpdateNameType.
+const (
+	StringMCPEndpointUpdateName MCPEndpointUpdateNameType = "string"
+	NullMCPEndpointUpdateName   MCPEndpointUpdateNameType = "struct{}"
+)
+
+// IsString reports whether MCPEndpointUpdateName is string.
+func (s MCPEndpointUpdateName) IsString() bool { return s.Type == StringMCPEndpointUpdateName }
+
+// IsNull reports whether MCPEndpointUpdateName is struct{}.
+func (s MCPEndpointUpdateName) IsNull() bool { return s.Type == NullMCPEndpointUpdateName }
+
+// SetString sets MCPEndpointUpdateName to string.
+func (s *MCPEndpointUpdateName) SetString(v string) {
+	s.Type = StringMCPEndpointUpdateName
+	s.String = v
+}
+
+// GetString returns string and true boolean if MCPEndpointUpdateName is string.
+func (s MCPEndpointUpdateName) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringMCPEndpointUpdateName returns new MCPEndpointUpdateName from string.
+func NewStringMCPEndpointUpdateName(v string) MCPEndpointUpdateName {
+	var s MCPEndpointUpdateName
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateName to struct{}.
+func (s *MCPEndpointUpdateName) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateName
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateName is struct{}.
+func (s MCPEndpointUpdateName) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateName returns new MCPEndpointUpdateName from struct{}.
+func NewNullMCPEndpointUpdateName(v struct{}) MCPEndpointUpdateName {
+	var s MCPEndpointUpdateName
+	s.SetNull(v)
+	return s
+}
+
+// MCPEndpointUpdateOAuthServiceID represents sum type.
+type MCPEndpointUpdateOAuthServiceID struct {
+	Type MCPEndpointUpdateOAuthServiceIDType // switch on this field
+	UUID uuid.UUID
+	Null struct{}
+}
+
+// MCPEndpointUpdateOAuthServiceIDType is oneOf type of MCPEndpointUpdateOAuthServiceID.
+type MCPEndpointUpdateOAuthServiceIDType string
+
+// Possible values for MCPEndpointUpdateOAuthServiceIDType.
+const (
+	UUIDMCPEndpointUpdateOAuthServiceID MCPEndpointUpdateOAuthServiceIDType = "uuid.UUID"
+	NullMCPEndpointUpdateOAuthServiceID MCPEndpointUpdateOAuthServiceIDType = "struct{}"
+)
+
+// IsUUID reports whether MCPEndpointUpdateOAuthServiceID is uuid.UUID.
+func (s MCPEndpointUpdateOAuthServiceID) IsUUID() bool {
+	return s.Type == UUIDMCPEndpointUpdateOAuthServiceID
+}
+
+// IsNull reports whether MCPEndpointUpdateOAuthServiceID is struct{}.
+func (s MCPEndpointUpdateOAuthServiceID) IsNull() bool {
+	return s.Type == NullMCPEndpointUpdateOAuthServiceID
+}
+
+// SetUUID sets MCPEndpointUpdateOAuthServiceID to uuid.UUID.
+func (s *MCPEndpointUpdateOAuthServiceID) SetUUID(v uuid.UUID) {
+	s.Type = UUIDMCPEndpointUpdateOAuthServiceID
+	s.UUID = v
+}
+
+// GetUUID returns uuid.UUID and true boolean if MCPEndpointUpdateOAuthServiceID is uuid.UUID.
+func (s MCPEndpointUpdateOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
+	if !s.IsUUID() {
+		return v, false
+	}
+	return s.UUID, true
+}
+
+// NewUUIDMCPEndpointUpdateOAuthServiceID returns new MCPEndpointUpdateOAuthServiceID from uuid.UUID.
+func NewUUIDMCPEndpointUpdateOAuthServiceID(v uuid.UUID) MCPEndpointUpdateOAuthServiceID {
+	var s MCPEndpointUpdateOAuthServiceID
+	s.SetUUID(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateOAuthServiceID to struct{}.
+func (s *MCPEndpointUpdateOAuthServiceID) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateOAuthServiceID
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateOAuthServiceID is struct{}.
+func (s MCPEndpointUpdateOAuthServiceID) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateOAuthServiceID returns new MCPEndpointUpdateOAuthServiceID from struct{}.
+func NewNullMCPEndpointUpdateOAuthServiceID(v struct{}) MCPEndpointUpdateOAuthServiceID {
+	var s MCPEndpointUpdateOAuthServiceID
+	s.SetNull(v)
+	return s
+}
+
+// MCPEndpointUpdateSupportsResources represents sum type.
+type MCPEndpointUpdateSupportsResources struct {
+	Type MCPEndpointUpdateSupportsResourcesType // switch on this field
+	Bool bool
+	Null struct{}
+}
+
+// MCPEndpointUpdateSupportsResourcesType is oneOf type of MCPEndpointUpdateSupportsResources.
+type MCPEndpointUpdateSupportsResourcesType string
+
+// Possible values for MCPEndpointUpdateSupportsResourcesType.
+const (
+	BoolMCPEndpointUpdateSupportsResources MCPEndpointUpdateSupportsResourcesType = "bool"
+	NullMCPEndpointUpdateSupportsResources MCPEndpointUpdateSupportsResourcesType = "struct{}"
+)
+
+// IsBool reports whether MCPEndpointUpdateSupportsResources is bool.
+func (s MCPEndpointUpdateSupportsResources) IsBool() bool {
+	return s.Type == BoolMCPEndpointUpdateSupportsResources
+}
+
+// IsNull reports whether MCPEndpointUpdateSupportsResources is struct{}.
+func (s MCPEndpointUpdateSupportsResources) IsNull() bool {
+	return s.Type == NullMCPEndpointUpdateSupportsResources
+}
+
+// SetBool sets MCPEndpointUpdateSupportsResources to bool.
+func (s *MCPEndpointUpdateSupportsResources) SetBool(v bool) {
+	s.Type = BoolMCPEndpointUpdateSupportsResources
+	s.Bool = v
+}
+
+// GetBool returns bool and true boolean if MCPEndpointUpdateSupportsResources is bool.
+func (s MCPEndpointUpdateSupportsResources) GetBool() (v bool, ok bool) {
+	if !s.IsBool() {
+		return v, false
+	}
+	return s.Bool, true
+}
+
+// NewBoolMCPEndpointUpdateSupportsResources returns new MCPEndpointUpdateSupportsResources from bool.
+func NewBoolMCPEndpointUpdateSupportsResources(v bool) MCPEndpointUpdateSupportsResources {
+	var s MCPEndpointUpdateSupportsResources
+	s.SetBool(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateSupportsResources to struct{}.
+func (s *MCPEndpointUpdateSupportsResources) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateSupportsResources
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateSupportsResources is struct{}.
+func (s MCPEndpointUpdateSupportsResources) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateSupportsResources returns new MCPEndpointUpdateSupportsResources from struct{}.
+func NewNullMCPEndpointUpdateSupportsResources(v struct{}) MCPEndpointUpdateSupportsResources {
+	var s MCPEndpointUpdateSupportsResources
+	s.SetNull(v)
+	return s
+}
+
+// MCPEndpointUpdateURL represents sum type.
+type MCPEndpointUpdateURL struct {
+	Type   MCPEndpointUpdateURLType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// MCPEndpointUpdateURLType is oneOf type of MCPEndpointUpdateURL.
+type MCPEndpointUpdateURLType string
+
+// Possible values for MCPEndpointUpdateURLType.
+const (
+	StringMCPEndpointUpdateURL MCPEndpointUpdateURLType = "string"
+	NullMCPEndpointUpdateURL   MCPEndpointUpdateURLType = "struct{}"
+)
+
+// IsString reports whether MCPEndpointUpdateURL is string.
+func (s MCPEndpointUpdateURL) IsString() bool { return s.Type == StringMCPEndpointUpdateURL }
+
+// IsNull reports whether MCPEndpointUpdateURL is struct{}.
+func (s MCPEndpointUpdateURL) IsNull() bool { return s.Type == NullMCPEndpointUpdateURL }
+
+// SetString sets MCPEndpointUpdateURL to string.
+func (s *MCPEndpointUpdateURL) SetString(v string) {
+	s.Type = StringMCPEndpointUpdateURL
+	s.String = v
+}
+
+// GetString returns string and true boolean if MCPEndpointUpdateURL is string.
+func (s MCPEndpointUpdateURL) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringMCPEndpointUpdateURL returns new MCPEndpointUpdateURL from string.
+func NewStringMCPEndpointUpdateURL(v string) MCPEndpointUpdateURL {
+	var s MCPEndpointUpdateURL
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets MCPEndpointUpdateURL to struct{}.
+func (s *MCPEndpointUpdateURL) SetNull(v struct{}) {
+	s.Type = NullMCPEndpointUpdateURL
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if MCPEndpointUpdateURL is struct{}.
+func (s MCPEndpointUpdateURL) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullMCPEndpointUpdateURL returns new MCPEndpointUpdateURL from struct{}.
+func NewNullMCPEndpointUpdateURL(v struct{}) MCPEndpointUpdateURL {
+	var s MCPEndpointUpdateURL
+	s.SetNull(v)
+	return s
 }
 
 // Ref: #/components/schemas/ModelCreate
@@ -3095,15 +3813,15 @@ func (s *OAuth2PasswordBearer) SetScopes(val []string) {
 
 // Ref: #/components/schemas/OAuthAuthorizationRequest
 type OAuthAuthorizationRequest struct {
-	ServiceName string                                  `json:"service_name"`
+	ServiceID   uuid.UUID                               `json:"service_id"`
 	Scopes      OptOAuthAuthorizationRequestScopes      `json:"scopes"`
 	RedirectURI OptOAuthAuthorizationRequestRedirectURI `json:"redirect_uri"`
 	State       OptOAuthAuthorizationRequestState       `json:"state"`
 }
 
-// GetServiceName returns the value of ServiceName.
-func (s *OAuthAuthorizationRequest) GetServiceName() string {
-	return s.ServiceName
+// GetServiceID returns the value of ServiceID.
+func (s *OAuthAuthorizationRequest) GetServiceID() uuid.UUID {
+	return s.ServiceID
 }
 
 // GetScopes returns the value of Scopes.
@@ -3121,9 +3839,9 @@ func (s *OAuthAuthorizationRequest) GetState() OptOAuthAuthorizationRequestState
 	return s.State
 }
 
-// SetServiceName sets the value of ServiceName.
-func (s *OAuthAuthorizationRequest) SetServiceName(val string) {
-	s.ServiceName = val
+// SetServiceID sets the value of ServiceID.
+func (s *OAuthAuthorizationRequest) SetServiceID(val uuid.UUID) {
+	s.ServiceID = val
 }
 
 // SetScopes sets the value of Scopes.
@@ -5436,15 +6154,15 @@ func NewNullOAuthServiceUpdateUserinfoURL(v struct{}) OAuthServiceUpdateUserinfo
 
 // Ref: #/components/schemas/OAuthTokenExchange
 type OAuthTokenExchange struct {
-	ServiceName string                           `json:"service_name"`
+	ServiceID   uuid.UUID                        `json:"service_id"`
 	Code        string                           `json:"code"`
 	State       OptOAuthTokenExchangeState       `json:"state"`
 	RedirectURI OptOAuthTokenExchangeRedirectURI `json:"redirect_uri"`
 }
 
-// GetServiceName returns the value of ServiceName.
-func (s *OAuthTokenExchange) GetServiceName() string {
-	return s.ServiceName
+// GetServiceID returns the value of ServiceID.
+func (s *OAuthTokenExchange) GetServiceID() uuid.UUID {
+	return s.ServiceID
 }
 
 // GetCode returns the value of Code.
@@ -5462,9 +6180,9 @@ func (s *OAuthTokenExchange) GetRedirectURI() OptOAuthTokenExchangeRedirectURI {
 	return s.RedirectURI
 }
 
-// SetServiceName sets the value of ServiceName.
-func (s *OAuthTokenExchange) SetServiceName(val string) {
-	s.ServiceName = val
+// SetServiceID sets the value of ServiceID.
+func (s *OAuthTokenExchange) SetServiceID(val uuid.UUID) {
+	s.ServiceID = val
 }
 
 // SetCode sets the value of Code.
@@ -6650,6 +7368,52 @@ func (o OptMCPEndpointCreateHeaders) Or(d MCPEndpointCreateHeaders) MCPEndpointC
 	return d
 }
 
+// NewOptMCPEndpointCreateOAuthServiceID returns new OptMCPEndpointCreateOAuthServiceID with value set to v.
+func NewOptMCPEndpointCreateOAuthServiceID(v MCPEndpointCreateOAuthServiceID) OptMCPEndpointCreateOAuthServiceID {
+	return OptMCPEndpointCreateOAuthServiceID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointCreateOAuthServiceID is optional MCPEndpointCreateOAuthServiceID.
+type OptMCPEndpointCreateOAuthServiceID struct {
+	Value MCPEndpointCreateOAuthServiceID
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointCreateOAuthServiceID was set.
+func (o OptMCPEndpointCreateOAuthServiceID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointCreateOAuthServiceID) Reset() {
+	var v MCPEndpointCreateOAuthServiceID
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointCreateOAuthServiceID) SetTo(v MCPEndpointCreateOAuthServiceID) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointCreateOAuthServiceID) Get() (v MCPEndpointCreateOAuthServiceID, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointCreateOAuthServiceID) Or(d MCPEndpointCreateOAuthServiceID) MCPEndpointCreateOAuthServiceID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMCPEndpointResponseDescription returns new OptMCPEndpointResponseDescription with value set to v.
 func NewOptMCPEndpointResponseDescription(v MCPEndpointResponseDescription) OptMCPEndpointResponseDescription {
 	return OptMCPEndpointResponseDescription{
@@ -6736,6 +7500,374 @@ func (o OptMCPEndpointResponseHeaders) Get() (v MCPEndpointResponseHeaders, ok b
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMCPEndpointResponseHeaders) Or(d MCPEndpointResponseHeaders) MCPEndpointResponseHeaders {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointResponseOAuthServiceID returns new OptMCPEndpointResponseOAuthServiceID with value set to v.
+func NewOptMCPEndpointResponseOAuthServiceID(v MCPEndpointResponseOAuthServiceID) OptMCPEndpointResponseOAuthServiceID {
+	return OptMCPEndpointResponseOAuthServiceID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointResponseOAuthServiceID is optional MCPEndpointResponseOAuthServiceID.
+type OptMCPEndpointResponseOAuthServiceID struct {
+	Value MCPEndpointResponseOAuthServiceID
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointResponseOAuthServiceID was set.
+func (o OptMCPEndpointResponseOAuthServiceID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointResponseOAuthServiceID) Reset() {
+	var v MCPEndpointResponseOAuthServiceID
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointResponseOAuthServiceID) SetTo(v MCPEndpointResponseOAuthServiceID) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointResponseOAuthServiceID) Get() (v MCPEndpointResponseOAuthServiceID, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointResponseOAuthServiceID) Or(d MCPEndpointResponseOAuthServiceID) MCPEndpointResponseOAuthServiceID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateDescription returns new OptMCPEndpointUpdateDescription with value set to v.
+func NewOptMCPEndpointUpdateDescription(v MCPEndpointUpdateDescription) OptMCPEndpointUpdateDescription {
+	return OptMCPEndpointUpdateDescription{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateDescription is optional MCPEndpointUpdateDescription.
+type OptMCPEndpointUpdateDescription struct {
+	Value MCPEndpointUpdateDescription
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateDescription was set.
+func (o OptMCPEndpointUpdateDescription) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateDescription) Reset() {
+	var v MCPEndpointUpdateDescription
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateDescription) SetTo(v MCPEndpointUpdateDescription) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateDescription) Get() (v MCPEndpointUpdateDescription, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateDescription) Or(d MCPEndpointUpdateDescription) MCPEndpointUpdateDescription {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateDevgraphAuth returns new OptMCPEndpointUpdateDevgraphAuth with value set to v.
+func NewOptMCPEndpointUpdateDevgraphAuth(v MCPEndpointUpdateDevgraphAuth) OptMCPEndpointUpdateDevgraphAuth {
+	return OptMCPEndpointUpdateDevgraphAuth{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateDevgraphAuth is optional MCPEndpointUpdateDevgraphAuth.
+type OptMCPEndpointUpdateDevgraphAuth struct {
+	Value MCPEndpointUpdateDevgraphAuth
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateDevgraphAuth was set.
+func (o OptMCPEndpointUpdateDevgraphAuth) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateDevgraphAuth) Reset() {
+	var v MCPEndpointUpdateDevgraphAuth
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateDevgraphAuth) SetTo(v MCPEndpointUpdateDevgraphAuth) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateDevgraphAuth) Get() (v MCPEndpointUpdateDevgraphAuth, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateDevgraphAuth) Or(d MCPEndpointUpdateDevgraphAuth) MCPEndpointUpdateDevgraphAuth {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateHeaders returns new OptMCPEndpointUpdateHeaders with value set to v.
+func NewOptMCPEndpointUpdateHeaders(v MCPEndpointUpdateHeaders) OptMCPEndpointUpdateHeaders {
+	return OptMCPEndpointUpdateHeaders{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateHeaders is optional MCPEndpointUpdateHeaders.
+type OptMCPEndpointUpdateHeaders struct {
+	Value MCPEndpointUpdateHeaders
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateHeaders was set.
+func (o OptMCPEndpointUpdateHeaders) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateHeaders) Reset() {
+	var v MCPEndpointUpdateHeaders
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateHeaders) SetTo(v MCPEndpointUpdateHeaders) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateHeaders) Get() (v MCPEndpointUpdateHeaders, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateHeaders) Or(d MCPEndpointUpdateHeaders) MCPEndpointUpdateHeaders {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateName returns new OptMCPEndpointUpdateName with value set to v.
+func NewOptMCPEndpointUpdateName(v MCPEndpointUpdateName) OptMCPEndpointUpdateName {
+	return OptMCPEndpointUpdateName{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateName is optional MCPEndpointUpdateName.
+type OptMCPEndpointUpdateName struct {
+	Value MCPEndpointUpdateName
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateName was set.
+func (o OptMCPEndpointUpdateName) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateName) Reset() {
+	var v MCPEndpointUpdateName
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateName) SetTo(v MCPEndpointUpdateName) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateName) Get() (v MCPEndpointUpdateName, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateName) Or(d MCPEndpointUpdateName) MCPEndpointUpdateName {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateOAuthServiceID returns new OptMCPEndpointUpdateOAuthServiceID with value set to v.
+func NewOptMCPEndpointUpdateOAuthServiceID(v MCPEndpointUpdateOAuthServiceID) OptMCPEndpointUpdateOAuthServiceID {
+	return OptMCPEndpointUpdateOAuthServiceID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateOAuthServiceID is optional MCPEndpointUpdateOAuthServiceID.
+type OptMCPEndpointUpdateOAuthServiceID struct {
+	Value MCPEndpointUpdateOAuthServiceID
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateOAuthServiceID was set.
+func (o OptMCPEndpointUpdateOAuthServiceID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateOAuthServiceID) Reset() {
+	var v MCPEndpointUpdateOAuthServiceID
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateOAuthServiceID) SetTo(v MCPEndpointUpdateOAuthServiceID) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateOAuthServiceID) Get() (v MCPEndpointUpdateOAuthServiceID, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateOAuthServiceID) Or(d MCPEndpointUpdateOAuthServiceID) MCPEndpointUpdateOAuthServiceID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateSupportsResources returns new OptMCPEndpointUpdateSupportsResources with value set to v.
+func NewOptMCPEndpointUpdateSupportsResources(v MCPEndpointUpdateSupportsResources) OptMCPEndpointUpdateSupportsResources {
+	return OptMCPEndpointUpdateSupportsResources{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateSupportsResources is optional MCPEndpointUpdateSupportsResources.
+type OptMCPEndpointUpdateSupportsResources struct {
+	Value MCPEndpointUpdateSupportsResources
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateSupportsResources was set.
+func (o OptMCPEndpointUpdateSupportsResources) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateSupportsResources) Reset() {
+	var v MCPEndpointUpdateSupportsResources
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateSupportsResources) SetTo(v MCPEndpointUpdateSupportsResources) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateSupportsResources) Get() (v MCPEndpointUpdateSupportsResources, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateSupportsResources) Or(d MCPEndpointUpdateSupportsResources) MCPEndpointUpdateSupportsResources {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMCPEndpointUpdateURL returns new OptMCPEndpointUpdateURL with value set to v.
+func NewOptMCPEndpointUpdateURL(v MCPEndpointUpdateURL) OptMCPEndpointUpdateURL {
+	return OptMCPEndpointUpdateURL{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMCPEndpointUpdateURL is optional MCPEndpointUpdateURL.
+type OptMCPEndpointUpdateURL struct {
+	Value MCPEndpointUpdateURL
+	Set   bool
+}
+
+// IsSet returns true if OptMCPEndpointUpdateURL was set.
+func (o OptMCPEndpointUpdateURL) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMCPEndpointUpdateURL) Reset() {
+	var v MCPEndpointUpdateURL
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMCPEndpointUpdateURL) SetTo(v MCPEndpointUpdateURL) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMCPEndpointUpdateURL) Get() (v MCPEndpointUpdateURL, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMCPEndpointUpdateURL) Or(d MCPEndpointUpdateURL) MCPEndpointUpdateURL {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -8221,6 +9353,11 @@ func (*UpdateChatNotFound) updateChatRes() {}
 type UpdateEnvironmentUserNotFound struct{}
 
 func (*UpdateEnvironmentUserNotFound) updateEnvironmentUserRes() {}
+
+// UpdateMcpendpointNotFound is response for UpdateMcpendpoint operation.
+type UpdateMcpendpointNotFound struct{}
+
+func (*UpdateMcpendpointNotFound) updateMcpendpointRes() {}
 
 // UpdateOAuthServiceNotFound is response for UpdateOAuthService operation.
 type UpdateOAuthServiceNotFound struct{}

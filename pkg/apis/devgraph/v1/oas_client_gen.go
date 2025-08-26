@@ -341,6 +341,12 @@ type Invoker interface {
 	//
 	// PUT /system/api/v1/environments/{environment_id}/users/{user_id}
 	UpdateEnvironmentUser(ctx context.Context, request *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error)
+	// UpdateMcpendpoint invokes update_mcpendpoint operation.
+	//
+	// Update a specific MCP Endpoint configuration by ID.
+	//
+	// PUT /system/api/v1/mcpendpoints/{mcpendpoint_id}
+	UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error)
 	// UpdateOAuthService invokes update_oauth_service operation.
 	//
 	// Update Oauth Service.
@@ -5022,6 +5028,96 @@ func (c *Client) sendUpdateEnvironmentUser(ctx context.Context, request *Environ
 	defer resp.Body.Close()
 
 	result, err := decodeUpdateEnvironmentUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateMcpendpoint invokes update_mcpendpoint operation.
+//
+// Update a specific MCP Endpoint configuration by ID.
+//
+// PUT /system/api/v1/mcpendpoints/{mcpendpoint_id}
+func (c *Client) UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error) {
+	res, err := c.sendUpdateMcpendpoint(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (res UpdateMcpendpointRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	{
+		// Encode "mcpendpoint_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "mcpendpoint_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.McpendpointID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateMcpendpointRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateMcpendpointOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateMcpendpointResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

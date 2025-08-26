@@ -209,6 +209,10 @@ type UpdateEnvironmentUserRes interface {
 	updateEnvironmentUserRes()
 }
 
+type UpdateMcpendpointRes interface {
+	updateMcpendpointRes()
+}
+
 type UpdateOAuthServiceRes interface {
 	updateOAuthServiceRes()
 }

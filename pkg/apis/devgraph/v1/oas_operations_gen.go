@@ -58,5 +58,6 @@ const (
 	RevokeOAuthTokenOperation           OperationName = "RevokeOAuthToken"
 	UpdateChatOperation                 OperationName = "UpdateChat"
 	UpdateEnvironmentUserOperation      OperationName = "UpdateEnvironmentUser"
+	UpdateMcpendpointOperation          OperationName = "UpdateMcpendpoint"
 	UpdateOAuthServiceOperation         OperationName = "UpdateOAuthService"
 )
