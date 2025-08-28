@@ -4371,6 +4371,46 @@ func (s *EnvironmentUserCreate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes EnvironmentUserCreateRole as json.
+func (s EnvironmentUserCreateRole) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes EnvironmentUserCreateRole from json.
+func (s *EnvironmentUserCreateRole) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EnvironmentUserCreateRole to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch EnvironmentUserCreateRole(v) {
+	case EnvironmentUserCreateRoleMember:
+		*s = EnvironmentUserCreateRoleMember
+	case EnvironmentUserCreateRoleAdmin:
+		*s = EnvironmentUserCreateRoleAdmin
+	default:
+		*s = EnvironmentUserCreateRole(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EnvironmentUserCreateRole) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EnvironmentUserCreateRole) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *EnvironmentUserInvite) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -4481,6 +4521,46 @@ func (s *EnvironmentUserInvite) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EnvironmentUserInvite) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EnvironmentUserInviteRole as json.
+func (s EnvironmentUserInviteRole) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes EnvironmentUserInviteRole from json.
+func (s *EnvironmentUserInviteRole) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EnvironmentUserInviteRole to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch EnvironmentUserInviteRole(v) {
+	case EnvironmentUserInviteRoleMember:
+		*s = EnvironmentUserInviteRoleMember
+	case EnvironmentUserInviteRoleAdmin:
+		*s = EnvironmentUserInviteRoleAdmin
+	default:
+		*s = EnvironmentUserInviteRole(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EnvironmentUserInviteRole) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EnvironmentUserInviteRole) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -4677,7 +4757,7 @@ func (s *EnvironmentUserUpdate) Encode(e *jx.Encoder) {
 func (s *EnvironmentUserUpdate) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("role")
-		e.Str(s.Role)
+		s.Role.Encode(e)
 	}
 }
 
@@ -4697,9 +4777,7 @@ func (s *EnvironmentUserUpdate) Decode(d *jx.Decoder) error {
 		case "role":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.Role = string(v)
-				if err != nil {
+				if err := s.Role.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -4758,6 +4836,46 @@ func (s *EnvironmentUserUpdate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EnvironmentUserUpdate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EnvironmentUserUpdateRole as json.
+func (s EnvironmentUserUpdateRole) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes EnvironmentUserUpdateRole from json.
+func (s *EnvironmentUserUpdateRole) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EnvironmentUserUpdateRole to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch EnvironmentUserUpdateRole(v) {
+	case EnvironmentUserUpdateRoleMember:
+		*s = EnvironmentUserUpdateRoleMember
+	case EnvironmentUserUpdateRoleAdmin:
+		*s = EnvironmentUserUpdateRoleAdmin
+	default:
+		*s = EnvironmentUserUpdateRole(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EnvironmentUserUpdateRole) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EnvironmentUserUpdateRole) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -5166,6 +5284,56 @@ func (s GetModelsOKApplicationJSON) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetModelsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetPendingInvitationsOKApplicationJSON as json.
+func (s GetPendingInvitationsOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []PendingInvitationResponse(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetPendingInvitationsOKApplicationJSON from json.
+func (s *GetPendingInvitationsOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetPendingInvitationsOKApplicationJSON to nil")
+	}
+	var unwrapped []PendingInvitationResponse
+	if err := func() error {
+		unwrapped = make([]PendingInvitationResponse, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem PendingInvitationResponse
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetPendingInvitationsOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetPendingInvitationsOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetPendingInvitationsOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -11497,6 +11665,72 @@ func (s *OptEntitySpec) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes EnvironmentUserCreateRole as json.
+func (o OptEnvironmentUserCreateRole) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes EnvironmentUserCreateRole from json.
+func (o *OptEnvironmentUserCreateRole) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEnvironmentUserCreateRole to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEnvironmentUserCreateRole) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEnvironmentUserCreateRole) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EnvironmentUserInviteRole as json.
+func (o OptEnvironmentUserInviteRole) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes EnvironmentUserInviteRole from json.
+func (o *OptEnvironmentUserInviteRole) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEnvironmentUserInviteRole to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEnvironmentUserInviteRole) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEnvironmentUserInviteRole) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes MCPEndpointCreateDescription as json.
 func (o OptMCPEndpointCreateDescription) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -12852,6 +13086,39 @@ func (s *OptOAuthTokenResponseRefreshToken) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes PendingInvitationResponseExpiresAt as json.
+func (o OptPendingInvitationResponseExpiresAt) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes PendingInvitationResponseExpiresAt from json.
+func (o *OptPendingInvitationResponseExpiresAt) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptPendingInvitationResponseExpiresAt to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptPendingInvitationResponseExpiresAt) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptPendingInvitationResponseExpiresAt) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes string as json.
 func (o OptString) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -12883,6 +13150,253 @@ func (s OptString) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptString) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *PendingInvitationResponse) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PendingInvitationResponse) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Str(s.ID)
+	}
+	{
+		e.FieldStart("email_address")
+		e.Str(s.EmailAddress)
+	}
+	{
+		e.FieldStart("role")
+		e.Str(s.Role)
+	}
+	{
+		e.FieldStart("status")
+		e.Str(s.Status)
+	}
+	{
+		e.FieldStart("created_at")
+		e.Int(s.CreatedAt)
+	}
+	{
+		e.FieldStart("updated_at")
+		e.Int(s.UpdatedAt)
+	}
+	{
+		if s.ExpiresAt.Set {
+			e.FieldStart("expires_at")
+			s.ExpiresAt.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfPendingInvitationResponse = [7]string{
+	0: "id",
+	1: "email_address",
+	2: "role",
+	3: "status",
+	4: "created_at",
+	5: "updated_at",
+	6: "expires_at",
+}
+
+// Decode decodes PendingInvitationResponse from json.
+func (s *PendingInvitationResponse) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PendingInvitationResponse to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.ID = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "email_address":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.EmailAddress = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"email_address\"")
+			}
+		case "role":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Role = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"role\"")
+			}
+		case "status":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Str()
+				s.Status = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "created_at":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.CreatedAt = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.UpdatedAt = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		case "expires_at":
+			if err := func() error {
+				s.ExpiresAt.Reset()
+				if err := s.ExpiresAt.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"expires_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PendingInvitationResponse")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfPendingInvitationResponse) {
+					name = jsonFieldsNameOfPendingInvitationResponse[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PendingInvitationResponse) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PendingInvitationResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes PendingInvitationResponseExpiresAt as json.
+func (s PendingInvitationResponseExpiresAt) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case IntPendingInvitationResponseExpiresAt:
+		e.Int(s.Int)
+	case NullPendingInvitationResponseExpiresAt:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes PendingInvitationResponseExpiresAt from json.
+func (s *PendingInvitationResponseExpiresAt) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PendingInvitationResponseExpiresAt to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullPendingInvitationResponseExpiresAt
+	case jx.Number:
+		v, err := d.Int()
+		s.Int = int(v)
+		if err != nil {
+			return err
+		}
+		s.Type = IntPendingInvitationResponseExpiresAt
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s PendingInvitationResponseExpiresAt) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PendingInvitationResponseExpiresAt) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

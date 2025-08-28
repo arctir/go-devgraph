@@ -46,6 +46,7 @@ const (
 	GetModelsOperation                  OperationName = "GetModels"
 	GetOAuthAuthorizationURLOperation   OperationName = "GetOAuthAuthorizationURL"
 	GetOAuthServiceOperation            OperationName = "GetOAuthService"
+	GetPendingInvitationsOperation      OperationName = "GetPendingInvitations"
 	GetSubscriptionsOperation           OperationName = "GetSubscriptions"
 	GetTokensOperation                  OperationName = "GetTokens"
 	InviteEnvironmentUserOperation      OperationName = "InviteEnvironmentUser"

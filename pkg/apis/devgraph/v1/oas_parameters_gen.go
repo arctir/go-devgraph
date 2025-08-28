@@ -147,6 +147,11 @@ type GetOAuthServiceParams struct {
 	ServiceID uuid.UUID
 }
 
+// GetPendingInvitationsParams is parameters of get_pending_invitations operation.
+type GetPendingInvitationsParams struct {
+	EnvironmentID uuid.UUID
+}
+
 // InviteEnvironmentUserParams is parameters of invite_environment_user operation.
 type InviteEnvironmentUserParams struct {
 	EnvironmentID uuid.UUID

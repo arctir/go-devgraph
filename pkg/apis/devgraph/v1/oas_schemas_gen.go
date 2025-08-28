@@ -1985,8 +1985,8 @@ func (s *EnvironmentUserBulkInvite) SetInvitations(val []EnvironmentUserInvite) 
 
 // Ref: #/components/schemas/EnvironmentUserCreate
 type EnvironmentUserCreate struct {
-	EmailAddress string    `json:"email_address"`
-	Role         OptString `json:"role"`
+	EmailAddress string                       `json:"email_address"`
+	Role         OptEnvironmentUserCreateRole `json:"role"`
 }
 
 // GetEmailAddress returns the value of EmailAddress.
@@ -1995,7 +1995,7 @@ func (s *EnvironmentUserCreate) GetEmailAddress() string {
 }
 
 // GetRole returns the value of Role.
-func (s *EnvironmentUserCreate) GetRole() OptString {
+func (s *EnvironmentUserCreate) GetRole() OptEnvironmentUserCreateRole {
 	return s.Role
 }
 
@@ -2005,14 +2005,55 @@ func (s *EnvironmentUserCreate) SetEmailAddress(val string) {
 }
 
 // SetRole sets the value of Role.
-func (s *EnvironmentUserCreate) SetRole(val OptString) {
+func (s *EnvironmentUserCreate) SetRole(val OptEnvironmentUserCreateRole) {
 	s.Role = val
+}
+
+type EnvironmentUserCreateRole string
+
+const (
+	EnvironmentUserCreateRoleMember EnvironmentUserCreateRole = "member"
+	EnvironmentUserCreateRoleAdmin  EnvironmentUserCreateRole = "admin"
+)
+
+// AllValues returns all EnvironmentUserCreateRole values.
+func (EnvironmentUserCreateRole) AllValues() []EnvironmentUserCreateRole {
+	return []EnvironmentUserCreateRole{
+		EnvironmentUserCreateRoleMember,
+		EnvironmentUserCreateRoleAdmin,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EnvironmentUserCreateRole) MarshalText() ([]byte, error) {
+	switch s {
+	case EnvironmentUserCreateRoleMember:
+		return []byte(s), nil
+	case EnvironmentUserCreateRoleAdmin:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EnvironmentUserCreateRole) UnmarshalText(data []byte) error {
+	switch EnvironmentUserCreateRole(data) {
+	case EnvironmentUserCreateRoleMember:
+		*s = EnvironmentUserCreateRoleMember
+		return nil
+	case EnvironmentUserCreateRoleAdmin:
+		*s = EnvironmentUserCreateRoleAdmin
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/EnvironmentUserInvite
 type EnvironmentUserInvite struct {
-	EmailAddress string    `json:"email_address"`
-	Role         OptString `json:"role"`
+	EmailAddress string                       `json:"email_address"`
+	Role         OptEnvironmentUserInviteRole `json:"role"`
 }
 
 // GetEmailAddress returns the value of EmailAddress.
@@ -2021,7 +2062,7 @@ func (s *EnvironmentUserInvite) GetEmailAddress() string {
 }
 
 // GetRole returns the value of Role.
-func (s *EnvironmentUserInvite) GetRole() OptString {
+func (s *EnvironmentUserInvite) GetRole() OptEnvironmentUserInviteRole {
 	return s.Role
 }
 
@@ -2031,8 +2072,49 @@ func (s *EnvironmentUserInvite) SetEmailAddress(val string) {
 }
 
 // SetRole sets the value of Role.
-func (s *EnvironmentUserInvite) SetRole(val OptString) {
+func (s *EnvironmentUserInvite) SetRole(val OptEnvironmentUserInviteRole) {
 	s.Role = val
+}
+
+type EnvironmentUserInviteRole string
+
+const (
+	EnvironmentUserInviteRoleMember EnvironmentUserInviteRole = "member"
+	EnvironmentUserInviteRoleAdmin  EnvironmentUserInviteRole = "admin"
+)
+
+// AllValues returns all EnvironmentUserInviteRole values.
+func (EnvironmentUserInviteRole) AllValues() []EnvironmentUserInviteRole {
+	return []EnvironmentUserInviteRole{
+		EnvironmentUserInviteRoleMember,
+		EnvironmentUserInviteRoleAdmin,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EnvironmentUserInviteRole) MarshalText() ([]byte, error) {
+	switch s {
+	case EnvironmentUserInviteRoleMember:
+		return []byte(s), nil
+	case EnvironmentUserInviteRoleAdmin:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EnvironmentUserInviteRole) UnmarshalText(data []byte) error {
+	switch EnvironmentUserInviteRole(data) {
+	case EnvironmentUserInviteRoleMember:
+		*s = EnvironmentUserInviteRoleMember
+		return nil
+	case EnvironmentUserInviteRoleAdmin:
+		*s = EnvironmentUserInviteRoleAdmin
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/EnvironmentUserResponse
@@ -2112,17 +2194,58 @@ func (*EnvironmentUserResponse) updateEnvironmentUserRes() {}
 
 // Ref: #/components/schemas/EnvironmentUserUpdate
 type EnvironmentUserUpdate struct {
-	Role string `json:"role"`
+	Role EnvironmentUserUpdateRole `json:"role"`
 }
 
 // GetRole returns the value of Role.
-func (s *EnvironmentUserUpdate) GetRole() string {
+func (s *EnvironmentUserUpdate) GetRole() EnvironmentUserUpdateRole {
 	return s.Role
 }
 
 // SetRole sets the value of Role.
-func (s *EnvironmentUserUpdate) SetRole(val string) {
+func (s *EnvironmentUserUpdate) SetRole(val EnvironmentUserUpdateRole) {
 	s.Role = val
+}
+
+type EnvironmentUserUpdateRole string
+
+const (
+	EnvironmentUserUpdateRoleMember EnvironmentUserUpdateRole = "member"
+	EnvironmentUserUpdateRoleAdmin  EnvironmentUserUpdateRole = "admin"
+)
+
+// AllValues returns all EnvironmentUserUpdateRole values.
+func (EnvironmentUserUpdateRole) AllValues() []EnvironmentUserUpdateRole {
+	return []EnvironmentUserUpdateRole{
+		EnvironmentUserUpdateRoleMember,
+		EnvironmentUserUpdateRoleAdmin,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EnvironmentUserUpdateRole) MarshalText() ([]byte, error) {
+	switch s {
+	case EnvironmentUserUpdateRoleMember:
+		return []byte(s), nil
+	case EnvironmentUserUpdateRoleAdmin:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EnvironmentUserUpdateRole) UnmarshalText(data []byte) error {
+	switch EnvironmentUserUpdateRole(data) {
+	case EnvironmentUserUpdateRoleMember:
+		*s = EnvironmentUserUpdateRoleMember
+		return nil
+	case EnvironmentUserUpdateRoleAdmin:
+		*s = EnvironmentUserUpdateRoleAdmin
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // ExchangeOAuthTokenNotFound is response for ExchangeOAuthToken operation.
@@ -2256,6 +2379,15 @@ type GetOAuthServiceNotFound struct{}
 
 func (*GetOAuthServiceNotFound) getOAuthServiceRes() {}
 
+// GetPendingInvitationsNotFound is response for GetPendingInvitations operation.
+type GetPendingInvitationsNotFound struct{}
+
+func (*GetPendingInvitationsNotFound) getPendingInvitationsRes() {}
+
+type GetPendingInvitationsOKApplicationJSON []PendingInvitationResponse
+
+func (*GetPendingInvitationsOKApplicationJSON) getPendingInvitationsRes() {}
+
 // GetSubscriptionsNotFound is response for GetSubscriptions operation.
 type GetSubscriptionsNotFound struct{}
 
@@ -2324,6 +2456,7 @@ func (*HTTPValidationError) getModelRes()                   {}
 func (*HTTPValidationError) getModelproviderRes()           {}
 func (*HTTPValidationError) getOAuthAuthorizationURLRes()   {}
 func (*HTTPValidationError) getOAuthServiceRes()            {}
+func (*HTTPValidationError) getPendingInvitationsRes()      {}
 func (*HTTPValidationError) inviteEnvironmentUserRes()      {}
 func (*HTTPValidationError) listEnvironmentUsersRes()       {}
 func (*HTTPValidationError) listOAuthServicesRes()          {}
@@ -7230,6 +7363,98 @@ func (o OptEntitySpec) Or(d EntitySpec) EntitySpec {
 	return d
 }
 
+// NewOptEnvironmentUserCreateRole returns new OptEnvironmentUserCreateRole with value set to v.
+func NewOptEnvironmentUserCreateRole(v EnvironmentUserCreateRole) OptEnvironmentUserCreateRole {
+	return OptEnvironmentUserCreateRole{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEnvironmentUserCreateRole is optional EnvironmentUserCreateRole.
+type OptEnvironmentUserCreateRole struct {
+	Value EnvironmentUserCreateRole
+	Set   bool
+}
+
+// IsSet returns true if OptEnvironmentUserCreateRole was set.
+func (o OptEnvironmentUserCreateRole) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEnvironmentUserCreateRole) Reset() {
+	var v EnvironmentUserCreateRole
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEnvironmentUserCreateRole) SetTo(v EnvironmentUserCreateRole) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEnvironmentUserCreateRole) Get() (v EnvironmentUserCreateRole, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEnvironmentUserCreateRole) Or(d EnvironmentUserCreateRole) EnvironmentUserCreateRole {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEnvironmentUserInviteRole returns new OptEnvironmentUserInviteRole with value set to v.
+func NewOptEnvironmentUserInviteRole(v EnvironmentUserInviteRole) OptEnvironmentUserInviteRole {
+	return OptEnvironmentUserInviteRole{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEnvironmentUserInviteRole is optional EnvironmentUserInviteRole.
+type OptEnvironmentUserInviteRole struct {
+	Value EnvironmentUserInviteRole
+	Set   bool
+}
+
+// IsSet returns true if OptEnvironmentUserInviteRole was set.
+func (o OptEnvironmentUserInviteRole) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEnvironmentUserInviteRole) Reset() {
+	var v EnvironmentUserInviteRole
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEnvironmentUserInviteRole) SetTo(v EnvironmentUserInviteRole) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEnvironmentUserInviteRole) Get() (v EnvironmentUserInviteRole, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEnvironmentUserInviteRole) Or(d EnvironmentUserInviteRole) EnvironmentUserInviteRole {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt returns new OptInt with value set to v.
 func NewOptInt(v int) OptInt {
 	return OptInt{
@@ -9162,6 +9387,52 @@ func (o OptOAuthTokenResponseRefreshToken) Or(d OAuthTokenResponseRefreshToken) 
 	return d
 }
 
+// NewOptPendingInvitationResponseExpiresAt returns new OptPendingInvitationResponseExpiresAt with value set to v.
+func NewOptPendingInvitationResponseExpiresAt(v PendingInvitationResponseExpiresAt) OptPendingInvitationResponseExpiresAt {
+	return OptPendingInvitationResponseExpiresAt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptPendingInvitationResponseExpiresAt is optional PendingInvitationResponseExpiresAt.
+type OptPendingInvitationResponseExpiresAt struct {
+	Value PendingInvitationResponseExpiresAt
+	Set   bool
+}
+
+// IsSet returns true if OptPendingInvitationResponseExpiresAt was set.
+func (o OptPendingInvitationResponseExpiresAt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptPendingInvitationResponseExpiresAt) Reset() {
+	var v PendingInvitationResponseExpiresAt
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptPendingInvitationResponseExpiresAt) SetTo(v PendingInvitationResponseExpiresAt) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptPendingInvitationResponseExpiresAt) Get() (v PendingInvitationResponseExpiresAt, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptPendingInvitationResponseExpiresAt) Or(d PendingInvitationResponseExpiresAt) PendingInvitationResponseExpiresAt {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -9206,6 +9477,155 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
+}
+
+// Ref: #/components/schemas/PendingInvitationResponse
+type PendingInvitationResponse struct {
+	ID           string                                `json:"id"`
+	EmailAddress string                                `json:"email_address"`
+	Role         string                                `json:"role"`
+	Status       string                                `json:"status"`
+	CreatedAt    int                                   `json:"created_at"`
+	UpdatedAt    int                                   `json:"updated_at"`
+	ExpiresAt    OptPendingInvitationResponseExpiresAt `json:"expires_at"`
+}
+
+// GetID returns the value of ID.
+func (s *PendingInvitationResponse) GetID() string {
+	return s.ID
+}
+
+// GetEmailAddress returns the value of EmailAddress.
+func (s *PendingInvitationResponse) GetEmailAddress() string {
+	return s.EmailAddress
+}
+
+// GetRole returns the value of Role.
+func (s *PendingInvitationResponse) GetRole() string {
+	return s.Role
+}
+
+// GetStatus returns the value of Status.
+func (s *PendingInvitationResponse) GetStatus() string {
+	return s.Status
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *PendingInvitationResponse) GetCreatedAt() int {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *PendingInvitationResponse) GetUpdatedAt() int {
+	return s.UpdatedAt
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *PendingInvitationResponse) GetExpiresAt() OptPendingInvitationResponseExpiresAt {
+	return s.ExpiresAt
+}
+
+// SetID sets the value of ID.
+func (s *PendingInvitationResponse) SetID(val string) {
+	s.ID = val
+}
+
+// SetEmailAddress sets the value of EmailAddress.
+func (s *PendingInvitationResponse) SetEmailAddress(val string) {
+	s.EmailAddress = val
+}
+
+// SetRole sets the value of Role.
+func (s *PendingInvitationResponse) SetRole(val string) {
+	s.Role = val
+}
+
+// SetStatus sets the value of Status.
+func (s *PendingInvitationResponse) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *PendingInvitationResponse) SetCreatedAt(val int) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *PendingInvitationResponse) SetUpdatedAt(val int) {
+	s.UpdatedAt = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *PendingInvitationResponse) SetExpiresAt(val OptPendingInvitationResponseExpiresAt) {
+	s.ExpiresAt = val
+}
+
+// PendingInvitationResponseExpiresAt represents sum type.
+type PendingInvitationResponseExpiresAt struct {
+	Type PendingInvitationResponseExpiresAtType // switch on this field
+	Int  int
+	Null struct{}
+}
+
+// PendingInvitationResponseExpiresAtType is oneOf type of PendingInvitationResponseExpiresAt.
+type PendingInvitationResponseExpiresAtType string
+
+// Possible values for PendingInvitationResponseExpiresAtType.
+const (
+	IntPendingInvitationResponseExpiresAt  PendingInvitationResponseExpiresAtType = "int"
+	NullPendingInvitationResponseExpiresAt PendingInvitationResponseExpiresAtType = "struct{}"
+)
+
+// IsInt reports whether PendingInvitationResponseExpiresAt is int.
+func (s PendingInvitationResponseExpiresAt) IsInt() bool {
+	return s.Type == IntPendingInvitationResponseExpiresAt
+}
+
+// IsNull reports whether PendingInvitationResponseExpiresAt is struct{}.
+func (s PendingInvitationResponseExpiresAt) IsNull() bool {
+	return s.Type == NullPendingInvitationResponseExpiresAt
+}
+
+// SetInt sets PendingInvitationResponseExpiresAt to int.
+func (s *PendingInvitationResponseExpiresAt) SetInt(v int) {
+	s.Type = IntPendingInvitationResponseExpiresAt
+	s.Int = v
+}
+
+// GetInt returns int and true boolean if PendingInvitationResponseExpiresAt is int.
+func (s PendingInvitationResponseExpiresAt) GetInt() (v int, ok bool) {
+	if !s.IsInt() {
+		return v, false
+	}
+	return s.Int, true
+}
+
+// NewIntPendingInvitationResponseExpiresAt returns new PendingInvitationResponseExpiresAt from int.
+func NewIntPendingInvitationResponseExpiresAt(v int) PendingInvitationResponseExpiresAt {
+	var s PendingInvitationResponseExpiresAt
+	s.SetInt(v)
+	return s
+}
+
+// SetNull sets PendingInvitationResponseExpiresAt to struct{}.
+func (s *PendingInvitationResponseExpiresAt) SetNull(v struct{}) {
+	s.Type = NullPendingInvitationResponseExpiresAt
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if PendingInvitationResponseExpiresAt is struct{}.
+func (s PendingInvitationResponseExpiresAt) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullPendingInvitationResponseExpiresAt returns new PendingInvitationResponseExpiresAt from struct{}.
+func NewNullPendingInvitationResponseExpiresAt(v struct{}) PendingInvitationResponseExpiresAt {
+	var s PendingInvitationResponseExpiresAt
+	s.SetNull(v)
+	return s
 }
 
 type PostChatMessagesCreatedApplicationJSON []ChatMessageRouter

@@ -351,6 +351,23 @@ func (s *EnvironmentUserBulkInvite) Validate() error {
 		if s.Invitations == nil {
 			return errors.New("nil is invalid value")
 		}
+		var failures []validate.FieldError
+		for i, elem := range s.Invitations {
+			if err := func() error {
+				if err := elem.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				failures = append(failures, validate.FieldError{
+					Name:  fmt.Sprintf("[%d]", i),
+					Error: err,
+				})
+			}
+		}
+		if len(failures) > 0 {
+			return &validate.Error{Fields: failures}
+		}
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
@@ -362,6 +379,122 @@ func (s *EnvironmentUserBulkInvite) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
+}
+
+func (s *EnvironmentUserCreate) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.Role.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "role",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s EnvironmentUserCreateRole) Validate() error {
+	switch s {
+	case "member":
+		return nil
+	case "admin":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
+func (s *EnvironmentUserInvite) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.Role.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "role",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s EnvironmentUserInviteRole) Validate() error {
+	switch s {
+	case "member":
+		return nil
+	case "admin":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
+func (s *EnvironmentUserUpdate) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := s.Role.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "role",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s EnvironmentUserUpdateRole) Validate() error {
+	switch s {
+	case "member":
+		return nil
+	case "admin":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s GetChatMessagesOKApplicationJSON) Validate() error {
@@ -465,6 +598,14 @@ func (s GetModelprovidersOKApplicationJSON) Validate() error {
 
 func (s GetModelsOKApplicationJSON) Validate() error {
 	alias := ([]ModelResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s GetPendingInvitationsOKApplicationJSON) Validate() error {
+	alias := ([]PendingInvitationResponse)(s)
 	if alias == nil {
 		return errors.New("nil is invalid value")
 	}

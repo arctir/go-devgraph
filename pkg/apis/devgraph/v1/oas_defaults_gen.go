@@ -101,7 +101,7 @@ func (s *EntityRelationResponse) setDefaults() {
 // setDefaults set default value of fields.
 func (s *EnvironmentUserCreate) setDefaults() {
 	{
-		val := string("org:member")
+		val := EnvironmentUserCreateRole("member")
 		s.Role.SetTo(val)
 	}
 }
@@ -109,7 +109,7 @@ func (s *EnvironmentUserCreate) setDefaults() {
 // setDefaults set default value of fields.
 func (s *EnvironmentUserInvite) setDefaults() {
 	{
-		val := string("org:member")
+		val := EnvironmentUserInviteRole("member")
 		s.Role.SetTo(val)
 	}
 }

@@ -161,6 +161,10 @@ type GetOAuthServiceRes interface {
 	getOAuthServiceRes()
 }
 
+type GetPendingInvitationsRes interface {
+	getPendingInvitationsRes()
+}
+
 type GetSubscriptionsRes interface {
 	getSubscriptionsRes()
 }
