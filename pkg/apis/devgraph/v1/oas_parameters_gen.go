@@ -11,6 +11,14 @@ type BulkInviteEnvironmentUsersParams struct {
 	EnvironmentID uuid.UUID
 }
 
+// CleanupOrphanedEntitiesParams is parameters of cleanup_orphaned_entities operation.
+type CleanupOrphanedEntitiesParams struct {
+	// Namespace to clean up (default: 'default').
+	Namespace OptString
+	// Only delete orphans older than this many hours.
+	MaxAgeHours OptInt
+}
+
 // CreateEntityParams is parameters of create_entity operation.
 type CreateEntityParams struct {
 	Group     string
@@ -46,6 +54,8 @@ type DeleteEntityParams struct {
 // DeleteEntityDefinitionParams is parameters of delete_entity_definition operation.
 type DeleteEntityDefinitionParams struct {
 	DefinitionID uuid.UUID
+	// If true, mark entities as orphans instead of deleting them immediately.
+	MarkOrphansOnly OptBool
 }
 
 // DeleteEntityRelationParams is parameters of delete_entity_relation operation.
@@ -77,6 +87,16 @@ type DeleteModelproviderParams struct {
 // DeleteOAuthServiceParams is parameters of delete_oauth_service operation.
 type DeleteOAuthServiceParams struct {
 	ServiceID uuid.UUID
+}
+
+// DeletePromptParams is parameters of delete_prompt operation.
+type DeletePromptParams struct {
+	PromptID uuid.UUID
+}
+
+// DeleteTokenParams is parameters of delete_token operation.
+type DeleteTokenParams struct {
+	TokenID uuid.UUID
 }
 
 // GetChatParams is parameters of get_chat operation.
@@ -152,6 +172,11 @@ type GetPendingInvitationsParams struct {
 	EnvironmentID uuid.UUID
 }
 
+// GetPromptParams is parameters of get_prompt operation.
+type GetPromptParams struct {
+	PromptID uuid.UUID
+}
+
 // InviteEnvironmentUserParams is parameters of invite_environment_user operation.
 type InviteEnvironmentUserParams struct {
 	EnvironmentID uuid.UUID
@@ -166,6 +191,17 @@ type ListEnvironmentUsersParams struct {
 type ListOAuthServicesParams struct {
 	// Only return active services.
 	ActiveOnly OptBool
+}
+
+// ListOrphanedEntitiesParams is parameters of list_orphaned_entities operation.
+type ListOrphanedEntitiesParams struct {
+	// Namespace to query (default: 'default').
+	Namespace OptString
+}
+
+// ListPromptsParams is parameters of list_prompts operation.
+type ListPromptsParams struct {
+	Active OptNullBooleanEnum
 }
 
 // PostChatMessagesParams is parameters of post_chat_messages operation.
@@ -209,4 +245,14 @@ type UpdateMcpendpointParams struct {
 // UpdateOAuthServiceParams is parameters of update_oauth_service operation.
 type UpdateOAuthServiceParams struct {
 	ServiceID uuid.UUID
+}
+
+// UpdatePromptParams is parameters of update_prompt operation.
+type UpdatePromptParams struct {
+	PromptID uuid.UUID
+}
+
+// UpdateTokenParams is parameters of update_token operation.
+type UpdateTokenParams struct {
+	TokenID uuid.UUID
 }

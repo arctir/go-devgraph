@@ -99,6 +99,18 @@ func (s *EntityRelationResponse) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *EntityStatus) setDefaults() {
+	{
+		val := bool(false)
+		s.IsOrphan.SetTo(val)
+	}
+	{
+		val := int(1)
+		s.Generation.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *EnvironmentUserCreate) setDefaults() {
 	{
 		val := EnvironmentUserCreateRole("member")
@@ -124,6 +136,14 @@ func (s *MCPEndpointCreate) setDefaults() {
 		val := bool(false)
 		s.SupportsResources.SetTo(val)
 	}
+	{
+		val := bool(false)
+		s.Immutable.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Active.SetTo(val)
+	}
 }
 
 // setDefaults set default value of fields.
@@ -135,6 +155,14 @@ func (s *MCPEndpointResponse) setDefaults() {
 	{
 		val := bool(false)
 		s.SupportsResources.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Immutable.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.Active.SetTo(val)
 	}
 }
 
@@ -175,6 +203,30 @@ func (s *OpenAIModelProviderResponse) setDefaults() {
 	{
 		val := bool(false)
 		s.Default.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *PromptCreate) setDefaults() {
+	{
+		val := bool(true)
+		s.Active.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsDefault.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *PromptResponse) setDefaults() {
+	{
+		val := bool(true)
+		s.Active.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsDefault.SetTo(val)
 	}
 }
 

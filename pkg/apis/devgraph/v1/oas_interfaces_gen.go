@@ -5,6 +5,10 @@ type BulkInviteEnvironmentUsersRes interface {
 	bulkInviteEnvironmentUsersRes()
 }
 
+type CleanupOrphanedEntitiesRes interface {
+	cleanupOrphanedEntitiesRes()
+}
+
 type CreateChatRes interface {
 	createChatRes()
 }
@@ -49,6 +53,10 @@ type CreateOAuthServiceRes interface {
 	createOAuthServiceRes()
 }
 
+type CreatePromptRes interface {
+	createPromptRes()
+}
+
 type CreateTokenRes interface {
 	createTokenRes()
 }
@@ -87,6 +95,14 @@ type DeleteModelproviderRes interface {
 
 type DeleteOAuthServiceRes interface {
 	deleteOAuthServiceRes()
+}
+
+type DeletePromptRes interface {
+	deletePromptRes()
+}
+
+type DeleteTokenRes interface {
+	deleteTokenRes()
 }
 
 type ExchangeOAuthTokenRes interface {
@@ -165,8 +181,16 @@ type GetPendingInvitationsRes interface {
 	getPendingInvitationsRes()
 }
 
+type GetPromptRes interface {
+	getPromptRes()
+}
+
 type GetSubscriptionsRes interface {
 	getSubscriptionsRes()
+}
+
+type GetSystemDefaultPromptRes interface {
+	getSystemDefaultPromptRes()
 }
 
 type GetTokensRes interface {
@@ -187,6 +211,14 @@ type ListOAuthServicesRes interface {
 
 type ListOAuthTokensRes interface {
 	listOAuthTokensRes()
+}
+
+type ListOrphanedEntitiesRes interface {
+	listOrphanedEntitiesRes()
+}
+
+type ListPromptsRes interface {
+	listPromptsRes()
 }
 
 type PostChatMessagesRes interface {
@@ -219,4 +251,12 @@ type UpdateMcpendpointRes interface {
 
 type UpdateOAuthServiceRes interface {
 	updateOAuthServiceRes()
+}
+
+type UpdatePromptRes interface {
+	updatePromptRes()
+}
+
+type UpdateTokenRes interface {
+	updateTokenRes()
 }

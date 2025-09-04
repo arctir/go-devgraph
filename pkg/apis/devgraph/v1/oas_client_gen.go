@@ -30,6 +30,12 @@ type Invoker interface {
 	//
 	// POST /system/api/v1/environments/{environment_id}/users/bulk-invite
 	BulkInviteEnvironmentUsers(ctx context.Context, request *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error)
+	// CleanupOrphanedEntities invokes cleanup_orphaned_entities operation.
+	//
+	// Delete all entities marked as orphans. Requires 'delete:entities' permission.
+	//
+	// DELETE /api/v1/entities/orphans
+	CleanupOrphanedEntities(ctx context.Context, params CleanupOrphanedEntitiesParams) (CleanupOrphanedEntitiesRes, error)
 	// CreateChat invokes create_chat operation.
 	//
 	// Create Chat.
@@ -97,6 +103,12 @@ type Invoker interface {
 	//
 	// POST /api/v1/oauth/services
 	CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error)
+	// CreatePrompt invokes create_prompt operation.
+	//
+	// Create a new prompt for the environment.
+	//
+	// POST /system/api/v1/prompts
+	CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error)
 	// CreateToken invokes create_token operation.
 	//
 	// Create Token.
@@ -157,6 +169,18 @@ type Invoker interface {
 	//
 	// DELETE /api/v1/oauth/services/{service_id}
 	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
+	// DeletePrompt invokes delete_prompt operation.
+	//
+	// Delete a specific prompt by ID.
+	//
+	// DELETE /system/api/v1/prompts/{prompt_id}
+	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)
+	// DeleteToken invokes delete_token operation.
+	//
+	// Delete a specific API token by ID.
+	//
+	// DELETE /system/api/v1/tokens/{token_id}
+	DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error)
 	// ExchangeOAuthToken invokes exchange_oauth_token operation.
 	//
 	// Exchange Code For Token.
@@ -276,12 +300,24 @@ type Invoker interface {
 	//
 	// GET /system/api/v1/environments/{environment_id}/users/pending
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
+	// GetPrompt invokes get_prompt operation.
+	//
+	// Get a specific prompt by ID.
+	//
+	// GET /system/api/v1/prompts/{prompt_id}
+	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
 	// Get Subscriptions.
 	//
 	// GET /system/api/v1/subscriptions
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
+	// GetSystemDefaultPrompt invokes get_system_default_prompt operation.
+	//
+	// Get the built-in system default prompt.
+	//
+	// GET /system/api/v1/prompts/system-default
+	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
 	// GetTokens invokes get_tokens operation.
 	//
 	// Get all API tokens for the authenticated user.
@@ -312,6 +348,18 @@ type Invoker interface {
 	//
 	// GET /api/v1/oauth/tokens
 	ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error)
+	// ListOrphanedEntities invokes list_orphaned_entities operation.
+	//
+	// Lists all entities marked as orphans across all namespaces. Requires 'read:entities' permission.
+	//
+	// GET /api/v1/entities/orphans
+	ListOrphanedEntities(ctx context.Context, params ListOrphanedEntitiesParams) (ListOrphanedEntitiesRes, error)
+	// ListPrompts invokes list_prompts operation.
+	//
+	// List all prompts for the environment.
+	//
+	// GET /system/api/v1/prompts
+	ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error)
 	// PostChatMessages invokes post_chat_messages operation.
 	//
 	// Post Chat Messages.
@@ -360,6 +408,18 @@ type Invoker interface {
 	//
 	// PUT /api/v1/oauth/services/{service_id}
 	UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error)
+	// UpdatePrompt invokes update_prompt operation.
+	//
+	// Update a specific prompt by ID.
+	//
+	// PUT /system/api/v1/prompts/{prompt_id}
+	UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error)
+	// UpdateToken invokes update_token operation.
+	//
+	// Update a specific API token by ID.
+	//
+	// PUT /system/api/v1/tokens/{token_id}
+	UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error)
 }
 
 // Client implements OAS client.
@@ -496,6 +556,112 @@ func (c *Client) sendBulkInviteEnvironmentUsers(ctx context.Context, request *En
 	defer resp.Body.Close()
 
 	result, err := decodeBulkInviteEnvironmentUsersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CleanupOrphanedEntities invokes cleanup_orphaned_entities operation.
+//
+// Delete all entities marked as orphans. Requires 'delete:entities' permission.
+//
+// DELETE /api/v1/entities/orphans
+func (c *Client) CleanupOrphanedEntities(ctx context.Context, params CleanupOrphanedEntitiesParams) (CleanupOrphanedEntitiesRes, error) {
+	res, err := c.sendCleanupOrphanedEntities(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendCleanupOrphanedEntities(ctx context.Context, params CleanupOrphanedEntitiesParams) (res CleanupOrphanedEntitiesRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/entities/orphans"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "namespace" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Namespace.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "max_age_hours" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "max_age_hours",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.MaxAgeHours.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, CleanupOrphanedEntitiesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCleanupOrphanedEntitiesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1443,6 +1609,78 @@ func (c *Client) sendCreateOAuthService(ctx context.Context, request *OAuthServi
 	return result, nil
 }
 
+// CreatePrompt invokes create_prompt operation.
+//
+// Create a new prompt for the environment.
+//
+// POST /system/api/v1/prompts
+func (c *Client) CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error) {
+	res, err := c.sendCreatePrompt(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreatePrompt(ctx context.Context, request *PromptCreate) (res CreatePromptRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/api/v1/prompts"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreatePromptRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, CreatePromptOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreatePromptResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // CreateToken invokes create_token operation.
 //
 // Create Token.
@@ -1799,6 +2037,26 @@ func (c *Client) sendDeleteEntityDefinition(ctx context.Context, params DeleteEn
 		pathParts[1] = encoded
 	}
 	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "mark_orphans_only" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "mark_orphans_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.MarkOrphansOnly.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
@@ -2388,6 +2646,180 @@ func (c *Client) sendDeleteOAuthService(ctx context.Context, params DeleteOAuthS
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteOAuthServiceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeletePrompt invokes delete_prompt operation.
+//
+// Delete a specific prompt by ID.
+//
+// DELETE /system/api/v1/prompts/{prompt_id}
+func (c *Client) DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error) {
+	res, err := c.sendDeletePrompt(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeletePrompt(ctx context.Context, params DeletePromptParams) (res DeletePromptRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/prompts/"
+	{
+		// Encode "prompt_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "prompt_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.PromptID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, DeletePromptOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeletePromptResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteToken invokes delete_token operation.
+//
+// Delete a specific API token by ID.
+//
+// DELETE /system/api/v1/tokens/{token_id}
+func (c *Client) DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error) {
+	res, err := c.sendDeleteToken(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteToken(ctx context.Context, params DeleteTokenParams) (res DeleteTokenRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/tokens/"
+	{
+		// Encode "token_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "token_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.TokenID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, DeleteTokenOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteTokenResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4133,6 +4565,93 @@ func (c *Client) sendGetPendingInvitations(ctx context.Context, params GetPendin
 	return result, nil
 }
 
+// GetPrompt invokes get_prompt operation.
+//
+// Get a specific prompt by ID.
+//
+// GET /system/api/v1/prompts/{prompt_id}
+func (c *Client) GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error) {
+	res, err := c.sendGetPrompt(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res GetPromptRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/prompts/"
+	{
+		// Encode "prompt_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "prompt_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.PromptID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetPromptOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetPromptResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetSubscriptions invokes get_subscriptions operation.
 //
 // Get Subscriptions.
@@ -4195,6 +4714,75 @@ func (c *Client) sendGetSubscriptions(ctx context.Context) (res GetSubscriptions
 	defer resp.Body.Close()
 
 	result, err := decodeGetSubscriptionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSystemDefaultPrompt invokes get_system_default_prompt operation.
+//
+// Get the built-in system default prompt.
+//
+// GET /system/api/v1/prompts/system-default
+func (c *Client) GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error) {
+	res, err := c.sendGetSystemDefaultPrompt(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetSystemDefaultPrompt(ctx context.Context) (res GetSystemDefaultPromptRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/api/v1/prompts/system-default"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetSystemDefaultPromptOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetSystemDefaultPromptResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4610,6 +5198,184 @@ func (c *Client) sendListOAuthTokens(ctx context.Context) (res ListOAuthTokensRe
 	defer resp.Body.Close()
 
 	result, err := decodeListOAuthTokensResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListOrphanedEntities invokes list_orphaned_entities operation.
+//
+// Lists all entities marked as orphans across all namespaces. Requires 'read:entities' permission.
+//
+// GET /api/v1/entities/orphans
+func (c *Client) ListOrphanedEntities(ctx context.Context, params ListOrphanedEntitiesParams) (ListOrphanedEntitiesRes, error) {
+	res, err := c.sendListOrphanedEntities(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListOrphanedEntities(ctx context.Context, params ListOrphanedEntitiesParams) (res ListOrphanedEntitiesRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/entities/orphans"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "namespace" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Namespace.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListOrphanedEntitiesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeListOrphanedEntitiesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListPrompts invokes list_prompts operation.
+//
+// List all prompts for the environment.
+//
+// GET /system/api/v1/prompts
+func (c *Client) ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error) {
+	res, err := c.sendListPrompts(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListPrompts(ctx context.Context, params ListPromptsParams) (res ListPromptsRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/api/v1/prompts"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "active" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "active",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Active.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListPromptsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeListPromptsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5340,6 +6106,195 @@ func (c *Client) sendUpdateOAuthService(ctx context.Context, request *OAuthServi
 	defer resp.Body.Close()
 
 	result, err := decodeUpdateOAuthServiceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdatePrompt invokes update_prompt operation.
+//
+// Update a specific prompt by ID.
+//
+// PUT /system/api/v1/prompts/{prompt_id}
+func (c *Client) UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error) {
+	res, err := c.sendUpdatePrompt(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (res UpdatePromptRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/prompts/"
+	{
+		// Encode "prompt_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "prompt_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.PromptID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdatePromptRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdatePromptOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdatePromptResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateToken invokes update_token operation.
+//
+// Update a specific API token by ID.
+//
+// PUT /system/api/v1/tokens/{token_id}
+func (c *Client) UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error) {
+	res, err := c.sendUpdateToken(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (res UpdateTokenRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/tokens/"
+	{
+		// Encode "token_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "token_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.TokenID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateTokenRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateTokenOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateTokenResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

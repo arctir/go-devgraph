@@ -179,6 +179,20 @@ func encodeCreateOAuthServiceRequest(
 	return nil
 }
 
+func encodeCreatePromptRequest(
+	req *PromptCreate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateTokenRequest(
 	req *ApiTokenCreate,
 	r *http.Request,
@@ -311,6 +325,34 @@ func encodeUpdateMcpendpointRequest(
 
 func encodeUpdateOAuthServiceRequest(
 	req *OAuthServiceUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdatePromptRequest(
+	req *PromptUpdate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateTokenRequest(
+	req *ApiTokenUpdate,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

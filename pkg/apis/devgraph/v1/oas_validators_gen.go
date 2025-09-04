@@ -54,6 +54,50 @@ func (s ApiTokenResponseScopes) Validate() error {
 	}
 }
 
+func (s *ApiTokenUpdate) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.Scopes.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "scopes",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s ApiTokenUpdateScopes) Validate() error {
+	switch s.Type {
+	case StringArrayApiTokenUpdateScopes:
+		if s.StringArray == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	case NullApiTokenUpdateScopes:
+		return nil // no validation needed
+	default:
+		return errors.Errorf("invalid type %q", s.Type)
+	}
+}
+
 func (s BulkInviteEnvironmentUsersCreatedApplicationJSON) Validate() error {
 	alias := ([]EnvironmentUserResponse)(s)
 	if alias == nil {
@@ -688,6 +732,35 @@ func (s ListEnvironmentUsersOKApplicationJSON) Validate() error {
 		return errors.New("nil is invalid value")
 	}
 	return nil
+}
+
+func (s ListOrphanedEntitiesOKApplicationJSON) Validate() error {
+	alias := ([]EntityResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s ListPromptsOKApplicationJSON) Validate() error {
+	alias := ([]PromptResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s NullBooleanEnum) Validate() error {
+	switch s {
+	case "null":
+		return nil
+	case "true":
+		return nil
+	case "false":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s *OAuthAuthorizationRequest) Validate() error {
