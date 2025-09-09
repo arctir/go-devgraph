@@ -1364,16 +1364,17 @@ func (s *Entity) SetStatus(val OptEntityStatus) {
 
 // Ref: #/components/schemas/EntityDefinitionResponse
 type EntityDefinitionResponse struct {
-	Group    string                            `json:"group"`
-	Kind     string                            `json:"kind"`
-	ListKind string                            `json:"list_kind"`
-	Plural   OptEntityDefinitionResponsePlural `json:"plural"`
-	Singular string                            `json:"singular"`
-	Name     OptString                         `json:"name"`
-	Spec     EntityDefinitionResponseSpec      `json:"spec"`
-	Storage  OptBool                           `json:"storage"`
-	Served   OptBool                           `json:"served"`
-	ID       uuid.UUID                         `json:"id"`
+	Group       string                                 `json:"group"`
+	Kind        string                                 `json:"kind"`
+	ListKind    string                                 `json:"list_kind"`
+	Plural      OptEntityDefinitionResponsePlural      `json:"plural"`
+	Singular    string                                 `json:"singular"`
+	Name        OptString                              `json:"name"`
+	Description OptEntityDefinitionResponseDescription `json:"description"`
+	Spec        EntityDefinitionResponseSpec           `json:"spec"`
+	Storage     OptBool                                `json:"storage"`
+	Served      OptBool                                `json:"served"`
+	ID          uuid.UUID                              `json:"id"`
 }
 
 // GetGroup returns the value of Group.
@@ -1404,6 +1405,11 @@ func (s *EntityDefinitionResponse) GetSingular() string {
 // GetName returns the value of Name.
 func (s *EntityDefinitionResponse) GetName() OptString {
 	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *EntityDefinitionResponse) GetDescription() OptEntityDefinitionResponseDescription {
+	return s.Description
 }
 
 // GetSpec returns the value of Spec.
@@ -1456,6 +1462,11 @@ func (s *EntityDefinitionResponse) SetName(val OptString) {
 	s.Name = val
 }
 
+// SetDescription sets the value of Description.
+func (s *EntityDefinitionResponse) SetDescription(val OptEntityDefinitionResponseDescription) {
+	s.Description = val
+}
+
 // SetSpec sets the value of Spec.
 func (s *EntityDefinitionResponse) SetSpec(val EntityDefinitionResponseSpec) {
 	s.Spec = val
@@ -1477,6 +1488,74 @@ func (s *EntityDefinitionResponse) SetID(val uuid.UUID) {
 }
 
 func (*EntityDefinitionResponse) createEntityDefinitionRes() {}
+
+// EntityDefinitionResponseDescription represents sum type.
+type EntityDefinitionResponseDescription struct {
+	Type   EntityDefinitionResponseDescriptionType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// EntityDefinitionResponseDescriptionType is oneOf type of EntityDefinitionResponseDescription.
+type EntityDefinitionResponseDescriptionType string
+
+// Possible values for EntityDefinitionResponseDescriptionType.
+const (
+	StringEntityDefinitionResponseDescription EntityDefinitionResponseDescriptionType = "string"
+	NullEntityDefinitionResponseDescription   EntityDefinitionResponseDescriptionType = "struct{}"
+)
+
+// IsString reports whether EntityDefinitionResponseDescription is string.
+func (s EntityDefinitionResponseDescription) IsString() bool {
+	return s.Type == StringEntityDefinitionResponseDescription
+}
+
+// IsNull reports whether EntityDefinitionResponseDescription is struct{}.
+func (s EntityDefinitionResponseDescription) IsNull() bool {
+	return s.Type == NullEntityDefinitionResponseDescription
+}
+
+// SetString sets EntityDefinitionResponseDescription to string.
+func (s *EntityDefinitionResponseDescription) SetString(v string) {
+	s.Type = StringEntityDefinitionResponseDescription
+	s.String = v
+}
+
+// GetString returns string and true boolean if EntityDefinitionResponseDescription is string.
+func (s EntityDefinitionResponseDescription) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringEntityDefinitionResponseDescription returns new EntityDefinitionResponseDescription from string.
+func NewStringEntityDefinitionResponseDescription(v string) EntityDefinitionResponseDescription {
+	var s EntityDefinitionResponseDescription
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets EntityDefinitionResponseDescription to struct{}.
+func (s *EntityDefinitionResponseDescription) SetNull(v struct{}) {
+	s.Type = NullEntityDefinitionResponseDescription
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if EntityDefinitionResponseDescription is struct{}.
+func (s EntityDefinitionResponseDescription) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullEntityDefinitionResponseDescription returns new EntityDefinitionResponseDescription from struct{}.
+func NewNullEntityDefinitionResponseDescription(v struct{}) EntityDefinitionResponseDescription {
+	var s EntityDefinitionResponseDescription
+	s.SetNull(v)
+	return s
+}
 
 // EntityDefinitionResponsePlural represents sum type.
 type EntityDefinitionResponsePlural struct {
@@ -1559,15 +1638,16 @@ func (s *EntityDefinitionResponseSpec) init() EntityDefinitionResponseSpec {
 
 // Ref: #/components/schemas/EntityDefinitionSpec
 type EntityDefinitionSpec struct {
-	Group    string                        `json:"group"`
-	Kind     string                        `json:"kind"`
-	ListKind string                        `json:"list_kind"`
-	Plural   OptEntityDefinitionSpecPlural `json:"plural"`
-	Singular string                        `json:"singular"`
-	Name     OptString                     `json:"name"`
-	Spec     EntityDefinitionSpecSpec      `json:"spec"`
-	Storage  OptBool                       `json:"storage"`
-	Served   OptBool                       `json:"served"`
+	Group       string                             `json:"group"`
+	Kind        string                             `json:"kind"`
+	ListKind    string                             `json:"list_kind"`
+	Plural      OptEntityDefinitionSpecPlural      `json:"plural"`
+	Singular    string                             `json:"singular"`
+	Name        OptString                          `json:"name"`
+	Description OptEntityDefinitionSpecDescription `json:"description"`
+	Spec        EntityDefinitionSpecSpec           `json:"spec"`
+	Storage     OptBool                            `json:"storage"`
+	Served      OptBool                            `json:"served"`
 }
 
 // GetGroup returns the value of Group.
@@ -1598,6 +1678,11 @@ func (s *EntityDefinitionSpec) GetSingular() string {
 // GetName returns the value of Name.
 func (s *EntityDefinitionSpec) GetName() OptString {
 	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *EntityDefinitionSpec) GetDescription() OptEntityDefinitionSpecDescription {
+	return s.Description
 }
 
 // GetSpec returns the value of Spec.
@@ -1645,6 +1730,11 @@ func (s *EntityDefinitionSpec) SetName(val OptString) {
 	s.Name = val
 }
 
+// SetDescription sets the value of Description.
+func (s *EntityDefinitionSpec) SetDescription(val OptEntityDefinitionSpecDescription) {
+	s.Description = val
+}
+
 // SetSpec sets the value of Spec.
 func (s *EntityDefinitionSpec) SetSpec(val EntityDefinitionSpecSpec) {
 	s.Spec = val
@@ -1658,6 +1748,74 @@ func (s *EntityDefinitionSpec) SetStorage(val OptBool) {
 // SetServed sets the value of Served.
 func (s *EntityDefinitionSpec) SetServed(val OptBool) {
 	s.Served = val
+}
+
+// EntityDefinitionSpecDescription represents sum type.
+type EntityDefinitionSpecDescription struct {
+	Type   EntityDefinitionSpecDescriptionType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// EntityDefinitionSpecDescriptionType is oneOf type of EntityDefinitionSpecDescription.
+type EntityDefinitionSpecDescriptionType string
+
+// Possible values for EntityDefinitionSpecDescriptionType.
+const (
+	StringEntityDefinitionSpecDescription EntityDefinitionSpecDescriptionType = "string"
+	NullEntityDefinitionSpecDescription   EntityDefinitionSpecDescriptionType = "struct{}"
+)
+
+// IsString reports whether EntityDefinitionSpecDescription is string.
+func (s EntityDefinitionSpecDescription) IsString() bool {
+	return s.Type == StringEntityDefinitionSpecDescription
+}
+
+// IsNull reports whether EntityDefinitionSpecDescription is struct{}.
+func (s EntityDefinitionSpecDescription) IsNull() bool {
+	return s.Type == NullEntityDefinitionSpecDescription
+}
+
+// SetString sets EntityDefinitionSpecDescription to string.
+func (s *EntityDefinitionSpecDescription) SetString(v string) {
+	s.Type = StringEntityDefinitionSpecDescription
+	s.String = v
+}
+
+// GetString returns string and true boolean if EntityDefinitionSpecDescription is string.
+func (s EntityDefinitionSpecDescription) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringEntityDefinitionSpecDescription returns new EntityDefinitionSpecDescription from string.
+func NewStringEntityDefinitionSpecDescription(v string) EntityDefinitionSpecDescription {
+	var s EntityDefinitionSpecDescription
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets EntityDefinitionSpecDescription to struct{}.
+func (s *EntityDefinitionSpecDescription) SetNull(v struct{}) {
+	s.Type = NullEntityDefinitionSpecDescription
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if EntityDefinitionSpecDescription is struct{}.
+func (s EntityDefinitionSpecDescription) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullEntityDefinitionSpecDescription returns new EntityDefinitionSpecDescription from struct{}.
+func NewNullEntityDefinitionSpecDescription(v struct{}) EntityDefinitionSpecDescription {
+	var s EntityDefinitionSpecDescription
+	s.SetNull(v)
+	return s
 }
 
 // EntityDefinitionSpecPlural represents sum type.
@@ -8108,6 +8266,52 @@ func (o OptDateTime) Or(d time.Time) time.Time {
 	return d
 }
 
+// NewOptEntityDefinitionResponseDescription returns new OptEntityDefinitionResponseDescription with value set to v.
+func NewOptEntityDefinitionResponseDescription(v EntityDefinitionResponseDescription) OptEntityDefinitionResponseDescription {
+	return OptEntityDefinitionResponseDescription{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEntityDefinitionResponseDescription is optional EntityDefinitionResponseDescription.
+type OptEntityDefinitionResponseDescription struct {
+	Value EntityDefinitionResponseDescription
+	Set   bool
+}
+
+// IsSet returns true if OptEntityDefinitionResponseDescription was set.
+func (o OptEntityDefinitionResponseDescription) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEntityDefinitionResponseDescription) Reset() {
+	var v EntityDefinitionResponseDescription
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEntityDefinitionResponseDescription) SetTo(v EntityDefinitionResponseDescription) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEntityDefinitionResponseDescription) Get() (v EntityDefinitionResponseDescription, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEntityDefinitionResponseDescription) Or(d EntityDefinitionResponseDescription) EntityDefinitionResponseDescription {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptEntityDefinitionResponsePlural returns new OptEntityDefinitionResponsePlural with value set to v.
 func NewOptEntityDefinitionResponsePlural(v EntityDefinitionResponsePlural) OptEntityDefinitionResponsePlural {
 	return OptEntityDefinitionResponsePlural{
@@ -8148,6 +8352,52 @@ func (o OptEntityDefinitionResponsePlural) Get() (v EntityDefinitionResponsePlur
 
 // Or returns value if set, or given parameter if does not.
 func (o OptEntityDefinitionResponsePlural) Or(d EntityDefinitionResponsePlural) EntityDefinitionResponsePlural {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEntityDefinitionSpecDescription returns new OptEntityDefinitionSpecDescription with value set to v.
+func NewOptEntityDefinitionSpecDescription(v EntityDefinitionSpecDescription) OptEntityDefinitionSpecDescription {
+	return OptEntityDefinitionSpecDescription{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEntityDefinitionSpecDescription is optional EntityDefinitionSpecDescription.
+type OptEntityDefinitionSpecDescription struct {
+	Value EntityDefinitionSpecDescription
+	Set   bool
+}
+
+// IsSet returns true if OptEntityDefinitionSpecDescription was set.
+func (o OptEntityDefinitionSpecDescription) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEntityDefinitionSpecDescription) Reset() {
+	var v EntityDefinitionSpecDescription
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEntityDefinitionSpecDescription) SetTo(v EntityDefinitionSpecDescription) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEntityDefinitionSpecDescription) Get() (v EntityDefinitionSpecDescription, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEntityDefinitionSpecDescription) Or(d EntityDefinitionSpecDescription) EntityDefinitionSpecDescription {
 	if v, ok := o.Get(); ok {
 		return v
 	}

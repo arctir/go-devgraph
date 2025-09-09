@@ -2222,6 +2222,12 @@ func (s *EntityDefinitionResponse) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.Description.Set {
+			e.FieldStart("description")
+			s.Description.Encode(e)
+		}
+	}
+	{
 		e.FieldStart("spec")
 		s.Spec.Encode(e)
 	}
@@ -2243,17 +2249,18 @@ func (s *EntityDefinitionResponse) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfEntityDefinitionResponse = [10]string{
-	0: "group",
-	1: "kind",
-	2: "list_kind",
-	3: "plural",
-	4: "singular",
-	5: "name",
-	6: "spec",
-	7: "storage",
-	8: "served",
-	9: "id",
+var jsonFieldsNameOfEntityDefinitionResponse = [11]string{
+	0:  "group",
+	1:  "kind",
+	2:  "list_kind",
+	3:  "plural",
+	4:  "singular",
+	5:  "name",
+	6:  "description",
+	7:  "spec",
+	8:  "storage",
+	9:  "served",
+	10: "id",
 }
 
 // Decode decodes EntityDefinitionResponse from json.
@@ -2334,8 +2341,18 @@ func (s *EntityDefinitionResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
+		case "description":
+			if err := func() error {
+				s.Description.Reset()
+				if err := s.Description.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"description\"")
+			}
 		case "spec":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				if err := s.Spec.Decode(d); err != nil {
 					return err
@@ -2365,7 +2382,7 @@ func (s *EntityDefinitionResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"served\"")
 			}
 		case "id":
-			requiredBitSet[1] |= 1 << 1
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
 				s.ID = v
@@ -2386,8 +2403,8 @@ func (s *EntityDefinitionResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b01010111,
-		0b00000010,
+		0b10010111,
+		0b00000100,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -2429,6 +2446,55 @@ func (s *EntityDefinitionResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EntityDefinitionResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EntityDefinitionResponseDescription as json.
+func (s EntityDefinitionResponseDescription) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringEntityDefinitionResponseDescription:
+		e.Str(s.String)
+	case NullEntityDefinitionResponseDescription:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes EntityDefinitionResponseDescription from json.
+func (s *EntityDefinitionResponseDescription) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EntityDefinitionResponseDescription to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullEntityDefinitionResponseDescription
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringEntityDefinitionResponseDescription
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EntityDefinitionResponseDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EntityDefinitionResponseDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2578,6 +2644,12 @@ func (s *EntityDefinitionSpec) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.Description.Set {
+			e.FieldStart("description")
+			s.Description.Encode(e)
+		}
+	}
+	{
 		e.FieldStart("spec")
 		s.Spec.Encode(e)
 	}
@@ -2595,16 +2667,17 @@ func (s *EntityDefinitionSpec) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfEntityDefinitionSpec = [9]string{
+var jsonFieldsNameOfEntityDefinitionSpec = [10]string{
 	0: "group",
 	1: "kind",
 	2: "list_kind",
 	3: "plural",
 	4: "singular",
 	5: "name",
-	6: "spec",
-	7: "storage",
-	8: "served",
+	6: "description",
+	7: "spec",
+	8: "storage",
+	9: "served",
 }
 
 // Decode decodes EntityDefinitionSpec from json.
@@ -2685,8 +2758,18 @@ func (s *EntityDefinitionSpec) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
+		case "description":
+			if err := func() error {
+				s.Description.Reset()
+				if err := s.Description.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"description\"")
+			}
 		case "spec":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				if err := s.Spec.Decode(d); err != nil {
 					return err
@@ -2725,7 +2808,7 @@ func (s *EntityDefinitionSpec) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b01010111,
+		0b10010111,
 		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
@@ -2768,6 +2851,55 @@ func (s *EntityDefinitionSpec) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EntityDefinitionSpec) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EntityDefinitionSpecDescription as json.
+func (s EntityDefinitionSpecDescription) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringEntityDefinitionSpecDescription:
+		e.Str(s.String)
+	case NullEntityDefinitionSpecDescription:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes EntityDefinitionSpecDescription from json.
+func (s *EntityDefinitionSpecDescription) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EntityDefinitionSpecDescription to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullEntityDefinitionSpecDescription
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringEntityDefinitionSpecDescription
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EntityDefinitionSpecDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EntityDefinitionSpecDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -12567,6 +12699,39 @@ func (s *OptDateTime) UnmarshalJSON(data []byte) error {
 	return s.Decode(d, json.DecodeDateTime)
 }
 
+// Encode encodes EntityDefinitionResponseDescription as json.
+func (o OptEntityDefinitionResponseDescription) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EntityDefinitionResponseDescription from json.
+func (o *OptEntityDefinitionResponseDescription) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEntityDefinitionResponseDescription to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEntityDefinitionResponseDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEntityDefinitionResponseDescription) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes EntityDefinitionResponsePlural as json.
 func (o OptEntityDefinitionResponsePlural) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -12596,6 +12761,39 @@ func (s OptEntityDefinitionResponsePlural) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptEntityDefinitionResponsePlural) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EntityDefinitionSpecDescription as json.
+func (o OptEntityDefinitionSpecDescription) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EntityDefinitionSpecDescription from json.
+func (o *OptEntityDefinitionSpecDescription) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEntityDefinitionSpecDescription to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEntityDefinitionSpecDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEntityDefinitionSpecDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
