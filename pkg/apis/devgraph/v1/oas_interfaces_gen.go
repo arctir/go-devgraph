@@ -25,6 +25,10 @@ type CreateEntityRelationRes interface {
 	createEntityRelationRes()
 }
 
+type CreateEntityRelationsBulkRes interface {
+	createEntityRelationsBulkRes()
+}
+
 type CreateEntityRes interface {
 	createEntityRes()
 }

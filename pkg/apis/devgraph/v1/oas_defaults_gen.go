@@ -3,10 +3,42 @@
 package api
 
 // setDefaults set default value of fields.
+func (s *AnthropicModelProviderCreate) setDefaults() {
+	{
+		val := bool(false)
+		s.Default.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AnthropicModelProviderResponse) setDefaults() {
+	{
+		val := bool(false)
+		s.Default.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *ApiTokenResponse) setDefaults() {
 	{
 		val := bool(true)
 		s.Active.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BulkEntityRelationCreateRequest) setDefaults() {
+	{
+		val := string("default")
+		s.Namespace.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BulkEntityRelationResponse) setDefaults() {
+	{
+		val := string("default")
+		s.Namespace.SetTo(val)
 	}
 }
 

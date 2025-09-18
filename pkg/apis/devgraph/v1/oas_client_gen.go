@@ -67,6 +67,13 @@ type Invoker interface {
 	//
 	// POST /api/v1/entities/relations
 	CreateEntityRelation(ctx context.Context, request *EntityRelation, params CreateEntityRelationParams) (CreateEntityRelationRes, error)
+	// CreateEntityRelationsBulk invokes create_entity_relations_bulk operation.
+	//
+	// Creates multiple entity relations in a single request. Provides detailed success/failure
+	// information for each relation. Requires 'create:entityrelations' permission.
+	//
+	// POST /api/v1/entities/relations/bulk
+	CreateEntityRelationsBulk(ctx context.Context, request *BulkEntityRelationCreateRequest) (CreateEntityRelationsBulkRes, error)
 	// CreateEnvironment invokes create_environment operation.
 	//
 	// Create Environment.
@@ -1133,6 +1140,88 @@ func (c *Client) sendCreateEntityRelation(ctx context.Context, request *EntityRe
 	defer resp.Body.Close()
 
 	result, err := decodeCreateEntityRelationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateEntityRelationsBulk invokes create_entity_relations_bulk operation.
+//
+// Creates multiple entity relations in a single request. Provides detailed success/failure
+// information for each relation. Requires 'create:entityrelations' permission.
+//
+// POST /api/v1/entities/relations/bulk
+func (c *Client) CreateEntityRelationsBulk(ctx context.Context, request *BulkEntityRelationCreateRequest) (CreateEntityRelationsBulkRes, error) {
+	res, err := c.sendCreateEntityRelationsBulk(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateEntityRelationsBulk(ctx context.Context, request *BulkEntityRelationCreateRequest) (res CreateEntityRelationsBulkRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/entities/relations/bulk"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateEntityRelationsBulkRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, CreateEntityRelationsBulkOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateEntityRelationsBulkResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

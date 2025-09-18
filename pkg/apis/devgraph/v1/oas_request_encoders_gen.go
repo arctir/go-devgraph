@@ -95,6 +95,20 @@ func encodeCreateEntityRelationRequest(
 	return nil
 }
 
+func encodeCreateEntityRelationsBulkRequest(
+	req *BulkEntityRelationCreateRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateEnvironmentRequest(
 	req *EnvironmentCreate,
 	r *http.Request,

@@ -11,6 +11,113 @@ import (
 	"github.com/google/uuid"
 )
 
+// Ref: #/components/schemas/AnthropicModelProviderCreate
+type AnthropicModelProviderCreate struct {
+	Type    string  `json:"type"`
+	Name    string  `json:"name"`
+	APIKey  string  `json:"api_key"`
+	Default OptBool `json:"default"`
+}
+
+// GetType returns the value of Type.
+func (s *AnthropicModelProviderCreate) GetType() string {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *AnthropicModelProviderCreate) GetName() string {
+	return s.Name
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *AnthropicModelProviderCreate) GetAPIKey() string {
+	return s.APIKey
+}
+
+// GetDefault returns the value of Default.
+func (s *AnthropicModelProviderCreate) GetDefault() OptBool {
+	return s.Default
+}
+
+// SetType sets the value of Type.
+func (s *AnthropicModelProviderCreate) SetType(val string) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *AnthropicModelProviderCreate) SetName(val string) {
+	s.Name = val
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *AnthropicModelProviderCreate) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// SetDefault sets the value of Default.
+func (s *AnthropicModelProviderCreate) SetDefault(val OptBool) {
+	s.Default = val
+}
+
+// Ref: #/components/schemas/AnthropicModelProviderResponse
+type AnthropicModelProviderResponse struct {
+	Type    string    `json:"type"`
+	ID      uuid.UUID `json:"id"`
+	Name    string    `json:"name"`
+	APIKey  string    `json:"api_key"`
+	Default OptBool   `json:"default"`
+}
+
+// GetType returns the value of Type.
+func (s *AnthropicModelProviderResponse) GetType() string {
+	return s.Type
+}
+
+// GetID returns the value of ID.
+func (s *AnthropicModelProviderResponse) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *AnthropicModelProviderResponse) GetName() string {
+	return s.Name
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *AnthropicModelProviderResponse) GetAPIKey() string {
+	return s.APIKey
+}
+
+// GetDefault returns the value of Default.
+func (s *AnthropicModelProviderResponse) GetDefault() OptBool {
+	return s.Default
+}
+
+// SetType sets the value of Type.
+func (s *AnthropicModelProviderResponse) SetType(val string) {
+	s.Type = val
+}
+
+// SetID sets the value of ID.
+func (s *AnthropicModelProviderResponse) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *AnthropicModelProviderResponse) SetName(val string) {
+	s.Name = val
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *AnthropicModelProviderResponse) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// SetDefault sets the value of Default.
+func (s *AnthropicModelProviderResponse) SetDefault(val OptBool) {
+	s.Default = val
+}
+
 // Ref: #/components/schemas/ApiTokenCreate
 type ApiTokenCreate struct {
 	Name      string                     `json:"name"`
@@ -630,6 +737,123 @@ func NewNullApiTokenUpdateScopes(v struct{}) ApiTokenUpdateScopes {
 	return s
 }
 
+// Request model for creating multiple entity relations in bulk.
+// Ref: #/components/schemas/BulkEntityRelationCreateRequest
+type BulkEntityRelationCreateRequest struct {
+	Namespace OptString `json:"namespace"`
+	// List of entity relations to create.
+	Relations []EntityRelation `json:"relations"`
+}
+
+// GetNamespace returns the value of Namespace.
+func (s *BulkEntityRelationCreateRequest) GetNamespace() OptString {
+	return s.Namespace
+}
+
+// GetRelations returns the value of Relations.
+func (s *BulkEntityRelationCreateRequest) GetRelations() []EntityRelation {
+	return s.Relations
+}
+
+// SetNamespace sets the value of Namespace.
+func (s *BulkEntityRelationCreateRequest) SetNamespace(val OptString) {
+	s.Namespace = val
+}
+
+// SetRelations sets the value of Relations.
+func (s *BulkEntityRelationCreateRequest) SetRelations(val []EntityRelation) {
+	s.Relations = val
+}
+
+// Response model for bulk entity relation creation.
+// Ref: #/components/schemas/BulkEntityRelationResponse
+type BulkEntityRelationResponse struct {
+	Namespace OptString `json:"namespace"`
+	// Successfully created relations.
+	CreatedRelations []EntityRelationResponse `json:"created_relations"`
+	// Relations that failed to create with error details.
+	FailedRelations []BulkEntityRelationResponseFailedRelationsItem `json:"failed_relations"`
+	// Total number of relations requested for creation.
+	TotalRequested int `json:"total_requested"`
+	// Number of successfully created relations.
+	SuccessCount int `json:"success_count"`
+	// Number of failed relation creations.
+	FailureCount int `json:"failure_count"`
+}
+
+// GetNamespace returns the value of Namespace.
+func (s *BulkEntityRelationResponse) GetNamespace() OptString {
+	return s.Namespace
+}
+
+// GetCreatedRelations returns the value of CreatedRelations.
+func (s *BulkEntityRelationResponse) GetCreatedRelations() []EntityRelationResponse {
+	return s.CreatedRelations
+}
+
+// GetFailedRelations returns the value of FailedRelations.
+func (s *BulkEntityRelationResponse) GetFailedRelations() []BulkEntityRelationResponseFailedRelationsItem {
+	return s.FailedRelations
+}
+
+// GetTotalRequested returns the value of TotalRequested.
+func (s *BulkEntityRelationResponse) GetTotalRequested() int {
+	return s.TotalRequested
+}
+
+// GetSuccessCount returns the value of SuccessCount.
+func (s *BulkEntityRelationResponse) GetSuccessCount() int {
+	return s.SuccessCount
+}
+
+// GetFailureCount returns the value of FailureCount.
+func (s *BulkEntityRelationResponse) GetFailureCount() int {
+	return s.FailureCount
+}
+
+// SetNamespace sets the value of Namespace.
+func (s *BulkEntityRelationResponse) SetNamespace(val OptString) {
+	s.Namespace = val
+}
+
+// SetCreatedRelations sets the value of CreatedRelations.
+func (s *BulkEntityRelationResponse) SetCreatedRelations(val []EntityRelationResponse) {
+	s.CreatedRelations = val
+}
+
+// SetFailedRelations sets the value of FailedRelations.
+func (s *BulkEntityRelationResponse) SetFailedRelations(val []BulkEntityRelationResponseFailedRelationsItem) {
+	s.FailedRelations = val
+}
+
+// SetTotalRequested sets the value of TotalRequested.
+func (s *BulkEntityRelationResponse) SetTotalRequested(val int) {
+	s.TotalRequested = val
+}
+
+// SetSuccessCount sets the value of SuccessCount.
+func (s *BulkEntityRelationResponse) SetSuccessCount(val int) {
+	s.SuccessCount = val
+}
+
+// SetFailureCount sets the value of FailureCount.
+func (s *BulkEntityRelationResponse) SetFailureCount(val int) {
+	s.FailureCount = val
+}
+
+func (*BulkEntityRelationResponse) createEntityRelationsBulkRes() {}
+
+type BulkEntityRelationResponseFailedRelationsItem map[string]jx.Raw
+
+func (s *BulkEntityRelationResponseFailedRelationsItem) init() BulkEntityRelationResponseFailedRelationsItem {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
 type BulkInviteEnvironmentUsersCreatedApplicationJSON []EnvironmentUserResponse
 
 func (*BulkInviteEnvironmentUsersCreatedApplicationJSON) bulkInviteEnvironmentUsersRes() {}
@@ -1153,6 +1377,11 @@ func (*CreateEntityNotFound) createEntityRes() {}
 type CreateEntityRelationNotFound struct{}
 
 func (*CreateEntityRelationNotFound) createEntityRelationRes() {}
+
+// CreateEntityRelationsBulkNotFound is response for CreateEntityRelationsBulk operation.
+type CreateEntityRelationsBulkNotFound struct{}
+
+func (*CreateEntityRelationsBulkNotFound) createEntityRelationsBulkRes() {}
 
 // CreateEnvironmentNotFound is response for CreateEnvironment operation.
 type CreateEnvironmentNotFound struct{}
@@ -3152,6 +3381,7 @@ func (*HTTPValidationError) createChatRes()                 {}
 func (*HTTPValidationError) createChatTitleRes()            {}
 func (*HTTPValidationError) createEntityDefinitionRes()     {}
 func (*HTTPValidationError) createEntityRelationRes()       {}
+func (*HTTPValidationError) createEntityRelationsBulkRes()  {}
 func (*HTTPValidationError) createEntityRes()               {}
 func (*HTTPValidationError) createEnvironmentRes()          {}
 func (*HTTPValidationError) createEnvironmentUserRes()      {}
@@ -4601,9 +4831,10 @@ func (s *ModelProviderCreate) SetData(val ModelProviderCreateData) {
 
 // ModelProviderCreateData represents sum type.
 type ModelProviderCreateData struct {
-	Type                      ModelProviderCreateDataType // switch on this field
-	OpenAIModelProviderCreate OpenAIModelProviderCreate
-	XAIModelProviderCreate    XAIModelProviderCreate
+	Type                         ModelProviderCreateDataType // switch on this field
+	OpenAIModelProviderCreate    OpenAIModelProviderCreate
+	XAIModelProviderCreate       XAIModelProviderCreate
+	AnthropicModelProviderCreate AnthropicModelProviderCreate
 }
 
 // ModelProviderCreateDataType is oneOf type of ModelProviderCreateData.
@@ -4611,8 +4842,9 @@ type ModelProviderCreateDataType string
 
 // Possible values for ModelProviderCreateDataType.
 const (
-	OpenAIModelProviderCreateModelProviderCreateData ModelProviderCreateDataType = "openai"
-	XAIModelProviderCreateModelProviderCreateData    ModelProviderCreateDataType = "xai"
+	OpenAIModelProviderCreateModelProviderCreateData    ModelProviderCreateDataType = "openai"
+	XAIModelProviderCreateModelProviderCreateData       ModelProviderCreateDataType = "xai"
+	AnthropicModelProviderCreateModelProviderCreateData ModelProviderCreateDataType = "anthropic"
 )
 
 // IsOpenAIModelProviderCreate reports whether ModelProviderCreateData is OpenAIModelProviderCreate.
@@ -4623,6 +4855,11 @@ func (s ModelProviderCreateData) IsOpenAIModelProviderCreate() bool {
 // IsXAIModelProviderCreate reports whether ModelProviderCreateData is XAIModelProviderCreate.
 func (s ModelProviderCreateData) IsXAIModelProviderCreate() bool {
 	return s.Type == XAIModelProviderCreateModelProviderCreateData
+}
+
+// IsAnthropicModelProviderCreate reports whether ModelProviderCreateData is AnthropicModelProviderCreate.
+func (s ModelProviderCreateData) IsAnthropicModelProviderCreate() bool {
+	return s.Type == AnthropicModelProviderCreateModelProviderCreateData
 }
 
 // SetOpenAIModelProviderCreate sets ModelProviderCreateData to OpenAIModelProviderCreate.
@@ -4667,12 +4904,34 @@ func NewXAIModelProviderCreateModelProviderCreateData(v XAIModelProviderCreate) 
 	return s
 }
 
+// SetAnthropicModelProviderCreate sets ModelProviderCreateData to AnthropicModelProviderCreate.
+func (s *ModelProviderCreateData) SetAnthropicModelProviderCreate(v AnthropicModelProviderCreate) {
+	s.Type = AnthropicModelProviderCreateModelProviderCreateData
+	s.AnthropicModelProviderCreate = v
+}
+
+// GetAnthropicModelProviderCreate returns AnthropicModelProviderCreate and true boolean if ModelProviderCreateData is AnthropicModelProviderCreate.
+func (s ModelProviderCreateData) GetAnthropicModelProviderCreate() (v AnthropicModelProviderCreate, ok bool) {
+	if !s.IsAnthropicModelProviderCreate() {
+		return v, false
+	}
+	return s.AnthropicModelProviderCreate, true
+}
+
+// NewAnthropicModelProviderCreateModelProviderCreateData returns new ModelProviderCreateData from AnthropicModelProviderCreate.
+func NewAnthropicModelProviderCreateModelProviderCreateData(v AnthropicModelProviderCreate) ModelProviderCreateData {
+	var s ModelProviderCreateData
+	s.SetAnthropicModelProviderCreate(v)
+	return s
+}
+
 // Ref: #/components/schemas/ModelProviderResponse
 // ModelProviderResponse represents sum type.
 type ModelProviderResponse struct {
-	Type                        ModelProviderResponseType // switch on this field
-	OpenAIModelProviderResponse OpenAIModelProviderResponse
-	XAIModelProviderResponse    XAIModelProviderResponse
+	Type                           ModelProviderResponseType // switch on this field
+	OpenAIModelProviderResponse    OpenAIModelProviderResponse
+	XAIModelProviderResponse       XAIModelProviderResponse
+	AnthropicModelProviderResponse AnthropicModelProviderResponse
 }
 
 // ModelProviderResponseType is oneOf type of ModelProviderResponse.
@@ -4680,8 +4939,9 @@ type ModelProviderResponseType string
 
 // Possible values for ModelProviderResponseType.
 const (
-	OpenAIModelProviderResponseModelProviderResponse ModelProviderResponseType = "openai"
-	XAIModelProviderResponseModelProviderResponse    ModelProviderResponseType = "xai"
+	OpenAIModelProviderResponseModelProviderResponse    ModelProviderResponseType = "openai"
+	XAIModelProviderResponseModelProviderResponse       ModelProviderResponseType = "xai"
+	AnthropicModelProviderResponseModelProviderResponse ModelProviderResponseType = "anthropic"
 )
 
 // IsOpenAIModelProviderResponse reports whether ModelProviderResponse is OpenAIModelProviderResponse.
@@ -4692,6 +4952,11 @@ func (s ModelProviderResponse) IsOpenAIModelProviderResponse() bool {
 // IsXAIModelProviderResponse reports whether ModelProviderResponse is XAIModelProviderResponse.
 func (s ModelProviderResponse) IsXAIModelProviderResponse() bool {
 	return s.Type == XAIModelProviderResponseModelProviderResponse
+}
+
+// IsAnthropicModelProviderResponse reports whether ModelProviderResponse is AnthropicModelProviderResponse.
+func (s ModelProviderResponse) IsAnthropicModelProviderResponse() bool {
+	return s.Type == AnthropicModelProviderResponseModelProviderResponse
 }
 
 // SetOpenAIModelProviderResponse sets ModelProviderResponse to OpenAIModelProviderResponse.
@@ -4733,6 +4998,27 @@ func (s ModelProviderResponse) GetXAIModelProviderResponse() (v XAIModelProvider
 func NewXAIModelProviderResponseModelProviderResponse(v XAIModelProviderResponse) ModelProviderResponse {
 	var s ModelProviderResponse
 	s.SetXAIModelProviderResponse(v)
+	return s
+}
+
+// SetAnthropicModelProviderResponse sets ModelProviderResponse to AnthropicModelProviderResponse.
+func (s *ModelProviderResponse) SetAnthropicModelProviderResponse(v AnthropicModelProviderResponse) {
+	s.Type = AnthropicModelProviderResponseModelProviderResponse
+	s.AnthropicModelProviderResponse = v
+}
+
+// GetAnthropicModelProviderResponse returns AnthropicModelProviderResponse and true boolean if ModelProviderResponse is AnthropicModelProviderResponse.
+func (s ModelProviderResponse) GetAnthropicModelProviderResponse() (v AnthropicModelProviderResponse, ok bool) {
+	if !s.IsAnthropicModelProviderResponse() {
+		return v, false
+	}
+	return s.AnthropicModelProviderResponse, true
+}
+
+// NewAnthropicModelProviderResponseModelProviderResponse returns new ModelProviderResponse from AnthropicModelProviderResponse.
+func NewAnthropicModelProviderResponseModelProviderResponse(v AnthropicModelProviderResponse) ModelProviderResponse {
+	var s ModelProviderResponse
+	s.SetAnthropicModelProviderResponse(v)
 	return s
 }
 

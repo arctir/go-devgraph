@@ -13,6 +13,7 @@ const (
 	CreateEntityOperation               OperationName = "CreateEntity"
 	CreateEntityDefinitionOperation     OperationName = "CreateEntityDefinition"
 	CreateEntityRelationOperation       OperationName = "CreateEntityRelation"
+	CreateEntityRelationsBulkOperation  OperationName = "CreateEntityRelationsBulk"
 	CreateEnvironmentOperation          OperationName = "CreateEnvironment"
 	CreateEnvironmentUserOperation      OperationName = "CreateEnvironmentUser"
 	CreateMcpendpointOperation          OperationName = "CreateMcpendpoint"
