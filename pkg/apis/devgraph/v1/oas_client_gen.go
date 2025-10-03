@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/go-faster/errors"
-
 	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/ogenerrors"
@@ -86,6 +85,12 @@ type Invoker interface {
 	//
 	// POST /system/api/v1/environments/{environment_id}/users
 	CreateEnvironmentUser(ctx context.Context, request *EnvironmentUserCreate, params CreateEnvironmentUserParams) (CreateEnvironmentUserRes, error)
+	// CreateMcpToolAssociation invokes create_mcp_tool_association operation.
+	//
+	// Create an association between an MCP tool and an entity definition.
+	//
+	// POST /system/api/v1/mcp-tool-associations
+	CreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error)
 	// CreateMcpendpoint invokes create_mcpendpoint operation.
 	//
 	// Create a new MCP Endpoint configuration.
@@ -130,7 +135,7 @@ type Invoker interface {
 	DeleteChat(ctx context.Context, params DeleteChatParams) (DeleteChatRes, error)
 	// DeleteEntity invokes delete_entity operation.
 	//
-	// Deletes a specific entity from the knowledge graph. Requires 'delete:entities' permission.
+	// Deletes a specific entity from the ontology. Requires 'delete:entities' permission.
 	//
 	// DELETE /api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}
 	DeleteEntity(ctx context.Context, params DeleteEntityParams) (DeleteEntityRes, error)
@@ -152,6 +157,12 @@ type Invoker interface {
 	//
 	// DELETE /system/api/v1/environments/{environment_id}/users/{user_id}
 	DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error)
+	// DeleteMcpToolAssociation invokes delete_mcp_tool_association operation.
+	//
+	// Delete an MCP tool-entity association.
+	//
+	// DELETE /system/api/v1/mcp-tool-associations/{association_id}
+	DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error)
 	// DeleteMcpendpoint invokes delete_mcpendpoint operation.
 	//
 	// Delete a specific MCP Endpoint configuration by ID.
@@ -214,16 +225,16 @@ type Invoker interface {
 	GetChats(ctx context.Context, params GetChatsParams) (GetChatsRes, error)
 	// GetEntities invokes get_entities operation.
 	//
-	// Retrieves entities from the knowledge graph, optionally filtered by field selectors. Field
-	// selectors use dot notation for nested properties (e.g., 'spec.metadata.owner=team-a'). Requires
-	// 'read:entities' permission.
+	// Retrieves entities from the ontology, optionally filtered by field selectors. Field selectors use
+	// dot notation for nested properties (e.g., 'spec.metadata.owner=team-a'). Requires 'read:entities'
+	// permission.
 	//
 	// GET /api/v1/entities/
 	GetEntities(ctx context.Context, params GetEntitiesParams) (GetEntitiesRes, error)
 	// GetEntity invokes get_entity operation.
 	//
-	// Fetches a specific entity based on group, version, namespace, plural, and name. Requires
-	// 'read:entities' permission.
+	// Fetches a specific entity based on group, version, namespace, plural, and name, including related
+	// entities and relations. Requires 'read:entities' permission.
 	//
 	// GET /api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}
 	GetEntity(ctx context.Context, params GetEntityParams) (GetEntityRes, error)
@@ -234,6 +245,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/entities/definitions
 	GetEntityDefinitions(ctx context.Context) (GetEntityDefinitionsRes, error)
+	// GetEntityTools invokes get_entity_tools operation.
+	//
+	// Get all MCP tools associated with an entity definition.
+	//
+	// GET /system/api/v1/entity-definitions/{entity_definition_id}/tools
+	GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error)
 	// GetEnvironmentStatus invokes get_environment_status operation.
 	//
 	// Get Environment Status.
@@ -252,6 +269,12 @@ type Invoker interface {
 	//
 	// GET /system/api/v1/environments
 	GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error)
+	// GetMcpEndpointEntityTypes invokes get_mcp_endpoint_entity_types operation.
+	//
+	// Get all entity types associated with an MCP endpoint's tools.
+	//
+	// GET /system/api/v1/mcpendpoints/{mcpendpoint_name}/entity-types
+	GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error)
 	// GetMcpendpoint invokes get_mcpendpoint operation.
 	//
 	// Get a specific MCP Endpoint configuration by ID.
@@ -343,6 +366,13 @@ type Invoker interface {
 	//
 	// GET /system/api/v1/environments/{environment_id}/users
 	ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error)
+	// ListMcpendpointTools invokes list_mcpendpoint_tools operation.
+	//
+	// List all available tools from a specific MCP Endpoint.
+	// This interrogates the MCP server to discover its available tools.
+	//
+	// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}/tools
+	ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error)
 	// ListOAuthServices invokes list_oauth_services operation.
 	//
 	// List Oauth Services.
@@ -1401,6 +1431,78 @@ func (c *Client) sendCreateEnvironmentUser(ctx context.Context, request *Environ
 	return result, nil
 }
 
+// CreateMcpToolAssociation invokes create_mcp_tool_association operation.
+//
+// Create an association between an MCP tool and an entity definition.
+//
+// POST /system/api/v1/mcp-tool-associations
+func (c *Client) CreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error) {
+	res, err := c.sendCreateMcpToolAssociation(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (res CreateMcpToolAssociationRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/system/api/v1/mcp-tool-associations"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateMcpToolAssociationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, CreateMcpToolAssociationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateMcpToolAssociationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // CreateMcpendpoint invokes create_mcpendpoint operation.
 //
 // Create a new MCP Endpoint configuration.
@@ -1412,6 +1514,15 @@ func (c *Client) CreateMcpendpoint(ctx context.Context, request *MCPEndpointCrea
 }
 
 func (c *Client) sendCreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (res CreateMcpendpointRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1931,7 +2042,7 @@ func (c *Client) sendDeleteChat(ctx context.Context, params DeleteChatParams) (r
 
 // DeleteEntity invokes delete_entity operation.
 //
-// Deletes a specific entity from the knowledge graph. Requires 'delete:entities' permission.
+// Deletes a specific entity from the ontology. Requires 'delete:entities' permission.
 //
 // DELETE /api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}
 func (c *Client) DeleteEntity(ctx context.Context, params DeleteEntityParams) (DeleteEntityRes, error) {
@@ -2387,6 +2498,93 @@ func (c *Client) sendDeleteEnvironmentUser(ctx context.Context, params DeleteEnv
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteEnvironmentUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteMcpToolAssociation invokes delete_mcp_tool_association operation.
+//
+// Delete an MCP tool-entity association.
+//
+// DELETE /system/api/v1/mcp-tool-associations/{association_id}
+func (c *Client) DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error) {
+	res, err := c.sendDeleteMcpToolAssociation(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (res DeleteMcpToolAssociationRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/mcp-tool-associations/"
+	{
+		// Encode "association_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "association_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.AssociationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, DeleteMcpToolAssociationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteMcpToolAssociationResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3308,9 +3506,9 @@ func (c *Client) sendGetChats(ctx context.Context, params GetChatsParams) (res G
 
 // GetEntities invokes get_entities operation.
 //
-// Retrieves entities from the knowledge graph, optionally filtered by field selectors. Field
-// selectors use dot notation for nested properties (e.g., 'spec.metadata.owner=team-a'). Requires
-// 'read:entities' permission.
+// Retrieves entities from the ontology, optionally filtered by field selectors. Field selectors use
+// dot notation for nested properties (e.g., 'spec.metadata.owner=team-a'). Requires 'read:entities'
+// permission.
 //
 // GET /api/v1/entities/
 func (c *Client) GetEntities(ctx context.Context, params GetEntitiesParams) (GetEntitiesRes, error) {
@@ -3467,8 +3665,8 @@ func (c *Client) sendGetEntities(ctx context.Context, params GetEntitiesParams) 
 
 // GetEntity invokes get_entity operation.
 //
-// Fetches a specific entity based on group, version, namespace, plural, and name. Requires
-// 'read:entities' permission.
+// Fetches a specific entity based on group, version, namespace, plural, and name, including related
+// entities and relations. Requires 'read:entities' permission.
 //
 // GET /api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}
 func (c *Client) GetEntity(ctx context.Context, params GetEntityParams) (GetEntityRes, error) {
@@ -3659,6 +3857,114 @@ func (c *Client) sendGetEntityDefinitions(ctx context.Context) (res GetEntityDef
 	defer resp.Body.Close()
 
 	result, err := decodeGetEntityDefinitionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetEntityTools invokes get_entity_tools operation.
+//
+// Get all MCP tools associated with an entity definition.
+//
+// GET /system/api/v1/entity-definitions/{entity_definition_id}/tools
+func (c *Client) GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error) {
+	res, err := c.sendGetEntityTools(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetEntityTools(ctx context.Context, params GetEntityToolsParams) (res GetEntityToolsRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/system/api/v1/entity-definitions/"
+	{
+		// Encode "entity_definition_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "entity_definition_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.EntityDefinitionID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/tools"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "entity_version_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "entity_version_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EntityVersionID.Get(); ok {
+				return e.EncodeValue(conv.UUIDToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetEntityToolsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetEntityToolsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3922,6 +4228,114 @@ func (c *Client) sendGetEnvironments(ctx context.Context) (res GetEnvironmentsRe
 	defer resp.Body.Close()
 
 	result, err := decodeGetEnvironmentsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetMcpEndpointEntityTypes invokes get_mcp_endpoint_entity_types operation.
+//
+// Get all entity types associated with an MCP endpoint's tools.
+//
+// GET /system/api/v1/mcpendpoints/{mcpendpoint_name}/entity-types
+func (c *Client) GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error) {
+	res, err := c.sendGetMcpEndpointEntityTypes(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (res GetMcpEndpointEntityTypesRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	{
+		// Encode "mcpendpoint_name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "mcpendpoint_name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.McpendpointName))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/entity-types"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "tool_name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolName.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetMcpEndpointEntityTypesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetMcpEndpointEntityTypesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5136,6 +5550,95 @@ func (c *Client) sendListEnvironmentUsers(ctx context.Context, params ListEnviro
 	return result, nil
 }
 
+// ListMcpendpointTools invokes list_mcpendpoint_tools operation.
+//
+// List all available tools from a specific MCP Endpoint.
+// This interrogates the MCP server to discover its available tools.
+//
+// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}/tools
+func (c *Client) ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error) {
+	res, err := c.sendListMcpendpointTools(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (res ListMcpendpointToolsRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	{
+		// Encode "mcpendpoint_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "mcpendpoint_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.McpendpointID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/tools"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListMcpendpointToolsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeListMcpendpointToolsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ListOAuthServices invokes list_oauth_services operation.
 //
 // List Oauth Services.
@@ -6024,6 +6527,15 @@ func (c *Client) UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpda
 }
 
 func (c *Client) sendUpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (res UpdateMcpendpointRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string

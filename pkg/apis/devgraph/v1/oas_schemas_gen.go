@@ -120,9 +120,9 @@ func (s *AnthropicModelProviderResponse) SetDefault(val OptBool) {
 
 // Ref: #/components/schemas/ApiTokenCreate
 type ApiTokenCreate struct {
-	Name      string                     `json:"name"`
-	ExpiresAt OptApiTokenCreateExpiresAt `json:"expires_at"`
-	Scopes    []string                   `json:"scopes"`
+	Name      string       `json:"name"`
+	ExpiresAt OptNilString `json:"expires_at"`
+	Scopes    []string     `json:"scopes"`
 }
 
 // GetName returns the value of Name.
@@ -131,7 +131,7 @@ func (s *ApiTokenCreate) GetName() string {
 }
 
 // GetExpiresAt returns the value of ExpiresAt.
-func (s *ApiTokenCreate) GetExpiresAt() OptApiTokenCreateExpiresAt {
+func (s *ApiTokenCreate) GetExpiresAt() OptNilString {
 	return s.ExpiresAt
 }
 
@@ -146,7 +146,7 @@ func (s *ApiTokenCreate) SetName(val string) {
 }
 
 // SetExpiresAt sets the value of ExpiresAt.
-func (s *ApiTokenCreate) SetExpiresAt(val OptApiTokenCreateExpiresAt) {
+func (s *ApiTokenCreate) SetExpiresAt(val OptNilString) {
 	s.ExpiresAt = val
 }
 
@@ -155,79 +155,15 @@ func (s *ApiTokenCreate) SetScopes(val []string) {
 	s.Scopes = val
 }
 
-// ApiTokenCreateExpiresAt represents sum type.
-type ApiTokenCreateExpiresAt struct {
-	Type   ApiTokenCreateExpiresAtType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// ApiTokenCreateExpiresAtType is oneOf type of ApiTokenCreateExpiresAt.
-type ApiTokenCreateExpiresAtType string
-
-// Possible values for ApiTokenCreateExpiresAtType.
-const (
-	StringApiTokenCreateExpiresAt ApiTokenCreateExpiresAtType = "string"
-	NullApiTokenCreateExpiresAt   ApiTokenCreateExpiresAtType = "struct{}"
-)
-
-// IsString reports whether ApiTokenCreateExpiresAt is string.
-func (s ApiTokenCreateExpiresAt) IsString() bool { return s.Type == StringApiTokenCreateExpiresAt }
-
-// IsNull reports whether ApiTokenCreateExpiresAt is struct{}.
-func (s ApiTokenCreateExpiresAt) IsNull() bool { return s.Type == NullApiTokenCreateExpiresAt }
-
-// SetString sets ApiTokenCreateExpiresAt to string.
-func (s *ApiTokenCreateExpiresAt) SetString(v string) {
-	s.Type = StringApiTokenCreateExpiresAt
-	s.String = v
-}
-
-// GetString returns string and true boolean if ApiTokenCreateExpiresAt is string.
-func (s ApiTokenCreateExpiresAt) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringApiTokenCreateExpiresAt returns new ApiTokenCreateExpiresAt from string.
-func NewStringApiTokenCreateExpiresAt(v string) ApiTokenCreateExpiresAt {
-	var s ApiTokenCreateExpiresAt
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ApiTokenCreateExpiresAt to struct{}.
-func (s *ApiTokenCreateExpiresAt) SetNull(v struct{}) {
-	s.Type = NullApiTokenCreateExpiresAt
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenCreateExpiresAt is struct{}.
-func (s ApiTokenCreateExpiresAt) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenCreateExpiresAt returns new ApiTokenCreateExpiresAt from struct{}.
-func NewNullApiTokenCreateExpiresAt(v struct{}) ApiTokenCreateExpiresAt {
-	var s ApiTokenCreateExpiresAt
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/ApiTokenResponse
 type ApiTokenResponse struct {
-	ID        uuid.UUID                    `json:"id"`
-	Name      string                       `json:"name"`
-	UserID    string                       `json:"user_id"`
-	ExpiresAt OptApiTokenResponseExpiresAt `json:"expires_at"`
-	Token     string                       `json:"token"`
-	Scopes    OptApiTokenResponseScopes    `json:"scopes"`
-	Active    OptBool                      `json:"active"`
+	ID        uuid.UUID         `json:"id"`
+	Name      string            `json:"name"`
+	UserID    string            `json:"user_id"`
+	ExpiresAt OptNilString      `json:"expires_at"`
+	Token     string            `json:"token"`
+	Scopes    OptNilStringArray `json:"scopes"`
+	Active    OptBool           `json:"active"`
 }
 
 // GetID returns the value of ID.
@@ -246,7 +182,7 @@ func (s *ApiTokenResponse) GetUserID() string {
 }
 
 // GetExpiresAt returns the value of ExpiresAt.
-func (s *ApiTokenResponse) GetExpiresAt() OptApiTokenResponseExpiresAt {
+func (s *ApiTokenResponse) GetExpiresAt() OptNilString {
 	return s.ExpiresAt
 }
 
@@ -256,7 +192,7 @@ func (s *ApiTokenResponse) GetToken() string {
 }
 
 // GetScopes returns the value of Scopes.
-func (s *ApiTokenResponse) GetScopes() OptApiTokenResponseScopes {
+func (s *ApiTokenResponse) GetScopes() OptNilStringArray {
 	return s.Scopes
 }
 
@@ -281,7 +217,7 @@ func (s *ApiTokenResponse) SetUserID(val string) {
 }
 
 // SetExpiresAt sets the value of ExpiresAt.
-func (s *ApiTokenResponse) SetExpiresAt(val OptApiTokenResponseExpiresAt) {
+func (s *ApiTokenResponse) SetExpiresAt(val OptNilString) {
 	s.ExpiresAt = val
 }
 
@@ -291,7 +227,7 @@ func (s *ApiTokenResponse) SetToken(val string) {
 }
 
 // SetScopes sets the value of Scopes.
-func (s *ApiTokenResponse) SetScopes(val OptApiTokenResponseScopes) {
+func (s *ApiTokenResponse) SetScopes(val OptNilStringArray) {
 	s.Scopes = val
 }
 
@@ -303,438 +239,52 @@ func (s *ApiTokenResponse) SetActive(val OptBool) {
 func (*ApiTokenResponse) createTokenRes() {}
 func (*ApiTokenResponse) updateTokenRes() {}
 
-// ApiTokenResponseExpiresAt represents sum type.
-type ApiTokenResponseExpiresAt struct {
-	Type   ApiTokenResponseExpiresAtType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// ApiTokenResponseExpiresAtType is oneOf type of ApiTokenResponseExpiresAt.
-type ApiTokenResponseExpiresAtType string
-
-// Possible values for ApiTokenResponseExpiresAtType.
-const (
-	StringApiTokenResponseExpiresAt ApiTokenResponseExpiresAtType = "string"
-	NullApiTokenResponseExpiresAt   ApiTokenResponseExpiresAtType = "struct{}"
-)
-
-// IsString reports whether ApiTokenResponseExpiresAt is string.
-func (s ApiTokenResponseExpiresAt) IsString() bool { return s.Type == StringApiTokenResponseExpiresAt }
-
-// IsNull reports whether ApiTokenResponseExpiresAt is struct{}.
-func (s ApiTokenResponseExpiresAt) IsNull() bool { return s.Type == NullApiTokenResponseExpiresAt }
-
-// SetString sets ApiTokenResponseExpiresAt to string.
-func (s *ApiTokenResponseExpiresAt) SetString(v string) {
-	s.Type = StringApiTokenResponseExpiresAt
-	s.String = v
-}
-
-// GetString returns string and true boolean if ApiTokenResponseExpiresAt is string.
-func (s ApiTokenResponseExpiresAt) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringApiTokenResponseExpiresAt returns new ApiTokenResponseExpiresAt from string.
-func NewStringApiTokenResponseExpiresAt(v string) ApiTokenResponseExpiresAt {
-	var s ApiTokenResponseExpiresAt
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ApiTokenResponseExpiresAt to struct{}.
-func (s *ApiTokenResponseExpiresAt) SetNull(v struct{}) {
-	s.Type = NullApiTokenResponseExpiresAt
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenResponseExpiresAt is struct{}.
-func (s ApiTokenResponseExpiresAt) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenResponseExpiresAt returns new ApiTokenResponseExpiresAt from struct{}.
-func NewNullApiTokenResponseExpiresAt(v struct{}) ApiTokenResponseExpiresAt {
-	var s ApiTokenResponseExpiresAt
-	s.SetNull(v)
-	return s
-}
-
-// ApiTokenResponseScopes represents sum type.
-type ApiTokenResponseScopes struct {
-	Type        ApiTokenResponseScopesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// ApiTokenResponseScopesType is oneOf type of ApiTokenResponseScopes.
-type ApiTokenResponseScopesType string
-
-// Possible values for ApiTokenResponseScopesType.
-const (
-	StringArrayApiTokenResponseScopes ApiTokenResponseScopesType = "[]string"
-	NullApiTokenResponseScopes        ApiTokenResponseScopesType = "struct{}"
-)
-
-// IsStringArray reports whether ApiTokenResponseScopes is []string.
-func (s ApiTokenResponseScopes) IsStringArray() bool {
-	return s.Type == StringArrayApiTokenResponseScopes
-}
-
-// IsNull reports whether ApiTokenResponseScopes is struct{}.
-func (s ApiTokenResponseScopes) IsNull() bool { return s.Type == NullApiTokenResponseScopes }
-
-// SetStringArray sets ApiTokenResponseScopes to []string.
-func (s *ApiTokenResponseScopes) SetStringArray(v []string) {
-	s.Type = StringArrayApiTokenResponseScopes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if ApiTokenResponseScopes is []string.
-func (s ApiTokenResponseScopes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayApiTokenResponseScopes returns new ApiTokenResponseScopes from []string.
-func NewStringArrayApiTokenResponseScopes(v []string) ApiTokenResponseScopes {
-	var s ApiTokenResponseScopes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets ApiTokenResponseScopes to struct{}.
-func (s *ApiTokenResponseScopes) SetNull(v struct{}) {
-	s.Type = NullApiTokenResponseScopes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenResponseScopes is struct{}.
-func (s ApiTokenResponseScopes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenResponseScopes returns new ApiTokenResponseScopes from struct{}.
-func NewNullApiTokenResponseScopes(v struct{}) ApiTokenResponseScopes {
-	var s ApiTokenResponseScopes
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/ApiTokenUpdate
 type ApiTokenUpdate struct {
-	Name      OptApiTokenUpdateName      `json:"name"`
-	ExpiresAt OptApiTokenUpdateExpiresAt `json:"expires_at"`
-	Scopes    OptApiTokenUpdateScopes    `json:"scopes"`
-	Active    OptApiTokenUpdateActive    `json:"active"`
+	Name      OptNilString      `json:"name"`
+	ExpiresAt OptNilString      `json:"expires_at"`
+	Scopes    OptNilStringArray `json:"scopes"`
+	Active    OptNilBool        `json:"active"`
 }
 
 // GetName returns the value of Name.
-func (s *ApiTokenUpdate) GetName() OptApiTokenUpdateName {
+func (s *ApiTokenUpdate) GetName() OptNilString {
 	return s.Name
 }
 
 // GetExpiresAt returns the value of ExpiresAt.
-func (s *ApiTokenUpdate) GetExpiresAt() OptApiTokenUpdateExpiresAt {
+func (s *ApiTokenUpdate) GetExpiresAt() OptNilString {
 	return s.ExpiresAt
 }
 
 // GetScopes returns the value of Scopes.
-func (s *ApiTokenUpdate) GetScopes() OptApiTokenUpdateScopes {
+func (s *ApiTokenUpdate) GetScopes() OptNilStringArray {
 	return s.Scopes
 }
 
 // GetActive returns the value of Active.
-func (s *ApiTokenUpdate) GetActive() OptApiTokenUpdateActive {
+func (s *ApiTokenUpdate) GetActive() OptNilBool {
 	return s.Active
 }
 
 // SetName sets the value of Name.
-func (s *ApiTokenUpdate) SetName(val OptApiTokenUpdateName) {
+func (s *ApiTokenUpdate) SetName(val OptNilString) {
 	s.Name = val
 }
 
 // SetExpiresAt sets the value of ExpiresAt.
-func (s *ApiTokenUpdate) SetExpiresAt(val OptApiTokenUpdateExpiresAt) {
+func (s *ApiTokenUpdate) SetExpiresAt(val OptNilString) {
 	s.ExpiresAt = val
 }
 
 // SetScopes sets the value of Scopes.
-func (s *ApiTokenUpdate) SetScopes(val OptApiTokenUpdateScopes) {
+func (s *ApiTokenUpdate) SetScopes(val OptNilStringArray) {
 	s.Scopes = val
 }
 
 // SetActive sets the value of Active.
-func (s *ApiTokenUpdate) SetActive(val OptApiTokenUpdateActive) {
+func (s *ApiTokenUpdate) SetActive(val OptNilBool) {
 	s.Active = val
-}
-
-// ApiTokenUpdateActive represents sum type.
-type ApiTokenUpdateActive struct {
-	Type ApiTokenUpdateActiveType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// ApiTokenUpdateActiveType is oneOf type of ApiTokenUpdateActive.
-type ApiTokenUpdateActiveType string
-
-// Possible values for ApiTokenUpdateActiveType.
-const (
-	BoolApiTokenUpdateActive ApiTokenUpdateActiveType = "bool"
-	NullApiTokenUpdateActive ApiTokenUpdateActiveType = "struct{}"
-)
-
-// IsBool reports whether ApiTokenUpdateActive is bool.
-func (s ApiTokenUpdateActive) IsBool() bool { return s.Type == BoolApiTokenUpdateActive }
-
-// IsNull reports whether ApiTokenUpdateActive is struct{}.
-func (s ApiTokenUpdateActive) IsNull() bool { return s.Type == NullApiTokenUpdateActive }
-
-// SetBool sets ApiTokenUpdateActive to bool.
-func (s *ApiTokenUpdateActive) SetBool(v bool) {
-	s.Type = BoolApiTokenUpdateActive
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if ApiTokenUpdateActive is bool.
-func (s ApiTokenUpdateActive) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolApiTokenUpdateActive returns new ApiTokenUpdateActive from bool.
-func NewBoolApiTokenUpdateActive(v bool) ApiTokenUpdateActive {
-	var s ApiTokenUpdateActive
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets ApiTokenUpdateActive to struct{}.
-func (s *ApiTokenUpdateActive) SetNull(v struct{}) {
-	s.Type = NullApiTokenUpdateActive
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenUpdateActive is struct{}.
-func (s ApiTokenUpdateActive) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenUpdateActive returns new ApiTokenUpdateActive from struct{}.
-func NewNullApiTokenUpdateActive(v struct{}) ApiTokenUpdateActive {
-	var s ApiTokenUpdateActive
-	s.SetNull(v)
-	return s
-}
-
-// ApiTokenUpdateExpiresAt represents sum type.
-type ApiTokenUpdateExpiresAt struct {
-	Type   ApiTokenUpdateExpiresAtType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// ApiTokenUpdateExpiresAtType is oneOf type of ApiTokenUpdateExpiresAt.
-type ApiTokenUpdateExpiresAtType string
-
-// Possible values for ApiTokenUpdateExpiresAtType.
-const (
-	StringApiTokenUpdateExpiresAt ApiTokenUpdateExpiresAtType = "string"
-	NullApiTokenUpdateExpiresAt   ApiTokenUpdateExpiresAtType = "struct{}"
-)
-
-// IsString reports whether ApiTokenUpdateExpiresAt is string.
-func (s ApiTokenUpdateExpiresAt) IsString() bool { return s.Type == StringApiTokenUpdateExpiresAt }
-
-// IsNull reports whether ApiTokenUpdateExpiresAt is struct{}.
-func (s ApiTokenUpdateExpiresAt) IsNull() bool { return s.Type == NullApiTokenUpdateExpiresAt }
-
-// SetString sets ApiTokenUpdateExpiresAt to string.
-func (s *ApiTokenUpdateExpiresAt) SetString(v string) {
-	s.Type = StringApiTokenUpdateExpiresAt
-	s.String = v
-}
-
-// GetString returns string and true boolean if ApiTokenUpdateExpiresAt is string.
-func (s ApiTokenUpdateExpiresAt) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringApiTokenUpdateExpiresAt returns new ApiTokenUpdateExpiresAt from string.
-func NewStringApiTokenUpdateExpiresAt(v string) ApiTokenUpdateExpiresAt {
-	var s ApiTokenUpdateExpiresAt
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ApiTokenUpdateExpiresAt to struct{}.
-func (s *ApiTokenUpdateExpiresAt) SetNull(v struct{}) {
-	s.Type = NullApiTokenUpdateExpiresAt
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenUpdateExpiresAt is struct{}.
-func (s ApiTokenUpdateExpiresAt) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenUpdateExpiresAt returns new ApiTokenUpdateExpiresAt from struct{}.
-func NewNullApiTokenUpdateExpiresAt(v struct{}) ApiTokenUpdateExpiresAt {
-	var s ApiTokenUpdateExpiresAt
-	s.SetNull(v)
-	return s
-}
-
-// ApiTokenUpdateName represents sum type.
-type ApiTokenUpdateName struct {
-	Type   ApiTokenUpdateNameType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// ApiTokenUpdateNameType is oneOf type of ApiTokenUpdateName.
-type ApiTokenUpdateNameType string
-
-// Possible values for ApiTokenUpdateNameType.
-const (
-	StringApiTokenUpdateName ApiTokenUpdateNameType = "string"
-	NullApiTokenUpdateName   ApiTokenUpdateNameType = "struct{}"
-)
-
-// IsString reports whether ApiTokenUpdateName is string.
-func (s ApiTokenUpdateName) IsString() bool { return s.Type == StringApiTokenUpdateName }
-
-// IsNull reports whether ApiTokenUpdateName is struct{}.
-func (s ApiTokenUpdateName) IsNull() bool { return s.Type == NullApiTokenUpdateName }
-
-// SetString sets ApiTokenUpdateName to string.
-func (s *ApiTokenUpdateName) SetString(v string) {
-	s.Type = StringApiTokenUpdateName
-	s.String = v
-}
-
-// GetString returns string and true boolean if ApiTokenUpdateName is string.
-func (s ApiTokenUpdateName) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringApiTokenUpdateName returns new ApiTokenUpdateName from string.
-func NewStringApiTokenUpdateName(v string) ApiTokenUpdateName {
-	var s ApiTokenUpdateName
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ApiTokenUpdateName to struct{}.
-func (s *ApiTokenUpdateName) SetNull(v struct{}) {
-	s.Type = NullApiTokenUpdateName
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenUpdateName is struct{}.
-func (s ApiTokenUpdateName) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenUpdateName returns new ApiTokenUpdateName from struct{}.
-func NewNullApiTokenUpdateName(v struct{}) ApiTokenUpdateName {
-	var s ApiTokenUpdateName
-	s.SetNull(v)
-	return s
-}
-
-// ApiTokenUpdateScopes represents sum type.
-type ApiTokenUpdateScopes struct {
-	Type        ApiTokenUpdateScopesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// ApiTokenUpdateScopesType is oneOf type of ApiTokenUpdateScopes.
-type ApiTokenUpdateScopesType string
-
-// Possible values for ApiTokenUpdateScopesType.
-const (
-	StringArrayApiTokenUpdateScopes ApiTokenUpdateScopesType = "[]string"
-	NullApiTokenUpdateScopes        ApiTokenUpdateScopesType = "struct{}"
-)
-
-// IsStringArray reports whether ApiTokenUpdateScopes is []string.
-func (s ApiTokenUpdateScopes) IsStringArray() bool { return s.Type == StringArrayApiTokenUpdateScopes }
-
-// IsNull reports whether ApiTokenUpdateScopes is struct{}.
-func (s ApiTokenUpdateScopes) IsNull() bool { return s.Type == NullApiTokenUpdateScopes }
-
-// SetStringArray sets ApiTokenUpdateScopes to []string.
-func (s *ApiTokenUpdateScopes) SetStringArray(v []string) {
-	s.Type = StringArrayApiTokenUpdateScopes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if ApiTokenUpdateScopes is []string.
-func (s ApiTokenUpdateScopes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayApiTokenUpdateScopes returns new ApiTokenUpdateScopes from []string.
-func NewStringArrayApiTokenUpdateScopes(v []string) ApiTokenUpdateScopes {
-	var s ApiTokenUpdateScopes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets ApiTokenUpdateScopes to struct{}.
-func (s *ApiTokenUpdateScopes) SetNull(v struct{}) {
-	s.Type = NullApiTokenUpdateScopes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ApiTokenUpdateScopes is struct{}.
-func (s ApiTokenUpdateScopes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullApiTokenUpdateScopes returns new ApiTokenUpdateScopes from struct{}.
-func NewNullApiTokenUpdateScopes(v struct{}) ApiTokenUpdateScopes {
-	var s ApiTokenUpdateScopes
-	s.SetNull(v)
-	return s
 }
 
 // Request model for creating multiple entity relations in bulk.
@@ -1145,14 +695,14 @@ func (*ChatSession) updateChatRes() {}
 
 // Ref: #/components/schemas/ChatSessionCreate
 type ChatSessionCreate struct {
-	ID         OptChatSessionCreateID `json:"id"`
-	UserId     string                 `json:"userId"`
-	Title      string                 `json:"title"`
-	Visibility OptChatVisibility      `json:"visibility"`
+	ID         OptNilUUID        `json:"id"`
+	UserId     string            `json:"userId"`
+	Title      string            `json:"title"`
+	Visibility OptChatVisibility `json:"visibility"`
 }
 
 // GetID returns the value of ID.
-func (s *ChatSessionCreate) GetID() OptChatSessionCreateID {
+func (s *ChatSessionCreate) GetID() OptNilUUID {
 	return s.ID
 }
 
@@ -1172,7 +722,7 @@ func (s *ChatSessionCreate) GetVisibility() OptChatVisibility {
 }
 
 // SetID sets the value of ID.
-func (s *ChatSessionCreate) SetID(val OptChatSessionCreateID) {
+func (s *ChatSessionCreate) SetID(val OptNilUUID) {
 	s.ID = val
 }
 
@@ -1191,78 +741,25 @@ func (s *ChatSessionCreate) SetVisibility(val OptChatVisibility) {
 	s.Visibility = val
 }
 
-// ChatSessionCreateID represents sum type.
-type ChatSessionCreateID struct {
-	Type ChatSessionCreateIDType // switch on this field
-	UUID uuid.UUID
-	Null struct{}
-}
-
-// ChatSessionCreateIDType is oneOf type of ChatSessionCreateID.
-type ChatSessionCreateIDType string
-
-// Possible values for ChatSessionCreateIDType.
-const (
-	UUIDChatSessionCreateID ChatSessionCreateIDType = "uuid.UUID"
-	NullChatSessionCreateID ChatSessionCreateIDType = "struct{}"
-)
-
-// IsUUID reports whether ChatSessionCreateID is uuid.UUID.
-func (s ChatSessionCreateID) IsUUID() bool { return s.Type == UUIDChatSessionCreateID }
-
-// IsNull reports whether ChatSessionCreateID is struct{}.
-func (s ChatSessionCreateID) IsNull() bool { return s.Type == NullChatSessionCreateID }
-
-// SetUUID sets ChatSessionCreateID to uuid.UUID.
-func (s *ChatSessionCreateID) SetUUID(v uuid.UUID) {
-	s.Type = UUIDChatSessionCreateID
-	s.UUID = v
-}
-
-// GetUUID returns uuid.UUID and true boolean if ChatSessionCreateID is uuid.UUID.
-func (s ChatSessionCreateID) GetUUID() (v uuid.UUID, ok bool) {
-	if !s.IsUUID() {
-		return v, false
-	}
-	return s.UUID, true
-}
-
-// NewUUIDChatSessionCreateID returns new ChatSessionCreateID from uuid.UUID.
-func NewUUIDChatSessionCreateID(v uuid.UUID) ChatSessionCreateID {
-	var s ChatSessionCreateID
-	s.SetUUID(v)
-	return s
-}
-
-// SetNull sets ChatSessionCreateID to struct{}.
-func (s *ChatSessionCreateID) SetNull(v struct{}) {
-	s.Type = NullChatSessionCreateID
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ChatSessionCreateID is struct{}.
-func (s ChatSessionCreateID) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullChatSessionCreateID returns new ChatSessionCreateID from struct{}.
-func NewNullChatSessionCreateID(v struct{}) ChatSessionCreateID {
-	var s ChatSessionCreateID
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/ChatSessionUpdate
 type ChatSessionUpdate struct {
+	Title      OptNilString      `json:"title"`
 	Visibility OptChatVisibility `json:"visibility"`
+}
+
+// GetTitle returns the value of Title.
+func (s *ChatSessionUpdate) GetTitle() OptNilString {
+	return s.Title
 }
 
 // GetVisibility returns the value of Visibility.
 func (s *ChatSessionUpdate) GetVisibility() OptChatVisibility {
 	return s.Visibility
+}
+
+// SetTitle sets the value of Title.
+func (s *ChatSessionUpdate) SetTitle(val OptNilString) {
+	s.Title = val
 }
 
 // SetVisibility sets the value of Visibility.
@@ -1393,6 +890,11 @@ type CreateEnvironmentUserNotFound struct{}
 
 func (*CreateEnvironmentUserNotFound) createEnvironmentUserRes() {}
 
+// CreateMcpToolAssociationNotFound is response for CreateMcpToolAssociation operation.
+type CreateMcpToolAssociationNotFound struct{}
+
+func (*CreateMcpToolAssociationNotFound) createMcpToolAssociationRes() {}
+
 // CreateMcpendpointNotFound is response for CreateMcpendpoint operation.
 type CreateMcpendpointNotFound struct{}
 
@@ -1472,6 +974,16 @@ func (*DeleteEnvironmentUserNoContent) deleteEnvironmentUserRes() {}
 type DeleteEnvironmentUserNotFound struct{}
 
 func (*DeleteEnvironmentUserNotFound) deleteEnvironmentUserRes() {}
+
+// DeleteMcpToolAssociationNoContent is response for DeleteMcpToolAssociation operation.
+type DeleteMcpToolAssociationNoContent struct{}
+
+func (*DeleteMcpToolAssociationNoContent) deleteMcpToolAssociationRes() {}
+
+// DeleteMcpToolAssociationNotFound is response for DeleteMcpToolAssociation operation.
+type DeleteMcpToolAssociationNotFound struct{}
+
+func (*DeleteMcpToolAssociationNotFound) deleteMcpToolAssociationRes() {}
 
 // DeleteMcpendpointNoContent is response for DeleteMcpendpoint operation.
 type DeleteMcpendpointNoContent struct{}
@@ -1593,17 +1105,17 @@ func (s *Entity) SetStatus(val OptEntityStatus) {
 
 // Ref: #/components/schemas/EntityDefinitionResponse
 type EntityDefinitionResponse struct {
-	Group       string                                 `json:"group"`
-	Kind        string                                 `json:"kind"`
-	ListKind    string                                 `json:"list_kind"`
-	Plural      OptEntityDefinitionResponsePlural      `json:"plural"`
-	Singular    string                                 `json:"singular"`
-	Name        OptString                              `json:"name"`
-	Description OptEntityDefinitionResponseDescription `json:"description"`
-	Spec        EntityDefinitionResponseSpec           `json:"spec"`
-	Storage     OptBool                                `json:"storage"`
-	Served      OptBool                                `json:"served"`
-	ID          uuid.UUID                              `json:"id"`
+	Group       string                       `json:"group"`
+	Kind        string                       `json:"kind"`
+	ListKind    string                       `json:"list_kind"`
+	Plural      OptNilString                 `json:"plural"`
+	Singular    string                       `json:"singular"`
+	Name        OptString                    `json:"name"`
+	Description OptNilString                 `json:"description"`
+	Spec        EntityDefinitionResponseSpec `json:"spec"`
+	Storage     OptBool                      `json:"storage"`
+	Served      OptBool                      `json:"served"`
+	ID          uuid.UUID                    `json:"id"`
 }
 
 // GetGroup returns the value of Group.
@@ -1622,7 +1134,7 @@ func (s *EntityDefinitionResponse) GetListKind() string {
 }
 
 // GetPlural returns the value of Plural.
-func (s *EntityDefinitionResponse) GetPlural() OptEntityDefinitionResponsePlural {
+func (s *EntityDefinitionResponse) GetPlural() OptNilString {
 	return s.Plural
 }
 
@@ -1637,7 +1149,7 @@ func (s *EntityDefinitionResponse) GetName() OptString {
 }
 
 // GetDescription returns the value of Description.
-func (s *EntityDefinitionResponse) GetDescription() OptEntityDefinitionResponseDescription {
+func (s *EntityDefinitionResponse) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -1677,7 +1189,7 @@ func (s *EntityDefinitionResponse) SetListKind(val string) {
 }
 
 // SetPlural sets the value of Plural.
-func (s *EntityDefinitionResponse) SetPlural(val OptEntityDefinitionResponsePlural) {
+func (s *EntityDefinitionResponse) SetPlural(val OptNilString) {
 	s.Plural = val
 }
 
@@ -1692,7 +1204,7 @@ func (s *EntityDefinitionResponse) SetName(val OptString) {
 }
 
 // SetDescription sets the value of Description.
-func (s *EntityDefinitionResponse) SetDescription(val OptEntityDefinitionResponseDescription) {
+func (s *EntityDefinitionResponse) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -1718,142 +1230,6 @@ func (s *EntityDefinitionResponse) SetID(val uuid.UUID) {
 
 func (*EntityDefinitionResponse) createEntityDefinitionRes() {}
 
-// EntityDefinitionResponseDescription represents sum type.
-type EntityDefinitionResponseDescription struct {
-	Type   EntityDefinitionResponseDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// EntityDefinitionResponseDescriptionType is oneOf type of EntityDefinitionResponseDescription.
-type EntityDefinitionResponseDescriptionType string
-
-// Possible values for EntityDefinitionResponseDescriptionType.
-const (
-	StringEntityDefinitionResponseDescription EntityDefinitionResponseDescriptionType = "string"
-	NullEntityDefinitionResponseDescription   EntityDefinitionResponseDescriptionType = "struct{}"
-)
-
-// IsString reports whether EntityDefinitionResponseDescription is string.
-func (s EntityDefinitionResponseDescription) IsString() bool {
-	return s.Type == StringEntityDefinitionResponseDescription
-}
-
-// IsNull reports whether EntityDefinitionResponseDescription is struct{}.
-func (s EntityDefinitionResponseDescription) IsNull() bool {
-	return s.Type == NullEntityDefinitionResponseDescription
-}
-
-// SetString sets EntityDefinitionResponseDescription to string.
-func (s *EntityDefinitionResponseDescription) SetString(v string) {
-	s.Type = StringEntityDefinitionResponseDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if EntityDefinitionResponseDescription is string.
-func (s EntityDefinitionResponseDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringEntityDefinitionResponseDescription returns new EntityDefinitionResponseDescription from string.
-func NewStringEntityDefinitionResponseDescription(v string) EntityDefinitionResponseDescription {
-	var s EntityDefinitionResponseDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets EntityDefinitionResponseDescription to struct{}.
-func (s *EntityDefinitionResponseDescription) SetNull(v struct{}) {
-	s.Type = NullEntityDefinitionResponseDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if EntityDefinitionResponseDescription is struct{}.
-func (s EntityDefinitionResponseDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullEntityDefinitionResponseDescription returns new EntityDefinitionResponseDescription from struct{}.
-func NewNullEntityDefinitionResponseDescription(v struct{}) EntityDefinitionResponseDescription {
-	var s EntityDefinitionResponseDescription
-	s.SetNull(v)
-	return s
-}
-
-// EntityDefinitionResponsePlural represents sum type.
-type EntityDefinitionResponsePlural struct {
-	Type   EntityDefinitionResponsePluralType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// EntityDefinitionResponsePluralType is oneOf type of EntityDefinitionResponsePlural.
-type EntityDefinitionResponsePluralType string
-
-// Possible values for EntityDefinitionResponsePluralType.
-const (
-	StringEntityDefinitionResponsePlural EntityDefinitionResponsePluralType = "string"
-	NullEntityDefinitionResponsePlural   EntityDefinitionResponsePluralType = "struct{}"
-)
-
-// IsString reports whether EntityDefinitionResponsePlural is string.
-func (s EntityDefinitionResponsePlural) IsString() bool {
-	return s.Type == StringEntityDefinitionResponsePlural
-}
-
-// IsNull reports whether EntityDefinitionResponsePlural is struct{}.
-func (s EntityDefinitionResponsePlural) IsNull() bool {
-	return s.Type == NullEntityDefinitionResponsePlural
-}
-
-// SetString sets EntityDefinitionResponsePlural to string.
-func (s *EntityDefinitionResponsePlural) SetString(v string) {
-	s.Type = StringEntityDefinitionResponsePlural
-	s.String = v
-}
-
-// GetString returns string and true boolean if EntityDefinitionResponsePlural is string.
-func (s EntityDefinitionResponsePlural) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringEntityDefinitionResponsePlural returns new EntityDefinitionResponsePlural from string.
-func NewStringEntityDefinitionResponsePlural(v string) EntityDefinitionResponsePlural {
-	var s EntityDefinitionResponsePlural
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets EntityDefinitionResponsePlural to struct{}.
-func (s *EntityDefinitionResponsePlural) SetNull(v struct{}) {
-	s.Type = NullEntityDefinitionResponsePlural
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if EntityDefinitionResponsePlural is struct{}.
-func (s EntityDefinitionResponsePlural) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullEntityDefinitionResponsePlural returns new EntityDefinitionResponsePlural from struct{}.
-func NewNullEntityDefinitionResponsePlural(v struct{}) EntityDefinitionResponsePlural {
-	var s EntityDefinitionResponsePlural
-	s.SetNull(v)
-	return s
-}
-
 type EntityDefinitionResponseSpec map[string]jx.Raw
 
 func (s *EntityDefinitionResponseSpec) init() EntityDefinitionResponseSpec {
@@ -1867,16 +1243,16 @@ func (s *EntityDefinitionResponseSpec) init() EntityDefinitionResponseSpec {
 
 // Ref: #/components/schemas/EntityDefinitionSpec
 type EntityDefinitionSpec struct {
-	Group       string                             `json:"group"`
-	Kind        string                             `json:"kind"`
-	ListKind    string                             `json:"list_kind"`
-	Plural      OptEntityDefinitionSpecPlural      `json:"plural"`
-	Singular    string                             `json:"singular"`
-	Name        OptString                          `json:"name"`
-	Description OptEntityDefinitionSpecDescription `json:"description"`
-	Spec        EntityDefinitionSpecSpec           `json:"spec"`
-	Storage     OptBool                            `json:"storage"`
-	Served      OptBool                            `json:"served"`
+	Group       string                   `json:"group"`
+	Kind        string                   `json:"kind"`
+	ListKind    string                   `json:"list_kind"`
+	Plural      OptNilString             `json:"plural"`
+	Singular    string                   `json:"singular"`
+	Name        OptString                `json:"name"`
+	Description OptNilString             `json:"description"`
+	Spec        EntityDefinitionSpecSpec `json:"spec"`
+	Storage     OptBool                  `json:"storage"`
+	Served      OptBool                  `json:"served"`
 }
 
 // GetGroup returns the value of Group.
@@ -1895,7 +1271,7 @@ func (s *EntityDefinitionSpec) GetListKind() string {
 }
 
 // GetPlural returns the value of Plural.
-func (s *EntityDefinitionSpec) GetPlural() OptEntityDefinitionSpecPlural {
+func (s *EntityDefinitionSpec) GetPlural() OptNilString {
 	return s.Plural
 }
 
@@ -1910,7 +1286,7 @@ func (s *EntityDefinitionSpec) GetName() OptString {
 }
 
 // GetDescription returns the value of Description.
-func (s *EntityDefinitionSpec) GetDescription() OptEntityDefinitionSpecDescription {
+func (s *EntityDefinitionSpec) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -1945,7 +1321,7 @@ func (s *EntityDefinitionSpec) SetListKind(val string) {
 }
 
 // SetPlural sets the value of Plural.
-func (s *EntityDefinitionSpec) SetPlural(val OptEntityDefinitionSpecPlural) {
+func (s *EntityDefinitionSpec) SetPlural(val OptNilString) {
 	s.Plural = val
 }
 
@@ -1960,7 +1336,7 @@ func (s *EntityDefinitionSpec) SetName(val OptString) {
 }
 
 // SetDescription sets the value of Description.
-func (s *EntityDefinitionSpec) SetDescription(val OptEntityDefinitionSpecDescription) {
+func (s *EntityDefinitionSpec) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -1977,140 +1353,6 @@ func (s *EntityDefinitionSpec) SetStorage(val OptBool) {
 // SetServed sets the value of Served.
 func (s *EntityDefinitionSpec) SetServed(val OptBool) {
 	s.Served = val
-}
-
-// EntityDefinitionSpecDescription represents sum type.
-type EntityDefinitionSpecDescription struct {
-	Type   EntityDefinitionSpecDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// EntityDefinitionSpecDescriptionType is oneOf type of EntityDefinitionSpecDescription.
-type EntityDefinitionSpecDescriptionType string
-
-// Possible values for EntityDefinitionSpecDescriptionType.
-const (
-	StringEntityDefinitionSpecDescription EntityDefinitionSpecDescriptionType = "string"
-	NullEntityDefinitionSpecDescription   EntityDefinitionSpecDescriptionType = "struct{}"
-)
-
-// IsString reports whether EntityDefinitionSpecDescription is string.
-func (s EntityDefinitionSpecDescription) IsString() bool {
-	return s.Type == StringEntityDefinitionSpecDescription
-}
-
-// IsNull reports whether EntityDefinitionSpecDescription is struct{}.
-func (s EntityDefinitionSpecDescription) IsNull() bool {
-	return s.Type == NullEntityDefinitionSpecDescription
-}
-
-// SetString sets EntityDefinitionSpecDescription to string.
-func (s *EntityDefinitionSpecDescription) SetString(v string) {
-	s.Type = StringEntityDefinitionSpecDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if EntityDefinitionSpecDescription is string.
-func (s EntityDefinitionSpecDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringEntityDefinitionSpecDescription returns new EntityDefinitionSpecDescription from string.
-func NewStringEntityDefinitionSpecDescription(v string) EntityDefinitionSpecDescription {
-	var s EntityDefinitionSpecDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets EntityDefinitionSpecDescription to struct{}.
-func (s *EntityDefinitionSpecDescription) SetNull(v struct{}) {
-	s.Type = NullEntityDefinitionSpecDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if EntityDefinitionSpecDescription is struct{}.
-func (s EntityDefinitionSpecDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullEntityDefinitionSpecDescription returns new EntityDefinitionSpecDescription from struct{}.
-func NewNullEntityDefinitionSpecDescription(v struct{}) EntityDefinitionSpecDescription {
-	var s EntityDefinitionSpecDescription
-	s.SetNull(v)
-	return s
-}
-
-// EntityDefinitionSpecPlural represents sum type.
-type EntityDefinitionSpecPlural struct {
-	Type   EntityDefinitionSpecPluralType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// EntityDefinitionSpecPluralType is oneOf type of EntityDefinitionSpecPlural.
-type EntityDefinitionSpecPluralType string
-
-// Possible values for EntityDefinitionSpecPluralType.
-const (
-	StringEntityDefinitionSpecPlural EntityDefinitionSpecPluralType = "string"
-	NullEntityDefinitionSpecPlural   EntityDefinitionSpecPluralType = "struct{}"
-)
-
-// IsString reports whether EntityDefinitionSpecPlural is string.
-func (s EntityDefinitionSpecPlural) IsString() bool {
-	return s.Type == StringEntityDefinitionSpecPlural
-}
-
-// IsNull reports whether EntityDefinitionSpecPlural is struct{}.
-func (s EntityDefinitionSpecPlural) IsNull() bool { return s.Type == NullEntityDefinitionSpecPlural }
-
-// SetString sets EntityDefinitionSpecPlural to string.
-func (s *EntityDefinitionSpecPlural) SetString(v string) {
-	s.Type = StringEntityDefinitionSpecPlural
-	s.String = v
-}
-
-// GetString returns string and true boolean if EntityDefinitionSpecPlural is string.
-func (s EntityDefinitionSpecPlural) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringEntityDefinitionSpecPlural returns new EntityDefinitionSpecPlural from string.
-func NewStringEntityDefinitionSpecPlural(v string) EntityDefinitionSpecPlural {
-	var s EntityDefinitionSpecPlural
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets EntityDefinitionSpecPlural to struct{}.
-func (s *EntityDefinitionSpecPlural) SetNull(v struct{}) {
-	s.Type = NullEntityDefinitionSpecPlural
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if EntityDefinitionSpecPlural is struct{}.
-func (s EntityDefinitionSpecPlural) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullEntityDefinitionSpecPlural returns new EntityDefinitionSpecPlural from struct{}.
-func NewNullEntityDefinitionSpecPlural(v struct{}) EntityDefinitionSpecPlural {
-	var s EntityDefinitionSpecPlural
-	s.SetNull(v)
-	return s
 }
 
 type EntityDefinitionSpecSpec map[string]jx.Raw
@@ -2532,7 +1774,6 @@ func (s *EntityResponse) SetNamespace(val string) {
 }
 
 func (*EntityResponse) createEntityRes() {}
-func (*EntityResponse) getEntityRes()    {}
 
 type EntityResponseSpec map[string]jx.Raw
 
@@ -2545,6 +1786,7 @@ func (s *EntityResponseSpec) init() EntityResponseSpec {
 	return m
 }
 
+// Response for a set of entities with their relations (used for queries returning multiple entities).
 // Ref: #/components/schemas/EntityResultSetResponse
 type EntityResultSetResponse struct {
 	PrimaryEntities []EntityResponse         `json:"primary_entities"`
@@ -2601,11 +1843,9 @@ type EntityStatus struct {
 	// Timestamp when the entity was last updated.
 	LastUpdated OptDateTime `json:"last_updated"`
 	// Whether this entity is orphaned (definition no longer exists).
-	IsOrphan OptBool `json:"is_orphan"`
-	// Timestamp when the entity was last seen during discovery.
-	LastSeen OptEntityStatusLastSeen `json:"last_seen"`
-	// Name of the provider that last discovered/updated this entity.
-	DiscoverySource OptEntityStatusDiscoverySource `json:"discovery_source"`
+	IsOrphan        OptBool        `json:"is_orphan"`
+	LastSeen        OptNilDateTime `json:"last_seen"`
+	DiscoverySource OptNilString   `json:"discovery_source"`
 	// Generation number, incremented on each update.
 	Generation OptInt `json:"generation"`
 }
@@ -2621,12 +1861,12 @@ func (s *EntityStatus) GetIsOrphan() OptBool {
 }
 
 // GetLastSeen returns the value of LastSeen.
-func (s *EntityStatus) GetLastSeen() OptEntityStatusLastSeen {
+func (s *EntityStatus) GetLastSeen() OptNilDateTime {
 	return s.LastSeen
 }
 
 // GetDiscoverySource returns the value of DiscoverySource.
-func (s *EntityStatus) GetDiscoverySource() OptEntityStatusDiscoverySource {
+func (s *EntityStatus) GetDiscoverySource() OptNilString {
 	return s.DiscoverySource
 }
 
@@ -2646,12 +1886,12 @@ func (s *EntityStatus) SetIsOrphan(val OptBool) {
 }
 
 // SetLastSeen sets the value of LastSeen.
-func (s *EntityStatus) SetLastSeen(val OptEntityStatusLastSeen) {
+func (s *EntityStatus) SetLastSeen(val OptNilDateTime) {
 	s.LastSeen = val
 }
 
 // SetDiscoverySource sets the value of DiscoverySource.
-func (s *EntityStatus) SetDiscoverySource(val OptEntityStatusDiscoverySource) {
+func (s *EntityStatus) SetDiscoverySource(val OptNilString) {
 	s.DiscoverySource = val
 }
 
@@ -2660,137 +1900,45 @@ func (s *EntityStatus) SetGeneration(val OptInt) {
 	s.Generation = val
 }
 
-// Name of the provider that last discovered/updated this entity.
-// EntityStatusDiscoverySource represents sum type.
-type EntityStatusDiscoverySource struct {
-	Type   EntityStatusDiscoverySourceType // switch on this field
-	String string
-	Null   struct{}
+// Response for a single entity with its related entities and relations.
+// Ref: #/components/schemas/EntityWithRelationsResponse
+type EntityWithRelationsResponse struct {
+	Entity          EntityResponse           `json:"entity"`
+	RelatedEntities []EntityResponse         `json:"related_entities"`
+	Relations       []EntityRelationResponse `json:"relations"`
 }
 
-// EntityStatusDiscoverySourceType is oneOf type of EntityStatusDiscoverySource.
-type EntityStatusDiscoverySourceType string
-
-// Possible values for EntityStatusDiscoverySourceType.
-const (
-	StringEntityStatusDiscoverySource EntityStatusDiscoverySourceType = "string"
-	NullEntityStatusDiscoverySource   EntityStatusDiscoverySourceType = "struct{}"
-)
-
-// IsString reports whether EntityStatusDiscoverySource is string.
-func (s EntityStatusDiscoverySource) IsString() bool {
-	return s.Type == StringEntityStatusDiscoverySource
+// GetEntity returns the value of Entity.
+func (s *EntityWithRelationsResponse) GetEntity() EntityResponse {
+	return s.Entity
 }
 
-// IsNull reports whether EntityStatusDiscoverySource is struct{}.
-func (s EntityStatusDiscoverySource) IsNull() bool { return s.Type == NullEntityStatusDiscoverySource }
-
-// SetString sets EntityStatusDiscoverySource to string.
-func (s *EntityStatusDiscoverySource) SetString(v string) {
-	s.Type = StringEntityStatusDiscoverySource
-	s.String = v
+// GetRelatedEntities returns the value of RelatedEntities.
+func (s *EntityWithRelationsResponse) GetRelatedEntities() []EntityResponse {
+	return s.RelatedEntities
 }
 
-// GetString returns string and true boolean if EntityStatusDiscoverySource is string.
-func (s EntityStatusDiscoverySource) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
+// GetRelations returns the value of Relations.
+func (s *EntityWithRelationsResponse) GetRelations() []EntityRelationResponse {
+	return s.Relations
 }
 
-// NewStringEntityStatusDiscoverySource returns new EntityStatusDiscoverySource from string.
-func NewStringEntityStatusDiscoverySource(v string) EntityStatusDiscoverySource {
-	var s EntityStatusDiscoverySource
-	s.SetString(v)
-	return s
+// SetEntity sets the value of Entity.
+func (s *EntityWithRelationsResponse) SetEntity(val EntityResponse) {
+	s.Entity = val
 }
 
-// SetNull sets EntityStatusDiscoverySource to struct{}.
-func (s *EntityStatusDiscoverySource) SetNull(v struct{}) {
-	s.Type = NullEntityStatusDiscoverySource
-	s.Null = v
+// SetRelatedEntities sets the value of RelatedEntities.
+func (s *EntityWithRelationsResponse) SetRelatedEntities(val []EntityResponse) {
+	s.RelatedEntities = val
 }
 
-// GetNull returns struct{} and true boolean if EntityStatusDiscoverySource is struct{}.
-func (s EntityStatusDiscoverySource) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
+// SetRelations sets the value of Relations.
+func (s *EntityWithRelationsResponse) SetRelations(val []EntityRelationResponse) {
+	s.Relations = val
 }
 
-// NewNullEntityStatusDiscoverySource returns new EntityStatusDiscoverySource from struct{}.
-func NewNullEntityStatusDiscoverySource(v struct{}) EntityStatusDiscoverySource {
-	var s EntityStatusDiscoverySource
-	s.SetNull(v)
-	return s
-}
-
-// Timestamp when the entity was last seen during discovery.
-// EntityStatusLastSeen represents sum type.
-type EntityStatusLastSeen struct {
-	Type     EntityStatusLastSeenType // switch on this field
-	DateTime time.Time
-	Null     struct{}
-}
-
-// EntityStatusLastSeenType is oneOf type of EntityStatusLastSeen.
-type EntityStatusLastSeenType string
-
-// Possible values for EntityStatusLastSeenType.
-const (
-	DateTimeEntityStatusLastSeen EntityStatusLastSeenType = "time.Time"
-	NullEntityStatusLastSeen     EntityStatusLastSeenType = "struct{}"
-)
-
-// IsDateTime reports whether EntityStatusLastSeen is time.Time.
-func (s EntityStatusLastSeen) IsDateTime() bool { return s.Type == DateTimeEntityStatusLastSeen }
-
-// IsNull reports whether EntityStatusLastSeen is struct{}.
-func (s EntityStatusLastSeen) IsNull() bool { return s.Type == NullEntityStatusLastSeen }
-
-// SetDateTime sets EntityStatusLastSeen to time.Time.
-func (s *EntityStatusLastSeen) SetDateTime(v time.Time) {
-	s.Type = DateTimeEntityStatusLastSeen
-	s.DateTime = v
-}
-
-// GetDateTime returns time.Time and true boolean if EntityStatusLastSeen is time.Time.
-func (s EntityStatusLastSeen) GetDateTime() (v time.Time, ok bool) {
-	if !s.IsDateTime() {
-		return v, false
-	}
-	return s.DateTime, true
-}
-
-// NewDateTimeEntityStatusLastSeen returns new EntityStatusLastSeen from time.Time.
-func NewDateTimeEntityStatusLastSeen(v time.Time) EntityStatusLastSeen {
-	var s EntityStatusLastSeen
-	s.SetDateTime(v)
-	return s
-}
-
-// SetNull sets EntityStatusLastSeen to struct{}.
-func (s *EntityStatusLastSeen) SetNull(v struct{}) {
-	s.Type = NullEntityStatusLastSeen
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if EntityStatusLastSeen is struct{}.
-func (s EntityStatusLastSeen) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullEntityStatusLastSeen returns new EntityStatusLastSeen from struct{}.
-func NewNullEntityStatusLastSeen(v struct{}) EntityStatusLastSeen {
-	var s EntityStatusLastSeen
-	s.SetNull(v)
-	return s
-}
+func (*EntityWithRelationsResponse) getEntityRes() {}
 
 // Ref: #/components/schemas/EnvironmentCreate
 type EnvironmentCreate struct {
@@ -3239,6 +2387,15 @@ type GetEntityNotFound struct{}
 
 func (*GetEntityNotFound) getEntityRes() {}
 
+// GetEntityToolsNotFound is response for GetEntityTools operation.
+type GetEntityToolsNotFound struct{}
+
+func (*GetEntityToolsNotFound) getEntityToolsRes() {}
+
+type GetEntityToolsOKApplicationJSON []MCPToolEntityAssociationResponse
+
+func (*GetEntityToolsOKApplicationJSON) getEntityToolsRes() {}
+
 // GetEnvironmentStatusNotFound is response for GetEnvironmentStatus operation.
 type GetEnvironmentStatusNotFound struct{}
 
@@ -3270,6 +2427,15 @@ func (*GetEnvironmentsNotFound) getEnvironmentsRes() {}
 type GetEnvironmentsOKApplicationJSON []EnvironmentResponse
 
 func (*GetEnvironmentsOKApplicationJSON) getEnvironmentsRes() {}
+
+// GetMcpEndpointEntityTypesNotFound is response for GetMcpEndpointEntityTypes operation.
+type GetMcpEndpointEntityTypesNotFound struct{}
+
+func (*GetMcpEndpointEntityTypesNotFound) getMcpEndpointEntityTypesRes() {}
+
+type GetMcpEndpointEntityTypesOKApplicationJSON []MCPToolEntityAssociationResponse
+
+func (*GetMcpEndpointEntityTypesOKApplicationJSON) getMcpEndpointEntityTypesRes() {}
 
 // GetMcpendpointNotFound is response for GetMcpendpoint operation.
 type GetMcpendpointNotFound struct{}
@@ -3385,6 +2551,7 @@ func (*HTTPValidationError) createEntityRelationsBulkRes()  {}
 func (*HTTPValidationError) createEntityRes()               {}
 func (*HTTPValidationError) createEnvironmentRes()          {}
 func (*HTTPValidationError) createEnvironmentUserRes()      {}
+func (*HTTPValidationError) createMcpToolAssociationRes()   {}
 func (*HTTPValidationError) createMcpendpointRes()          {}
 func (*HTTPValidationError) createModelRes()                {}
 func (*HTTPValidationError) createModelproviderRes()        {}
@@ -3396,6 +2563,7 @@ func (*HTTPValidationError) deleteEntityDefinitionRes()     {}
 func (*HTTPValidationError) deleteEntityRelationRes()       {}
 func (*HTTPValidationError) deleteEntityRes()               {}
 func (*HTTPValidationError) deleteEnvironmentUserRes()      {}
+func (*HTTPValidationError) deleteMcpToolAssociationRes()   {}
 func (*HTTPValidationError) deleteMcpendpointRes()          {}
 func (*HTTPValidationError) deleteModelRes()                {}
 func (*HTTPValidationError) deleteModelproviderRes()        {}
@@ -3408,8 +2576,10 @@ func (*HTTPValidationError) getChatRes()                    {}
 func (*HTTPValidationError) getChatsRes()                   {}
 func (*HTTPValidationError) getEntitiesRes()                {}
 func (*HTTPValidationError) getEntityRes()                  {}
+func (*HTTPValidationError) getEntityToolsRes()             {}
 func (*HTTPValidationError) getEnvironmentStatusRes()       {}
 func (*HTTPValidationError) getEnvironmentUserRes()         {}
+func (*HTTPValidationError) getMcpEndpointEntityTypesRes()  {}
 func (*HTTPValidationError) getMcpendpointRes()             {}
 func (*HTTPValidationError) getModelRes()                   {}
 func (*HTTPValidationError) getModelproviderRes()           {}
@@ -3419,6 +2589,7 @@ func (*HTTPValidationError) getPendingInvitationsRes()      {}
 func (*HTTPValidationError) getPromptRes()                  {}
 func (*HTTPValidationError) inviteEnvironmentUserRes()      {}
 func (*HTTPValidationError) listEnvironmentUsersRes()       {}
+func (*HTTPValidationError) listMcpendpointToolsRes()       {}
 func (*HTTPValidationError) listOAuthServicesRes()          {}
 func (*HTTPValidationError) listOrphanedEntitiesRes()       {}
 func (*HTTPValidationError) listPromptsRes()                {}
@@ -3446,6 +2617,26 @@ func (*ListEnvironmentUsersNotFound) listEnvironmentUsersRes() {}
 type ListEnvironmentUsersOKApplicationJSON []EnvironmentUserResponse
 
 func (*ListEnvironmentUsersOKApplicationJSON) listEnvironmentUsersRes() {}
+
+// ListMcpendpointToolsNotFound is response for ListMcpendpointTools operation.
+type ListMcpendpointToolsNotFound struct{}
+
+func (*ListMcpendpointToolsNotFound) listMcpendpointToolsRes() {}
+
+type ListMcpendpointToolsOKApplicationJSON []ListMcpendpointToolsOKItem
+
+func (*ListMcpendpointToolsOKApplicationJSON) listMcpendpointToolsRes() {}
+
+type ListMcpendpointToolsOKItem map[string]jx.Raw
+
+func (s *ListMcpendpointToolsOKItem) init() ListMcpendpointToolsOKItem {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
 
 // ListOAuthServicesNotFound is response for ListOAuthServices operation.
 type ListOAuthServicesNotFound struct{}
@@ -3481,15 +2672,17 @@ func (*ListPromptsOKApplicationJSON) listPromptsRes() {}
 
 // Ref: #/components/schemas/MCPEndpointCreate
 type MCPEndpointCreate struct {
-	Name              string                             `json:"name"`
-	URL               string                             `json:"url"`
-	Description       OptMCPEndpointCreateDescription    `json:"description"`
-	Headers           OptMCPEndpointCreateHeaders        `json:"headers"`
-	DevgraphAuth      OptBool                            `json:"devgraph_auth"`
-	SupportsResources OptBool                            `json:"supports_resources"`
-	OAuthServiceID    OptMCPEndpointCreateOAuthServiceID `json:"oauth_service_id"`
-	Immutable         OptBool                            `json:"immutable"`
-	Active            OptBool                            `json:"active"`
+	Name              string                      `json:"name"`
+	URL               string                      `json:"url"`
+	Description       OptNilString                `json:"description"`
+	Headers           OptMCPEndpointCreateHeaders `json:"headers"`
+	DevgraphAuth      OptBool                     `json:"devgraph_auth"`
+	SupportsResources OptBool                     `json:"supports_resources"`
+	OAuthServiceID    OptNilUUID                  `json:"oauth_service_id"`
+	Immutable         OptBool                     `json:"immutable"`
+	Active            OptBool                     `json:"active"`
+	AllowedTools      OptNilStringArray           `json:"allowed_tools"`
+	DeniedTools       OptNilStringArray           `json:"denied_tools"`
 }
 
 // GetName returns the value of Name.
@@ -3503,7 +2696,7 @@ func (s *MCPEndpointCreate) GetURL() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *MCPEndpointCreate) GetDescription() OptMCPEndpointCreateDescription {
+func (s *MCPEndpointCreate) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -3523,7 +2716,7 @@ func (s *MCPEndpointCreate) GetSupportsResources() OptBool {
 }
 
 // GetOAuthServiceID returns the value of OAuthServiceID.
-func (s *MCPEndpointCreate) GetOAuthServiceID() OptMCPEndpointCreateOAuthServiceID {
+func (s *MCPEndpointCreate) GetOAuthServiceID() OptNilUUID {
 	return s.OAuthServiceID
 }
 
@@ -3537,6 +2730,16 @@ func (s *MCPEndpointCreate) GetActive() OptBool {
 	return s.Active
 }
 
+// GetAllowedTools returns the value of AllowedTools.
+func (s *MCPEndpointCreate) GetAllowedTools() OptNilStringArray {
+	return s.AllowedTools
+}
+
+// GetDeniedTools returns the value of DeniedTools.
+func (s *MCPEndpointCreate) GetDeniedTools() OptNilStringArray {
+	return s.DeniedTools
+}
+
 // SetName sets the value of Name.
 func (s *MCPEndpointCreate) SetName(val string) {
 	s.Name = val
@@ -3548,7 +2751,7 @@ func (s *MCPEndpointCreate) SetURL(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *MCPEndpointCreate) SetDescription(val OptMCPEndpointCreateDescription) {
+func (s *MCPEndpointCreate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -3568,7 +2771,7 @@ func (s *MCPEndpointCreate) SetSupportsResources(val OptBool) {
 }
 
 // SetOAuthServiceID sets the value of OAuthServiceID.
-func (s *MCPEndpointCreate) SetOAuthServiceID(val OptMCPEndpointCreateOAuthServiceID) {
+func (s *MCPEndpointCreate) SetOAuthServiceID(val OptNilUUID) {
 	s.OAuthServiceID = val
 }
 
@@ -3582,72 +2785,14 @@ func (s *MCPEndpointCreate) SetActive(val OptBool) {
 	s.Active = val
 }
 
-// MCPEndpointCreateDescription represents sum type.
-type MCPEndpointCreateDescription struct {
-	Type   MCPEndpointCreateDescriptionType // switch on this field
-	String string
-	Null   struct{}
+// SetAllowedTools sets the value of AllowedTools.
+func (s *MCPEndpointCreate) SetAllowedTools(val OptNilStringArray) {
+	s.AllowedTools = val
 }
 
-// MCPEndpointCreateDescriptionType is oneOf type of MCPEndpointCreateDescription.
-type MCPEndpointCreateDescriptionType string
-
-// Possible values for MCPEndpointCreateDescriptionType.
-const (
-	StringMCPEndpointCreateDescription MCPEndpointCreateDescriptionType = "string"
-	NullMCPEndpointCreateDescription   MCPEndpointCreateDescriptionType = "struct{}"
-)
-
-// IsString reports whether MCPEndpointCreateDescription is string.
-func (s MCPEndpointCreateDescription) IsString() bool {
-	return s.Type == StringMCPEndpointCreateDescription
-}
-
-// IsNull reports whether MCPEndpointCreateDescription is struct{}.
-func (s MCPEndpointCreateDescription) IsNull() bool {
-	return s.Type == NullMCPEndpointCreateDescription
-}
-
-// SetString sets MCPEndpointCreateDescription to string.
-func (s *MCPEndpointCreateDescription) SetString(v string) {
-	s.Type = StringMCPEndpointCreateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if MCPEndpointCreateDescription is string.
-func (s MCPEndpointCreateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringMCPEndpointCreateDescription returns new MCPEndpointCreateDescription from string.
-func NewStringMCPEndpointCreateDescription(v string) MCPEndpointCreateDescription {
-	var s MCPEndpointCreateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets MCPEndpointCreateDescription to struct{}.
-func (s *MCPEndpointCreateDescription) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointCreateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointCreateDescription is struct{}.
-func (s MCPEndpointCreateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointCreateDescription returns new MCPEndpointCreateDescription from struct{}.
-func NewNullMCPEndpointCreateDescription(v struct{}) MCPEndpointCreateDescription {
-	var s MCPEndpointCreateDescription
-	s.SetNull(v)
-	return s
+// SetDeniedTools sets the value of DeniedTools.
+func (s *MCPEndpointCreate) SetDeniedTools(val OptNilStringArray) {
+	s.DeniedTools = val
 }
 
 type MCPEndpointCreateHeaders map[string]string
@@ -3661,86 +2806,20 @@ func (s *MCPEndpointCreateHeaders) init() MCPEndpointCreateHeaders {
 	return m
 }
 
-// MCPEndpointCreateOAuthServiceID represents sum type.
-type MCPEndpointCreateOAuthServiceID struct {
-	Type MCPEndpointCreateOAuthServiceIDType // switch on this field
-	UUID uuid.UUID
-	Null struct{}
-}
-
-// MCPEndpointCreateOAuthServiceIDType is oneOf type of MCPEndpointCreateOAuthServiceID.
-type MCPEndpointCreateOAuthServiceIDType string
-
-// Possible values for MCPEndpointCreateOAuthServiceIDType.
-const (
-	UUIDMCPEndpointCreateOAuthServiceID MCPEndpointCreateOAuthServiceIDType = "uuid.UUID"
-	NullMCPEndpointCreateOAuthServiceID MCPEndpointCreateOAuthServiceIDType = "struct{}"
-)
-
-// IsUUID reports whether MCPEndpointCreateOAuthServiceID is uuid.UUID.
-func (s MCPEndpointCreateOAuthServiceID) IsUUID() bool {
-	return s.Type == UUIDMCPEndpointCreateOAuthServiceID
-}
-
-// IsNull reports whether MCPEndpointCreateOAuthServiceID is struct{}.
-func (s MCPEndpointCreateOAuthServiceID) IsNull() bool {
-	return s.Type == NullMCPEndpointCreateOAuthServiceID
-}
-
-// SetUUID sets MCPEndpointCreateOAuthServiceID to uuid.UUID.
-func (s *MCPEndpointCreateOAuthServiceID) SetUUID(v uuid.UUID) {
-	s.Type = UUIDMCPEndpointCreateOAuthServiceID
-	s.UUID = v
-}
-
-// GetUUID returns uuid.UUID and true boolean if MCPEndpointCreateOAuthServiceID is uuid.UUID.
-func (s MCPEndpointCreateOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
-	if !s.IsUUID() {
-		return v, false
-	}
-	return s.UUID, true
-}
-
-// NewUUIDMCPEndpointCreateOAuthServiceID returns new MCPEndpointCreateOAuthServiceID from uuid.UUID.
-func NewUUIDMCPEndpointCreateOAuthServiceID(v uuid.UUID) MCPEndpointCreateOAuthServiceID {
-	var s MCPEndpointCreateOAuthServiceID
-	s.SetUUID(v)
-	return s
-}
-
-// SetNull sets MCPEndpointCreateOAuthServiceID to struct{}.
-func (s *MCPEndpointCreateOAuthServiceID) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointCreateOAuthServiceID
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointCreateOAuthServiceID is struct{}.
-func (s MCPEndpointCreateOAuthServiceID) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointCreateOAuthServiceID returns new MCPEndpointCreateOAuthServiceID from struct{}.
-func NewNullMCPEndpointCreateOAuthServiceID(v struct{}) MCPEndpointCreateOAuthServiceID {
-	var s MCPEndpointCreateOAuthServiceID
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/MCPEndpointResponse
 type MCPEndpointResponse struct {
-	ID                uuid.UUID                            `json:"id"`
-	Name              string                               `json:"name"`
-	URL               string                               `json:"url"`
-	Description       OptMCPEndpointResponseDescription    `json:"description"`
-	Headers           OptMCPEndpointResponseHeaders        `json:"headers"`
-	DevgraphAuth      OptBool                              `json:"devgraph_auth"`
-	SupportsResources OptBool                              `json:"supports_resources"`
-	OAuthServiceID    OptMCPEndpointResponseOAuthServiceID `json:"oauth_service_id"`
-	Immutable         OptBool                              `json:"immutable"`
-	Active            OptBool                              `json:"active"`
+	ID                uuid.UUID                     `json:"id"`
+	Name              string                        `json:"name"`
+	URL               string                        `json:"url"`
+	Description       OptNilString                  `json:"description"`
+	Headers           OptMCPEndpointResponseHeaders `json:"headers"`
+	DevgraphAuth      OptBool                       `json:"devgraph_auth"`
+	SupportsResources OptBool                       `json:"supports_resources"`
+	OAuthServiceID    OptNilUUID                    `json:"oauth_service_id"`
+	Immutable         OptBool                       `json:"immutable"`
+	Active            OptBool                       `json:"active"`
+	AllowedTools      OptNilStringArray             `json:"allowed_tools"`
+	DeniedTools       OptNilStringArray             `json:"denied_tools"`
 }
 
 // GetID returns the value of ID.
@@ -3759,7 +2838,7 @@ func (s *MCPEndpointResponse) GetURL() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *MCPEndpointResponse) GetDescription() OptMCPEndpointResponseDescription {
+func (s *MCPEndpointResponse) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -3779,7 +2858,7 @@ func (s *MCPEndpointResponse) GetSupportsResources() OptBool {
 }
 
 // GetOAuthServiceID returns the value of OAuthServiceID.
-func (s *MCPEndpointResponse) GetOAuthServiceID() OptMCPEndpointResponseOAuthServiceID {
+func (s *MCPEndpointResponse) GetOAuthServiceID() OptNilUUID {
 	return s.OAuthServiceID
 }
 
@@ -3791,6 +2870,16 @@ func (s *MCPEndpointResponse) GetImmutable() OptBool {
 // GetActive returns the value of Active.
 func (s *MCPEndpointResponse) GetActive() OptBool {
 	return s.Active
+}
+
+// GetAllowedTools returns the value of AllowedTools.
+func (s *MCPEndpointResponse) GetAllowedTools() OptNilStringArray {
+	return s.AllowedTools
+}
+
+// GetDeniedTools returns the value of DeniedTools.
+func (s *MCPEndpointResponse) GetDeniedTools() OptNilStringArray {
+	return s.DeniedTools
 }
 
 // SetID sets the value of ID.
@@ -3809,7 +2898,7 @@ func (s *MCPEndpointResponse) SetURL(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *MCPEndpointResponse) SetDescription(val OptMCPEndpointResponseDescription) {
+func (s *MCPEndpointResponse) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -3829,7 +2918,7 @@ func (s *MCPEndpointResponse) SetSupportsResources(val OptBool) {
 }
 
 // SetOAuthServiceID sets the value of OAuthServiceID.
-func (s *MCPEndpointResponse) SetOAuthServiceID(val OptMCPEndpointResponseOAuthServiceID) {
+func (s *MCPEndpointResponse) SetOAuthServiceID(val OptNilUUID) {
 	s.OAuthServiceID = val
 }
 
@@ -3843,77 +2932,19 @@ func (s *MCPEndpointResponse) SetActive(val OptBool) {
 	s.Active = val
 }
 
+// SetAllowedTools sets the value of AllowedTools.
+func (s *MCPEndpointResponse) SetAllowedTools(val OptNilStringArray) {
+	s.AllowedTools = val
+}
+
+// SetDeniedTools sets the value of DeniedTools.
+func (s *MCPEndpointResponse) SetDeniedTools(val OptNilStringArray) {
+	s.DeniedTools = val
+}
+
 func (*MCPEndpointResponse) createMcpendpointRes() {}
 func (*MCPEndpointResponse) getMcpendpointRes()    {}
 func (*MCPEndpointResponse) updateMcpendpointRes() {}
-
-// MCPEndpointResponseDescription represents sum type.
-type MCPEndpointResponseDescription struct {
-	Type   MCPEndpointResponseDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// MCPEndpointResponseDescriptionType is oneOf type of MCPEndpointResponseDescription.
-type MCPEndpointResponseDescriptionType string
-
-// Possible values for MCPEndpointResponseDescriptionType.
-const (
-	StringMCPEndpointResponseDescription MCPEndpointResponseDescriptionType = "string"
-	NullMCPEndpointResponseDescription   MCPEndpointResponseDescriptionType = "struct{}"
-)
-
-// IsString reports whether MCPEndpointResponseDescription is string.
-func (s MCPEndpointResponseDescription) IsString() bool {
-	return s.Type == StringMCPEndpointResponseDescription
-}
-
-// IsNull reports whether MCPEndpointResponseDescription is struct{}.
-func (s MCPEndpointResponseDescription) IsNull() bool {
-	return s.Type == NullMCPEndpointResponseDescription
-}
-
-// SetString sets MCPEndpointResponseDescription to string.
-func (s *MCPEndpointResponseDescription) SetString(v string) {
-	s.Type = StringMCPEndpointResponseDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if MCPEndpointResponseDescription is string.
-func (s MCPEndpointResponseDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringMCPEndpointResponseDescription returns new MCPEndpointResponseDescription from string.
-func NewStringMCPEndpointResponseDescription(v string) MCPEndpointResponseDescription {
-	var s MCPEndpointResponseDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets MCPEndpointResponseDescription to struct{}.
-func (s *MCPEndpointResponseDescription) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointResponseDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointResponseDescription is struct{}.
-func (s MCPEndpointResponseDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointResponseDescription returns new MCPEndpointResponseDescription from struct{}.
-func NewNullMCPEndpointResponseDescription(v struct{}) MCPEndpointResponseDescription {
-	var s MCPEndpointResponseDescription
-	s.SetNull(v)
-	return s
-}
 
 type MCPEndpointResponseHeaders map[string]string
 
@@ -3926,446 +2957,134 @@ func (s *MCPEndpointResponseHeaders) init() MCPEndpointResponseHeaders {
 	return m
 }
 
-// MCPEndpointResponseOAuthServiceID represents sum type.
-type MCPEndpointResponseOAuthServiceID struct {
-	Type MCPEndpointResponseOAuthServiceIDType // switch on this field
-	UUID uuid.UUID
-	Null struct{}
-}
-
-// MCPEndpointResponseOAuthServiceIDType is oneOf type of MCPEndpointResponseOAuthServiceID.
-type MCPEndpointResponseOAuthServiceIDType string
-
-// Possible values for MCPEndpointResponseOAuthServiceIDType.
-const (
-	UUIDMCPEndpointResponseOAuthServiceID MCPEndpointResponseOAuthServiceIDType = "uuid.UUID"
-	NullMCPEndpointResponseOAuthServiceID MCPEndpointResponseOAuthServiceIDType = "struct{}"
-)
-
-// IsUUID reports whether MCPEndpointResponseOAuthServiceID is uuid.UUID.
-func (s MCPEndpointResponseOAuthServiceID) IsUUID() bool {
-	return s.Type == UUIDMCPEndpointResponseOAuthServiceID
-}
-
-// IsNull reports whether MCPEndpointResponseOAuthServiceID is struct{}.
-func (s MCPEndpointResponseOAuthServiceID) IsNull() bool {
-	return s.Type == NullMCPEndpointResponseOAuthServiceID
-}
-
-// SetUUID sets MCPEndpointResponseOAuthServiceID to uuid.UUID.
-func (s *MCPEndpointResponseOAuthServiceID) SetUUID(v uuid.UUID) {
-	s.Type = UUIDMCPEndpointResponseOAuthServiceID
-	s.UUID = v
-}
-
-// GetUUID returns uuid.UUID and true boolean if MCPEndpointResponseOAuthServiceID is uuid.UUID.
-func (s MCPEndpointResponseOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
-	if !s.IsUUID() {
-		return v, false
-	}
-	return s.UUID, true
-}
-
-// NewUUIDMCPEndpointResponseOAuthServiceID returns new MCPEndpointResponseOAuthServiceID from uuid.UUID.
-func NewUUIDMCPEndpointResponseOAuthServiceID(v uuid.UUID) MCPEndpointResponseOAuthServiceID {
-	var s MCPEndpointResponseOAuthServiceID
-	s.SetUUID(v)
-	return s
-}
-
-// SetNull sets MCPEndpointResponseOAuthServiceID to struct{}.
-func (s *MCPEndpointResponseOAuthServiceID) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointResponseOAuthServiceID
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointResponseOAuthServiceID is struct{}.
-func (s MCPEndpointResponseOAuthServiceID) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointResponseOAuthServiceID returns new MCPEndpointResponseOAuthServiceID from struct{}.
-func NewNullMCPEndpointResponseOAuthServiceID(v struct{}) MCPEndpointResponseOAuthServiceID {
-	var s MCPEndpointResponseOAuthServiceID
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/MCPEndpointUpdate
 type MCPEndpointUpdate struct {
-	Name              OptMCPEndpointUpdateName              `json:"name"`
-	URL               OptMCPEndpointUpdateURL               `json:"url"`
-	Description       OptMCPEndpointUpdateDescription       `json:"description"`
-	Headers           OptMCPEndpointUpdateHeaders           `json:"headers"`
-	DevgraphAuth      OptMCPEndpointUpdateDevgraphAuth      `json:"devgraph_auth"`
-	SupportsResources OptMCPEndpointUpdateSupportsResources `json:"supports_resources"`
-	OAuthServiceID    OptMCPEndpointUpdateOAuthServiceID    `json:"oauth_service_id"`
-	Immutable         OptMCPEndpointUpdateImmutable         `json:"immutable"`
-	Active            OptMCPEndpointUpdateActive            `json:"active"`
+	Name              OptNilString                   `json:"name"`
+	URL               OptNilString                   `json:"url"`
+	Description       OptNilString                   `json:"description"`
+	Headers           OptNilMCPEndpointUpdateHeaders `json:"headers"`
+	DevgraphAuth      OptNilBool                     `json:"devgraph_auth"`
+	SupportsResources OptNilBool                     `json:"supports_resources"`
+	OAuthServiceID    OptNilUUID                     `json:"oauth_service_id"`
+	Immutable         OptNilBool                     `json:"immutable"`
+	Active            OptNilBool                     `json:"active"`
+	AllowedTools      OptNilStringArray              `json:"allowed_tools"`
+	DeniedTools       OptNilStringArray              `json:"denied_tools"`
 }
 
 // GetName returns the value of Name.
-func (s *MCPEndpointUpdate) GetName() OptMCPEndpointUpdateName {
+func (s *MCPEndpointUpdate) GetName() OptNilString {
 	return s.Name
 }
 
 // GetURL returns the value of URL.
-func (s *MCPEndpointUpdate) GetURL() OptMCPEndpointUpdateURL {
+func (s *MCPEndpointUpdate) GetURL() OptNilString {
 	return s.URL
 }
 
 // GetDescription returns the value of Description.
-func (s *MCPEndpointUpdate) GetDescription() OptMCPEndpointUpdateDescription {
+func (s *MCPEndpointUpdate) GetDescription() OptNilString {
 	return s.Description
 }
 
 // GetHeaders returns the value of Headers.
-func (s *MCPEndpointUpdate) GetHeaders() OptMCPEndpointUpdateHeaders {
+func (s *MCPEndpointUpdate) GetHeaders() OptNilMCPEndpointUpdateHeaders {
 	return s.Headers
 }
 
 // GetDevgraphAuth returns the value of DevgraphAuth.
-func (s *MCPEndpointUpdate) GetDevgraphAuth() OptMCPEndpointUpdateDevgraphAuth {
+func (s *MCPEndpointUpdate) GetDevgraphAuth() OptNilBool {
 	return s.DevgraphAuth
 }
 
 // GetSupportsResources returns the value of SupportsResources.
-func (s *MCPEndpointUpdate) GetSupportsResources() OptMCPEndpointUpdateSupportsResources {
+func (s *MCPEndpointUpdate) GetSupportsResources() OptNilBool {
 	return s.SupportsResources
 }
 
 // GetOAuthServiceID returns the value of OAuthServiceID.
-func (s *MCPEndpointUpdate) GetOAuthServiceID() OptMCPEndpointUpdateOAuthServiceID {
+func (s *MCPEndpointUpdate) GetOAuthServiceID() OptNilUUID {
 	return s.OAuthServiceID
 }
 
 // GetImmutable returns the value of Immutable.
-func (s *MCPEndpointUpdate) GetImmutable() OptMCPEndpointUpdateImmutable {
+func (s *MCPEndpointUpdate) GetImmutable() OptNilBool {
 	return s.Immutable
 }
 
 // GetActive returns the value of Active.
-func (s *MCPEndpointUpdate) GetActive() OptMCPEndpointUpdateActive {
+func (s *MCPEndpointUpdate) GetActive() OptNilBool {
 	return s.Active
 }
 
+// GetAllowedTools returns the value of AllowedTools.
+func (s *MCPEndpointUpdate) GetAllowedTools() OptNilStringArray {
+	return s.AllowedTools
+}
+
+// GetDeniedTools returns the value of DeniedTools.
+func (s *MCPEndpointUpdate) GetDeniedTools() OptNilStringArray {
+	return s.DeniedTools
+}
+
 // SetName sets the value of Name.
-func (s *MCPEndpointUpdate) SetName(val OptMCPEndpointUpdateName) {
+func (s *MCPEndpointUpdate) SetName(val OptNilString) {
 	s.Name = val
 }
 
 // SetURL sets the value of URL.
-func (s *MCPEndpointUpdate) SetURL(val OptMCPEndpointUpdateURL) {
+func (s *MCPEndpointUpdate) SetURL(val OptNilString) {
 	s.URL = val
 }
 
 // SetDescription sets the value of Description.
-func (s *MCPEndpointUpdate) SetDescription(val OptMCPEndpointUpdateDescription) {
+func (s *MCPEndpointUpdate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
 // SetHeaders sets the value of Headers.
-func (s *MCPEndpointUpdate) SetHeaders(val OptMCPEndpointUpdateHeaders) {
+func (s *MCPEndpointUpdate) SetHeaders(val OptNilMCPEndpointUpdateHeaders) {
 	s.Headers = val
 }
 
 // SetDevgraphAuth sets the value of DevgraphAuth.
-func (s *MCPEndpointUpdate) SetDevgraphAuth(val OptMCPEndpointUpdateDevgraphAuth) {
+func (s *MCPEndpointUpdate) SetDevgraphAuth(val OptNilBool) {
 	s.DevgraphAuth = val
 }
 
 // SetSupportsResources sets the value of SupportsResources.
-func (s *MCPEndpointUpdate) SetSupportsResources(val OptMCPEndpointUpdateSupportsResources) {
+func (s *MCPEndpointUpdate) SetSupportsResources(val OptNilBool) {
 	s.SupportsResources = val
 }
 
 // SetOAuthServiceID sets the value of OAuthServiceID.
-func (s *MCPEndpointUpdate) SetOAuthServiceID(val OptMCPEndpointUpdateOAuthServiceID) {
+func (s *MCPEndpointUpdate) SetOAuthServiceID(val OptNilUUID) {
 	s.OAuthServiceID = val
 }
 
 // SetImmutable sets the value of Immutable.
-func (s *MCPEndpointUpdate) SetImmutable(val OptMCPEndpointUpdateImmutable) {
+func (s *MCPEndpointUpdate) SetImmutable(val OptNilBool) {
 	s.Immutable = val
 }
 
 // SetActive sets the value of Active.
-func (s *MCPEndpointUpdate) SetActive(val OptMCPEndpointUpdateActive) {
+func (s *MCPEndpointUpdate) SetActive(val OptNilBool) {
 	s.Active = val
 }
 
-// MCPEndpointUpdateActive represents sum type.
-type MCPEndpointUpdateActive struct {
-	Type MCPEndpointUpdateActiveType // switch on this field
-	Bool bool
-	Null struct{}
+// SetAllowedTools sets the value of AllowedTools.
+func (s *MCPEndpointUpdate) SetAllowedTools(val OptNilStringArray) {
+	s.AllowedTools = val
 }
 
-// MCPEndpointUpdateActiveType is oneOf type of MCPEndpointUpdateActive.
-type MCPEndpointUpdateActiveType string
-
-// Possible values for MCPEndpointUpdateActiveType.
-const (
-	BoolMCPEndpointUpdateActive MCPEndpointUpdateActiveType = "bool"
-	NullMCPEndpointUpdateActive MCPEndpointUpdateActiveType = "struct{}"
-)
-
-// IsBool reports whether MCPEndpointUpdateActive is bool.
-func (s MCPEndpointUpdateActive) IsBool() bool { return s.Type == BoolMCPEndpointUpdateActive }
-
-// IsNull reports whether MCPEndpointUpdateActive is struct{}.
-func (s MCPEndpointUpdateActive) IsNull() bool { return s.Type == NullMCPEndpointUpdateActive }
-
-// SetBool sets MCPEndpointUpdateActive to bool.
-func (s *MCPEndpointUpdateActive) SetBool(v bool) {
-	s.Type = BoolMCPEndpointUpdateActive
-	s.Bool = v
+// SetDeniedTools sets the value of DeniedTools.
+func (s *MCPEndpointUpdate) SetDeniedTools(val OptNilStringArray) {
+	s.DeniedTools = val
 }
 
-// GetBool returns bool and true boolean if MCPEndpointUpdateActive is bool.
-func (s MCPEndpointUpdateActive) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
+type MCPEndpointUpdateHeaders map[string]string
 
-// NewBoolMCPEndpointUpdateActive returns new MCPEndpointUpdateActive from bool.
-func NewBoolMCPEndpointUpdateActive(v bool) MCPEndpointUpdateActive {
-	var s MCPEndpointUpdateActive
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateActive to struct{}.
-func (s *MCPEndpointUpdateActive) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateActive
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateActive is struct{}.
-func (s MCPEndpointUpdateActive) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateActive returns new MCPEndpointUpdateActive from struct{}.
-func NewNullMCPEndpointUpdateActive(v struct{}) MCPEndpointUpdateActive {
-	var s MCPEndpointUpdateActive
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateDescription represents sum type.
-type MCPEndpointUpdateDescription struct {
-	Type   MCPEndpointUpdateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// MCPEndpointUpdateDescriptionType is oneOf type of MCPEndpointUpdateDescription.
-type MCPEndpointUpdateDescriptionType string
-
-// Possible values for MCPEndpointUpdateDescriptionType.
-const (
-	StringMCPEndpointUpdateDescription MCPEndpointUpdateDescriptionType = "string"
-	NullMCPEndpointUpdateDescription   MCPEndpointUpdateDescriptionType = "struct{}"
-)
-
-// IsString reports whether MCPEndpointUpdateDescription is string.
-func (s MCPEndpointUpdateDescription) IsString() bool {
-	return s.Type == StringMCPEndpointUpdateDescription
-}
-
-// IsNull reports whether MCPEndpointUpdateDescription is struct{}.
-func (s MCPEndpointUpdateDescription) IsNull() bool {
-	return s.Type == NullMCPEndpointUpdateDescription
-}
-
-// SetString sets MCPEndpointUpdateDescription to string.
-func (s *MCPEndpointUpdateDescription) SetString(v string) {
-	s.Type = StringMCPEndpointUpdateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if MCPEndpointUpdateDescription is string.
-func (s MCPEndpointUpdateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringMCPEndpointUpdateDescription returns new MCPEndpointUpdateDescription from string.
-func NewStringMCPEndpointUpdateDescription(v string) MCPEndpointUpdateDescription {
-	var s MCPEndpointUpdateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateDescription to struct{}.
-func (s *MCPEndpointUpdateDescription) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateDescription is struct{}.
-func (s MCPEndpointUpdateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateDescription returns new MCPEndpointUpdateDescription from struct{}.
-func NewNullMCPEndpointUpdateDescription(v struct{}) MCPEndpointUpdateDescription {
-	var s MCPEndpointUpdateDescription
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateDevgraphAuth represents sum type.
-type MCPEndpointUpdateDevgraphAuth struct {
-	Type MCPEndpointUpdateDevgraphAuthType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// MCPEndpointUpdateDevgraphAuthType is oneOf type of MCPEndpointUpdateDevgraphAuth.
-type MCPEndpointUpdateDevgraphAuthType string
-
-// Possible values for MCPEndpointUpdateDevgraphAuthType.
-const (
-	BoolMCPEndpointUpdateDevgraphAuth MCPEndpointUpdateDevgraphAuthType = "bool"
-	NullMCPEndpointUpdateDevgraphAuth MCPEndpointUpdateDevgraphAuthType = "struct{}"
-)
-
-// IsBool reports whether MCPEndpointUpdateDevgraphAuth is bool.
-func (s MCPEndpointUpdateDevgraphAuth) IsBool() bool {
-	return s.Type == BoolMCPEndpointUpdateDevgraphAuth
-}
-
-// IsNull reports whether MCPEndpointUpdateDevgraphAuth is struct{}.
-func (s MCPEndpointUpdateDevgraphAuth) IsNull() bool {
-	return s.Type == NullMCPEndpointUpdateDevgraphAuth
-}
-
-// SetBool sets MCPEndpointUpdateDevgraphAuth to bool.
-func (s *MCPEndpointUpdateDevgraphAuth) SetBool(v bool) {
-	s.Type = BoolMCPEndpointUpdateDevgraphAuth
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if MCPEndpointUpdateDevgraphAuth is bool.
-func (s MCPEndpointUpdateDevgraphAuth) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolMCPEndpointUpdateDevgraphAuth returns new MCPEndpointUpdateDevgraphAuth from bool.
-func NewBoolMCPEndpointUpdateDevgraphAuth(v bool) MCPEndpointUpdateDevgraphAuth {
-	var s MCPEndpointUpdateDevgraphAuth
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateDevgraphAuth to struct{}.
-func (s *MCPEndpointUpdateDevgraphAuth) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateDevgraphAuth
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateDevgraphAuth is struct{}.
-func (s MCPEndpointUpdateDevgraphAuth) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateDevgraphAuth returns new MCPEndpointUpdateDevgraphAuth from struct{}.
-func NewNullMCPEndpointUpdateDevgraphAuth(v struct{}) MCPEndpointUpdateDevgraphAuth {
-	var s MCPEndpointUpdateDevgraphAuth
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateHeaders represents sum type.
-type MCPEndpointUpdateHeaders struct {
-	Type                      MCPEndpointUpdateHeadersType // switch on this field
-	MCPEndpointUpdateHeaders0 MCPEndpointUpdateHeaders0
-	Null                      struct{}
-}
-
-// MCPEndpointUpdateHeadersType is oneOf type of MCPEndpointUpdateHeaders.
-type MCPEndpointUpdateHeadersType string
-
-// Possible values for MCPEndpointUpdateHeadersType.
-const (
-	MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders MCPEndpointUpdateHeadersType = "MCPEndpointUpdateHeaders0"
-	NullMCPEndpointUpdateHeaders                      MCPEndpointUpdateHeadersType = "struct{}"
-)
-
-// IsMCPEndpointUpdateHeaders0 reports whether MCPEndpointUpdateHeaders is MCPEndpointUpdateHeaders0.
-func (s MCPEndpointUpdateHeaders) IsMCPEndpointUpdateHeaders0() bool {
-	return s.Type == MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
-}
-
-// IsNull reports whether MCPEndpointUpdateHeaders is struct{}.
-func (s MCPEndpointUpdateHeaders) IsNull() bool { return s.Type == NullMCPEndpointUpdateHeaders }
-
-// SetMCPEndpointUpdateHeaders0 sets MCPEndpointUpdateHeaders to MCPEndpointUpdateHeaders0.
-func (s *MCPEndpointUpdateHeaders) SetMCPEndpointUpdateHeaders0(v MCPEndpointUpdateHeaders0) {
-	s.Type = MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
-	s.MCPEndpointUpdateHeaders0 = v
-}
-
-// GetMCPEndpointUpdateHeaders0 returns MCPEndpointUpdateHeaders0 and true boolean if MCPEndpointUpdateHeaders is MCPEndpointUpdateHeaders0.
-func (s MCPEndpointUpdateHeaders) GetMCPEndpointUpdateHeaders0() (v MCPEndpointUpdateHeaders0, ok bool) {
-	if !s.IsMCPEndpointUpdateHeaders0() {
-		return v, false
-	}
-	return s.MCPEndpointUpdateHeaders0, true
-}
-
-// NewMCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders returns new MCPEndpointUpdateHeaders from MCPEndpointUpdateHeaders0.
-func NewMCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders(v MCPEndpointUpdateHeaders0) MCPEndpointUpdateHeaders {
-	var s MCPEndpointUpdateHeaders
-	s.SetMCPEndpointUpdateHeaders0(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateHeaders to struct{}.
-func (s *MCPEndpointUpdateHeaders) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateHeaders
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateHeaders is struct{}.
-func (s MCPEndpointUpdateHeaders) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateHeaders returns new MCPEndpointUpdateHeaders from struct{}.
-func NewNullMCPEndpointUpdateHeaders(v struct{}) MCPEndpointUpdateHeaders {
-	var s MCPEndpointUpdateHeaders
-	s.SetNull(v)
-	return s
-}
-
-type MCPEndpointUpdateHeaders0 map[string]string
-
-func (s *MCPEndpointUpdateHeaders0) init() MCPEndpointUpdateHeaders0 {
+func (s *MCPEndpointUpdateHeaders) init() MCPEndpointUpdateHeaders {
 	m := *s
 	if m == nil {
 		m = map[string]string{}
@@ -4374,340 +3093,198 @@ func (s *MCPEndpointUpdateHeaders0) init() MCPEndpointUpdateHeaders0 {
 	return m
 }
 
-// MCPEndpointUpdateImmutable represents sum type.
-type MCPEndpointUpdateImmutable struct {
-	Type MCPEndpointUpdateImmutableType // switch on this field
-	Bool bool
-	Null struct{}
+// Ref: #/components/schemas/MCPToolEntityAssociationCreate
+type MCPToolEntityAssociationCreate struct {
+	McpEndpointName    string                                         `json:"mcp_endpoint_name"`
+	ToolName           string                                         `json:"tool_name"`
+	EntityDefinitionID uuid.UUID                                      `json:"entity_definition_id"`
+	EntityVersionID    OptNilUUID                                     `json:"entity_version_id"`
+	ToolConfig         OptNilMCPToolEntityAssociationCreateToolConfig `json:"tool_config"`
 }
 
-// MCPEndpointUpdateImmutableType is oneOf type of MCPEndpointUpdateImmutable.
-type MCPEndpointUpdateImmutableType string
-
-// Possible values for MCPEndpointUpdateImmutableType.
-const (
-	BoolMCPEndpointUpdateImmutable MCPEndpointUpdateImmutableType = "bool"
-	NullMCPEndpointUpdateImmutable MCPEndpointUpdateImmutableType = "struct{}"
-)
-
-// IsBool reports whether MCPEndpointUpdateImmutable is bool.
-func (s MCPEndpointUpdateImmutable) IsBool() bool { return s.Type == BoolMCPEndpointUpdateImmutable }
-
-// IsNull reports whether MCPEndpointUpdateImmutable is struct{}.
-func (s MCPEndpointUpdateImmutable) IsNull() bool { return s.Type == NullMCPEndpointUpdateImmutable }
-
-// SetBool sets MCPEndpointUpdateImmutable to bool.
-func (s *MCPEndpointUpdateImmutable) SetBool(v bool) {
-	s.Type = BoolMCPEndpointUpdateImmutable
-	s.Bool = v
+// GetMcpEndpointName returns the value of McpEndpointName.
+func (s *MCPToolEntityAssociationCreate) GetMcpEndpointName() string {
+	return s.McpEndpointName
 }
 
-// GetBool returns bool and true boolean if MCPEndpointUpdateImmutable is bool.
-func (s MCPEndpointUpdateImmutable) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
+// GetToolName returns the value of ToolName.
+func (s *MCPToolEntityAssociationCreate) GetToolName() string {
+	return s.ToolName
+}
+
+// GetEntityDefinitionID returns the value of EntityDefinitionID.
+func (s *MCPToolEntityAssociationCreate) GetEntityDefinitionID() uuid.UUID {
+	return s.EntityDefinitionID
+}
+
+// GetEntityVersionID returns the value of EntityVersionID.
+func (s *MCPToolEntityAssociationCreate) GetEntityVersionID() OptNilUUID {
+	return s.EntityVersionID
+}
+
+// GetToolConfig returns the value of ToolConfig.
+func (s *MCPToolEntityAssociationCreate) GetToolConfig() OptNilMCPToolEntityAssociationCreateToolConfig {
+	return s.ToolConfig
+}
+
+// SetMcpEndpointName sets the value of McpEndpointName.
+func (s *MCPToolEntityAssociationCreate) SetMcpEndpointName(val string) {
+	s.McpEndpointName = val
+}
+
+// SetToolName sets the value of ToolName.
+func (s *MCPToolEntityAssociationCreate) SetToolName(val string) {
+	s.ToolName = val
+}
+
+// SetEntityDefinitionID sets the value of EntityDefinitionID.
+func (s *MCPToolEntityAssociationCreate) SetEntityDefinitionID(val uuid.UUID) {
+	s.EntityDefinitionID = val
+}
+
+// SetEntityVersionID sets the value of EntityVersionID.
+func (s *MCPToolEntityAssociationCreate) SetEntityVersionID(val OptNilUUID) {
+	s.EntityVersionID = val
+}
+
+// SetToolConfig sets the value of ToolConfig.
+func (s *MCPToolEntityAssociationCreate) SetToolConfig(val OptNilMCPToolEntityAssociationCreateToolConfig) {
+	s.ToolConfig = val
+}
+
+type MCPToolEntityAssociationCreateToolConfig map[string]jx.Raw
+
+func (s *MCPToolEntityAssociationCreateToolConfig) init() MCPToolEntityAssociationCreateToolConfig {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
 	}
-	return s.Bool, true
+	return m
 }
 
-// NewBoolMCPEndpointUpdateImmutable returns new MCPEndpointUpdateImmutable from bool.
-func NewBoolMCPEndpointUpdateImmutable(v bool) MCPEndpointUpdateImmutable {
-	var s MCPEndpointUpdateImmutable
-	s.SetBool(v)
-	return s
+// Ref: #/components/schemas/MCPToolEntityAssociationResponse
+type MCPToolEntityAssociationResponse struct {
+	ID                 uuid.UUID                                        `json:"id"`
+	McpEndpointName    string                                           `json:"mcp_endpoint_name"`
+	ToolName           string                                           `json:"tool_name"`
+	EntityDefinitionID uuid.UUID                                        `json:"entity_definition_id"`
+	EntityVersionID    OptNilUUID                                       `json:"entity_version_id"`
+	ToolConfig         OptNilMCPToolEntityAssociationResponseToolConfig `json:"tool_config"`
+	EnvironmentID      uuid.UUID                                        `json:"environment_id"`
+	CreatedAt          string                                           `json:"created_at"`
+	UpdatedAt          string                                           `json:"updated_at"`
 }
 
-// SetNull sets MCPEndpointUpdateImmutable to struct{}.
-func (s *MCPEndpointUpdateImmutable) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateImmutable
-	s.Null = v
+// GetID returns the value of ID.
+func (s *MCPToolEntityAssociationResponse) GetID() uuid.UUID {
+	return s.ID
 }
 
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateImmutable is struct{}.
-func (s MCPEndpointUpdateImmutable) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
+// GetMcpEndpointName returns the value of McpEndpointName.
+func (s *MCPToolEntityAssociationResponse) GetMcpEndpointName() string {
+	return s.McpEndpointName
+}
+
+// GetToolName returns the value of ToolName.
+func (s *MCPToolEntityAssociationResponse) GetToolName() string {
+	return s.ToolName
+}
+
+// GetEntityDefinitionID returns the value of EntityDefinitionID.
+func (s *MCPToolEntityAssociationResponse) GetEntityDefinitionID() uuid.UUID {
+	return s.EntityDefinitionID
+}
+
+// GetEntityVersionID returns the value of EntityVersionID.
+func (s *MCPToolEntityAssociationResponse) GetEntityVersionID() OptNilUUID {
+	return s.EntityVersionID
+}
+
+// GetToolConfig returns the value of ToolConfig.
+func (s *MCPToolEntityAssociationResponse) GetToolConfig() OptNilMCPToolEntityAssociationResponseToolConfig {
+	return s.ToolConfig
+}
+
+// GetEnvironmentID returns the value of EnvironmentID.
+func (s *MCPToolEntityAssociationResponse) GetEnvironmentID() uuid.UUID {
+	return s.EnvironmentID
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MCPToolEntityAssociationResponse) GetCreatedAt() string {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MCPToolEntityAssociationResponse) GetUpdatedAt() string {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MCPToolEntityAssociationResponse) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetMcpEndpointName sets the value of McpEndpointName.
+func (s *MCPToolEntityAssociationResponse) SetMcpEndpointName(val string) {
+	s.McpEndpointName = val
+}
+
+// SetToolName sets the value of ToolName.
+func (s *MCPToolEntityAssociationResponse) SetToolName(val string) {
+	s.ToolName = val
+}
+
+// SetEntityDefinitionID sets the value of EntityDefinitionID.
+func (s *MCPToolEntityAssociationResponse) SetEntityDefinitionID(val uuid.UUID) {
+	s.EntityDefinitionID = val
+}
+
+// SetEntityVersionID sets the value of EntityVersionID.
+func (s *MCPToolEntityAssociationResponse) SetEntityVersionID(val OptNilUUID) {
+	s.EntityVersionID = val
+}
+
+// SetToolConfig sets the value of ToolConfig.
+func (s *MCPToolEntityAssociationResponse) SetToolConfig(val OptNilMCPToolEntityAssociationResponseToolConfig) {
+	s.ToolConfig = val
+}
+
+// SetEnvironmentID sets the value of EnvironmentID.
+func (s *MCPToolEntityAssociationResponse) SetEnvironmentID(val uuid.UUID) {
+	s.EnvironmentID = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MCPToolEntityAssociationResponse) SetCreatedAt(val string) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MCPToolEntityAssociationResponse) SetUpdatedAt(val string) {
+	s.UpdatedAt = val
+}
+
+func (*MCPToolEntityAssociationResponse) createMcpToolAssociationRes() {}
+
+type MCPToolEntityAssociationResponseToolConfig map[string]jx.Raw
+
+func (s *MCPToolEntityAssociationResponseToolConfig) init() MCPToolEntityAssociationResponseToolConfig {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
 	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateImmutable returns new MCPEndpointUpdateImmutable from struct{}.
-func NewNullMCPEndpointUpdateImmutable(v struct{}) MCPEndpointUpdateImmutable {
-	var s MCPEndpointUpdateImmutable
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateName represents sum type.
-type MCPEndpointUpdateName struct {
-	Type   MCPEndpointUpdateNameType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// MCPEndpointUpdateNameType is oneOf type of MCPEndpointUpdateName.
-type MCPEndpointUpdateNameType string
-
-// Possible values for MCPEndpointUpdateNameType.
-const (
-	StringMCPEndpointUpdateName MCPEndpointUpdateNameType = "string"
-	NullMCPEndpointUpdateName   MCPEndpointUpdateNameType = "struct{}"
-)
-
-// IsString reports whether MCPEndpointUpdateName is string.
-func (s MCPEndpointUpdateName) IsString() bool { return s.Type == StringMCPEndpointUpdateName }
-
-// IsNull reports whether MCPEndpointUpdateName is struct{}.
-func (s MCPEndpointUpdateName) IsNull() bool { return s.Type == NullMCPEndpointUpdateName }
-
-// SetString sets MCPEndpointUpdateName to string.
-func (s *MCPEndpointUpdateName) SetString(v string) {
-	s.Type = StringMCPEndpointUpdateName
-	s.String = v
-}
-
-// GetString returns string and true boolean if MCPEndpointUpdateName is string.
-func (s MCPEndpointUpdateName) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringMCPEndpointUpdateName returns new MCPEndpointUpdateName from string.
-func NewStringMCPEndpointUpdateName(v string) MCPEndpointUpdateName {
-	var s MCPEndpointUpdateName
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateName to struct{}.
-func (s *MCPEndpointUpdateName) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateName
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateName is struct{}.
-func (s MCPEndpointUpdateName) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateName returns new MCPEndpointUpdateName from struct{}.
-func NewNullMCPEndpointUpdateName(v struct{}) MCPEndpointUpdateName {
-	var s MCPEndpointUpdateName
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateOAuthServiceID represents sum type.
-type MCPEndpointUpdateOAuthServiceID struct {
-	Type MCPEndpointUpdateOAuthServiceIDType // switch on this field
-	UUID uuid.UUID
-	Null struct{}
-}
-
-// MCPEndpointUpdateOAuthServiceIDType is oneOf type of MCPEndpointUpdateOAuthServiceID.
-type MCPEndpointUpdateOAuthServiceIDType string
-
-// Possible values for MCPEndpointUpdateOAuthServiceIDType.
-const (
-	UUIDMCPEndpointUpdateOAuthServiceID MCPEndpointUpdateOAuthServiceIDType = "uuid.UUID"
-	NullMCPEndpointUpdateOAuthServiceID MCPEndpointUpdateOAuthServiceIDType = "struct{}"
-)
-
-// IsUUID reports whether MCPEndpointUpdateOAuthServiceID is uuid.UUID.
-func (s MCPEndpointUpdateOAuthServiceID) IsUUID() bool {
-	return s.Type == UUIDMCPEndpointUpdateOAuthServiceID
-}
-
-// IsNull reports whether MCPEndpointUpdateOAuthServiceID is struct{}.
-func (s MCPEndpointUpdateOAuthServiceID) IsNull() bool {
-	return s.Type == NullMCPEndpointUpdateOAuthServiceID
-}
-
-// SetUUID sets MCPEndpointUpdateOAuthServiceID to uuid.UUID.
-func (s *MCPEndpointUpdateOAuthServiceID) SetUUID(v uuid.UUID) {
-	s.Type = UUIDMCPEndpointUpdateOAuthServiceID
-	s.UUID = v
-}
-
-// GetUUID returns uuid.UUID and true boolean if MCPEndpointUpdateOAuthServiceID is uuid.UUID.
-func (s MCPEndpointUpdateOAuthServiceID) GetUUID() (v uuid.UUID, ok bool) {
-	if !s.IsUUID() {
-		return v, false
-	}
-	return s.UUID, true
-}
-
-// NewUUIDMCPEndpointUpdateOAuthServiceID returns new MCPEndpointUpdateOAuthServiceID from uuid.UUID.
-func NewUUIDMCPEndpointUpdateOAuthServiceID(v uuid.UUID) MCPEndpointUpdateOAuthServiceID {
-	var s MCPEndpointUpdateOAuthServiceID
-	s.SetUUID(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateOAuthServiceID to struct{}.
-func (s *MCPEndpointUpdateOAuthServiceID) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateOAuthServiceID
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateOAuthServiceID is struct{}.
-func (s MCPEndpointUpdateOAuthServiceID) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateOAuthServiceID returns new MCPEndpointUpdateOAuthServiceID from struct{}.
-func NewNullMCPEndpointUpdateOAuthServiceID(v struct{}) MCPEndpointUpdateOAuthServiceID {
-	var s MCPEndpointUpdateOAuthServiceID
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateSupportsResources represents sum type.
-type MCPEndpointUpdateSupportsResources struct {
-	Type MCPEndpointUpdateSupportsResourcesType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// MCPEndpointUpdateSupportsResourcesType is oneOf type of MCPEndpointUpdateSupportsResources.
-type MCPEndpointUpdateSupportsResourcesType string
-
-// Possible values for MCPEndpointUpdateSupportsResourcesType.
-const (
-	BoolMCPEndpointUpdateSupportsResources MCPEndpointUpdateSupportsResourcesType = "bool"
-	NullMCPEndpointUpdateSupportsResources MCPEndpointUpdateSupportsResourcesType = "struct{}"
-)
-
-// IsBool reports whether MCPEndpointUpdateSupportsResources is bool.
-func (s MCPEndpointUpdateSupportsResources) IsBool() bool {
-	return s.Type == BoolMCPEndpointUpdateSupportsResources
-}
-
-// IsNull reports whether MCPEndpointUpdateSupportsResources is struct{}.
-func (s MCPEndpointUpdateSupportsResources) IsNull() bool {
-	return s.Type == NullMCPEndpointUpdateSupportsResources
-}
-
-// SetBool sets MCPEndpointUpdateSupportsResources to bool.
-func (s *MCPEndpointUpdateSupportsResources) SetBool(v bool) {
-	s.Type = BoolMCPEndpointUpdateSupportsResources
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if MCPEndpointUpdateSupportsResources is bool.
-func (s MCPEndpointUpdateSupportsResources) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolMCPEndpointUpdateSupportsResources returns new MCPEndpointUpdateSupportsResources from bool.
-func NewBoolMCPEndpointUpdateSupportsResources(v bool) MCPEndpointUpdateSupportsResources {
-	var s MCPEndpointUpdateSupportsResources
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateSupportsResources to struct{}.
-func (s *MCPEndpointUpdateSupportsResources) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateSupportsResources
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateSupportsResources is struct{}.
-func (s MCPEndpointUpdateSupportsResources) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateSupportsResources returns new MCPEndpointUpdateSupportsResources from struct{}.
-func NewNullMCPEndpointUpdateSupportsResources(v struct{}) MCPEndpointUpdateSupportsResources {
-	var s MCPEndpointUpdateSupportsResources
-	s.SetNull(v)
-	return s
-}
-
-// MCPEndpointUpdateURL represents sum type.
-type MCPEndpointUpdateURL struct {
-	Type   MCPEndpointUpdateURLType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// MCPEndpointUpdateURLType is oneOf type of MCPEndpointUpdateURL.
-type MCPEndpointUpdateURLType string
-
-// Possible values for MCPEndpointUpdateURLType.
-const (
-	StringMCPEndpointUpdateURL MCPEndpointUpdateURLType = "string"
-	NullMCPEndpointUpdateURL   MCPEndpointUpdateURLType = "struct{}"
-)
-
-// IsString reports whether MCPEndpointUpdateURL is string.
-func (s MCPEndpointUpdateURL) IsString() bool { return s.Type == StringMCPEndpointUpdateURL }
-
-// IsNull reports whether MCPEndpointUpdateURL is struct{}.
-func (s MCPEndpointUpdateURL) IsNull() bool { return s.Type == NullMCPEndpointUpdateURL }
-
-// SetString sets MCPEndpointUpdateURL to string.
-func (s *MCPEndpointUpdateURL) SetString(v string) {
-	s.Type = StringMCPEndpointUpdateURL
-	s.String = v
-}
-
-// GetString returns string and true boolean if MCPEndpointUpdateURL is string.
-func (s MCPEndpointUpdateURL) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringMCPEndpointUpdateURL returns new MCPEndpointUpdateURL from string.
-func NewStringMCPEndpointUpdateURL(v string) MCPEndpointUpdateURL {
-	var s MCPEndpointUpdateURL
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets MCPEndpointUpdateURL to struct{}.
-func (s *MCPEndpointUpdateURL) SetNull(v struct{}) {
-	s.Type = NullMCPEndpointUpdateURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if MCPEndpointUpdateURL is struct{}.
-func (s MCPEndpointUpdateURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullMCPEndpointUpdateURL returns new MCPEndpointUpdateURL from struct{}.
-func NewNullMCPEndpointUpdateURL(v struct{}) MCPEndpointUpdateURL {
-	var s MCPEndpointUpdateURL
-	s.SetNull(v)
-	return s
+	return m
 }
 
 // Ref: #/components/schemas/ModelCreate
 type ModelCreate struct {
-	Name        string                    `json:"name"`
-	Description OptModelCreateDescription `json:"description"`
-	ProviderID  uuid.UUID                 `json:"provider_id"`
-	Default     OptBool                   `json:"default"`
+	Name        string       `json:"name"`
+	Description OptNilString `json:"description"`
+	ProviderID  uuid.UUID    `json:"provider_id"`
+	Default     OptBool      `json:"default"`
 }
 
 // GetName returns the value of Name.
@@ -4716,7 +3293,7 @@ func (s *ModelCreate) GetName() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *ModelCreate) GetDescription() OptModelCreateDescription {
+func (s *ModelCreate) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -4736,7 +3313,7 @@ func (s *ModelCreate) SetName(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *ModelCreate) SetDescription(val OptModelCreateDescription) {
+func (s *ModelCreate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -4748,70 +3325,6 @@ func (s *ModelCreate) SetProviderID(val uuid.UUID) {
 // SetDefault sets the value of Default.
 func (s *ModelCreate) SetDefault(val OptBool) {
 	s.Default = val
-}
-
-// ModelCreateDescription represents sum type.
-type ModelCreateDescription struct {
-	Type   ModelCreateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// ModelCreateDescriptionType is oneOf type of ModelCreateDescription.
-type ModelCreateDescriptionType string
-
-// Possible values for ModelCreateDescriptionType.
-const (
-	StringModelCreateDescription ModelCreateDescriptionType = "string"
-	NullModelCreateDescription   ModelCreateDescriptionType = "struct{}"
-)
-
-// IsString reports whether ModelCreateDescription is string.
-func (s ModelCreateDescription) IsString() bool { return s.Type == StringModelCreateDescription }
-
-// IsNull reports whether ModelCreateDescription is struct{}.
-func (s ModelCreateDescription) IsNull() bool { return s.Type == NullModelCreateDescription }
-
-// SetString sets ModelCreateDescription to string.
-func (s *ModelCreateDescription) SetString(v string) {
-	s.Type = StringModelCreateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if ModelCreateDescription is string.
-func (s ModelCreateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringModelCreateDescription returns new ModelCreateDescription from string.
-func NewStringModelCreateDescription(v string) ModelCreateDescription {
-	var s ModelCreateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ModelCreateDescription to struct{}.
-func (s *ModelCreateDescription) SetNull(v struct{}) {
-	s.Type = NullModelCreateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ModelCreateDescription is struct{}.
-func (s ModelCreateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullModelCreateDescription returns new ModelCreateDescription from struct{}.
-func NewNullModelCreateDescription(v struct{}) ModelCreateDescription {
-	var s ModelCreateDescription
-	s.SetNull(v)
-	return s
 }
 
 // Ref: #/components/schemas/ModelProviderCreate
@@ -5027,11 +3540,11 @@ func (*ModelProviderResponse) getModelproviderRes()    {}
 
 // Ref: #/components/schemas/ModelResponse
 type ModelResponse struct {
-	ID          uuid.UUID                   `json:"id"`
-	Name        string                      `json:"name"`
-	Description OptModelResponseDescription `json:"description"`
-	ProviderID  uuid.UUID                   `json:"provider_id"`
-	Default     OptBool                     `json:"default"`
+	ID          uuid.UUID    `json:"id"`
+	Name        string       `json:"name"`
+	Description OptNilString `json:"description"`
+	ProviderID  uuid.UUID    `json:"provider_id"`
+	Default     OptBool      `json:"default"`
 }
 
 // GetID returns the value of ID.
@@ -5045,7 +3558,7 @@ func (s *ModelResponse) GetName() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *ModelResponse) GetDescription() OptModelResponseDescription {
+func (s *ModelResponse) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -5070,7 +3583,7 @@ func (s *ModelResponse) SetName(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *ModelResponse) SetDescription(val OptModelResponseDescription) {
+func (s *ModelResponse) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -5087,68 +3600,49 @@ func (s *ModelResponse) SetDefault(val OptBool) {
 func (*ModelResponse) createModelRes() {}
 func (*ModelResponse) getModelRes()    {}
 
-// ModelResponseDescription represents sum type.
-type ModelResponseDescription struct {
-	Type   ModelResponseDescriptionType // switch on this field
-	String string
-	Null   struct{}
+// NewNilString returns new NilString with value set to v.
+func NewNilString(v string) NilString {
+	return NilString{
+		Value: v,
+	}
 }
 
-// ModelResponseDescriptionType is oneOf type of ModelResponseDescription.
-type ModelResponseDescriptionType string
-
-// Possible values for ModelResponseDescriptionType.
-const (
-	StringModelResponseDescription ModelResponseDescriptionType = "string"
-	NullModelResponseDescription   ModelResponseDescriptionType = "struct{}"
-)
-
-// IsString reports whether ModelResponseDescription is string.
-func (s ModelResponseDescription) IsString() bool { return s.Type == StringModelResponseDescription }
-
-// IsNull reports whether ModelResponseDescription is struct{}.
-func (s ModelResponseDescription) IsNull() bool { return s.Type == NullModelResponseDescription }
-
-// SetString sets ModelResponseDescription to string.
-func (s *ModelResponseDescription) SetString(v string) {
-	s.Type = StringModelResponseDescription
-	s.String = v
+// NilString is nullable string.
+type NilString struct {
+	Value string
+	Null  bool
 }
 
-// GetString returns string and true boolean if ModelResponseDescription is string.
-func (s ModelResponseDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
+// SetTo sets value to v.
+func (o *NilString) SetTo(v string) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilString) SetToNull() {
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilString) Get() (v string, ok bool) {
+	if o.Null {
 		return v, false
 	}
-	return s.String, true
+	return o.Value, true
 }
 
-// NewStringModelResponseDescription returns new ModelResponseDescription from string.
-func NewStringModelResponseDescription(v string) ModelResponseDescription {
-	var s ModelResponseDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets ModelResponseDescription to struct{}.
-func (s *ModelResponseDescription) SetNull(v struct{}) {
-	s.Type = NullModelResponseDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if ModelResponseDescription is struct{}.
-func (s ModelResponseDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
+// Or returns value if set, or given parameter if does not.
+func (o NilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
 	}
-	return s.Null, true
-}
-
-// NewNullModelResponseDescription returns new ModelResponseDescription from struct{}.
-func NewNullModelResponseDescription(v struct{}) ModelResponseDescription {
-	var s ModelResponseDescription
-	s.SetNull(v)
-	return s
+	return d
 }
 
 // Ref: #/components/schemas/NullBooleanEnum
@@ -5227,10 +3721,10 @@ func (s *OAuth2PasswordBearer) SetScopes(val []string) {
 
 // Ref: #/components/schemas/OAuthAuthorizationRequest
 type OAuthAuthorizationRequest struct {
-	ServiceID   uuid.UUID                               `json:"service_id"`
-	Scopes      OptOAuthAuthorizationRequestScopes      `json:"scopes"`
-	RedirectURI OptOAuthAuthorizationRequestRedirectURI `json:"redirect_uri"`
-	State       OptOAuthAuthorizationRequestState       `json:"state"`
+	ServiceID   uuid.UUID         `json:"service_id"`
+	Scopes      OptNilStringArray `json:"scopes"`
+	RedirectURI OptNilString      `json:"redirect_uri"`
+	State       OptNilString      `json:"state"`
 }
 
 // GetServiceID returns the value of ServiceID.
@@ -5239,17 +3733,17 @@ func (s *OAuthAuthorizationRequest) GetServiceID() uuid.UUID {
 }
 
 // GetScopes returns the value of Scopes.
-func (s *OAuthAuthorizationRequest) GetScopes() OptOAuthAuthorizationRequestScopes {
+func (s *OAuthAuthorizationRequest) GetScopes() OptNilStringArray {
 	return s.Scopes
 }
 
 // GetRedirectURI returns the value of RedirectURI.
-func (s *OAuthAuthorizationRequest) GetRedirectURI() OptOAuthAuthorizationRequestRedirectURI {
+func (s *OAuthAuthorizationRequest) GetRedirectURI() OptNilString {
 	return s.RedirectURI
 }
 
 // GetState returns the value of State.
-func (s *OAuthAuthorizationRequest) GetState() OptOAuthAuthorizationRequestState {
+func (s *OAuthAuthorizationRequest) GetState() OptNilString {
 	return s.State
 }
 
@@ -5259,222 +3753,18 @@ func (s *OAuthAuthorizationRequest) SetServiceID(val uuid.UUID) {
 }
 
 // SetScopes sets the value of Scopes.
-func (s *OAuthAuthorizationRequest) SetScopes(val OptOAuthAuthorizationRequestScopes) {
+func (s *OAuthAuthorizationRequest) SetScopes(val OptNilStringArray) {
 	s.Scopes = val
 }
 
 // SetRedirectURI sets the value of RedirectURI.
-func (s *OAuthAuthorizationRequest) SetRedirectURI(val OptOAuthAuthorizationRequestRedirectURI) {
+func (s *OAuthAuthorizationRequest) SetRedirectURI(val OptNilString) {
 	s.RedirectURI = val
 }
 
 // SetState sets the value of State.
-func (s *OAuthAuthorizationRequest) SetState(val OptOAuthAuthorizationRequestState) {
+func (s *OAuthAuthorizationRequest) SetState(val OptNilString) {
 	s.State = val
-}
-
-// OAuthAuthorizationRequestRedirectURI represents sum type.
-type OAuthAuthorizationRequestRedirectURI struct {
-	Type   OAuthAuthorizationRequestRedirectURIType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthAuthorizationRequestRedirectURIType is oneOf type of OAuthAuthorizationRequestRedirectURI.
-type OAuthAuthorizationRequestRedirectURIType string
-
-// Possible values for OAuthAuthorizationRequestRedirectURIType.
-const (
-	StringOAuthAuthorizationRequestRedirectURI OAuthAuthorizationRequestRedirectURIType = "string"
-	NullOAuthAuthorizationRequestRedirectURI   OAuthAuthorizationRequestRedirectURIType = "struct{}"
-)
-
-// IsString reports whether OAuthAuthorizationRequestRedirectURI is string.
-func (s OAuthAuthorizationRequestRedirectURI) IsString() bool {
-	return s.Type == StringOAuthAuthorizationRequestRedirectURI
-}
-
-// IsNull reports whether OAuthAuthorizationRequestRedirectURI is struct{}.
-func (s OAuthAuthorizationRequestRedirectURI) IsNull() bool {
-	return s.Type == NullOAuthAuthorizationRequestRedirectURI
-}
-
-// SetString sets OAuthAuthorizationRequestRedirectURI to string.
-func (s *OAuthAuthorizationRequestRedirectURI) SetString(v string) {
-	s.Type = StringOAuthAuthorizationRequestRedirectURI
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthAuthorizationRequestRedirectURI is string.
-func (s OAuthAuthorizationRequestRedirectURI) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthAuthorizationRequestRedirectURI returns new OAuthAuthorizationRequestRedirectURI from string.
-func NewStringOAuthAuthorizationRequestRedirectURI(v string) OAuthAuthorizationRequestRedirectURI {
-	var s OAuthAuthorizationRequestRedirectURI
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthAuthorizationRequestRedirectURI to struct{}.
-func (s *OAuthAuthorizationRequestRedirectURI) SetNull(v struct{}) {
-	s.Type = NullOAuthAuthorizationRequestRedirectURI
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthAuthorizationRequestRedirectURI is struct{}.
-func (s OAuthAuthorizationRequestRedirectURI) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthAuthorizationRequestRedirectURI returns new OAuthAuthorizationRequestRedirectURI from struct{}.
-func NewNullOAuthAuthorizationRequestRedirectURI(v struct{}) OAuthAuthorizationRequestRedirectURI {
-	var s OAuthAuthorizationRequestRedirectURI
-	s.SetNull(v)
-	return s
-}
-
-// OAuthAuthorizationRequestScopes represents sum type.
-type OAuthAuthorizationRequestScopes struct {
-	Type        OAuthAuthorizationRequestScopesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// OAuthAuthorizationRequestScopesType is oneOf type of OAuthAuthorizationRequestScopes.
-type OAuthAuthorizationRequestScopesType string
-
-// Possible values for OAuthAuthorizationRequestScopesType.
-const (
-	StringArrayOAuthAuthorizationRequestScopes OAuthAuthorizationRequestScopesType = "[]string"
-	NullOAuthAuthorizationRequestScopes        OAuthAuthorizationRequestScopesType = "struct{}"
-)
-
-// IsStringArray reports whether OAuthAuthorizationRequestScopes is []string.
-func (s OAuthAuthorizationRequestScopes) IsStringArray() bool {
-	return s.Type == StringArrayOAuthAuthorizationRequestScopes
-}
-
-// IsNull reports whether OAuthAuthorizationRequestScopes is struct{}.
-func (s OAuthAuthorizationRequestScopes) IsNull() bool {
-	return s.Type == NullOAuthAuthorizationRequestScopes
-}
-
-// SetStringArray sets OAuthAuthorizationRequestScopes to []string.
-func (s *OAuthAuthorizationRequestScopes) SetStringArray(v []string) {
-	s.Type = StringArrayOAuthAuthorizationRequestScopes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if OAuthAuthorizationRequestScopes is []string.
-func (s OAuthAuthorizationRequestScopes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayOAuthAuthorizationRequestScopes returns new OAuthAuthorizationRequestScopes from []string.
-func NewStringArrayOAuthAuthorizationRequestScopes(v []string) OAuthAuthorizationRequestScopes {
-	var s OAuthAuthorizationRequestScopes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets OAuthAuthorizationRequestScopes to struct{}.
-func (s *OAuthAuthorizationRequestScopes) SetNull(v struct{}) {
-	s.Type = NullOAuthAuthorizationRequestScopes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthAuthorizationRequestScopes is struct{}.
-func (s OAuthAuthorizationRequestScopes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthAuthorizationRequestScopes returns new OAuthAuthorizationRequestScopes from struct{}.
-func NewNullOAuthAuthorizationRequestScopes(v struct{}) OAuthAuthorizationRequestScopes {
-	var s OAuthAuthorizationRequestScopes
-	s.SetNull(v)
-	return s
-}
-
-// OAuthAuthorizationRequestState represents sum type.
-type OAuthAuthorizationRequestState struct {
-	Type   OAuthAuthorizationRequestStateType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthAuthorizationRequestStateType is oneOf type of OAuthAuthorizationRequestState.
-type OAuthAuthorizationRequestStateType string
-
-// Possible values for OAuthAuthorizationRequestStateType.
-const (
-	StringOAuthAuthorizationRequestState OAuthAuthorizationRequestStateType = "string"
-	NullOAuthAuthorizationRequestState   OAuthAuthorizationRequestStateType = "struct{}"
-)
-
-// IsString reports whether OAuthAuthorizationRequestState is string.
-func (s OAuthAuthorizationRequestState) IsString() bool {
-	return s.Type == StringOAuthAuthorizationRequestState
-}
-
-// IsNull reports whether OAuthAuthorizationRequestState is struct{}.
-func (s OAuthAuthorizationRequestState) IsNull() bool {
-	return s.Type == NullOAuthAuthorizationRequestState
-}
-
-// SetString sets OAuthAuthorizationRequestState to string.
-func (s *OAuthAuthorizationRequestState) SetString(v string) {
-	s.Type = StringOAuthAuthorizationRequestState
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthAuthorizationRequestState is string.
-func (s OAuthAuthorizationRequestState) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthAuthorizationRequestState returns new OAuthAuthorizationRequestState from string.
-func NewStringOAuthAuthorizationRequestState(v string) OAuthAuthorizationRequestState {
-	var s OAuthAuthorizationRequestState
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthAuthorizationRequestState to struct{}.
-func (s *OAuthAuthorizationRequestState) SetNull(v struct{}) {
-	s.Type = NullOAuthAuthorizationRequestState
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthAuthorizationRequestState is struct{}.
-func (s OAuthAuthorizationRequestState) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthAuthorizationRequestState returns new OAuthAuthorizationRequestState from struct{}.
-func NewNullOAuthAuthorizationRequestState(v struct{}) OAuthAuthorizationRequestState {
-	var s OAuthAuthorizationRequestState
-	s.SetNull(v)
-	return s
 }
 
 // Ref: #/components/schemas/OAuthAuthorizationResponse
@@ -5507,20 +3797,20 @@ func (*OAuthAuthorizationResponse) getOAuthAuthorizationURLRes() {}
 
 // Ref: #/components/schemas/OAuthServiceCreate
 type OAuthServiceCreate struct {
-	Name                string                                `json:"name"`
-	DisplayName         string                                `json:"display_name"`
-	Description         OptOAuthServiceCreateDescription      `json:"description"`
-	ClientID            string                                `json:"client_id"`
-	ClientSecret        string                                `json:"client_secret"`
-	AuthorizationURL    url.URL                               `json:"authorization_url"`
-	TokenURL            url.URL                               `json:"token_url"`
-	UserinfoURL         OptOAuthServiceCreateUserinfoURL      `json:"userinfo_url"`
-	DefaultScopes       OptOAuthServiceCreateDefaultScopes    `json:"default_scopes"`
-	SupportedGrantTypes []string                              `json:"supported_grant_types"`
-	IsActive            OptBool                               `json:"is_active"`
-	IconURL             OptOAuthServiceCreateIconURL          `json:"icon_url"`
-	HomepageURL         OptOAuthServiceCreateHomepageURL      `json:"homepage_url"`
-	AdditionalParams    OptOAuthServiceCreateAdditionalParams `json:"additional_params"`
+	Name                string                                   `json:"name"`
+	DisplayName         string                                   `json:"display_name"`
+	Description         OptNilString                             `json:"description"`
+	ClientID            string                                   `json:"client_id"`
+	ClientSecret        string                                   `json:"client_secret"`
+	AuthorizationURL    url.URL                                  `json:"authorization_url"`
+	TokenURL            url.URL                                  `json:"token_url"`
+	UserinfoURL         OptNilURI                                `json:"userinfo_url"`
+	DefaultScopes       OptNilStringArray                        `json:"default_scopes"`
+	SupportedGrantTypes []string                                 `json:"supported_grant_types"`
+	IsActive            OptBool                                  `json:"is_active"`
+	IconURL             OptNilURI                                `json:"icon_url"`
+	HomepageURL         OptNilURI                                `json:"homepage_url"`
+	AdditionalParams    OptNilOAuthServiceCreateAdditionalParams `json:"additional_params"`
 }
 
 // GetName returns the value of Name.
@@ -5534,7 +3824,7 @@ func (s *OAuthServiceCreate) GetDisplayName() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *OAuthServiceCreate) GetDescription() OptOAuthServiceCreateDescription {
+func (s *OAuthServiceCreate) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -5559,12 +3849,12 @@ func (s *OAuthServiceCreate) GetTokenURL() url.URL {
 }
 
 // GetUserinfoURL returns the value of UserinfoURL.
-func (s *OAuthServiceCreate) GetUserinfoURL() OptOAuthServiceCreateUserinfoURL {
+func (s *OAuthServiceCreate) GetUserinfoURL() OptNilURI {
 	return s.UserinfoURL
 }
 
 // GetDefaultScopes returns the value of DefaultScopes.
-func (s *OAuthServiceCreate) GetDefaultScopes() OptOAuthServiceCreateDefaultScopes {
+func (s *OAuthServiceCreate) GetDefaultScopes() OptNilStringArray {
 	return s.DefaultScopes
 }
 
@@ -5579,17 +3869,17 @@ func (s *OAuthServiceCreate) GetIsActive() OptBool {
 }
 
 // GetIconURL returns the value of IconURL.
-func (s *OAuthServiceCreate) GetIconURL() OptOAuthServiceCreateIconURL {
+func (s *OAuthServiceCreate) GetIconURL() OptNilURI {
 	return s.IconURL
 }
 
 // GetHomepageURL returns the value of HomepageURL.
-func (s *OAuthServiceCreate) GetHomepageURL() OptOAuthServiceCreateHomepageURL {
+func (s *OAuthServiceCreate) GetHomepageURL() OptNilURI {
 	return s.HomepageURL
 }
 
 // GetAdditionalParams returns the value of AdditionalParams.
-func (s *OAuthServiceCreate) GetAdditionalParams() OptOAuthServiceCreateAdditionalParams {
+func (s *OAuthServiceCreate) GetAdditionalParams() OptNilOAuthServiceCreateAdditionalParams {
 	return s.AdditionalParams
 }
 
@@ -5604,7 +3894,7 @@ func (s *OAuthServiceCreate) SetDisplayName(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *OAuthServiceCreate) SetDescription(val OptOAuthServiceCreateDescription) {
+func (s *OAuthServiceCreate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -5629,12 +3919,12 @@ func (s *OAuthServiceCreate) SetTokenURL(val url.URL) {
 }
 
 // SetUserinfoURL sets the value of UserinfoURL.
-func (s *OAuthServiceCreate) SetUserinfoURL(val OptOAuthServiceCreateUserinfoURL) {
+func (s *OAuthServiceCreate) SetUserinfoURL(val OptNilURI) {
 	s.UserinfoURL = val
 }
 
 // SetDefaultScopes sets the value of DefaultScopes.
-func (s *OAuthServiceCreate) SetDefaultScopes(val OptOAuthServiceCreateDefaultScopes) {
+func (s *OAuthServiceCreate) SetDefaultScopes(val OptNilStringArray) {
 	s.DefaultScopes = val
 }
 
@@ -5649,433 +3939,29 @@ func (s *OAuthServiceCreate) SetIsActive(val OptBool) {
 }
 
 // SetIconURL sets the value of IconURL.
-func (s *OAuthServiceCreate) SetIconURL(val OptOAuthServiceCreateIconURL) {
+func (s *OAuthServiceCreate) SetIconURL(val OptNilURI) {
 	s.IconURL = val
 }
 
 // SetHomepageURL sets the value of HomepageURL.
-func (s *OAuthServiceCreate) SetHomepageURL(val OptOAuthServiceCreateHomepageURL) {
+func (s *OAuthServiceCreate) SetHomepageURL(val OptNilURI) {
 	s.HomepageURL = val
 }
 
 // SetAdditionalParams sets the value of AdditionalParams.
-func (s *OAuthServiceCreate) SetAdditionalParams(val OptOAuthServiceCreateAdditionalParams) {
+func (s *OAuthServiceCreate) SetAdditionalParams(val OptNilOAuthServiceCreateAdditionalParams) {
 	s.AdditionalParams = val
 }
 
-// OAuthServiceCreateAdditionalParams represents sum type.
-type OAuthServiceCreateAdditionalParams struct {
-	Type                                OAuthServiceCreateAdditionalParamsType // switch on this field
-	OAuthServiceCreateAdditionalParams0 OAuthServiceCreateAdditionalParams0
-	Null                                struct{}
-}
+type OAuthServiceCreateAdditionalParams map[string]jx.Raw
 
-// OAuthServiceCreateAdditionalParamsType is oneOf type of OAuthServiceCreateAdditionalParams.
-type OAuthServiceCreateAdditionalParamsType string
-
-// Possible values for OAuthServiceCreateAdditionalParamsType.
-const (
-	OAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams OAuthServiceCreateAdditionalParamsType = "OAuthServiceCreateAdditionalParams0"
-	NullOAuthServiceCreateAdditionalParams                                OAuthServiceCreateAdditionalParamsType = "struct{}"
-)
-
-// IsOAuthServiceCreateAdditionalParams0 reports whether OAuthServiceCreateAdditionalParams is OAuthServiceCreateAdditionalParams0.
-func (s OAuthServiceCreateAdditionalParams) IsOAuthServiceCreateAdditionalParams0() bool {
-	return s.Type == OAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams
-}
-
-// IsNull reports whether OAuthServiceCreateAdditionalParams is struct{}.
-func (s OAuthServiceCreateAdditionalParams) IsNull() bool {
-	return s.Type == NullOAuthServiceCreateAdditionalParams
-}
-
-// SetOAuthServiceCreateAdditionalParams0 sets OAuthServiceCreateAdditionalParams to OAuthServiceCreateAdditionalParams0.
-func (s *OAuthServiceCreateAdditionalParams) SetOAuthServiceCreateAdditionalParams0(v OAuthServiceCreateAdditionalParams0) {
-	s.Type = OAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams
-	s.OAuthServiceCreateAdditionalParams0 = v
-}
-
-// GetOAuthServiceCreateAdditionalParams0 returns OAuthServiceCreateAdditionalParams0 and true boolean if OAuthServiceCreateAdditionalParams is OAuthServiceCreateAdditionalParams0.
-func (s OAuthServiceCreateAdditionalParams) GetOAuthServiceCreateAdditionalParams0() (v OAuthServiceCreateAdditionalParams0, ok bool) {
-	if !s.IsOAuthServiceCreateAdditionalParams0() {
-		return v, false
-	}
-	return s.OAuthServiceCreateAdditionalParams0, true
-}
-
-// NewOAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams returns new OAuthServiceCreateAdditionalParams from OAuthServiceCreateAdditionalParams0.
-func NewOAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams(v OAuthServiceCreateAdditionalParams0) OAuthServiceCreateAdditionalParams {
-	var s OAuthServiceCreateAdditionalParams
-	s.SetOAuthServiceCreateAdditionalParams0(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateAdditionalParams to struct{}.
-func (s *OAuthServiceCreateAdditionalParams) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateAdditionalParams
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateAdditionalParams is struct{}.
-func (s OAuthServiceCreateAdditionalParams) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateAdditionalParams returns new OAuthServiceCreateAdditionalParams from struct{}.
-func NewNullOAuthServiceCreateAdditionalParams(v struct{}) OAuthServiceCreateAdditionalParams {
-	var s OAuthServiceCreateAdditionalParams
-	s.SetNull(v)
-	return s
-}
-
-type OAuthServiceCreateAdditionalParams0 map[string]jx.Raw
-
-func (s *OAuthServiceCreateAdditionalParams0) init() OAuthServiceCreateAdditionalParams0 {
+func (s *OAuthServiceCreateAdditionalParams) init() OAuthServiceCreateAdditionalParams {
 	m := *s
 	if m == nil {
 		m = map[string]jx.Raw{}
 		*s = m
 	}
 	return m
-}
-
-// OAuthServiceCreateDefaultScopes represents sum type.
-type OAuthServiceCreateDefaultScopes struct {
-	Type        OAuthServiceCreateDefaultScopesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// OAuthServiceCreateDefaultScopesType is oneOf type of OAuthServiceCreateDefaultScopes.
-type OAuthServiceCreateDefaultScopesType string
-
-// Possible values for OAuthServiceCreateDefaultScopesType.
-const (
-	StringArrayOAuthServiceCreateDefaultScopes OAuthServiceCreateDefaultScopesType = "[]string"
-	NullOAuthServiceCreateDefaultScopes        OAuthServiceCreateDefaultScopesType = "struct{}"
-)
-
-// IsStringArray reports whether OAuthServiceCreateDefaultScopes is []string.
-func (s OAuthServiceCreateDefaultScopes) IsStringArray() bool {
-	return s.Type == StringArrayOAuthServiceCreateDefaultScopes
-}
-
-// IsNull reports whether OAuthServiceCreateDefaultScopes is struct{}.
-func (s OAuthServiceCreateDefaultScopes) IsNull() bool {
-	return s.Type == NullOAuthServiceCreateDefaultScopes
-}
-
-// SetStringArray sets OAuthServiceCreateDefaultScopes to []string.
-func (s *OAuthServiceCreateDefaultScopes) SetStringArray(v []string) {
-	s.Type = StringArrayOAuthServiceCreateDefaultScopes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if OAuthServiceCreateDefaultScopes is []string.
-func (s OAuthServiceCreateDefaultScopes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayOAuthServiceCreateDefaultScopes returns new OAuthServiceCreateDefaultScopes from []string.
-func NewStringArrayOAuthServiceCreateDefaultScopes(v []string) OAuthServiceCreateDefaultScopes {
-	var s OAuthServiceCreateDefaultScopes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateDefaultScopes to struct{}.
-func (s *OAuthServiceCreateDefaultScopes) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateDefaultScopes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateDefaultScopes is struct{}.
-func (s OAuthServiceCreateDefaultScopes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateDefaultScopes returns new OAuthServiceCreateDefaultScopes from struct{}.
-func NewNullOAuthServiceCreateDefaultScopes(v struct{}) OAuthServiceCreateDefaultScopes {
-	var s OAuthServiceCreateDefaultScopes
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceCreateDescription represents sum type.
-type OAuthServiceCreateDescription struct {
-	Type   OAuthServiceCreateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceCreateDescriptionType is oneOf type of OAuthServiceCreateDescription.
-type OAuthServiceCreateDescriptionType string
-
-// Possible values for OAuthServiceCreateDescriptionType.
-const (
-	StringOAuthServiceCreateDescription OAuthServiceCreateDescriptionType = "string"
-	NullOAuthServiceCreateDescription   OAuthServiceCreateDescriptionType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceCreateDescription is string.
-func (s OAuthServiceCreateDescription) IsString() bool {
-	return s.Type == StringOAuthServiceCreateDescription
-}
-
-// IsNull reports whether OAuthServiceCreateDescription is struct{}.
-func (s OAuthServiceCreateDescription) IsNull() bool {
-	return s.Type == NullOAuthServiceCreateDescription
-}
-
-// SetString sets OAuthServiceCreateDescription to string.
-func (s *OAuthServiceCreateDescription) SetString(v string) {
-	s.Type = StringOAuthServiceCreateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceCreateDescription is string.
-func (s OAuthServiceCreateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceCreateDescription returns new OAuthServiceCreateDescription from string.
-func NewStringOAuthServiceCreateDescription(v string) OAuthServiceCreateDescription {
-	var s OAuthServiceCreateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateDescription to struct{}.
-func (s *OAuthServiceCreateDescription) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateDescription is struct{}.
-func (s OAuthServiceCreateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateDescription returns new OAuthServiceCreateDescription from struct{}.
-func NewNullOAuthServiceCreateDescription(v struct{}) OAuthServiceCreateDescription {
-	var s OAuthServiceCreateDescription
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceCreateHomepageURL represents sum type.
-type OAuthServiceCreateHomepageURL struct {
-	Type OAuthServiceCreateHomepageURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceCreateHomepageURLType is oneOf type of OAuthServiceCreateHomepageURL.
-type OAuthServiceCreateHomepageURLType string
-
-// Possible values for OAuthServiceCreateHomepageURLType.
-const (
-	URIOAuthServiceCreateHomepageURL  OAuthServiceCreateHomepageURLType = "url.URL"
-	NullOAuthServiceCreateHomepageURL OAuthServiceCreateHomepageURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceCreateHomepageURL is url.URL.
-func (s OAuthServiceCreateHomepageURL) IsURI() bool {
-	return s.Type == URIOAuthServiceCreateHomepageURL
-}
-
-// IsNull reports whether OAuthServiceCreateHomepageURL is struct{}.
-func (s OAuthServiceCreateHomepageURL) IsNull() bool {
-	return s.Type == NullOAuthServiceCreateHomepageURL
-}
-
-// SetURI sets OAuthServiceCreateHomepageURL to url.URL.
-func (s *OAuthServiceCreateHomepageURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceCreateHomepageURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceCreateHomepageURL is url.URL.
-func (s OAuthServiceCreateHomepageURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceCreateHomepageURL returns new OAuthServiceCreateHomepageURL from url.URL.
-func NewURIOAuthServiceCreateHomepageURL(v url.URL) OAuthServiceCreateHomepageURL {
-	var s OAuthServiceCreateHomepageURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateHomepageURL to struct{}.
-func (s *OAuthServiceCreateHomepageURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateHomepageURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateHomepageURL is struct{}.
-func (s OAuthServiceCreateHomepageURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateHomepageURL returns new OAuthServiceCreateHomepageURL from struct{}.
-func NewNullOAuthServiceCreateHomepageURL(v struct{}) OAuthServiceCreateHomepageURL {
-	var s OAuthServiceCreateHomepageURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceCreateIconURL represents sum type.
-type OAuthServiceCreateIconURL struct {
-	Type OAuthServiceCreateIconURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceCreateIconURLType is oneOf type of OAuthServiceCreateIconURL.
-type OAuthServiceCreateIconURLType string
-
-// Possible values for OAuthServiceCreateIconURLType.
-const (
-	URIOAuthServiceCreateIconURL  OAuthServiceCreateIconURLType = "url.URL"
-	NullOAuthServiceCreateIconURL OAuthServiceCreateIconURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceCreateIconURL is url.URL.
-func (s OAuthServiceCreateIconURL) IsURI() bool { return s.Type == URIOAuthServiceCreateIconURL }
-
-// IsNull reports whether OAuthServiceCreateIconURL is struct{}.
-func (s OAuthServiceCreateIconURL) IsNull() bool { return s.Type == NullOAuthServiceCreateIconURL }
-
-// SetURI sets OAuthServiceCreateIconURL to url.URL.
-func (s *OAuthServiceCreateIconURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceCreateIconURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceCreateIconURL is url.URL.
-func (s OAuthServiceCreateIconURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceCreateIconURL returns new OAuthServiceCreateIconURL from url.URL.
-func NewURIOAuthServiceCreateIconURL(v url.URL) OAuthServiceCreateIconURL {
-	var s OAuthServiceCreateIconURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateIconURL to struct{}.
-func (s *OAuthServiceCreateIconURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateIconURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateIconURL is struct{}.
-func (s OAuthServiceCreateIconURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateIconURL returns new OAuthServiceCreateIconURL from struct{}.
-func NewNullOAuthServiceCreateIconURL(v struct{}) OAuthServiceCreateIconURL {
-	var s OAuthServiceCreateIconURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceCreateUserinfoURL represents sum type.
-type OAuthServiceCreateUserinfoURL struct {
-	Type OAuthServiceCreateUserinfoURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceCreateUserinfoURLType is oneOf type of OAuthServiceCreateUserinfoURL.
-type OAuthServiceCreateUserinfoURLType string
-
-// Possible values for OAuthServiceCreateUserinfoURLType.
-const (
-	URIOAuthServiceCreateUserinfoURL  OAuthServiceCreateUserinfoURLType = "url.URL"
-	NullOAuthServiceCreateUserinfoURL OAuthServiceCreateUserinfoURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceCreateUserinfoURL is url.URL.
-func (s OAuthServiceCreateUserinfoURL) IsURI() bool {
-	return s.Type == URIOAuthServiceCreateUserinfoURL
-}
-
-// IsNull reports whether OAuthServiceCreateUserinfoURL is struct{}.
-func (s OAuthServiceCreateUserinfoURL) IsNull() bool {
-	return s.Type == NullOAuthServiceCreateUserinfoURL
-}
-
-// SetURI sets OAuthServiceCreateUserinfoURL to url.URL.
-func (s *OAuthServiceCreateUserinfoURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceCreateUserinfoURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceCreateUserinfoURL is url.URL.
-func (s OAuthServiceCreateUserinfoURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceCreateUserinfoURL returns new OAuthServiceCreateUserinfoURL from url.URL.
-func NewURIOAuthServiceCreateUserinfoURL(v url.URL) OAuthServiceCreateUserinfoURL {
-	var s OAuthServiceCreateUserinfoURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceCreateUserinfoURL to struct{}.
-func (s *OAuthServiceCreateUserinfoURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceCreateUserinfoURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceCreateUserinfoURL is struct{}.
-func (s OAuthServiceCreateUserinfoURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceCreateUserinfoURL returns new OAuthServiceCreateUserinfoURL from struct{}.
-func NewNullOAuthServiceCreateUserinfoURL(v struct{}) OAuthServiceCreateUserinfoURL {
-	var s OAuthServiceCreateUserinfoURL
-	s.SetNull(v)
-	return s
 }
 
 // Ref: #/components/schemas/OAuthServiceListResponse
@@ -6108,20 +3994,20 @@ func (*OAuthServiceListResponse) listOAuthServicesRes() {}
 
 // Ref: #/components/schemas/OAuthServiceResponse
 type OAuthServiceResponse struct {
-	ID                  uuid.UUID                       `json:"id"`
-	Name                string                          `json:"name"`
-	DisplayName         string                          `json:"display_name"`
-	Description         OAuthServiceResponseDescription `json:"description"`
-	AuthorizationURL    string                          `json:"authorization_url"`
-	TokenURL            string                          `json:"token_url"`
-	UserinfoURL         OAuthServiceResponseUserinfoURL `json:"userinfo_url"`
-	DefaultScopes       []string                        `json:"default_scopes"`
-	SupportedGrantTypes []string                        `json:"supported_grant_types"`
-	IsActive            bool                            `json:"is_active"`
-	IconURL             OAuthServiceResponseIconURL     `json:"icon_url"`
-	HomepageURL         OAuthServiceResponseHomepageURL `json:"homepage_url"`
-	CreatedAt           time.Time                       `json:"created_at"`
-	UpdatedAt           time.Time                       `json:"updated_at"`
+	ID                  uuid.UUID `json:"id"`
+	Name                string    `json:"name"`
+	DisplayName         string    `json:"display_name"`
+	Description         NilString `json:"description"`
+	AuthorizationURL    string    `json:"authorization_url"`
+	TokenURL            string    `json:"token_url"`
+	UserinfoURL         NilString `json:"userinfo_url"`
+	DefaultScopes       []string  `json:"default_scopes"`
+	SupportedGrantTypes []string  `json:"supported_grant_types"`
+	IsActive            bool      `json:"is_active"`
+	IconURL             NilString `json:"icon_url"`
+	HomepageURL         NilString `json:"homepage_url"`
+	CreatedAt           time.Time `json:"created_at"`
+	UpdatedAt           time.Time `json:"updated_at"`
 }
 
 // GetID returns the value of ID.
@@ -6140,7 +4026,7 @@ func (s *OAuthServiceResponse) GetDisplayName() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *OAuthServiceResponse) GetDescription() OAuthServiceResponseDescription {
+func (s *OAuthServiceResponse) GetDescription() NilString {
 	return s.Description
 }
 
@@ -6155,7 +4041,7 @@ func (s *OAuthServiceResponse) GetTokenURL() string {
 }
 
 // GetUserinfoURL returns the value of UserinfoURL.
-func (s *OAuthServiceResponse) GetUserinfoURL() OAuthServiceResponseUserinfoURL {
+func (s *OAuthServiceResponse) GetUserinfoURL() NilString {
 	return s.UserinfoURL
 }
 
@@ -6175,12 +4061,12 @@ func (s *OAuthServiceResponse) GetIsActive() bool {
 }
 
 // GetIconURL returns the value of IconURL.
-func (s *OAuthServiceResponse) GetIconURL() OAuthServiceResponseIconURL {
+func (s *OAuthServiceResponse) GetIconURL() NilString {
 	return s.IconURL
 }
 
 // GetHomepageURL returns the value of HomepageURL.
-func (s *OAuthServiceResponse) GetHomepageURL() OAuthServiceResponseHomepageURL {
+func (s *OAuthServiceResponse) GetHomepageURL() NilString {
 	return s.HomepageURL
 }
 
@@ -6210,7 +4096,7 @@ func (s *OAuthServiceResponse) SetDisplayName(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *OAuthServiceResponse) SetDescription(val OAuthServiceResponseDescription) {
+func (s *OAuthServiceResponse) SetDescription(val NilString) {
 	s.Description = val
 }
 
@@ -6225,7 +4111,7 @@ func (s *OAuthServiceResponse) SetTokenURL(val string) {
 }
 
 // SetUserinfoURL sets the value of UserinfoURL.
-func (s *OAuthServiceResponse) SetUserinfoURL(val OAuthServiceResponseUserinfoURL) {
+func (s *OAuthServiceResponse) SetUserinfoURL(val NilString) {
 	s.UserinfoURL = val
 }
 
@@ -6245,12 +4131,12 @@ func (s *OAuthServiceResponse) SetIsActive(val bool) {
 }
 
 // SetIconURL sets the value of IconURL.
-func (s *OAuthServiceResponse) SetIconURL(val OAuthServiceResponseIconURL) {
+func (s *OAuthServiceResponse) SetIconURL(val NilString) {
 	s.IconURL = val
 }
 
 // SetHomepageURL sets the value of HomepageURL.
-func (s *OAuthServiceResponse) SetHomepageURL(val OAuthServiceResponseHomepageURL) {
+func (s *OAuthServiceResponse) SetHomepageURL(val NilString) {
 	s.HomepageURL = val
 }
 
@@ -6268,494 +4154,156 @@ func (*OAuthServiceResponse) createOAuthServiceRes() {}
 func (*OAuthServiceResponse) getOAuthServiceRes()    {}
 func (*OAuthServiceResponse) updateOAuthServiceRes() {}
 
-// OAuthServiceResponseDescription represents sum type.
-type OAuthServiceResponseDescription struct {
-	Type   OAuthServiceResponseDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceResponseDescriptionType is oneOf type of OAuthServiceResponseDescription.
-type OAuthServiceResponseDescriptionType string
-
-// Possible values for OAuthServiceResponseDescriptionType.
-const (
-	StringOAuthServiceResponseDescription OAuthServiceResponseDescriptionType = "string"
-	NullOAuthServiceResponseDescription   OAuthServiceResponseDescriptionType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceResponseDescription is string.
-func (s OAuthServiceResponseDescription) IsString() bool {
-	return s.Type == StringOAuthServiceResponseDescription
-}
-
-// IsNull reports whether OAuthServiceResponseDescription is struct{}.
-func (s OAuthServiceResponseDescription) IsNull() bool {
-	return s.Type == NullOAuthServiceResponseDescription
-}
-
-// SetString sets OAuthServiceResponseDescription to string.
-func (s *OAuthServiceResponseDescription) SetString(v string) {
-	s.Type = StringOAuthServiceResponseDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceResponseDescription is string.
-func (s OAuthServiceResponseDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceResponseDescription returns new OAuthServiceResponseDescription from string.
-func NewStringOAuthServiceResponseDescription(v string) OAuthServiceResponseDescription {
-	var s OAuthServiceResponseDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceResponseDescription to struct{}.
-func (s *OAuthServiceResponseDescription) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceResponseDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceResponseDescription is struct{}.
-func (s OAuthServiceResponseDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceResponseDescription returns new OAuthServiceResponseDescription from struct{}.
-func NewNullOAuthServiceResponseDescription(v struct{}) OAuthServiceResponseDescription {
-	var s OAuthServiceResponseDescription
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceResponseHomepageURL represents sum type.
-type OAuthServiceResponseHomepageURL struct {
-	Type   OAuthServiceResponseHomepageURLType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceResponseHomepageURLType is oneOf type of OAuthServiceResponseHomepageURL.
-type OAuthServiceResponseHomepageURLType string
-
-// Possible values for OAuthServiceResponseHomepageURLType.
-const (
-	StringOAuthServiceResponseHomepageURL OAuthServiceResponseHomepageURLType = "string"
-	NullOAuthServiceResponseHomepageURL   OAuthServiceResponseHomepageURLType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceResponseHomepageURL is string.
-func (s OAuthServiceResponseHomepageURL) IsString() bool {
-	return s.Type == StringOAuthServiceResponseHomepageURL
-}
-
-// IsNull reports whether OAuthServiceResponseHomepageURL is struct{}.
-func (s OAuthServiceResponseHomepageURL) IsNull() bool {
-	return s.Type == NullOAuthServiceResponseHomepageURL
-}
-
-// SetString sets OAuthServiceResponseHomepageURL to string.
-func (s *OAuthServiceResponseHomepageURL) SetString(v string) {
-	s.Type = StringOAuthServiceResponseHomepageURL
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceResponseHomepageURL is string.
-func (s OAuthServiceResponseHomepageURL) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceResponseHomepageURL returns new OAuthServiceResponseHomepageURL from string.
-func NewStringOAuthServiceResponseHomepageURL(v string) OAuthServiceResponseHomepageURL {
-	var s OAuthServiceResponseHomepageURL
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceResponseHomepageURL to struct{}.
-func (s *OAuthServiceResponseHomepageURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceResponseHomepageURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceResponseHomepageURL is struct{}.
-func (s OAuthServiceResponseHomepageURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceResponseHomepageURL returns new OAuthServiceResponseHomepageURL from struct{}.
-func NewNullOAuthServiceResponseHomepageURL(v struct{}) OAuthServiceResponseHomepageURL {
-	var s OAuthServiceResponseHomepageURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceResponseIconURL represents sum type.
-type OAuthServiceResponseIconURL struct {
-	Type   OAuthServiceResponseIconURLType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceResponseIconURLType is oneOf type of OAuthServiceResponseIconURL.
-type OAuthServiceResponseIconURLType string
-
-// Possible values for OAuthServiceResponseIconURLType.
-const (
-	StringOAuthServiceResponseIconURL OAuthServiceResponseIconURLType = "string"
-	NullOAuthServiceResponseIconURL   OAuthServiceResponseIconURLType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceResponseIconURL is string.
-func (s OAuthServiceResponseIconURL) IsString() bool {
-	return s.Type == StringOAuthServiceResponseIconURL
-}
-
-// IsNull reports whether OAuthServiceResponseIconURL is struct{}.
-func (s OAuthServiceResponseIconURL) IsNull() bool { return s.Type == NullOAuthServiceResponseIconURL }
-
-// SetString sets OAuthServiceResponseIconURL to string.
-func (s *OAuthServiceResponseIconURL) SetString(v string) {
-	s.Type = StringOAuthServiceResponseIconURL
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceResponseIconURL is string.
-func (s OAuthServiceResponseIconURL) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceResponseIconURL returns new OAuthServiceResponseIconURL from string.
-func NewStringOAuthServiceResponseIconURL(v string) OAuthServiceResponseIconURL {
-	var s OAuthServiceResponseIconURL
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceResponseIconURL to struct{}.
-func (s *OAuthServiceResponseIconURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceResponseIconURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceResponseIconURL is struct{}.
-func (s OAuthServiceResponseIconURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceResponseIconURL returns new OAuthServiceResponseIconURL from struct{}.
-func NewNullOAuthServiceResponseIconURL(v struct{}) OAuthServiceResponseIconURL {
-	var s OAuthServiceResponseIconURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceResponseUserinfoURL represents sum type.
-type OAuthServiceResponseUserinfoURL struct {
-	Type   OAuthServiceResponseUserinfoURLType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceResponseUserinfoURLType is oneOf type of OAuthServiceResponseUserinfoURL.
-type OAuthServiceResponseUserinfoURLType string
-
-// Possible values for OAuthServiceResponseUserinfoURLType.
-const (
-	StringOAuthServiceResponseUserinfoURL OAuthServiceResponseUserinfoURLType = "string"
-	NullOAuthServiceResponseUserinfoURL   OAuthServiceResponseUserinfoURLType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceResponseUserinfoURL is string.
-func (s OAuthServiceResponseUserinfoURL) IsString() bool {
-	return s.Type == StringOAuthServiceResponseUserinfoURL
-}
-
-// IsNull reports whether OAuthServiceResponseUserinfoURL is struct{}.
-func (s OAuthServiceResponseUserinfoURL) IsNull() bool {
-	return s.Type == NullOAuthServiceResponseUserinfoURL
-}
-
-// SetString sets OAuthServiceResponseUserinfoURL to string.
-func (s *OAuthServiceResponseUserinfoURL) SetString(v string) {
-	s.Type = StringOAuthServiceResponseUserinfoURL
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceResponseUserinfoURL is string.
-func (s OAuthServiceResponseUserinfoURL) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceResponseUserinfoURL returns new OAuthServiceResponseUserinfoURL from string.
-func NewStringOAuthServiceResponseUserinfoURL(v string) OAuthServiceResponseUserinfoURL {
-	var s OAuthServiceResponseUserinfoURL
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceResponseUserinfoURL to struct{}.
-func (s *OAuthServiceResponseUserinfoURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceResponseUserinfoURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceResponseUserinfoURL is struct{}.
-func (s OAuthServiceResponseUserinfoURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceResponseUserinfoURL returns new OAuthServiceResponseUserinfoURL from struct{}.
-func NewNullOAuthServiceResponseUserinfoURL(v struct{}) OAuthServiceResponseUserinfoURL {
-	var s OAuthServiceResponseUserinfoURL
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/OAuthServiceUpdate
 type OAuthServiceUpdate struct {
-	DisplayName         OptOAuthServiceUpdateDisplayName         `json:"display_name"`
-	Description         OptOAuthServiceUpdateDescription         `json:"description"`
-	ClientID            OptOAuthServiceUpdateClientID            `json:"client_id"`
-	ClientSecret        OptOAuthServiceUpdateClientSecret        `json:"client_secret"`
-	AuthorizationURL    OptOAuthServiceUpdateAuthorizationURL    `json:"authorization_url"`
-	TokenURL            OptOAuthServiceUpdateTokenURL            `json:"token_url"`
-	UserinfoURL         OptOAuthServiceUpdateUserinfoURL         `json:"userinfo_url"`
-	DefaultScopes       OptOAuthServiceUpdateDefaultScopes       `json:"default_scopes"`
-	SupportedGrantTypes OptOAuthServiceUpdateSupportedGrantTypes `json:"supported_grant_types"`
-	IsActive            OptOAuthServiceUpdateIsActive            `json:"is_active"`
-	IconURL             OptOAuthServiceUpdateIconURL             `json:"icon_url"`
-	HomepageURL         OptOAuthServiceUpdateHomepageURL         `json:"homepage_url"`
-	AdditionalParams    OptOAuthServiceUpdateAdditionalParams    `json:"additional_params"`
+	DisplayName         OptNilString                             `json:"display_name"`
+	Description         OptNilString                             `json:"description"`
+	ClientID            OptNilString                             `json:"client_id"`
+	ClientSecret        OptNilString                             `json:"client_secret"`
+	AuthorizationURL    OptNilURI                                `json:"authorization_url"`
+	TokenURL            OptNilURI                                `json:"token_url"`
+	UserinfoURL         OptNilURI                                `json:"userinfo_url"`
+	DefaultScopes       OptNilStringArray                        `json:"default_scopes"`
+	SupportedGrantTypes OptNilStringArray                        `json:"supported_grant_types"`
+	IsActive            OptNilBool                               `json:"is_active"`
+	IconURL             OptNilURI                                `json:"icon_url"`
+	HomepageURL         OptNilURI                                `json:"homepage_url"`
+	AdditionalParams    OptNilOAuthServiceUpdateAdditionalParams `json:"additional_params"`
 }
 
 // GetDisplayName returns the value of DisplayName.
-func (s *OAuthServiceUpdate) GetDisplayName() OptOAuthServiceUpdateDisplayName {
+func (s *OAuthServiceUpdate) GetDisplayName() OptNilString {
 	return s.DisplayName
 }
 
 // GetDescription returns the value of Description.
-func (s *OAuthServiceUpdate) GetDescription() OptOAuthServiceUpdateDescription {
+func (s *OAuthServiceUpdate) GetDescription() OptNilString {
 	return s.Description
 }
 
 // GetClientID returns the value of ClientID.
-func (s *OAuthServiceUpdate) GetClientID() OptOAuthServiceUpdateClientID {
+func (s *OAuthServiceUpdate) GetClientID() OptNilString {
 	return s.ClientID
 }
 
 // GetClientSecret returns the value of ClientSecret.
-func (s *OAuthServiceUpdate) GetClientSecret() OptOAuthServiceUpdateClientSecret {
+func (s *OAuthServiceUpdate) GetClientSecret() OptNilString {
 	return s.ClientSecret
 }
 
 // GetAuthorizationURL returns the value of AuthorizationURL.
-func (s *OAuthServiceUpdate) GetAuthorizationURL() OptOAuthServiceUpdateAuthorizationURL {
+func (s *OAuthServiceUpdate) GetAuthorizationURL() OptNilURI {
 	return s.AuthorizationURL
 }
 
 // GetTokenURL returns the value of TokenURL.
-func (s *OAuthServiceUpdate) GetTokenURL() OptOAuthServiceUpdateTokenURL {
+func (s *OAuthServiceUpdate) GetTokenURL() OptNilURI {
 	return s.TokenURL
 }
 
 // GetUserinfoURL returns the value of UserinfoURL.
-func (s *OAuthServiceUpdate) GetUserinfoURL() OptOAuthServiceUpdateUserinfoURL {
+func (s *OAuthServiceUpdate) GetUserinfoURL() OptNilURI {
 	return s.UserinfoURL
 }
 
 // GetDefaultScopes returns the value of DefaultScopes.
-func (s *OAuthServiceUpdate) GetDefaultScopes() OptOAuthServiceUpdateDefaultScopes {
+func (s *OAuthServiceUpdate) GetDefaultScopes() OptNilStringArray {
 	return s.DefaultScopes
 }
 
 // GetSupportedGrantTypes returns the value of SupportedGrantTypes.
-func (s *OAuthServiceUpdate) GetSupportedGrantTypes() OptOAuthServiceUpdateSupportedGrantTypes {
+func (s *OAuthServiceUpdate) GetSupportedGrantTypes() OptNilStringArray {
 	return s.SupportedGrantTypes
 }
 
 // GetIsActive returns the value of IsActive.
-func (s *OAuthServiceUpdate) GetIsActive() OptOAuthServiceUpdateIsActive {
+func (s *OAuthServiceUpdate) GetIsActive() OptNilBool {
 	return s.IsActive
 }
 
 // GetIconURL returns the value of IconURL.
-func (s *OAuthServiceUpdate) GetIconURL() OptOAuthServiceUpdateIconURL {
+func (s *OAuthServiceUpdate) GetIconURL() OptNilURI {
 	return s.IconURL
 }
 
 // GetHomepageURL returns the value of HomepageURL.
-func (s *OAuthServiceUpdate) GetHomepageURL() OptOAuthServiceUpdateHomepageURL {
+func (s *OAuthServiceUpdate) GetHomepageURL() OptNilURI {
 	return s.HomepageURL
 }
 
 // GetAdditionalParams returns the value of AdditionalParams.
-func (s *OAuthServiceUpdate) GetAdditionalParams() OptOAuthServiceUpdateAdditionalParams {
+func (s *OAuthServiceUpdate) GetAdditionalParams() OptNilOAuthServiceUpdateAdditionalParams {
 	return s.AdditionalParams
 }
 
 // SetDisplayName sets the value of DisplayName.
-func (s *OAuthServiceUpdate) SetDisplayName(val OptOAuthServiceUpdateDisplayName) {
+func (s *OAuthServiceUpdate) SetDisplayName(val OptNilString) {
 	s.DisplayName = val
 }
 
 // SetDescription sets the value of Description.
-func (s *OAuthServiceUpdate) SetDescription(val OptOAuthServiceUpdateDescription) {
+func (s *OAuthServiceUpdate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
 // SetClientID sets the value of ClientID.
-func (s *OAuthServiceUpdate) SetClientID(val OptOAuthServiceUpdateClientID) {
+func (s *OAuthServiceUpdate) SetClientID(val OptNilString) {
 	s.ClientID = val
 }
 
 // SetClientSecret sets the value of ClientSecret.
-func (s *OAuthServiceUpdate) SetClientSecret(val OptOAuthServiceUpdateClientSecret) {
+func (s *OAuthServiceUpdate) SetClientSecret(val OptNilString) {
 	s.ClientSecret = val
 }
 
 // SetAuthorizationURL sets the value of AuthorizationURL.
-func (s *OAuthServiceUpdate) SetAuthorizationURL(val OptOAuthServiceUpdateAuthorizationURL) {
+func (s *OAuthServiceUpdate) SetAuthorizationURL(val OptNilURI) {
 	s.AuthorizationURL = val
 }
 
 // SetTokenURL sets the value of TokenURL.
-func (s *OAuthServiceUpdate) SetTokenURL(val OptOAuthServiceUpdateTokenURL) {
+func (s *OAuthServiceUpdate) SetTokenURL(val OptNilURI) {
 	s.TokenURL = val
 }
 
 // SetUserinfoURL sets the value of UserinfoURL.
-func (s *OAuthServiceUpdate) SetUserinfoURL(val OptOAuthServiceUpdateUserinfoURL) {
+func (s *OAuthServiceUpdate) SetUserinfoURL(val OptNilURI) {
 	s.UserinfoURL = val
 }
 
 // SetDefaultScopes sets the value of DefaultScopes.
-func (s *OAuthServiceUpdate) SetDefaultScopes(val OptOAuthServiceUpdateDefaultScopes) {
+func (s *OAuthServiceUpdate) SetDefaultScopes(val OptNilStringArray) {
 	s.DefaultScopes = val
 }
 
 // SetSupportedGrantTypes sets the value of SupportedGrantTypes.
-func (s *OAuthServiceUpdate) SetSupportedGrantTypes(val OptOAuthServiceUpdateSupportedGrantTypes) {
+func (s *OAuthServiceUpdate) SetSupportedGrantTypes(val OptNilStringArray) {
 	s.SupportedGrantTypes = val
 }
 
 // SetIsActive sets the value of IsActive.
-func (s *OAuthServiceUpdate) SetIsActive(val OptOAuthServiceUpdateIsActive) {
+func (s *OAuthServiceUpdate) SetIsActive(val OptNilBool) {
 	s.IsActive = val
 }
 
 // SetIconURL sets the value of IconURL.
-func (s *OAuthServiceUpdate) SetIconURL(val OptOAuthServiceUpdateIconURL) {
+func (s *OAuthServiceUpdate) SetIconURL(val OptNilURI) {
 	s.IconURL = val
 }
 
 // SetHomepageURL sets the value of HomepageURL.
-func (s *OAuthServiceUpdate) SetHomepageURL(val OptOAuthServiceUpdateHomepageURL) {
+func (s *OAuthServiceUpdate) SetHomepageURL(val OptNilURI) {
 	s.HomepageURL = val
 }
 
 // SetAdditionalParams sets the value of AdditionalParams.
-func (s *OAuthServiceUpdate) SetAdditionalParams(val OptOAuthServiceUpdateAdditionalParams) {
+func (s *OAuthServiceUpdate) SetAdditionalParams(val OptNilOAuthServiceUpdateAdditionalParams) {
 	s.AdditionalParams = val
 }
 
-// OAuthServiceUpdateAdditionalParams represents sum type.
-type OAuthServiceUpdateAdditionalParams struct {
-	Type                                OAuthServiceUpdateAdditionalParamsType // switch on this field
-	OAuthServiceUpdateAdditionalParams0 OAuthServiceUpdateAdditionalParams0
-	Null                                struct{}
-}
+type OAuthServiceUpdateAdditionalParams map[string]jx.Raw
 
-// OAuthServiceUpdateAdditionalParamsType is oneOf type of OAuthServiceUpdateAdditionalParams.
-type OAuthServiceUpdateAdditionalParamsType string
-
-// Possible values for OAuthServiceUpdateAdditionalParamsType.
-const (
-	OAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams OAuthServiceUpdateAdditionalParamsType = "OAuthServiceUpdateAdditionalParams0"
-	NullOAuthServiceUpdateAdditionalParams                                OAuthServiceUpdateAdditionalParamsType = "struct{}"
-)
-
-// IsOAuthServiceUpdateAdditionalParams0 reports whether OAuthServiceUpdateAdditionalParams is OAuthServiceUpdateAdditionalParams0.
-func (s OAuthServiceUpdateAdditionalParams) IsOAuthServiceUpdateAdditionalParams0() bool {
-	return s.Type == OAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams
-}
-
-// IsNull reports whether OAuthServiceUpdateAdditionalParams is struct{}.
-func (s OAuthServiceUpdateAdditionalParams) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateAdditionalParams
-}
-
-// SetOAuthServiceUpdateAdditionalParams0 sets OAuthServiceUpdateAdditionalParams to OAuthServiceUpdateAdditionalParams0.
-func (s *OAuthServiceUpdateAdditionalParams) SetOAuthServiceUpdateAdditionalParams0(v OAuthServiceUpdateAdditionalParams0) {
-	s.Type = OAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams
-	s.OAuthServiceUpdateAdditionalParams0 = v
-}
-
-// GetOAuthServiceUpdateAdditionalParams0 returns OAuthServiceUpdateAdditionalParams0 and true boolean if OAuthServiceUpdateAdditionalParams is OAuthServiceUpdateAdditionalParams0.
-func (s OAuthServiceUpdateAdditionalParams) GetOAuthServiceUpdateAdditionalParams0() (v OAuthServiceUpdateAdditionalParams0, ok bool) {
-	if !s.IsOAuthServiceUpdateAdditionalParams0() {
-		return v, false
-	}
-	return s.OAuthServiceUpdateAdditionalParams0, true
-}
-
-// NewOAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams returns new OAuthServiceUpdateAdditionalParams from OAuthServiceUpdateAdditionalParams0.
-func NewOAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams(v OAuthServiceUpdateAdditionalParams0) OAuthServiceUpdateAdditionalParams {
-	var s OAuthServiceUpdateAdditionalParams
-	s.SetOAuthServiceUpdateAdditionalParams0(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateAdditionalParams to struct{}.
-func (s *OAuthServiceUpdateAdditionalParams) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateAdditionalParams
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateAdditionalParams is struct{}.
-func (s OAuthServiceUpdateAdditionalParams) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateAdditionalParams returns new OAuthServiceUpdateAdditionalParams from struct{}.
-func NewNullOAuthServiceUpdateAdditionalParams(v struct{}) OAuthServiceUpdateAdditionalParams {
-	var s OAuthServiceUpdateAdditionalParams
-	s.SetNull(v)
-	return s
-}
-
-type OAuthServiceUpdateAdditionalParams0 map[string]jx.Raw
-
-func (s *OAuthServiceUpdateAdditionalParams0) init() OAuthServiceUpdateAdditionalParams0 {
+func (s *OAuthServiceUpdateAdditionalParams) init() OAuthServiceUpdateAdditionalParams {
 	m := *s
 	if m == nil {
 		m = map[string]jx.Raw{}
@@ -6764,814 +4312,12 @@ func (s *OAuthServiceUpdateAdditionalParams0) init() OAuthServiceUpdateAdditiona
 	return m
 }
 
-// OAuthServiceUpdateAuthorizationURL represents sum type.
-type OAuthServiceUpdateAuthorizationURL struct {
-	Type OAuthServiceUpdateAuthorizationURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceUpdateAuthorizationURLType is oneOf type of OAuthServiceUpdateAuthorizationURL.
-type OAuthServiceUpdateAuthorizationURLType string
-
-// Possible values for OAuthServiceUpdateAuthorizationURLType.
-const (
-	URIOAuthServiceUpdateAuthorizationURL  OAuthServiceUpdateAuthorizationURLType = "url.URL"
-	NullOAuthServiceUpdateAuthorizationURL OAuthServiceUpdateAuthorizationURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceUpdateAuthorizationURL is url.URL.
-func (s OAuthServiceUpdateAuthorizationURL) IsURI() bool {
-	return s.Type == URIOAuthServiceUpdateAuthorizationURL
-}
-
-// IsNull reports whether OAuthServiceUpdateAuthorizationURL is struct{}.
-func (s OAuthServiceUpdateAuthorizationURL) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateAuthorizationURL
-}
-
-// SetURI sets OAuthServiceUpdateAuthorizationURL to url.URL.
-func (s *OAuthServiceUpdateAuthorizationURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceUpdateAuthorizationURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceUpdateAuthorizationURL is url.URL.
-func (s OAuthServiceUpdateAuthorizationURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceUpdateAuthorizationURL returns new OAuthServiceUpdateAuthorizationURL from url.URL.
-func NewURIOAuthServiceUpdateAuthorizationURL(v url.URL) OAuthServiceUpdateAuthorizationURL {
-	var s OAuthServiceUpdateAuthorizationURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateAuthorizationURL to struct{}.
-func (s *OAuthServiceUpdateAuthorizationURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateAuthorizationURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateAuthorizationURL is struct{}.
-func (s OAuthServiceUpdateAuthorizationURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateAuthorizationURL returns new OAuthServiceUpdateAuthorizationURL from struct{}.
-func NewNullOAuthServiceUpdateAuthorizationURL(v struct{}) OAuthServiceUpdateAuthorizationURL {
-	var s OAuthServiceUpdateAuthorizationURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateClientID represents sum type.
-type OAuthServiceUpdateClientID struct {
-	Type   OAuthServiceUpdateClientIDType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceUpdateClientIDType is oneOf type of OAuthServiceUpdateClientID.
-type OAuthServiceUpdateClientIDType string
-
-// Possible values for OAuthServiceUpdateClientIDType.
-const (
-	StringOAuthServiceUpdateClientID OAuthServiceUpdateClientIDType = "string"
-	NullOAuthServiceUpdateClientID   OAuthServiceUpdateClientIDType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceUpdateClientID is string.
-func (s OAuthServiceUpdateClientID) IsString() bool {
-	return s.Type == StringOAuthServiceUpdateClientID
-}
-
-// IsNull reports whether OAuthServiceUpdateClientID is struct{}.
-func (s OAuthServiceUpdateClientID) IsNull() bool { return s.Type == NullOAuthServiceUpdateClientID }
-
-// SetString sets OAuthServiceUpdateClientID to string.
-func (s *OAuthServiceUpdateClientID) SetString(v string) {
-	s.Type = StringOAuthServiceUpdateClientID
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceUpdateClientID is string.
-func (s OAuthServiceUpdateClientID) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceUpdateClientID returns new OAuthServiceUpdateClientID from string.
-func NewStringOAuthServiceUpdateClientID(v string) OAuthServiceUpdateClientID {
-	var s OAuthServiceUpdateClientID
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateClientID to struct{}.
-func (s *OAuthServiceUpdateClientID) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateClientID
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateClientID is struct{}.
-func (s OAuthServiceUpdateClientID) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateClientID returns new OAuthServiceUpdateClientID from struct{}.
-func NewNullOAuthServiceUpdateClientID(v struct{}) OAuthServiceUpdateClientID {
-	var s OAuthServiceUpdateClientID
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateClientSecret represents sum type.
-type OAuthServiceUpdateClientSecret struct {
-	Type   OAuthServiceUpdateClientSecretType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceUpdateClientSecretType is oneOf type of OAuthServiceUpdateClientSecret.
-type OAuthServiceUpdateClientSecretType string
-
-// Possible values for OAuthServiceUpdateClientSecretType.
-const (
-	StringOAuthServiceUpdateClientSecret OAuthServiceUpdateClientSecretType = "string"
-	NullOAuthServiceUpdateClientSecret   OAuthServiceUpdateClientSecretType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceUpdateClientSecret is string.
-func (s OAuthServiceUpdateClientSecret) IsString() bool {
-	return s.Type == StringOAuthServiceUpdateClientSecret
-}
-
-// IsNull reports whether OAuthServiceUpdateClientSecret is struct{}.
-func (s OAuthServiceUpdateClientSecret) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateClientSecret
-}
-
-// SetString sets OAuthServiceUpdateClientSecret to string.
-func (s *OAuthServiceUpdateClientSecret) SetString(v string) {
-	s.Type = StringOAuthServiceUpdateClientSecret
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceUpdateClientSecret is string.
-func (s OAuthServiceUpdateClientSecret) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceUpdateClientSecret returns new OAuthServiceUpdateClientSecret from string.
-func NewStringOAuthServiceUpdateClientSecret(v string) OAuthServiceUpdateClientSecret {
-	var s OAuthServiceUpdateClientSecret
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateClientSecret to struct{}.
-func (s *OAuthServiceUpdateClientSecret) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateClientSecret
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateClientSecret is struct{}.
-func (s OAuthServiceUpdateClientSecret) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateClientSecret returns new OAuthServiceUpdateClientSecret from struct{}.
-func NewNullOAuthServiceUpdateClientSecret(v struct{}) OAuthServiceUpdateClientSecret {
-	var s OAuthServiceUpdateClientSecret
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateDefaultScopes represents sum type.
-type OAuthServiceUpdateDefaultScopes struct {
-	Type        OAuthServiceUpdateDefaultScopesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// OAuthServiceUpdateDefaultScopesType is oneOf type of OAuthServiceUpdateDefaultScopes.
-type OAuthServiceUpdateDefaultScopesType string
-
-// Possible values for OAuthServiceUpdateDefaultScopesType.
-const (
-	StringArrayOAuthServiceUpdateDefaultScopes OAuthServiceUpdateDefaultScopesType = "[]string"
-	NullOAuthServiceUpdateDefaultScopes        OAuthServiceUpdateDefaultScopesType = "struct{}"
-)
-
-// IsStringArray reports whether OAuthServiceUpdateDefaultScopes is []string.
-func (s OAuthServiceUpdateDefaultScopes) IsStringArray() bool {
-	return s.Type == StringArrayOAuthServiceUpdateDefaultScopes
-}
-
-// IsNull reports whether OAuthServiceUpdateDefaultScopes is struct{}.
-func (s OAuthServiceUpdateDefaultScopes) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateDefaultScopes
-}
-
-// SetStringArray sets OAuthServiceUpdateDefaultScopes to []string.
-func (s *OAuthServiceUpdateDefaultScopes) SetStringArray(v []string) {
-	s.Type = StringArrayOAuthServiceUpdateDefaultScopes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if OAuthServiceUpdateDefaultScopes is []string.
-func (s OAuthServiceUpdateDefaultScopes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayOAuthServiceUpdateDefaultScopes returns new OAuthServiceUpdateDefaultScopes from []string.
-func NewStringArrayOAuthServiceUpdateDefaultScopes(v []string) OAuthServiceUpdateDefaultScopes {
-	var s OAuthServiceUpdateDefaultScopes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateDefaultScopes to struct{}.
-func (s *OAuthServiceUpdateDefaultScopes) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateDefaultScopes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateDefaultScopes is struct{}.
-func (s OAuthServiceUpdateDefaultScopes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateDefaultScopes returns new OAuthServiceUpdateDefaultScopes from struct{}.
-func NewNullOAuthServiceUpdateDefaultScopes(v struct{}) OAuthServiceUpdateDefaultScopes {
-	var s OAuthServiceUpdateDefaultScopes
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateDescription represents sum type.
-type OAuthServiceUpdateDescription struct {
-	Type   OAuthServiceUpdateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceUpdateDescriptionType is oneOf type of OAuthServiceUpdateDescription.
-type OAuthServiceUpdateDescriptionType string
-
-// Possible values for OAuthServiceUpdateDescriptionType.
-const (
-	StringOAuthServiceUpdateDescription OAuthServiceUpdateDescriptionType = "string"
-	NullOAuthServiceUpdateDescription   OAuthServiceUpdateDescriptionType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceUpdateDescription is string.
-func (s OAuthServiceUpdateDescription) IsString() bool {
-	return s.Type == StringOAuthServiceUpdateDescription
-}
-
-// IsNull reports whether OAuthServiceUpdateDescription is struct{}.
-func (s OAuthServiceUpdateDescription) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateDescription
-}
-
-// SetString sets OAuthServiceUpdateDescription to string.
-func (s *OAuthServiceUpdateDescription) SetString(v string) {
-	s.Type = StringOAuthServiceUpdateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceUpdateDescription is string.
-func (s OAuthServiceUpdateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceUpdateDescription returns new OAuthServiceUpdateDescription from string.
-func NewStringOAuthServiceUpdateDescription(v string) OAuthServiceUpdateDescription {
-	var s OAuthServiceUpdateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateDescription to struct{}.
-func (s *OAuthServiceUpdateDescription) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateDescription is struct{}.
-func (s OAuthServiceUpdateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateDescription returns new OAuthServiceUpdateDescription from struct{}.
-func NewNullOAuthServiceUpdateDescription(v struct{}) OAuthServiceUpdateDescription {
-	var s OAuthServiceUpdateDescription
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateDisplayName represents sum type.
-type OAuthServiceUpdateDisplayName struct {
-	Type   OAuthServiceUpdateDisplayNameType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthServiceUpdateDisplayNameType is oneOf type of OAuthServiceUpdateDisplayName.
-type OAuthServiceUpdateDisplayNameType string
-
-// Possible values for OAuthServiceUpdateDisplayNameType.
-const (
-	StringOAuthServiceUpdateDisplayName OAuthServiceUpdateDisplayNameType = "string"
-	NullOAuthServiceUpdateDisplayName   OAuthServiceUpdateDisplayNameType = "struct{}"
-)
-
-// IsString reports whether OAuthServiceUpdateDisplayName is string.
-func (s OAuthServiceUpdateDisplayName) IsString() bool {
-	return s.Type == StringOAuthServiceUpdateDisplayName
-}
-
-// IsNull reports whether OAuthServiceUpdateDisplayName is struct{}.
-func (s OAuthServiceUpdateDisplayName) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateDisplayName
-}
-
-// SetString sets OAuthServiceUpdateDisplayName to string.
-func (s *OAuthServiceUpdateDisplayName) SetString(v string) {
-	s.Type = StringOAuthServiceUpdateDisplayName
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthServiceUpdateDisplayName is string.
-func (s OAuthServiceUpdateDisplayName) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthServiceUpdateDisplayName returns new OAuthServiceUpdateDisplayName from string.
-func NewStringOAuthServiceUpdateDisplayName(v string) OAuthServiceUpdateDisplayName {
-	var s OAuthServiceUpdateDisplayName
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateDisplayName to struct{}.
-func (s *OAuthServiceUpdateDisplayName) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateDisplayName
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateDisplayName is struct{}.
-func (s OAuthServiceUpdateDisplayName) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateDisplayName returns new OAuthServiceUpdateDisplayName from struct{}.
-func NewNullOAuthServiceUpdateDisplayName(v struct{}) OAuthServiceUpdateDisplayName {
-	var s OAuthServiceUpdateDisplayName
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateHomepageURL represents sum type.
-type OAuthServiceUpdateHomepageURL struct {
-	Type OAuthServiceUpdateHomepageURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceUpdateHomepageURLType is oneOf type of OAuthServiceUpdateHomepageURL.
-type OAuthServiceUpdateHomepageURLType string
-
-// Possible values for OAuthServiceUpdateHomepageURLType.
-const (
-	URIOAuthServiceUpdateHomepageURL  OAuthServiceUpdateHomepageURLType = "url.URL"
-	NullOAuthServiceUpdateHomepageURL OAuthServiceUpdateHomepageURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceUpdateHomepageURL is url.URL.
-func (s OAuthServiceUpdateHomepageURL) IsURI() bool {
-	return s.Type == URIOAuthServiceUpdateHomepageURL
-}
-
-// IsNull reports whether OAuthServiceUpdateHomepageURL is struct{}.
-func (s OAuthServiceUpdateHomepageURL) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateHomepageURL
-}
-
-// SetURI sets OAuthServiceUpdateHomepageURL to url.URL.
-func (s *OAuthServiceUpdateHomepageURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceUpdateHomepageURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceUpdateHomepageURL is url.URL.
-func (s OAuthServiceUpdateHomepageURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceUpdateHomepageURL returns new OAuthServiceUpdateHomepageURL from url.URL.
-func NewURIOAuthServiceUpdateHomepageURL(v url.URL) OAuthServiceUpdateHomepageURL {
-	var s OAuthServiceUpdateHomepageURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateHomepageURL to struct{}.
-func (s *OAuthServiceUpdateHomepageURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateHomepageURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateHomepageURL is struct{}.
-func (s OAuthServiceUpdateHomepageURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateHomepageURL returns new OAuthServiceUpdateHomepageURL from struct{}.
-func NewNullOAuthServiceUpdateHomepageURL(v struct{}) OAuthServiceUpdateHomepageURL {
-	var s OAuthServiceUpdateHomepageURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateIconURL represents sum type.
-type OAuthServiceUpdateIconURL struct {
-	Type OAuthServiceUpdateIconURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceUpdateIconURLType is oneOf type of OAuthServiceUpdateIconURL.
-type OAuthServiceUpdateIconURLType string
-
-// Possible values for OAuthServiceUpdateIconURLType.
-const (
-	URIOAuthServiceUpdateIconURL  OAuthServiceUpdateIconURLType = "url.URL"
-	NullOAuthServiceUpdateIconURL OAuthServiceUpdateIconURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceUpdateIconURL is url.URL.
-func (s OAuthServiceUpdateIconURL) IsURI() bool { return s.Type == URIOAuthServiceUpdateIconURL }
-
-// IsNull reports whether OAuthServiceUpdateIconURL is struct{}.
-func (s OAuthServiceUpdateIconURL) IsNull() bool { return s.Type == NullOAuthServiceUpdateIconURL }
-
-// SetURI sets OAuthServiceUpdateIconURL to url.URL.
-func (s *OAuthServiceUpdateIconURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceUpdateIconURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceUpdateIconURL is url.URL.
-func (s OAuthServiceUpdateIconURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceUpdateIconURL returns new OAuthServiceUpdateIconURL from url.URL.
-func NewURIOAuthServiceUpdateIconURL(v url.URL) OAuthServiceUpdateIconURL {
-	var s OAuthServiceUpdateIconURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateIconURL to struct{}.
-func (s *OAuthServiceUpdateIconURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateIconURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateIconURL is struct{}.
-func (s OAuthServiceUpdateIconURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateIconURL returns new OAuthServiceUpdateIconURL from struct{}.
-func NewNullOAuthServiceUpdateIconURL(v struct{}) OAuthServiceUpdateIconURL {
-	var s OAuthServiceUpdateIconURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateIsActive represents sum type.
-type OAuthServiceUpdateIsActive struct {
-	Type OAuthServiceUpdateIsActiveType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// OAuthServiceUpdateIsActiveType is oneOf type of OAuthServiceUpdateIsActive.
-type OAuthServiceUpdateIsActiveType string
-
-// Possible values for OAuthServiceUpdateIsActiveType.
-const (
-	BoolOAuthServiceUpdateIsActive OAuthServiceUpdateIsActiveType = "bool"
-	NullOAuthServiceUpdateIsActive OAuthServiceUpdateIsActiveType = "struct{}"
-)
-
-// IsBool reports whether OAuthServiceUpdateIsActive is bool.
-func (s OAuthServiceUpdateIsActive) IsBool() bool { return s.Type == BoolOAuthServiceUpdateIsActive }
-
-// IsNull reports whether OAuthServiceUpdateIsActive is struct{}.
-func (s OAuthServiceUpdateIsActive) IsNull() bool { return s.Type == NullOAuthServiceUpdateIsActive }
-
-// SetBool sets OAuthServiceUpdateIsActive to bool.
-func (s *OAuthServiceUpdateIsActive) SetBool(v bool) {
-	s.Type = BoolOAuthServiceUpdateIsActive
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if OAuthServiceUpdateIsActive is bool.
-func (s OAuthServiceUpdateIsActive) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolOAuthServiceUpdateIsActive returns new OAuthServiceUpdateIsActive from bool.
-func NewBoolOAuthServiceUpdateIsActive(v bool) OAuthServiceUpdateIsActive {
-	var s OAuthServiceUpdateIsActive
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateIsActive to struct{}.
-func (s *OAuthServiceUpdateIsActive) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateIsActive
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateIsActive is struct{}.
-func (s OAuthServiceUpdateIsActive) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateIsActive returns new OAuthServiceUpdateIsActive from struct{}.
-func NewNullOAuthServiceUpdateIsActive(v struct{}) OAuthServiceUpdateIsActive {
-	var s OAuthServiceUpdateIsActive
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateSupportedGrantTypes represents sum type.
-type OAuthServiceUpdateSupportedGrantTypes struct {
-	Type        OAuthServiceUpdateSupportedGrantTypesType // switch on this field
-	StringArray []string
-	Null        struct{}
-}
-
-// OAuthServiceUpdateSupportedGrantTypesType is oneOf type of OAuthServiceUpdateSupportedGrantTypes.
-type OAuthServiceUpdateSupportedGrantTypesType string
-
-// Possible values for OAuthServiceUpdateSupportedGrantTypesType.
-const (
-	StringArrayOAuthServiceUpdateSupportedGrantTypes OAuthServiceUpdateSupportedGrantTypesType = "[]string"
-	NullOAuthServiceUpdateSupportedGrantTypes        OAuthServiceUpdateSupportedGrantTypesType = "struct{}"
-)
-
-// IsStringArray reports whether OAuthServiceUpdateSupportedGrantTypes is []string.
-func (s OAuthServiceUpdateSupportedGrantTypes) IsStringArray() bool {
-	return s.Type == StringArrayOAuthServiceUpdateSupportedGrantTypes
-}
-
-// IsNull reports whether OAuthServiceUpdateSupportedGrantTypes is struct{}.
-func (s OAuthServiceUpdateSupportedGrantTypes) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateSupportedGrantTypes
-}
-
-// SetStringArray sets OAuthServiceUpdateSupportedGrantTypes to []string.
-func (s *OAuthServiceUpdateSupportedGrantTypes) SetStringArray(v []string) {
-	s.Type = StringArrayOAuthServiceUpdateSupportedGrantTypes
-	s.StringArray = v
-}
-
-// GetStringArray returns []string and true boolean if OAuthServiceUpdateSupportedGrantTypes is []string.
-func (s OAuthServiceUpdateSupportedGrantTypes) GetStringArray() (v []string, ok bool) {
-	if !s.IsStringArray() {
-		return v, false
-	}
-	return s.StringArray, true
-}
-
-// NewStringArrayOAuthServiceUpdateSupportedGrantTypes returns new OAuthServiceUpdateSupportedGrantTypes from []string.
-func NewStringArrayOAuthServiceUpdateSupportedGrantTypes(v []string) OAuthServiceUpdateSupportedGrantTypes {
-	var s OAuthServiceUpdateSupportedGrantTypes
-	s.SetStringArray(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateSupportedGrantTypes to struct{}.
-func (s *OAuthServiceUpdateSupportedGrantTypes) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateSupportedGrantTypes
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateSupportedGrantTypes is struct{}.
-func (s OAuthServiceUpdateSupportedGrantTypes) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateSupportedGrantTypes returns new OAuthServiceUpdateSupportedGrantTypes from struct{}.
-func NewNullOAuthServiceUpdateSupportedGrantTypes(v struct{}) OAuthServiceUpdateSupportedGrantTypes {
-	var s OAuthServiceUpdateSupportedGrantTypes
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateTokenURL represents sum type.
-type OAuthServiceUpdateTokenURL struct {
-	Type OAuthServiceUpdateTokenURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceUpdateTokenURLType is oneOf type of OAuthServiceUpdateTokenURL.
-type OAuthServiceUpdateTokenURLType string
-
-// Possible values for OAuthServiceUpdateTokenURLType.
-const (
-	URIOAuthServiceUpdateTokenURL  OAuthServiceUpdateTokenURLType = "url.URL"
-	NullOAuthServiceUpdateTokenURL OAuthServiceUpdateTokenURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceUpdateTokenURL is url.URL.
-func (s OAuthServiceUpdateTokenURL) IsURI() bool { return s.Type == URIOAuthServiceUpdateTokenURL }
-
-// IsNull reports whether OAuthServiceUpdateTokenURL is struct{}.
-func (s OAuthServiceUpdateTokenURL) IsNull() bool { return s.Type == NullOAuthServiceUpdateTokenURL }
-
-// SetURI sets OAuthServiceUpdateTokenURL to url.URL.
-func (s *OAuthServiceUpdateTokenURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceUpdateTokenURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceUpdateTokenURL is url.URL.
-func (s OAuthServiceUpdateTokenURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceUpdateTokenURL returns new OAuthServiceUpdateTokenURL from url.URL.
-func NewURIOAuthServiceUpdateTokenURL(v url.URL) OAuthServiceUpdateTokenURL {
-	var s OAuthServiceUpdateTokenURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateTokenURL to struct{}.
-func (s *OAuthServiceUpdateTokenURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateTokenURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateTokenURL is struct{}.
-func (s OAuthServiceUpdateTokenURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateTokenURL returns new OAuthServiceUpdateTokenURL from struct{}.
-func NewNullOAuthServiceUpdateTokenURL(v struct{}) OAuthServiceUpdateTokenURL {
-	var s OAuthServiceUpdateTokenURL
-	s.SetNull(v)
-	return s
-}
-
-// OAuthServiceUpdateUserinfoURL represents sum type.
-type OAuthServiceUpdateUserinfoURL struct {
-	Type OAuthServiceUpdateUserinfoURLType // switch on this field
-	URI  url.URL
-	Null struct{}
-}
-
-// OAuthServiceUpdateUserinfoURLType is oneOf type of OAuthServiceUpdateUserinfoURL.
-type OAuthServiceUpdateUserinfoURLType string
-
-// Possible values for OAuthServiceUpdateUserinfoURLType.
-const (
-	URIOAuthServiceUpdateUserinfoURL  OAuthServiceUpdateUserinfoURLType = "url.URL"
-	NullOAuthServiceUpdateUserinfoURL OAuthServiceUpdateUserinfoURLType = "struct{}"
-)
-
-// IsURI reports whether OAuthServiceUpdateUserinfoURL is url.URL.
-func (s OAuthServiceUpdateUserinfoURL) IsURI() bool {
-	return s.Type == URIOAuthServiceUpdateUserinfoURL
-}
-
-// IsNull reports whether OAuthServiceUpdateUserinfoURL is struct{}.
-func (s OAuthServiceUpdateUserinfoURL) IsNull() bool {
-	return s.Type == NullOAuthServiceUpdateUserinfoURL
-}
-
-// SetURI sets OAuthServiceUpdateUserinfoURL to url.URL.
-func (s *OAuthServiceUpdateUserinfoURL) SetURI(v url.URL) {
-	s.Type = URIOAuthServiceUpdateUserinfoURL
-	s.URI = v
-}
-
-// GetURI returns url.URL and true boolean if OAuthServiceUpdateUserinfoURL is url.URL.
-func (s OAuthServiceUpdateUserinfoURL) GetURI() (v url.URL, ok bool) {
-	if !s.IsURI() {
-		return v, false
-	}
-	return s.URI, true
-}
-
-// NewURIOAuthServiceUpdateUserinfoURL returns new OAuthServiceUpdateUserinfoURL from url.URL.
-func NewURIOAuthServiceUpdateUserinfoURL(v url.URL) OAuthServiceUpdateUserinfoURL {
-	var s OAuthServiceUpdateUserinfoURL
-	s.SetURI(v)
-	return s
-}
-
-// SetNull sets OAuthServiceUpdateUserinfoURL to struct{}.
-func (s *OAuthServiceUpdateUserinfoURL) SetNull(v struct{}) {
-	s.Type = NullOAuthServiceUpdateUserinfoURL
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthServiceUpdateUserinfoURL is struct{}.
-func (s OAuthServiceUpdateUserinfoURL) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthServiceUpdateUserinfoURL returns new OAuthServiceUpdateUserinfoURL from struct{}.
-func NewNullOAuthServiceUpdateUserinfoURL(v struct{}) OAuthServiceUpdateUserinfoURL {
-	var s OAuthServiceUpdateUserinfoURL
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/OAuthTokenExchange
 type OAuthTokenExchange struct {
-	ServiceID   uuid.UUID                        `json:"service_id"`
-	Code        string                           `json:"code"`
-	State       OptOAuthTokenExchangeState       `json:"state"`
-	RedirectURI OptOAuthTokenExchangeRedirectURI `json:"redirect_uri"`
+	ServiceID   uuid.UUID    `json:"service_id"`
+	Code        string       `json:"code"`
+	State       OptNilString `json:"state"`
+	RedirectURI OptNilString `json:"redirect_uri"`
 }
 
 // GetServiceID returns the value of ServiceID.
@@ -7585,12 +4331,12 @@ func (s *OAuthTokenExchange) GetCode() string {
 }
 
 // GetState returns the value of State.
-func (s *OAuthTokenExchange) GetState() OptOAuthTokenExchangeState {
+func (s *OAuthTokenExchange) GetState() OptNilString {
 	return s.State
 }
 
 // GetRedirectURI returns the value of RedirectURI.
-func (s *OAuthTokenExchange) GetRedirectURI() OptOAuthTokenExchangeRedirectURI {
+func (s *OAuthTokenExchange) GetRedirectURI() OptNilString {
 	return s.RedirectURI
 }
 
@@ -7605,154 +4351,22 @@ func (s *OAuthTokenExchange) SetCode(val string) {
 }
 
 // SetState sets the value of State.
-func (s *OAuthTokenExchange) SetState(val OptOAuthTokenExchangeState) {
+func (s *OAuthTokenExchange) SetState(val OptNilString) {
 	s.State = val
 }
 
 // SetRedirectURI sets the value of RedirectURI.
-func (s *OAuthTokenExchange) SetRedirectURI(val OptOAuthTokenExchangeRedirectURI) {
+func (s *OAuthTokenExchange) SetRedirectURI(val OptNilString) {
 	s.RedirectURI = val
-}
-
-// OAuthTokenExchangeRedirectURI represents sum type.
-type OAuthTokenExchangeRedirectURI struct {
-	Type   OAuthTokenExchangeRedirectURIType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthTokenExchangeRedirectURIType is oneOf type of OAuthTokenExchangeRedirectURI.
-type OAuthTokenExchangeRedirectURIType string
-
-// Possible values for OAuthTokenExchangeRedirectURIType.
-const (
-	StringOAuthTokenExchangeRedirectURI OAuthTokenExchangeRedirectURIType = "string"
-	NullOAuthTokenExchangeRedirectURI   OAuthTokenExchangeRedirectURIType = "struct{}"
-)
-
-// IsString reports whether OAuthTokenExchangeRedirectURI is string.
-func (s OAuthTokenExchangeRedirectURI) IsString() bool {
-	return s.Type == StringOAuthTokenExchangeRedirectURI
-}
-
-// IsNull reports whether OAuthTokenExchangeRedirectURI is struct{}.
-func (s OAuthTokenExchangeRedirectURI) IsNull() bool {
-	return s.Type == NullOAuthTokenExchangeRedirectURI
-}
-
-// SetString sets OAuthTokenExchangeRedirectURI to string.
-func (s *OAuthTokenExchangeRedirectURI) SetString(v string) {
-	s.Type = StringOAuthTokenExchangeRedirectURI
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthTokenExchangeRedirectURI is string.
-func (s OAuthTokenExchangeRedirectURI) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthTokenExchangeRedirectURI returns new OAuthTokenExchangeRedirectURI from string.
-func NewStringOAuthTokenExchangeRedirectURI(v string) OAuthTokenExchangeRedirectURI {
-	var s OAuthTokenExchangeRedirectURI
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthTokenExchangeRedirectURI to struct{}.
-func (s *OAuthTokenExchangeRedirectURI) SetNull(v struct{}) {
-	s.Type = NullOAuthTokenExchangeRedirectURI
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthTokenExchangeRedirectURI is struct{}.
-func (s OAuthTokenExchangeRedirectURI) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthTokenExchangeRedirectURI returns new OAuthTokenExchangeRedirectURI from struct{}.
-func NewNullOAuthTokenExchangeRedirectURI(v struct{}) OAuthTokenExchangeRedirectURI {
-	var s OAuthTokenExchangeRedirectURI
-	s.SetNull(v)
-	return s
-}
-
-// OAuthTokenExchangeState represents sum type.
-type OAuthTokenExchangeState struct {
-	Type   OAuthTokenExchangeStateType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthTokenExchangeStateType is oneOf type of OAuthTokenExchangeState.
-type OAuthTokenExchangeStateType string
-
-// Possible values for OAuthTokenExchangeStateType.
-const (
-	StringOAuthTokenExchangeState OAuthTokenExchangeStateType = "string"
-	NullOAuthTokenExchangeState   OAuthTokenExchangeStateType = "struct{}"
-)
-
-// IsString reports whether OAuthTokenExchangeState is string.
-func (s OAuthTokenExchangeState) IsString() bool { return s.Type == StringOAuthTokenExchangeState }
-
-// IsNull reports whether OAuthTokenExchangeState is struct{}.
-func (s OAuthTokenExchangeState) IsNull() bool { return s.Type == NullOAuthTokenExchangeState }
-
-// SetString sets OAuthTokenExchangeState to string.
-func (s *OAuthTokenExchangeState) SetString(v string) {
-	s.Type = StringOAuthTokenExchangeState
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthTokenExchangeState is string.
-func (s OAuthTokenExchangeState) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthTokenExchangeState returns new OAuthTokenExchangeState from string.
-func NewStringOAuthTokenExchangeState(v string) OAuthTokenExchangeState {
-	var s OAuthTokenExchangeState
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthTokenExchangeState to struct{}.
-func (s *OAuthTokenExchangeState) SetNull(v struct{}) {
-	s.Type = NullOAuthTokenExchangeState
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthTokenExchangeState is struct{}.
-func (s OAuthTokenExchangeState) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthTokenExchangeState returns new OAuthTokenExchangeState from struct{}.
-func NewNullOAuthTokenExchangeState(v struct{}) OAuthTokenExchangeState {
-	var s OAuthTokenExchangeState
-	s.SetNull(v)
-	return s
 }
 
 // Ref: #/components/schemas/OAuthTokenResponse
 type OAuthTokenResponse struct {
-	AccessToken  string                            `json:"access_token"`
-	TokenType    string                            `json:"token_type"`
-	ExpiresIn    OptOAuthTokenResponseExpiresIn    `json:"expires_in"`
-	RefreshToken OptOAuthTokenResponseRefreshToken `json:"refresh_token"`
-	Scopes       []string                          `json:"scopes"`
+	AccessToken  string       `json:"access_token"`
+	TokenType    string       `json:"token_type"`
+	ExpiresIn    OptNilInt    `json:"expires_in"`
+	RefreshToken OptNilString `json:"refresh_token"`
+	Scopes       []string     `json:"scopes"`
 }
 
 // GetAccessToken returns the value of AccessToken.
@@ -7766,12 +4380,12 @@ func (s *OAuthTokenResponse) GetTokenType() string {
 }
 
 // GetExpiresIn returns the value of ExpiresIn.
-func (s *OAuthTokenResponse) GetExpiresIn() OptOAuthTokenResponseExpiresIn {
+func (s *OAuthTokenResponse) GetExpiresIn() OptNilInt {
 	return s.ExpiresIn
 }
 
 // GetRefreshToken returns the value of RefreshToken.
-func (s *OAuthTokenResponse) GetRefreshToken() OptOAuthTokenResponseRefreshToken {
+func (s *OAuthTokenResponse) GetRefreshToken() OptNilString {
 	return s.RefreshToken
 }
 
@@ -7791,12 +4405,12 @@ func (s *OAuthTokenResponse) SetTokenType(val string) {
 }
 
 // SetExpiresIn sets the value of ExpiresIn.
-func (s *OAuthTokenResponse) SetExpiresIn(val OptOAuthTokenResponseExpiresIn) {
+func (s *OAuthTokenResponse) SetExpiresIn(val OptNilInt) {
 	s.ExpiresIn = val
 }
 
 // SetRefreshToken sets the value of RefreshToken.
-func (s *OAuthTokenResponse) SetRefreshToken(val OptOAuthTokenResponseRefreshToken) {
+func (s *OAuthTokenResponse) SetRefreshToken(val OptNilString) {
 	s.RefreshToken = val
 }
 
@@ -7806,138 +4420,6 @@ func (s *OAuthTokenResponse) SetScopes(val []string) {
 }
 
 func (*OAuthTokenResponse) exchangeOAuthTokenRes() {}
-
-// OAuthTokenResponseExpiresIn represents sum type.
-type OAuthTokenResponseExpiresIn struct {
-	Type OAuthTokenResponseExpiresInType // switch on this field
-	Int  int
-	Null struct{}
-}
-
-// OAuthTokenResponseExpiresInType is oneOf type of OAuthTokenResponseExpiresIn.
-type OAuthTokenResponseExpiresInType string
-
-// Possible values for OAuthTokenResponseExpiresInType.
-const (
-	IntOAuthTokenResponseExpiresIn  OAuthTokenResponseExpiresInType = "int"
-	NullOAuthTokenResponseExpiresIn OAuthTokenResponseExpiresInType = "struct{}"
-)
-
-// IsInt reports whether OAuthTokenResponseExpiresIn is int.
-func (s OAuthTokenResponseExpiresIn) IsInt() bool { return s.Type == IntOAuthTokenResponseExpiresIn }
-
-// IsNull reports whether OAuthTokenResponseExpiresIn is struct{}.
-func (s OAuthTokenResponseExpiresIn) IsNull() bool { return s.Type == NullOAuthTokenResponseExpiresIn }
-
-// SetInt sets OAuthTokenResponseExpiresIn to int.
-func (s *OAuthTokenResponseExpiresIn) SetInt(v int) {
-	s.Type = IntOAuthTokenResponseExpiresIn
-	s.Int = v
-}
-
-// GetInt returns int and true boolean if OAuthTokenResponseExpiresIn is int.
-func (s OAuthTokenResponseExpiresIn) GetInt() (v int, ok bool) {
-	if !s.IsInt() {
-		return v, false
-	}
-	return s.Int, true
-}
-
-// NewIntOAuthTokenResponseExpiresIn returns new OAuthTokenResponseExpiresIn from int.
-func NewIntOAuthTokenResponseExpiresIn(v int) OAuthTokenResponseExpiresIn {
-	var s OAuthTokenResponseExpiresIn
-	s.SetInt(v)
-	return s
-}
-
-// SetNull sets OAuthTokenResponseExpiresIn to struct{}.
-func (s *OAuthTokenResponseExpiresIn) SetNull(v struct{}) {
-	s.Type = NullOAuthTokenResponseExpiresIn
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthTokenResponseExpiresIn is struct{}.
-func (s OAuthTokenResponseExpiresIn) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthTokenResponseExpiresIn returns new OAuthTokenResponseExpiresIn from struct{}.
-func NewNullOAuthTokenResponseExpiresIn(v struct{}) OAuthTokenResponseExpiresIn {
-	var s OAuthTokenResponseExpiresIn
-	s.SetNull(v)
-	return s
-}
-
-// OAuthTokenResponseRefreshToken represents sum type.
-type OAuthTokenResponseRefreshToken struct {
-	Type   OAuthTokenResponseRefreshTokenType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// OAuthTokenResponseRefreshTokenType is oneOf type of OAuthTokenResponseRefreshToken.
-type OAuthTokenResponseRefreshTokenType string
-
-// Possible values for OAuthTokenResponseRefreshTokenType.
-const (
-	StringOAuthTokenResponseRefreshToken OAuthTokenResponseRefreshTokenType = "string"
-	NullOAuthTokenResponseRefreshToken   OAuthTokenResponseRefreshTokenType = "struct{}"
-)
-
-// IsString reports whether OAuthTokenResponseRefreshToken is string.
-func (s OAuthTokenResponseRefreshToken) IsString() bool {
-	return s.Type == StringOAuthTokenResponseRefreshToken
-}
-
-// IsNull reports whether OAuthTokenResponseRefreshToken is struct{}.
-func (s OAuthTokenResponseRefreshToken) IsNull() bool {
-	return s.Type == NullOAuthTokenResponseRefreshToken
-}
-
-// SetString sets OAuthTokenResponseRefreshToken to string.
-func (s *OAuthTokenResponseRefreshToken) SetString(v string) {
-	s.Type = StringOAuthTokenResponseRefreshToken
-	s.String = v
-}
-
-// GetString returns string and true boolean if OAuthTokenResponseRefreshToken is string.
-func (s OAuthTokenResponseRefreshToken) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringOAuthTokenResponseRefreshToken returns new OAuthTokenResponseRefreshToken from string.
-func NewStringOAuthTokenResponseRefreshToken(v string) OAuthTokenResponseRefreshToken {
-	var s OAuthTokenResponseRefreshToken
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets OAuthTokenResponseRefreshToken to struct{}.
-func (s *OAuthTokenResponseRefreshToken) SetNull(v struct{}) {
-	s.Type = NullOAuthTokenResponseRefreshToken
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if OAuthTokenResponseRefreshToken is struct{}.
-func (s OAuthTokenResponseRefreshToken) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullOAuthTokenResponseRefreshToken returns new OAuthTokenResponseRefreshToken from struct{}.
-func NewNullOAuthTokenResponseRefreshToken(v struct{}) OAuthTokenResponseRefreshToken {
-	var s OAuthTokenResponseRefreshToken
-	s.SetNull(v)
-	return s
-}
 
 // Ref: #/components/schemas/OpenAIModelProviderCreate
 type OpenAIModelProviderCreate struct {
@@ -8046,328 +4528,6 @@ func (s *OpenAIModelProviderResponse) SetDefault(val OptBool) {
 	s.Default = val
 }
 
-// NewOptApiTokenCreateExpiresAt returns new OptApiTokenCreateExpiresAt with value set to v.
-func NewOptApiTokenCreateExpiresAt(v ApiTokenCreateExpiresAt) OptApiTokenCreateExpiresAt {
-	return OptApiTokenCreateExpiresAt{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenCreateExpiresAt is optional ApiTokenCreateExpiresAt.
-type OptApiTokenCreateExpiresAt struct {
-	Value ApiTokenCreateExpiresAt
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenCreateExpiresAt was set.
-func (o OptApiTokenCreateExpiresAt) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenCreateExpiresAt) Reset() {
-	var v ApiTokenCreateExpiresAt
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenCreateExpiresAt) SetTo(v ApiTokenCreateExpiresAt) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenCreateExpiresAt) Get() (v ApiTokenCreateExpiresAt, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenCreateExpiresAt) Or(d ApiTokenCreateExpiresAt) ApiTokenCreateExpiresAt {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenResponseExpiresAt returns new OptApiTokenResponseExpiresAt with value set to v.
-func NewOptApiTokenResponseExpiresAt(v ApiTokenResponseExpiresAt) OptApiTokenResponseExpiresAt {
-	return OptApiTokenResponseExpiresAt{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenResponseExpiresAt is optional ApiTokenResponseExpiresAt.
-type OptApiTokenResponseExpiresAt struct {
-	Value ApiTokenResponseExpiresAt
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenResponseExpiresAt was set.
-func (o OptApiTokenResponseExpiresAt) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenResponseExpiresAt) Reset() {
-	var v ApiTokenResponseExpiresAt
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenResponseExpiresAt) SetTo(v ApiTokenResponseExpiresAt) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenResponseExpiresAt) Get() (v ApiTokenResponseExpiresAt, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenResponseExpiresAt) Or(d ApiTokenResponseExpiresAt) ApiTokenResponseExpiresAt {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenResponseScopes returns new OptApiTokenResponseScopes with value set to v.
-func NewOptApiTokenResponseScopes(v ApiTokenResponseScopes) OptApiTokenResponseScopes {
-	return OptApiTokenResponseScopes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenResponseScopes is optional ApiTokenResponseScopes.
-type OptApiTokenResponseScopes struct {
-	Value ApiTokenResponseScopes
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenResponseScopes was set.
-func (o OptApiTokenResponseScopes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenResponseScopes) Reset() {
-	var v ApiTokenResponseScopes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenResponseScopes) SetTo(v ApiTokenResponseScopes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenResponseScopes) Get() (v ApiTokenResponseScopes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenResponseScopes) Or(d ApiTokenResponseScopes) ApiTokenResponseScopes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenUpdateActive returns new OptApiTokenUpdateActive with value set to v.
-func NewOptApiTokenUpdateActive(v ApiTokenUpdateActive) OptApiTokenUpdateActive {
-	return OptApiTokenUpdateActive{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenUpdateActive is optional ApiTokenUpdateActive.
-type OptApiTokenUpdateActive struct {
-	Value ApiTokenUpdateActive
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenUpdateActive was set.
-func (o OptApiTokenUpdateActive) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenUpdateActive) Reset() {
-	var v ApiTokenUpdateActive
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenUpdateActive) SetTo(v ApiTokenUpdateActive) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenUpdateActive) Get() (v ApiTokenUpdateActive, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenUpdateActive) Or(d ApiTokenUpdateActive) ApiTokenUpdateActive {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenUpdateExpiresAt returns new OptApiTokenUpdateExpiresAt with value set to v.
-func NewOptApiTokenUpdateExpiresAt(v ApiTokenUpdateExpiresAt) OptApiTokenUpdateExpiresAt {
-	return OptApiTokenUpdateExpiresAt{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenUpdateExpiresAt is optional ApiTokenUpdateExpiresAt.
-type OptApiTokenUpdateExpiresAt struct {
-	Value ApiTokenUpdateExpiresAt
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenUpdateExpiresAt was set.
-func (o OptApiTokenUpdateExpiresAt) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenUpdateExpiresAt) Reset() {
-	var v ApiTokenUpdateExpiresAt
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenUpdateExpiresAt) SetTo(v ApiTokenUpdateExpiresAt) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenUpdateExpiresAt) Get() (v ApiTokenUpdateExpiresAt, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenUpdateExpiresAt) Or(d ApiTokenUpdateExpiresAt) ApiTokenUpdateExpiresAt {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenUpdateName returns new OptApiTokenUpdateName with value set to v.
-func NewOptApiTokenUpdateName(v ApiTokenUpdateName) OptApiTokenUpdateName {
-	return OptApiTokenUpdateName{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenUpdateName is optional ApiTokenUpdateName.
-type OptApiTokenUpdateName struct {
-	Value ApiTokenUpdateName
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenUpdateName was set.
-func (o OptApiTokenUpdateName) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenUpdateName) Reset() {
-	var v ApiTokenUpdateName
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenUpdateName) SetTo(v ApiTokenUpdateName) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenUpdateName) Get() (v ApiTokenUpdateName, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenUpdateName) Or(d ApiTokenUpdateName) ApiTokenUpdateName {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptApiTokenUpdateScopes returns new OptApiTokenUpdateScopes with value set to v.
-func NewOptApiTokenUpdateScopes(v ApiTokenUpdateScopes) OptApiTokenUpdateScopes {
-	return OptApiTokenUpdateScopes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptApiTokenUpdateScopes is optional ApiTokenUpdateScopes.
-type OptApiTokenUpdateScopes struct {
-	Value ApiTokenUpdateScopes
-	Set   bool
-}
-
-// IsSet returns true if OptApiTokenUpdateScopes was set.
-func (o OptApiTokenUpdateScopes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptApiTokenUpdateScopes) Reset() {
-	var v ApiTokenUpdateScopes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptApiTokenUpdateScopes) SetTo(v ApiTokenUpdateScopes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptApiTokenUpdateScopes) Get() (v ApiTokenUpdateScopes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptApiTokenUpdateScopes) Or(d ApiTokenUpdateScopes) ApiTokenUpdateScopes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -8408,52 +4568,6 @@ func (o OptBool) Get() (v bool, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptBool) Or(d bool) bool {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptChatSessionCreateID returns new OptChatSessionCreateID with value set to v.
-func NewOptChatSessionCreateID(v ChatSessionCreateID) OptChatSessionCreateID {
-	return OptChatSessionCreateID{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptChatSessionCreateID is optional ChatSessionCreateID.
-type OptChatSessionCreateID struct {
-	Value ChatSessionCreateID
-	Set   bool
-}
-
-// IsSet returns true if OptChatSessionCreateID was set.
-func (o OptChatSessionCreateID) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptChatSessionCreateID) Reset() {
-	var v ChatSessionCreateID
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptChatSessionCreateID) SetTo(v ChatSessionCreateID) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptChatSessionCreateID) Get() (v ChatSessionCreateID, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptChatSessionCreateID) Or(d ChatSessionCreateID) ChatSessionCreateID {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -8546,190 +4660,6 @@ func (o OptDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDateTime) Or(d time.Time) time.Time {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptEntityDefinitionResponseDescription returns new OptEntityDefinitionResponseDescription with value set to v.
-func NewOptEntityDefinitionResponseDescription(v EntityDefinitionResponseDescription) OptEntityDefinitionResponseDescription {
-	return OptEntityDefinitionResponseDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityDefinitionResponseDescription is optional EntityDefinitionResponseDescription.
-type OptEntityDefinitionResponseDescription struct {
-	Value EntityDefinitionResponseDescription
-	Set   bool
-}
-
-// IsSet returns true if OptEntityDefinitionResponseDescription was set.
-func (o OptEntityDefinitionResponseDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityDefinitionResponseDescription) Reset() {
-	var v EntityDefinitionResponseDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityDefinitionResponseDescription) SetTo(v EntityDefinitionResponseDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityDefinitionResponseDescription) Get() (v EntityDefinitionResponseDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityDefinitionResponseDescription) Or(d EntityDefinitionResponseDescription) EntityDefinitionResponseDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptEntityDefinitionResponsePlural returns new OptEntityDefinitionResponsePlural with value set to v.
-func NewOptEntityDefinitionResponsePlural(v EntityDefinitionResponsePlural) OptEntityDefinitionResponsePlural {
-	return OptEntityDefinitionResponsePlural{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityDefinitionResponsePlural is optional EntityDefinitionResponsePlural.
-type OptEntityDefinitionResponsePlural struct {
-	Value EntityDefinitionResponsePlural
-	Set   bool
-}
-
-// IsSet returns true if OptEntityDefinitionResponsePlural was set.
-func (o OptEntityDefinitionResponsePlural) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityDefinitionResponsePlural) Reset() {
-	var v EntityDefinitionResponsePlural
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityDefinitionResponsePlural) SetTo(v EntityDefinitionResponsePlural) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityDefinitionResponsePlural) Get() (v EntityDefinitionResponsePlural, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityDefinitionResponsePlural) Or(d EntityDefinitionResponsePlural) EntityDefinitionResponsePlural {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptEntityDefinitionSpecDescription returns new OptEntityDefinitionSpecDescription with value set to v.
-func NewOptEntityDefinitionSpecDescription(v EntityDefinitionSpecDescription) OptEntityDefinitionSpecDescription {
-	return OptEntityDefinitionSpecDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityDefinitionSpecDescription is optional EntityDefinitionSpecDescription.
-type OptEntityDefinitionSpecDescription struct {
-	Value EntityDefinitionSpecDescription
-	Set   bool
-}
-
-// IsSet returns true if OptEntityDefinitionSpecDescription was set.
-func (o OptEntityDefinitionSpecDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityDefinitionSpecDescription) Reset() {
-	var v EntityDefinitionSpecDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityDefinitionSpecDescription) SetTo(v EntityDefinitionSpecDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityDefinitionSpecDescription) Get() (v EntityDefinitionSpecDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityDefinitionSpecDescription) Or(d EntityDefinitionSpecDescription) EntityDefinitionSpecDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptEntityDefinitionSpecPlural returns new OptEntityDefinitionSpecPlural with value set to v.
-func NewOptEntityDefinitionSpecPlural(v EntityDefinitionSpecPlural) OptEntityDefinitionSpecPlural {
-	return OptEntityDefinitionSpecPlural{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityDefinitionSpecPlural is optional EntityDefinitionSpecPlural.
-type OptEntityDefinitionSpecPlural struct {
-	Value EntityDefinitionSpecPlural
-	Set   bool
-}
-
-// IsSet returns true if OptEntityDefinitionSpecPlural was set.
-func (o OptEntityDefinitionSpecPlural) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityDefinitionSpecPlural) Reset() {
-	var v EntityDefinitionSpecPlural
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityDefinitionSpecPlural) SetTo(v EntityDefinitionSpecPlural) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityDefinitionSpecPlural) Get() (v EntityDefinitionSpecPlural, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityDefinitionSpecPlural) Or(d EntityDefinitionSpecPlural) EntityDefinitionSpecPlural {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -8966,98 +4896,6 @@ func (o OptEntityStatus) Or(d EntityStatus) EntityStatus {
 	return d
 }
 
-// NewOptEntityStatusDiscoverySource returns new OptEntityStatusDiscoverySource with value set to v.
-func NewOptEntityStatusDiscoverySource(v EntityStatusDiscoverySource) OptEntityStatusDiscoverySource {
-	return OptEntityStatusDiscoverySource{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityStatusDiscoverySource is optional EntityStatusDiscoverySource.
-type OptEntityStatusDiscoverySource struct {
-	Value EntityStatusDiscoverySource
-	Set   bool
-}
-
-// IsSet returns true if OptEntityStatusDiscoverySource was set.
-func (o OptEntityStatusDiscoverySource) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityStatusDiscoverySource) Reset() {
-	var v EntityStatusDiscoverySource
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityStatusDiscoverySource) SetTo(v EntityStatusDiscoverySource) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityStatusDiscoverySource) Get() (v EntityStatusDiscoverySource, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityStatusDiscoverySource) Or(d EntityStatusDiscoverySource) EntityStatusDiscoverySource {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptEntityStatusLastSeen returns new OptEntityStatusLastSeen with value set to v.
-func NewOptEntityStatusLastSeen(v EntityStatusLastSeen) OptEntityStatusLastSeen {
-	return OptEntityStatusLastSeen{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEntityStatusLastSeen is optional EntityStatusLastSeen.
-type OptEntityStatusLastSeen struct {
-	Value EntityStatusLastSeen
-	Set   bool
-}
-
-// IsSet returns true if OptEntityStatusLastSeen was set.
-func (o OptEntityStatusLastSeen) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEntityStatusLastSeen) Reset() {
-	var v EntityStatusLastSeen
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEntityStatusLastSeen) SetTo(v EntityStatusLastSeen) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEntityStatusLastSeen) Get() (v EntityStatusLastSeen, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEntityStatusLastSeen) Or(d EntityStatusLastSeen) EntityStatusLastSeen {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewOptEnvironmentUserCreateRole returns new OptEnvironmentUserCreateRole with value set to v.
 func NewOptEnvironmentUserCreateRole(v EnvironmentUserCreateRole) OptEnvironmentUserCreateRole {
 	return OptEnvironmentUserCreateRole{
@@ -9196,52 +5034,6 @@ func (o OptInt) Or(d int) int {
 	return d
 }
 
-// NewOptMCPEndpointCreateDescription returns new OptMCPEndpointCreateDescription with value set to v.
-func NewOptMCPEndpointCreateDescription(v MCPEndpointCreateDescription) OptMCPEndpointCreateDescription {
-	return OptMCPEndpointCreateDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptMCPEndpointCreateDescription is optional MCPEndpointCreateDescription.
-type OptMCPEndpointCreateDescription struct {
-	Value MCPEndpointCreateDescription
-	Set   bool
-}
-
-// IsSet returns true if OptMCPEndpointCreateDescription was set.
-func (o OptMCPEndpointCreateDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptMCPEndpointCreateDescription) Reset() {
-	var v MCPEndpointCreateDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptMCPEndpointCreateDescription) SetTo(v MCPEndpointCreateDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointCreateDescription) Get() (v MCPEndpointCreateDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointCreateDescription) Or(d MCPEndpointCreateDescription) MCPEndpointCreateDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewOptMCPEndpointCreateHeaders returns new OptMCPEndpointCreateHeaders with value set to v.
 func NewOptMCPEndpointCreateHeaders(v MCPEndpointCreateHeaders) OptMCPEndpointCreateHeaders {
 	return OptMCPEndpointCreateHeaders{
@@ -9282,98 +5074,6 @@ func (o OptMCPEndpointCreateHeaders) Get() (v MCPEndpointCreateHeaders, ok bool)
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMCPEndpointCreateHeaders) Or(d MCPEndpointCreateHeaders) MCPEndpointCreateHeaders {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptMCPEndpointCreateOAuthServiceID returns new OptMCPEndpointCreateOAuthServiceID with value set to v.
-func NewOptMCPEndpointCreateOAuthServiceID(v MCPEndpointCreateOAuthServiceID) OptMCPEndpointCreateOAuthServiceID {
-	return OptMCPEndpointCreateOAuthServiceID{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptMCPEndpointCreateOAuthServiceID is optional MCPEndpointCreateOAuthServiceID.
-type OptMCPEndpointCreateOAuthServiceID struct {
-	Value MCPEndpointCreateOAuthServiceID
-	Set   bool
-}
-
-// IsSet returns true if OptMCPEndpointCreateOAuthServiceID was set.
-func (o OptMCPEndpointCreateOAuthServiceID) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptMCPEndpointCreateOAuthServiceID) Reset() {
-	var v MCPEndpointCreateOAuthServiceID
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptMCPEndpointCreateOAuthServiceID) SetTo(v MCPEndpointCreateOAuthServiceID) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointCreateOAuthServiceID) Get() (v MCPEndpointCreateOAuthServiceID, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointCreateOAuthServiceID) Or(d MCPEndpointCreateOAuthServiceID) MCPEndpointCreateOAuthServiceID {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptMCPEndpointResponseDescription returns new OptMCPEndpointResponseDescription with value set to v.
-func NewOptMCPEndpointResponseDescription(v MCPEndpointResponseDescription) OptMCPEndpointResponseDescription {
-	return OptMCPEndpointResponseDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptMCPEndpointResponseDescription is optional MCPEndpointResponseDescription.
-type OptMCPEndpointResponseDescription struct {
-	Value MCPEndpointResponseDescription
-	Set   bool
-}
-
-// IsSet returns true if OptMCPEndpointResponseDescription was set.
-func (o OptMCPEndpointResponseDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptMCPEndpointResponseDescription) Reset() {
-	var v MCPEndpointResponseDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptMCPEndpointResponseDescription) SetTo(v MCPEndpointResponseDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointResponseDescription) Get() (v MCPEndpointResponseDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointResponseDescription) Or(d MCPEndpointResponseDescription) MCPEndpointResponseDescription {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -9426,38 +5126,55 @@ func (o OptMCPEndpointResponseHeaders) Or(d MCPEndpointResponseHeaders) MCPEndpo
 	return d
 }
 
-// NewOptMCPEndpointResponseOAuthServiceID returns new OptMCPEndpointResponseOAuthServiceID with value set to v.
-func NewOptMCPEndpointResponseOAuthServiceID(v MCPEndpointResponseOAuthServiceID) OptMCPEndpointResponseOAuthServiceID {
-	return OptMCPEndpointResponseOAuthServiceID{
+// NewOptNilBool returns new OptNilBool with value set to v.
+func NewOptNilBool(v bool) OptNilBool {
+	return OptNilBool{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointResponseOAuthServiceID is optional MCPEndpointResponseOAuthServiceID.
-type OptMCPEndpointResponseOAuthServiceID struct {
-	Value MCPEndpointResponseOAuthServiceID
+// OptNilBool is optional nullable bool.
+type OptNilBool struct {
+	Value bool
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointResponseOAuthServiceID was set.
-func (o OptMCPEndpointResponseOAuthServiceID) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilBool was set.
+func (o OptNilBool) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointResponseOAuthServiceID) Reset() {
-	var v MCPEndpointResponseOAuthServiceID
+func (o *OptNilBool) Reset() {
+	var v bool
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointResponseOAuthServiceID) SetTo(v MCPEndpointResponseOAuthServiceID) {
+func (o *OptNilBool) SetTo(v bool) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilBool) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilBool) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v bool
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointResponseOAuthServiceID) Get() (v MCPEndpointResponseOAuthServiceID, ok bool) {
+func (o OptNilBool) Get() (v bool, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9465,45 +5182,62 @@ func (o OptMCPEndpointResponseOAuthServiceID) Get() (v MCPEndpointResponseOAuthS
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointResponseOAuthServiceID) Or(d MCPEndpointResponseOAuthServiceID) MCPEndpointResponseOAuthServiceID {
+func (o OptNilBool) Or(d bool) bool {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateActive returns new OptMCPEndpointUpdateActive with value set to v.
-func NewOptMCPEndpointUpdateActive(v MCPEndpointUpdateActive) OptMCPEndpointUpdateActive {
-	return OptMCPEndpointUpdateActive{
+// NewOptNilDateTime returns new OptNilDateTime with value set to v.
+func NewOptNilDateTime(v time.Time) OptNilDateTime {
+	return OptNilDateTime{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateActive is optional MCPEndpointUpdateActive.
-type OptMCPEndpointUpdateActive struct {
-	Value MCPEndpointUpdateActive
+// OptNilDateTime is optional nullable time.Time.
+type OptNilDateTime struct {
+	Value time.Time
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateActive was set.
-func (o OptMCPEndpointUpdateActive) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilDateTime was set.
+func (o OptNilDateTime) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateActive) Reset() {
-	var v MCPEndpointUpdateActive
+func (o *OptNilDateTime) Reset() {
+	var v time.Time
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateActive) SetTo(v MCPEndpointUpdateActive) {
+func (o *OptNilDateTime) SetTo(v time.Time) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilDateTime) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilDateTime) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v time.Time
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateActive) Get() (v MCPEndpointUpdateActive, ok bool) {
+func (o OptNilDateTime) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9511,45 +5245,62 @@ func (o OptMCPEndpointUpdateActive) Get() (v MCPEndpointUpdateActive, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateActive) Or(d MCPEndpointUpdateActive) MCPEndpointUpdateActive {
+func (o OptNilDateTime) Or(d time.Time) time.Time {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateDescription returns new OptMCPEndpointUpdateDescription with value set to v.
-func NewOptMCPEndpointUpdateDescription(v MCPEndpointUpdateDescription) OptMCPEndpointUpdateDescription {
-	return OptMCPEndpointUpdateDescription{
+// NewOptNilInt returns new OptNilInt with value set to v.
+func NewOptNilInt(v int) OptNilInt {
+	return OptNilInt{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateDescription is optional MCPEndpointUpdateDescription.
-type OptMCPEndpointUpdateDescription struct {
-	Value MCPEndpointUpdateDescription
+// OptNilInt is optional nullable int.
+type OptNilInt struct {
+	Value int
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateDescription was set.
-func (o OptMCPEndpointUpdateDescription) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilInt was set.
+func (o OptNilInt) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateDescription) Reset() {
-	var v MCPEndpointUpdateDescription
+func (o *OptNilInt) Reset() {
+	var v int
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateDescription) SetTo(v MCPEndpointUpdateDescription) {
+func (o *OptNilInt) SetTo(v int) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilInt) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilInt) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v int
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateDescription) Get() (v MCPEndpointUpdateDescription, ok bool) {
+func (o OptNilInt) Get() (v int, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9557,91 +5308,62 @@ func (o OptMCPEndpointUpdateDescription) Get() (v MCPEndpointUpdateDescription, 
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateDescription) Or(d MCPEndpointUpdateDescription) MCPEndpointUpdateDescription {
+func (o OptNilInt) Or(d int) int {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateDevgraphAuth returns new OptMCPEndpointUpdateDevgraphAuth with value set to v.
-func NewOptMCPEndpointUpdateDevgraphAuth(v MCPEndpointUpdateDevgraphAuth) OptMCPEndpointUpdateDevgraphAuth {
-	return OptMCPEndpointUpdateDevgraphAuth{
+// NewOptNilMCPEndpointUpdateHeaders returns new OptNilMCPEndpointUpdateHeaders with value set to v.
+func NewOptNilMCPEndpointUpdateHeaders(v MCPEndpointUpdateHeaders) OptNilMCPEndpointUpdateHeaders {
+	return OptNilMCPEndpointUpdateHeaders{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateDevgraphAuth is optional MCPEndpointUpdateDevgraphAuth.
-type OptMCPEndpointUpdateDevgraphAuth struct {
-	Value MCPEndpointUpdateDevgraphAuth
-	Set   bool
-}
-
-// IsSet returns true if OptMCPEndpointUpdateDevgraphAuth was set.
-func (o OptMCPEndpointUpdateDevgraphAuth) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptMCPEndpointUpdateDevgraphAuth) Reset() {
-	var v MCPEndpointUpdateDevgraphAuth
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptMCPEndpointUpdateDevgraphAuth) SetTo(v MCPEndpointUpdateDevgraphAuth) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateDevgraphAuth) Get() (v MCPEndpointUpdateDevgraphAuth, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateDevgraphAuth) Or(d MCPEndpointUpdateDevgraphAuth) MCPEndpointUpdateDevgraphAuth {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptMCPEndpointUpdateHeaders returns new OptMCPEndpointUpdateHeaders with value set to v.
-func NewOptMCPEndpointUpdateHeaders(v MCPEndpointUpdateHeaders) OptMCPEndpointUpdateHeaders {
-	return OptMCPEndpointUpdateHeaders{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptMCPEndpointUpdateHeaders is optional MCPEndpointUpdateHeaders.
-type OptMCPEndpointUpdateHeaders struct {
+// OptNilMCPEndpointUpdateHeaders is optional nullable MCPEndpointUpdateHeaders.
+type OptNilMCPEndpointUpdateHeaders struct {
 	Value MCPEndpointUpdateHeaders
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateHeaders was set.
-func (o OptMCPEndpointUpdateHeaders) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilMCPEndpointUpdateHeaders was set.
+func (o OptNilMCPEndpointUpdateHeaders) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateHeaders) Reset() {
+func (o *OptNilMCPEndpointUpdateHeaders) Reset() {
 	var v MCPEndpointUpdateHeaders
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateHeaders) SetTo(v MCPEndpointUpdateHeaders) {
+func (o *OptNilMCPEndpointUpdateHeaders) SetTo(v MCPEndpointUpdateHeaders) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilMCPEndpointUpdateHeaders) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilMCPEndpointUpdateHeaders) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v MCPEndpointUpdateHeaders
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateHeaders) Get() (v MCPEndpointUpdateHeaders, ok bool) {
+func (o OptNilMCPEndpointUpdateHeaders) Get() (v MCPEndpointUpdateHeaders, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9649,45 +5371,62 @@ func (o OptMCPEndpointUpdateHeaders) Get() (v MCPEndpointUpdateHeaders, ok bool)
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateHeaders) Or(d MCPEndpointUpdateHeaders) MCPEndpointUpdateHeaders {
+func (o OptNilMCPEndpointUpdateHeaders) Or(d MCPEndpointUpdateHeaders) MCPEndpointUpdateHeaders {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateImmutable returns new OptMCPEndpointUpdateImmutable with value set to v.
-func NewOptMCPEndpointUpdateImmutable(v MCPEndpointUpdateImmutable) OptMCPEndpointUpdateImmutable {
-	return OptMCPEndpointUpdateImmutable{
+// NewOptNilMCPToolEntityAssociationCreateToolConfig returns new OptNilMCPToolEntityAssociationCreateToolConfig with value set to v.
+func NewOptNilMCPToolEntityAssociationCreateToolConfig(v MCPToolEntityAssociationCreateToolConfig) OptNilMCPToolEntityAssociationCreateToolConfig {
+	return OptNilMCPToolEntityAssociationCreateToolConfig{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateImmutable is optional MCPEndpointUpdateImmutable.
-type OptMCPEndpointUpdateImmutable struct {
-	Value MCPEndpointUpdateImmutable
+// OptNilMCPToolEntityAssociationCreateToolConfig is optional nullable MCPToolEntityAssociationCreateToolConfig.
+type OptNilMCPToolEntityAssociationCreateToolConfig struct {
+	Value MCPToolEntityAssociationCreateToolConfig
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateImmutable was set.
-func (o OptMCPEndpointUpdateImmutable) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilMCPToolEntityAssociationCreateToolConfig was set.
+func (o OptNilMCPToolEntityAssociationCreateToolConfig) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateImmutable) Reset() {
-	var v MCPEndpointUpdateImmutable
+func (o *OptNilMCPToolEntityAssociationCreateToolConfig) Reset() {
+	var v MCPToolEntityAssociationCreateToolConfig
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateImmutable) SetTo(v MCPEndpointUpdateImmutable) {
+func (o *OptNilMCPToolEntityAssociationCreateToolConfig) SetTo(v MCPToolEntityAssociationCreateToolConfig) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilMCPToolEntityAssociationCreateToolConfig) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilMCPToolEntityAssociationCreateToolConfig) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v MCPToolEntityAssociationCreateToolConfig
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateImmutable) Get() (v MCPEndpointUpdateImmutable, ok bool) {
+func (o OptNilMCPToolEntityAssociationCreateToolConfig) Get() (v MCPToolEntityAssociationCreateToolConfig, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9695,45 +5434,62 @@ func (o OptMCPEndpointUpdateImmutable) Get() (v MCPEndpointUpdateImmutable, ok b
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateImmutable) Or(d MCPEndpointUpdateImmutable) MCPEndpointUpdateImmutable {
+func (o OptNilMCPToolEntityAssociationCreateToolConfig) Or(d MCPToolEntityAssociationCreateToolConfig) MCPToolEntityAssociationCreateToolConfig {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateName returns new OptMCPEndpointUpdateName with value set to v.
-func NewOptMCPEndpointUpdateName(v MCPEndpointUpdateName) OptMCPEndpointUpdateName {
-	return OptMCPEndpointUpdateName{
+// NewOptNilMCPToolEntityAssociationResponseToolConfig returns new OptNilMCPToolEntityAssociationResponseToolConfig with value set to v.
+func NewOptNilMCPToolEntityAssociationResponseToolConfig(v MCPToolEntityAssociationResponseToolConfig) OptNilMCPToolEntityAssociationResponseToolConfig {
+	return OptNilMCPToolEntityAssociationResponseToolConfig{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateName is optional MCPEndpointUpdateName.
-type OptMCPEndpointUpdateName struct {
-	Value MCPEndpointUpdateName
+// OptNilMCPToolEntityAssociationResponseToolConfig is optional nullable MCPToolEntityAssociationResponseToolConfig.
+type OptNilMCPToolEntityAssociationResponseToolConfig struct {
+	Value MCPToolEntityAssociationResponseToolConfig
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateName was set.
-func (o OptMCPEndpointUpdateName) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilMCPToolEntityAssociationResponseToolConfig was set.
+func (o OptNilMCPToolEntityAssociationResponseToolConfig) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateName) Reset() {
-	var v MCPEndpointUpdateName
+func (o *OptNilMCPToolEntityAssociationResponseToolConfig) Reset() {
+	var v MCPToolEntityAssociationResponseToolConfig
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateName) SetTo(v MCPEndpointUpdateName) {
+func (o *OptNilMCPToolEntityAssociationResponseToolConfig) SetTo(v MCPToolEntityAssociationResponseToolConfig) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilMCPToolEntityAssociationResponseToolConfig) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilMCPToolEntityAssociationResponseToolConfig) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v MCPToolEntityAssociationResponseToolConfig
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateName) Get() (v MCPEndpointUpdateName, ok bool) {
+func (o OptNilMCPToolEntityAssociationResponseToolConfig) Get() (v MCPToolEntityAssociationResponseToolConfig, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9741,45 +5497,62 @@ func (o OptMCPEndpointUpdateName) Get() (v MCPEndpointUpdateName, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateName) Or(d MCPEndpointUpdateName) MCPEndpointUpdateName {
+func (o OptNilMCPToolEntityAssociationResponseToolConfig) Or(d MCPToolEntityAssociationResponseToolConfig) MCPToolEntityAssociationResponseToolConfig {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateOAuthServiceID returns new OptMCPEndpointUpdateOAuthServiceID with value set to v.
-func NewOptMCPEndpointUpdateOAuthServiceID(v MCPEndpointUpdateOAuthServiceID) OptMCPEndpointUpdateOAuthServiceID {
-	return OptMCPEndpointUpdateOAuthServiceID{
+// NewOptNilOAuthServiceCreateAdditionalParams returns new OptNilOAuthServiceCreateAdditionalParams with value set to v.
+func NewOptNilOAuthServiceCreateAdditionalParams(v OAuthServiceCreateAdditionalParams) OptNilOAuthServiceCreateAdditionalParams {
+	return OptNilOAuthServiceCreateAdditionalParams{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateOAuthServiceID is optional MCPEndpointUpdateOAuthServiceID.
-type OptMCPEndpointUpdateOAuthServiceID struct {
-	Value MCPEndpointUpdateOAuthServiceID
+// OptNilOAuthServiceCreateAdditionalParams is optional nullable OAuthServiceCreateAdditionalParams.
+type OptNilOAuthServiceCreateAdditionalParams struct {
+	Value OAuthServiceCreateAdditionalParams
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateOAuthServiceID was set.
-func (o OptMCPEndpointUpdateOAuthServiceID) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilOAuthServiceCreateAdditionalParams was set.
+func (o OptNilOAuthServiceCreateAdditionalParams) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateOAuthServiceID) Reset() {
-	var v MCPEndpointUpdateOAuthServiceID
+func (o *OptNilOAuthServiceCreateAdditionalParams) Reset() {
+	var v OAuthServiceCreateAdditionalParams
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateOAuthServiceID) SetTo(v MCPEndpointUpdateOAuthServiceID) {
+func (o *OptNilOAuthServiceCreateAdditionalParams) SetTo(v OAuthServiceCreateAdditionalParams) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilOAuthServiceCreateAdditionalParams) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilOAuthServiceCreateAdditionalParams) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v OAuthServiceCreateAdditionalParams
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateOAuthServiceID) Get() (v MCPEndpointUpdateOAuthServiceID, ok bool) {
+func (o OptNilOAuthServiceCreateAdditionalParams) Get() (v OAuthServiceCreateAdditionalParams, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9787,45 +5560,62 @@ func (o OptMCPEndpointUpdateOAuthServiceID) Get() (v MCPEndpointUpdateOAuthServi
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateOAuthServiceID) Or(d MCPEndpointUpdateOAuthServiceID) MCPEndpointUpdateOAuthServiceID {
+func (o OptNilOAuthServiceCreateAdditionalParams) Or(d OAuthServiceCreateAdditionalParams) OAuthServiceCreateAdditionalParams {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateSupportsResources returns new OptMCPEndpointUpdateSupportsResources with value set to v.
-func NewOptMCPEndpointUpdateSupportsResources(v MCPEndpointUpdateSupportsResources) OptMCPEndpointUpdateSupportsResources {
-	return OptMCPEndpointUpdateSupportsResources{
+// NewOptNilOAuthServiceUpdateAdditionalParams returns new OptNilOAuthServiceUpdateAdditionalParams with value set to v.
+func NewOptNilOAuthServiceUpdateAdditionalParams(v OAuthServiceUpdateAdditionalParams) OptNilOAuthServiceUpdateAdditionalParams {
+	return OptNilOAuthServiceUpdateAdditionalParams{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateSupportsResources is optional MCPEndpointUpdateSupportsResources.
-type OptMCPEndpointUpdateSupportsResources struct {
-	Value MCPEndpointUpdateSupportsResources
+// OptNilOAuthServiceUpdateAdditionalParams is optional nullable OAuthServiceUpdateAdditionalParams.
+type OptNilOAuthServiceUpdateAdditionalParams struct {
+	Value OAuthServiceUpdateAdditionalParams
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateSupportsResources was set.
-func (o OptMCPEndpointUpdateSupportsResources) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilOAuthServiceUpdateAdditionalParams was set.
+func (o OptNilOAuthServiceUpdateAdditionalParams) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateSupportsResources) Reset() {
-	var v MCPEndpointUpdateSupportsResources
+func (o *OptNilOAuthServiceUpdateAdditionalParams) Reset() {
+	var v OAuthServiceUpdateAdditionalParams
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateSupportsResources) SetTo(v MCPEndpointUpdateSupportsResources) {
+func (o *OptNilOAuthServiceUpdateAdditionalParams) SetTo(v OAuthServiceUpdateAdditionalParams) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilOAuthServiceUpdateAdditionalParams) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilOAuthServiceUpdateAdditionalParams) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v OAuthServiceUpdateAdditionalParams
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateSupportsResources) Get() (v MCPEndpointUpdateSupportsResources, ok bool) {
+func (o OptNilOAuthServiceUpdateAdditionalParams) Get() (v OAuthServiceUpdateAdditionalParams, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9833,45 +5623,62 @@ func (o OptMCPEndpointUpdateSupportsResources) Get() (v MCPEndpointUpdateSupport
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateSupportsResources) Or(d MCPEndpointUpdateSupportsResources) MCPEndpointUpdateSupportsResources {
+func (o OptNilOAuthServiceUpdateAdditionalParams) Or(d OAuthServiceUpdateAdditionalParams) OAuthServiceUpdateAdditionalParams {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptMCPEndpointUpdateURL returns new OptMCPEndpointUpdateURL with value set to v.
-func NewOptMCPEndpointUpdateURL(v MCPEndpointUpdateURL) OptMCPEndpointUpdateURL {
-	return OptMCPEndpointUpdateURL{
+// NewOptNilString returns new OptNilString with value set to v.
+func NewOptNilString(v string) OptNilString {
+	return OptNilString{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptMCPEndpointUpdateURL is optional MCPEndpointUpdateURL.
-type OptMCPEndpointUpdateURL struct {
-	Value MCPEndpointUpdateURL
+// OptNilString is optional nullable string.
+type OptNilString struct {
+	Value string
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptMCPEndpointUpdateURL was set.
-func (o OptMCPEndpointUpdateURL) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilString was set.
+func (o OptNilString) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptMCPEndpointUpdateURL) Reset() {
-	var v MCPEndpointUpdateURL
+func (o *OptNilString) Reset() {
+	var v string
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptMCPEndpointUpdateURL) SetTo(v MCPEndpointUpdateURL) {
+func (o *OptNilString) SetTo(v string) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilString) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v string
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptMCPEndpointUpdateURL) Get() (v MCPEndpointUpdateURL, ok bool) {
+func (o OptNilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9879,45 +5686,62 @@ func (o OptMCPEndpointUpdateURL) Get() (v MCPEndpointUpdateURL, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptMCPEndpointUpdateURL) Or(d MCPEndpointUpdateURL) MCPEndpointUpdateURL {
+func (o OptNilString) Or(d string) string {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptModelCreateDescription returns new OptModelCreateDescription with value set to v.
-func NewOptModelCreateDescription(v ModelCreateDescription) OptModelCreateDescription {
-	return OptModelCreateDescription{
+// NewOptNilStringArray returns new OptNilStringArray with value set to v.
+func NewOptNilStringArray(v []string) OptNilStringArray {
+	return OptNilStringArray{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptModelCreateDescription is optional ModelCreateDescription.
-type OptModelCreateDescription struct {
-	Value ModelCreateDescription
+// OptNilStringArray is optional nullable []string.
+type OptNilStringArray struct {
+	Value []string
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptModelCreateDescription was set.
-func (o OptModelCreateDescription) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilStringArray was set.
+func (o OptNilStringArray) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptModelCreateDescription) Reset() {
-	var v ModelCreateDescription
+func (o *OptNilStringArray) Reset() {
+	var v []string
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptModelCreateDescription) SetTo(v ModelCreateDescription) {
+func (o *OptNilStringArray) SetTo(v []string) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilStringArray) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilStringArray) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v []string
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptModelCreateDescription) Get() (v ModelCreateDescription, ok bool) {
+func (o OptNilStringArray) Get() (v []string, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9925,45 +5749,62 @@ func (o OptModelCreateDescription) Get() (v ModelCreateDescription, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptModelCreateDescription) Or(d ModelCreateDescription) ModelCreateDescription {
+func (o OptNilStringArray) Or(d []string) []string {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptModelResponseDescription returns new OptModelResponseDescription with value set to v.
-func NewOptModelResponseDescription(v ModelResponseDescription) OptModelResponseDescription {
-	return OptModelResponseDescription{
+// NewOptNilURI returns new OptNilURI with value set to v.
+func NewOptNilURI(v url.URL) OptNilURI {
+	return OptNilURI{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptModelResponseDescription is optional ModelResponseDescription.
-type OptModelResponseDescription struct {
-	Value ModelResponseDescription
+// OptNilURI is optional nullable url.URL.
+type OptNilURI struct {
+	Value url.URL
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptModelResponseDescription was set.
-func (o OptModelResponseDescription) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilURI was set.
+func (o OptNilURI) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptModelResponseDescription) Reset() {
-	var v ModelResponseDescription
+func (o *OptNilURI) Reset() {
+	var v url.URL
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptModelResponseDescription) SetTo(v ModelResponseDescription) {
+func (o *OptNilURI) SetTo(v url.URL) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilURI) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilURI) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v url.URL
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptModelResponseDescription) Get() (v ModelResponseDescription, ok bool) {
+func (o OptNilURI) Get() (v url.URL, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -9971,7 +5812,70 @@ func (o OptModelResponseDescription) Get() (v ModelResponseDescription, ok bool)
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptModelResponseDescription) Or(d ModelResponseDescription) ModelResponseDescription {
+func (o OptNilURI) Or(d url.URL) url.URL {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilUUID returns new OptNilUUID with value set to v.
+func NewOptNilUUID(v uuid.UUID) OptNilUUID {
+	return OptNilUUID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilUUID is optional nullable uuid.UUID.
+type OptNilUUID struct {
+	Value uuid.UUID
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilUUID was set.
+func (o OptNilUUID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilUUID) Reset() {
+	var v uuid.UUID
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilUUID) SetTo(v uuid.UUID) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilUUID) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilUUID) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v uuid.UUID
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilUUID) Get() (v uuid.UUID, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilUUID) Or(d uuid.UUID) uuid.UUID {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -10018,1524 +5922,6 @@ func (o OptNullBooleanEnum) Get() (v NullBooleanEnum, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptNullBooleanEnum) Or(d NullBooleanEnum) NullBooleanEnum {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthAuthorizationRequestRedirectURI returns new OptOAuthAuthorizationRequestRedirectURI with value set to v.
-func NewOptOAuthAuthorizationRequestRedirectURI(v OAuthAuthorizationRequestRedirectURI) OptOAuthAuthorizationRequestRedirectURI {
-	return OptOAuthAuthorizationRequestRedirectURI{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthAuthorizationRequestRedirectURI is optional OAuthAuthorizationRequestRedirectURI.
-type OptOAuthAuthorizationRequestRedirectURI struct {
-	Value OAuthAuthorizationRequestRedirectURI
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthAuthorizationRequestRedirectURI was set.
-func (o OptOAuthAuthorizationRequestRedirectURI) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthAuthorizationRequestRedirectURI) Reset() {
-	var v OAuthAuthorizationRequestRedirectURI
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthAuthorizationRequestRedirectURI) SetTo(v OAuthAuthorizationRequestRedirectURI) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthAuthorizationRequestRedirectURI) Get() (v OAuthAuthorizationRequestRedirectURI, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthAuthorizationRequestRedirectURI) Or(d OAuthAuthorizationRequestRedirectURI) OAuthAuthorizationRequestRedirectURI {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthAuthorizationRequestScopes returns new OptOAuthAuthorizationRequestScopes with value set to v.
-func NewOptOAuthAuthorizationRequestScopes(v OAuthAuthorizationRequestScopes) OptOAuthAuthorizationRequestScopes {
-	return OptOAuthAuthorizationRequestScopes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthAuthorizationRequestScopes is optional OAuthAuthorizationRequestScopes.
-type OptOAuthAuthorizationRequestScopes struct {
-	Value OAuthAuthorizationRequestScopes
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthAuthorizationRequestScopes was set.
-func (o OptOAuthAuthorizationRequestScopes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthAuthorizationRequestScopes) Reset() {
-	var v OAuthAuthorizationRequestScopes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthAuthorizationRequestScopes) SetTo(v OAuthAuthorizationRequestScopes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthAuthorizationRequestScopes) Get() (v OAuthAuthorizationRequestScopes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthAuthorizationRequestScopes) Or(d OAuthAuthorizationRequestScopes) OAuthAuthorizationRequestScopes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthAuthorizationRequestState returns new OptOAuthAuthorizationRequestState with value set to v.
-func NewOptOAuthAuthorizationRequestState(v OAuthAuthorizationRequestState) OptOAuthAuthorizationRequestState {
-	return OptOAuthAuthorizationRequestState{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthAuthorizationRequestState is optional OAuthAuthorizationRequestState.
-type OptOAuthAuthorizationRequestState struct {
-	Value OAuthAuthorizationRequestState
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthAuthorizationRequestState was set.
-func (o OptOAuthAuthorizationRequestState) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthAuthorizationRequestState) Reset() {
-	var v OAuthAuthorizationRequestState
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthAuthorizationRequestState) SetTo(v OAuthAuthorizationRequestState) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthAuthorizationRequestState) Get() (v OAuthAuthorizationRequestState, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthAuthorizationRequestState) Or(d OAuthAuthorizationRequestState) OAuthAuthorizationRequestState {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateAdditionalParams returns new OptOAuthServiceCreateAdditionalParams with value set to v.
-func NewOptOAuthServiceCreateAdditionalParams(v OAuthServiceCreateAdditionalParams) OptOAuthServiceCreateAdditionalParams {
-	return OptOAuthServiceCreateAdditionalParams{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateAdditionalParams is optional OAuthServiceCreateAdditionalParams.
-type OptOAuthServiceCreateAdditionalParams struct {
-	Value OAuthServiceCreateAdditionalParams
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateAdditionalParams was set.
-func (o OptOAuthServiceCreateAdditionalParams) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateAdditionalParams) Reset() {
-	var v OAuthServiceCreateAdditionalParams
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateAdditionalParams) SetTo(v OAuthServiceCreateAdditionalParams) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateAdditionalParams) Get() (v OAuthServiceCreateAdditionalParams, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateAdditionalParams) Or(d OAuthServiceCreateAdditionalParams) OAuthServiceCreateAdditionalParams {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateDefaultScopes returns new OptOAuthServiceCreateDefaultScopes with value set to v.
-func NewOptOAuthServiceCreateDefaultScopes(v OAuthServiceCreateDefaultScopes) OptOAuthServiceCreateDefaultScopes {
-	return OptOAuthServiceCreateDefaultScopes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateDefaultScopes is optional OAuthServiceCreateDefaultScopes.
-type OptOAuthServiceCreateDefaultScopes struct {
-	Value OAuthServiceCreateDefaultScopes
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateDefaultScopes was set.
-func (o OptOAuthServiceCreateDefaultScopes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateDefaultScopes) Reset() {
-	var v OAuthServiceCreateDefaultScopes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateDefaultScopes) SetTo(v OAuthServiceCreateDefaultScopes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateDefaultScopes) Get() (v OAuthServiceCreateDefaultScopes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateDefaultScopes) Or(d OAuthServiceCreateDefaultScopes) OAuthServiceCreateDefaultScopes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateDescription returns new OptOAuthServiceCreateDescription with value set to v.
-func NewOptOAuthServiceCreateDescription(v OAuthServiceCreateDescription) OptOAuthServiceCreateDescription {
-	return OptOAuthServiceCreateDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateDescription is optional OAuthServiceCreateDescription.
-type OptOAuthServiceCreateDescription struct {
-	Value OAuthServiceCreateDescription
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateDescription was set.
-func (o OptOAuthServiceCreateDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateDescription) Reset() {
-	var v OAuthServiceCreateDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateDescription) SetTo(v OAuthServiceCreateDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateDescription) Get() (v OAuthServiceCreateDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateDescription) Or(d OAuthServiceCreateDescription) OAuthServiceCreateDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateHomepageURL returns new OptOAuthServiceCreateHomepageURL with value set to v.
-func NewOptOAuthServiceCreateHomepageURL(v OAuthServiceCreateHomepageURL) OptOAuthServiceCreateHomepageURL {
-	return OptOAuthServiceCreateHomepageURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateHomepageURL is optional OAuthServiceCreateHomepageURL.
-type OptOAuthServiceCreateHomepageURL struct {
-	Value OAuthServiceCreateHomepageURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateHomepageURL was set.
-func (o OptOAuthServiceCreateHomepageURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateHomepageURL) Reset() {
-	var v OAuthServiceCreateHomepageURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateHomepageURL) SetTo(v OAuthServiceCreateHomepageURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateHomepageURL) Get() (v OAuthServiceCreateHomepageURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateHomepageURL) Or(d OAuthServiceCreateHomepageURL) OAuthServiceCreateHomepageURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateIconURL returns new OptOAuthServiceCreateIconURL with value set to v.
-func NewOptOAuthServiceCreateIconURL(v OAuthServiceCreateIconURL) OptOAuthServiceCreateIconURL {
-	return OptOAuthServiceCreateIconURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateIconURL is optional OAuthServiceCreateIconURL.
-type OptOAuthServiceCreateIconURL struct {
-	Value OAuthServiceCreateIconURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateIconURL was set.
-func (o OptOAuthServiceCreateIconURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateIconURL) Reset() {
-	var v OAuthServiceCreateIconURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateIconURL) SetTo(v OAuthServiceCreateIconURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateIconURL) Get() (v OAuthServiceCreateIconURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateIconURL) Or(d OAuthServiceCreateIconURL) OAuthServiceCreateIconURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceCreateUserinfoURL returns new OptOAuthServiceCreateUserinfoURL with value set to v.
-func NewOptOAuthServiceCreateUserinfoURL(v OAuthServiceCreateUserinfoURL) OptOAuthServiceCreateUserinfoURL {
-	return OptOAuthServiceCreateUserinfoURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceCreateUserinfoURL is optional OAuthServiceCreateUserinfoURL.
-type OptOAuthServiceCreateUserinfoURL struct {
-	Value OAuthServiceCreateUserinfoURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceCreateUserinfoURL was set.
-func (o OptOAuthServiceCreateUserinfoURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceCreateUserinfoURL) Reset() {
-	var v OAuthServiceCreateUserinfoURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceCreateUserinfoURL) SetTo(v OAuthServiceCreateUserinfoURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceCreateUserinfoURL) Get() (v OAuthServiceCreateUserinfoURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceCreateUserinfoURL) Or(d OAuthServiceCreateUserinfoURL) OAuthServiceCreateUserinfoURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateAdditionalParams returns new OptOAuthServiceUpdateAdditionalParams with value set to v.
-func NewOptOAuthServiceUpdateAdditionalParams(v OAuthServiceUpdateAdditionalParams) OptOAuthServiceUpdateAdditionalParams {
-	return OptOAuthServiceUpdateAdditionalParams{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateAdditionalParams is optional OAuthServiceUpdateAdditionalParams.
-type OptOAuthServiceUpdateAdditionalParams struct {
-	Value OAuthServiceUpdateAdditionalParams
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateAdditionalParams was set.
-func (o OptOAuthServiceUpdateAdditionalParams) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateAdditionalParams) Reset() {
-	var v OAuthServiceUpdateAdditionalParams
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateAdditionalParams) SetTo(v OAuthServiceUpdateAdditionalParams) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateAdditionalParams) Get() (v OAuthServiceUpdateAdditionalParams, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateAdditionalParams) Or(d OAuthServiceUpdateAdditionalParams) OAuthServiceUpdateAdditionalParams {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateAuthorizationURL returns new OptOAuthServiceUpdateAuthorizationURL with value set to v.
-func NewOptOAuthServiceUpdateAuthorizationURL(v OAuthServiceUpdateAuthorizationURL) OptOAuthServiceUpdateAuthorizationURL {
-	return OptOAuthServiceUpdateAuthorizationURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateAuthorizationURL is optional OAuthServiceUpdateAuthorizationURL.
-type OptOAuthServiceUpdateAuthorizationURL struct {
-	Value OAuthServiceUpdateAuthorizationURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateAuthorizationURL was set.
-func (o OptOAuthServiceUpdateAuthorizationURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateAuthorizationURL) Reset() {
-	var v OAuthServiceUpdateAuthorizationURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateAuthorizationURL) SetTo(v OAuthServiceUpdateAuthorizationURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateAuthorizationURL) Get() (v OAuthServiceUpdateAuthorizationURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateAuthorizationURL) Or(d OAuthServiceUpdateAuthorizationURL) OAuthServiceUpdateAuthorizationURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateClientID returns new OptOAuthServiceUpdateClientID with value set to v.
-func NewOptOAuthServiceUpdateClientID(v OAuthServiceUpdateClientID) OptOAuthServiceUpdateClientID {
-	return OptOAuthServiceUpdateClientID{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateClientID is optional OAuthServiceUpdateClientID.
-type OptOAuthServiceUpdateClientID struct {
-	Value OAuthServiceUpdateClientID
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateClientID was set.
-func (o OptOAuthServiceUpdateClientID) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateClientID) Reset() {
-	var v OAuthServiceUpdateClientID
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateClientID) SetTo(v OAuthServiceUpdateClientID) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateClientID) Get() (v OAuthServiceUpdateClientID, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateClientID) Or(d OAuthServiceUpdateClientID) OAuthServiceUpdateClientID {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateClientSecret returns new OptOAuthServiceUpdateClientSecret with value set to v.
-func NewOptOAuthServiceUpdateClientSecret(v OAuthServiceUpdateClientSecret) OptOAuthServiceUpdateClientSecret {
-	return OptOAuthServiceUpdateClientSecret{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateClientSecret is optional OAuthServiceUpdateClientSecret.
-type OptOAuthServiceUpdateClientSecret struct {
-	Value OAuthServiceUpdateClientSecret
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateClientSecret was set.
-func (o OptOAuthServiceUpdateClientSecret) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateClientSecret) Reset() {
-	var v OAuthServiceUpdateClientSecret
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateClientSecret) SetTo(v OAuthServiceUpdateClientSecret) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateClientSecret) Get() (v OAuthServiceUpdateClientSecret, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateClientSecret) Or(d OAuthServiceUpdateClientSecret) OAuthServiceUpdateClientSecret {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateDefaultScopes returns new OptOAuthServiceUpdateDefaultScopes with value set to v.
-func NewOptOAuthServiceUpdateDefaultScopes(v OAuthServiceUpdateDefaultScopes) OptOAuthServiceUpdateDefaultScopes {
-	return OptOAuthServiceUpdateDefaultScopes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateDefaultScopes is optional OAuthServiceUpdateDefaultScopes.
-type OptOAuthServiceUpdateDefaultScopes struct {
-	Value OAuthServiceUpdateDefaultScopes
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateDefaultScopes was set.
-func (o OptOAuthServiceUpdateDefaultScopes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateDefaultScopes) Reset() {
-	var v OAuthServiceUpdateDefaultScopes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateDefaultScopes) SetTo(v OAuthServiceUpdateDefaultScopes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateDefaultScopes) Get() (v OAuthServiceUpdateDefaultScopes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateDefaultScopes) Or(d OAuthServiceUpdateDefaultScopes) OAuthServiceUpdateDefaultScopes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateDescription returns new OptOAuthServiceUpdateDescription with value set to v.
-func NewOptOAuthServiceUpdateDescription(v OAuthServiceUpdateDescription) OptOAuthServiceUpdateDescription {
-	return OptOAuthServiceUpdateDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateDescription is optional OAuthServiceUpdateDescription.
-type OptOAuthServiceUpdateDescription struct {
-	Value OAuthServiceUpdateDescription
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateDescription was set.
-func (o OptOAuthServiceUpdateDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateDescription) Reset() {
-	var v OAuthServiceUpdateDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateDescription) SetTo(v OAuthServiceUpdateDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateDescription) Get() (v OAuthServiceUpdateDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateDescription) Or(d OAuthServiceUpdateDescription) OAuthServiceUpdateDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateDisplayName returns new OptOAuthServiceUpdateDisplayName with value set to v.
-func NewOptOAuthServiceUpdateDisplayName(v OAuthServiceUpdateDisplayName) OptOAuthServiceUpdateDisplayName {
-	return OptOAuthServiceUpdateDisplayName{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateDisplayName is optional OAuthServiceUpdateDisplayName.
-type OptOAuthServiceUpdateDisplayName struct {
-	Value OAuthServiceUpdateDisplayName
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateDisplayName was set.
-func (o OptOAuthServiceUpdateDisplayName) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateDisplayName) Reset() {
-	var v OAuthServiceUpdateDisplayName
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateDisplayName) SetTo(v OAuthServiceUpdateDisplayName) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateDisplayName) Get() (v OAuthServiceUpdateDisplayName, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateDisplayName) Or(d OAuthServiceUpdateDisplayName) OAuthServiceUpdateDisplayName {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateHomepageURL returns new OptOAuthServiceUpdateHomepageURL with value set to v.
-func NewOptOAuthServiceUpdateHomepageURL(v OAuthServiceUpdateHomepageURL) OptOAuthServiceUpdateHomepageURL {
-	return OptOAuthServiceUpdateHomepageURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateHomepageURL is optional OAuthServiceUpdateHomepageURL.
-type OptOAuthServiceUpdateHomepageURL struct {
-	Value OAuthServiceUpdateHomepageURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateHomepageURL was set.
-func (o OptOAuthServiceUpdateHomepageURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateHomepageURL) Reset() {
-	var v OAuthServiceUpdateHomepageURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateHomepageURL) SetTo(v OAuthServiceUpdateHomepageURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateHomepageURL) Get() (v OAuthServiceUpdateHomepageURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateHomepageURL) Or(d OAuthServiceUpdateHomepageURL) OAuthServiceUpdateHomepageURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateIconURL returns new OptOAuthServiceUpdateIconURL with value set to v.
-func NewOptOAuthServiceUpdateIconURL(v OAuthServiceUpdateIconURL) OptOAuthServiceUpdateIconURL {
-	return OptOAuthServiceUpdateIconURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateIconURL is optional OAuthServiceUpdateIconURL.
-type OptOAuthServiceUpdateIconURL struct {
-	Value OAuthServiceUpdateIconURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateIconURL was set.
-func (o OptOAuthServiceUpdateIconURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateIconURL) Reset() {
-	var v OAuthServiceUpdateIconURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateIconURL) SetTo(v OAuthServiceUpdateIconURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateIconURL) Get() (v OAuthServiceUpdateIconURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateIconURL) Or(d OAuthServiceUpdateIconURL) OAuthServiceUpdateIconURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateIsActive returns new OptOAuthServiceUpdateIsActive with value set to v.
-func NewOptOAuthServiceUpdateIsActive(v OAuthServiceUpdateIsActive) OptOAuthServiceUpdateIsActive {
-	return OptOAuthServiceUpdateIsActive{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateIsActive is optional OAuthServiceUpdateIsActive.
-type OptOAuthServiceUpdateIsActive struct {
-	Value OAuthServiceUpdateIsActive
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateIsActive was set.
-func (o OptOAuthServiceUpdateIsActive) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateIsActive) Reset() {
-	var v OAuthServiceUpdateIsActive
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateIsActive) SetTo(v OAuthServiceUpdateIsActive) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateIsActive) Get() (v OAuthServiceUpdateIsActive, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateIsActive) Or(d OAuthServiceUpdateIsActive) OAuthServiceUpdateIsActive {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateSupportedGrantTypes returns new OptOAuthServiceUpdateSupportedGrantTypes with value set to v.
-func NewOptOAuthServiceUpdateSupportedGrantTypes(v OAuthServiceUpdateSupportedGrantTypes) OptOAuthServiceUpdateSupportedGrantTypes {
-	return OptOAuthServiceUpdateSupportedGrantTypes{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateSupportedGrantTypes is optional OAuthServiceUpdateSupportedGrantTypes.
-type OptOAuthServiceUpdateSupportedGrantTypes struct {
-	Value OAuthServiceUpdateSupportedGrantTypes
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateSupportedGrantTypes was set.
-func (o OptOAuthServiceUpdateSupportedGrantTypes) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateSupportedGrantTypes) Reset() {
-	var v OAuthServiceUpdateSupportedGrantTypes
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateSupportedGrantTypes) SetTo(v OAuthServiceUpdateSupportedGrantTypes) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateSupportedGrantTypes) Get() (v OAuthServiceUpdateSupportedGrantTypes, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateSupportedGrantTypes) Or(d OAuthServiceUpdateSupportedGrantTypes) OAuthServiceUpdateSupportedGrantTypes {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateTokenURL returns new OptOAuthServiceUpdateTokenURL with value set to v.
-func NewOptOAuthServiceUpdateTokenURL(v OAuthServiceUpdateTokenURL) OptOAuthServiceUpdateTokenURL {
-	return OptOAuthServiceUpdateTokenURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateTokenURL is optional OAuthServiceUpdateTokenURL.
-type OptOAuthServiceUpdateTokenURL struct {
-	Value OAuthServiceUpdateTokenURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateTokenURL was set.
-func (o OptOAuthServiceUpdateTokenURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateTokenURL) Reset() {
-	var v OAuthServiceUpdateTokenURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateTokenURL) SetTo(v OAuthServiceUpdateTokenURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateTokenURL) Get() (v OAuthServiceUpdateTokenURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateTokenURL) Or(d OAuthServiceUpdateTokenURL) OAuthServiceUpdateTokenURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthServiceUpdateUserinfoURL returns new OptOAuthServiceUpdateUserinfoURL with value set to v.
-func NewOptOAuthServiceUpdateUserinfoURL(v OAuthServiceUpdateUserinfoURL) OptOAuthServiceUpdateUserinfoURL {
-	return OptOAuthServiceUpdateUserinfoURL{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthServiceUpdateUserinfoURL is optional OAuthServiceUpdateUserinfoURL.
-type OptOAuthServiceUpdateUserinfoURL struct {
-	Value OAuthServiceUpdateUserinfoURL
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthServiceUpdateUserinfoURL was set.
-func (o OptOAuthServiceUpdateUserinfoURL) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthServiceUpdateUserinfoURL) Reset() {
-	var v OAuthServiceUpdateUserinfoURL
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthServiceUpdateUserinfoURL) SetTo(v OAuthServiceUpdateUserinfoURL) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthServiceUpdateUserinfoURL) Get() (v OAuthServiceUpdateUserinfoURL, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthServiceUpdateUserinfoURL) Or(d OAuthServiceUpdateUserinfoURL) OAuthServiceUpdateUserinfoURL {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthTokenExchangeRedirectURI returns new OptOAuthTokenExchangeRedirectURI with value set to v.
-func NewOptOAuthTokenExchangeRedirectURI(v OAuthTokenExchangeRedirectURI) OptOAuthTokenExchangeRedirectURI {
-	return OptOAuthTokenExchangeRedirectURI{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthTokenExchangeRedirectURI is optional OAuthTokenExchangeRedirectURI.
-type OptOAuthTokenExchangeRedirectURI struct {
-	Value OAuthTokenExchangeRedirectURI
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthTokenExchangeRedirectURI was set.
-func (o OptOAuthTokenExchangeRedirectURI) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthTokenExchangeRedirectURI) Reset() {
-	var v OAuthTokenExchangeRedirectURI
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthTokenExchangeRedirectURI) SetTo(v OAuthTokenExchangeRedirectURI) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthTokenExchangeRedirectURI) Get() (v OAuthTokenExchangeRedirectURI, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthTokenExchangeRedirectURI) Or(d OAuthTokenExchangeRedirectURI) OAuthTokenExchangeRedirectURI {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthTokenExchangeState returns new OptOAuthTokenExchangeState with value set to v.
-func NewOptOAuthTokenExchangeState(v OAuthTokenExchangeState) OptOAuthTokenExchangeState {
-	return OptOAuthTokenExchangeState{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthTokenExchangeState is optional OAuthTokenExchangeState.
-type OptOAuthTokenExchangeState struct {
-	Value OAuthTokenExchangeState
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthTokenExchangeState was set.
-func (o OptOAuthTokenExchangeState) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthTokenExchangeState) Reset() {
-	var v OAuthTokenExchangeState
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthTokenExchangeState) SetTo(v OAuthTokenExchangeState) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthTokenExchangeState) Get() (v OAuthTokenExchangeState, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthTokenExchangeState) Or(d OAuthTokenExchangeState) OAuthTokenExchangeState {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthTokenResponseExpiresIn returns new OptOAuthTokenResponseExpiresIn with value set to v.
-func NewOptOAuthTokenResponseExpiresIn(v OAuthTokenResponseExpiresIn) OptOAuthTokenResponseExpiresIn {
-	return OptOAuthTokenResponseExpiresIn{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthTokenResponseExpiresIn is optional OAuthTokenResponseExpiresIn.
-type OptOAuthTokenResponseExpiresIn struct {
-	Value OAuthTokenResponseExpiresIn
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthTokenResponseExpiresIn was set.
-func (o OptOAuthTokenResponseExpiresIn) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthTokenResponseExpiresIn) Reset() {
-	var v OAuthTokenResponseExpiresIn
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthTokenResponseExpiresIn) SetTo(v OAuthTokenResponseExpiresIn) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthTokenResponseExpiresIn) Get() (v OAuthTokenResponseExpiresIn, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthTokenResponseExpiresIn) Or(d OAuthTokenResponseExpiresIn) OAuthTokenResponseExpiresIn {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOAuthTokenResponseRefreshToken returns new OptOAuthTokenResponseRefreshToken with value set to v.
-func NewOptOAuthTokenResponseRefreshToken(v OAuthTokenResponseRefreshToken) OptOAuthTokenResponseRefreshToken {
-	return OptOAuthTokenResponseRefreshToken{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOAuthTokenResponseRefreshToken is optional OAuthTokenResponseRefreshToken.
-type OptOAuthTokenResponseRefreshToken struct {
-	Value OAuthTokenResponseRefreshToken
-	Set   bool
-}
-
-// IsSet returns true if OptOAuthTokenResponseRefreshToken was set.
-func (o OptOAuthTokenResponseRefreshToken) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOAuthTokenResponseRefreshToken) Reset() {
-	var v OAuthTokenResponseRefreshToken
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOAuthTokenResponseRefreshToken) SetTo(v OAuthTokenResponseRefreshToken) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOAuthTokenResponseRefreshToken) Get() (v OAuthTokenResponseRefreshToken, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOAuthTokenResponseRefreshToken) Or(d OAuthTokenResponseRefreshToken) OAuthTokenResponseRefreshToken {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPendingInvitationResponseExpiresAt returns new OptPendingInvitationResponseExpiresAt with value set to v.
-func NewOptPendingInvitationResponseExpiresAt(v PendingInvitationResponseExpiresAt) OptPendingInvitationResponseExpiresAt {
-	return OptPendingInvitationResponseExpiresAt{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPendingInvitationResponseExpiresAt is optional PendingInvitationResponseExpiresAt.
-type OptPendingInvitationResponseExpiresAt struct {
-	Value PendingInvitationResponseExpiresAt
-	Set   bool
-}
-
-// IsSet returns true if OptPendingInvitationResponseExpiresAt was set.
-func (o OptPendingInvitationResponseExpiresAt) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPendingInvitationResponseExpiresAt) Reset() {
-	var v PendingInvitationResponseExpiresAt
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPendingInvitationResponseExpiresAt) SetTo(v PendingInvitationResponseExpiresAt) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPendingInvitationResponseExpiresAt) Get() (v PendingInvitationResponseExpiresAt, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPendingInvitationResponseExpiresAt) Or(d PendingInvitationResponseExpiresAt) PendingInvitationResponseExpiresAt {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptCreateDescription returns new OptPromptCreateDescription with value set to v.
-func NewOptPromptCreateDescription(v PromptCreateDescription) OptPromptCreateDescription {
-	return OptPromptCreateDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptCreateDescription is optional PromptCreateDescription.
-type OptPromptCreateDescription struct {
-	Value PromptCreateDescription
-	Set   bool
-}
-
-// IsSet returns true if OptPromptCreateDescription was set.
-func (o OptPromptCreateDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptCreateDescription) Reset() {
-	var v PromptCreateDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptCreateDescription) SetTo(v PromptCreateDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptCreateDescription) Get() (v PromptCreateDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptCreateDescription) Or(d PromptCreateDescription) PromptCreateDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptResponseDescription returns new OptPromptResponseDescription with value set to v.
-func NewOptPromptResponseDescription(v PromptResponseDescription) OptPromptResponseDescription {
-	return OptPromptResponseDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptResponseDescription is optional PromptResponseDescription.
-type OptPromptResponseDescription struct {
-	Value PromptResponseDescription
-	Set   bool
-}
-
-// IsSet returns true if OptPromptResponseDescription was set.
-func (o OptPromptResponseDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptResponseDescription) Reset() {
-	var v PromptResponseDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptResponseDescription) SetTo(v PromptResponseDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptResponseDescription) Get() (v PromptResponseDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptResponseDescription) Or(d PromptResponseDescription) PromptResponseDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptUpdateActive returns new OptPromptUpdateActive with value set to v.
-func NewOptPromptUpdateActive(v PromptUpdateActive) OptPromptUpdateActive {
-	return OptPromptUpdateActive{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptUpdateActive is optional PromptUpdateActive.
-type OptPromptUpdateActive struct {
-	Value PromptUpdateActive
-	Set   bool
-}
-
-// IsSet returns true if OptPromptUpdateActive was set.
-func (o OptPromptUpdateActive) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptUpdateActive) Reset() {
-	var v PromptUpdateActive
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptUpdateActive) SetTo(v PromptUpdateActive) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptUpdateActive) Get() (v PromptUpdateActive, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptUpdateActive) Or(d PromptUpdateActive) PromptUpdateActive {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptUpdateContent returns new OptPromptUpdateContent with value set to v.
-func NewOptPromptUpdateContent(v PromptUpdateContent) OptPromptUpdateContent {
-	return OptPromptUpdateContent{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptUpdateContent is optional PromptUpdateContent.
-type OptPromptUpdateContent struct {
-	Value PromptUpdateContent
-	Set   bool
-}
-
-// IsSet returns true if OptPromptUpdateContent was set.
-func (o OptPromptUpdateContent) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptUpdateContent) Reset() {
-	var v PromptUpdateContent
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptUpdateContent) SetTo(v PromptUpdateContent) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptUpdateContent) Get() (v PromptUpdateContent, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptUpdateContent) Or(d PromptUpdateContent) PromptUpdateContent {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptUpdateDescription returns new OptPromptUpdateDescription with value set to v.
-func NewOptPromptUpdateDescription(v PromptUpdateDescription) OptPromptUpdateDescription {
-	return OptPromptUpdateDescription{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptUpdateDescription is optional PromptUpdateDescription.
-type OptPromptUpdateDescription struct {
-	Value PromptUpdateDescription
-	Set   bool
-}
-
-// IsSet returns true if OptPromptUpdateDescription was set.
-func (o OptPromptUpdateDescription) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptUpdateDescription) Reset() {
-	var v PromptUpdateDescription
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptUpdateDescription) SetTo(v PromptUpdateDescription) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptUpdateDescription) Get() (v PromptUpdateDescription, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptUpdateDescription) Or(d PromptUpdateDescription) PromptUpdateDescription {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPromptUpdateIsDefault returns new OptPromptUpdateIsDefault with value set to v.
-func NewOptPromptUpdateIsDefault(v PromptUpdateIsDefault) OptPromptUpdateIsDefault {
-	return OptPromptUpdateIsDefault{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPromptUpdateIsDefault is optional PromptUpdateIsDefault.
-type OptPromptUpdateIsDefault struct {
-	Value PromptUpdateIsDefault
-	Set   bool
-}
-
-// IsSet returns true if OptPromptUpdateIsDefault was set.
-func (o OptPromptUpdateIsDefault) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPromptUpdateIsDefault) Reset() {
-	var v PromptUpdateIsDefault
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPromptUpdateIsDefault) SetTo(v PromptUpdateIsDefault) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPromptUpdateIsDefault) Get() (v PromptUpdateIsDefault, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPromptUpdateIsDefault) Or(d PromptUpdateIsDefault) PromptUpdateIsDefault {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -11590,13 +5976,13 @@ func (o OptString) Or(d string) string {
 
 // Ref: #/components/schemas/PendingInvitationResponse
 type PendingInvitationResponse struct {
-	ID           string                                `json:"id"`
-	EmailAddress string                                `json:"email_address"`
-	Role         string                                `json:"role"`
-	Status       string                                `json:"status"`
-	CreatedAt    int                                   `json:"created_at"`
-	UpdatedAt    int                                   `json:"updated_at"`
-	ExpiresAt    OptPendingInvitationResponseExpiresAt `json:"expires_at"`
+	ID           string    `json:"id"`
+	EmailAddress string    `json:"email_address"`
+	Role         string    `json:"role"`
+	Status       string    `json:"status"`
+	CreatedAt    int       `json:"created_at"`
+	UpdatedAt    int       `json:"updated_at"`
+	ExpiresAt    OptNilInt `json:"expires_at"`
 }
 
 // GetID returns the value of ID.
@@ -11630,7 +6016,7 @@ func (s *PendingInvitationResponse) GetUpdatedAt() int {
 }
 
 // GetExpiresAt returns the value of ExpiresAt.
-func (s *PendingInvitationResponse) GetExpiresAt() OptPendingInvitationResponseExpiresAt {
+func (s *PendingInvitationResponse) GetExpiresAt() OptNilInt {
 	return s.ExpiresAt
 }
 
@@ -11665,76 +6051,8 @@ func (s *PendingInvitationResponse) SetUpdatedAt(val int) {
 }
 
 // SetExpiresAt sets the value of ExpiresAt.
-func (s *PendingInvitationResponse) SetExpiresAt(val OptPendingInvitationResponseExpiresAt) {
+func (s *PendingInvitationResponse) SetExpiresAt(val OptNilInt) {
 	s.ExpiresAt = val
-}
-
-// PendingInvitationResponseExpiresAt represents sum type.
-type PendingInvitationResponseExpiresAt struct {
-	Type PendingInvitationResponseExpiresAtType // switch on this field
-	Int  int
-	Null struct{}
-}
-
-// PendingInvitationResponseExpiresAtType is oneOf type of PendingInvitationResponseExpiresAt.
-type PendingInvitationResponseExpiresAtType string
-
-// Possible values for PendingInvitationResponseExpiresAtType.
-const (
-	IntPendingInvitationResponseExpiresAt  PendingInvitationResponseExpiresAtType = "int"
-	NullPendingInvitationResponseExpiresAt PendingInvitationResponseExpiresAtType = "struct{}"
-)
-
-// IsInt reports whether PendingInvitationResponseExpiresAt is int.
-func (s PendingInvitationResponseExpiresAt) IsInt() bool {
-	return s.Type == IntPendingInvitationResponseExpiresAt
-}
-
-// IsNull reports whether PendingInvitationResponseExpiresAt is struct{}.
-func (s PendingInvitationResponseExpiresAt) IsNull() bool {
-	return s.Type == NullPendingInvitationResponseExpiresAt
-}
-
-// SetInt sets PendingInvitationResponseExpiresAt to int.
-func (s *PendingInvitationResponseExpiresAt) SetInt(v int) {
-	s.Type = IntPendingInvitationResponseExpiresAt
-	s.Int = v
-}
-
-// GetInt returns int and true boolean if PendingInvitationResponseExpiresAt is int.
-func (s PendingInvitationResponseExpiresAt) GetInt() (v int, ok bool) {
-	if !s.IsInt() {
-		return v, false
-	}
-	return s.Int, true
-}
-
-// NewIntPendingInvitationResponseExpiresAt returns new PendingInvitationResponseExpiresAt from int.
-func NewIntPendingInvitationResponseExpiresAt(v int) PendingInvitationResponseExpiresAt {
-	var s PendingInvitationResponseExpiresAt
-	s.SetInt(v)
-	return s
-}
-
-// SetNull sets PendingInvitationResponseExpiresAt to struct{}.
-func (s *PendingInvitationResponseExpiresAt) SetNull(v struct{}) {
-	s.Type = NullPendingInvitationResponseExpiresAt
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PendingInvitationResponseExpiresAt is struct{}.
-func (s PendingInvitationResponseExpiresAt) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPendingInvitationResponseExpiresAt returns new PendingInvitationResponseExpiresAt from struct{}.
-func NewNullPendingInvitationResponseExpiresAt(v struct{}) PendingInvitationResponseExpiresAt {
-	var s PendingInvitationResponseExpiresAt
-	s.SetNull(v)
-	return s
 }
 
 type PostChatMessagesCreatedApplicationJSON []ChatMessageRouter
@@ -11758,11 +6076,11 @@ func (*PostStripeWebhookNotFound) postStripeWebhookRes() {}
 
 // Ref: #/components/schemas/PromptCreate
 type PromptCreate struct {
-	Name        string                     `json:"name"`
-	Content     string                     `json:"content"`
-	Description OptPromptCreateDescription `json:"description"`
-	Active      OptBool                    `json:"active"`
-	IsDefault   OptBool                    `json:"is_default"`
+	Name        string       `json:"name"`
+	Content     string       `json:"content"`
+	Description OptNilString `json:"description"`
+	Active      OptBool      `json:"active"`
+	IsDefault   OptBool      `json:"is_default"`
 }
 
 // GetName returns the value of Name.
@@ -11776,7 +6094,7 @@ func (s *PromptCreate) GetContent() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *PromptCreate) GetDescription() OptPromptCreateDescription {
+func (s *PromptCreate) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -11801,7 +6119,7 @@ func (s *PromptCreate) SetContent(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *PromptCreate) SetDescription(val OptPromptCreateDescription) {
+func (s *PromptCreate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -11815,81 +6133,17 @@ func (s *PromptCreate) SetIsDefault(val OptBool) {
 	s.IsDefault = val
 }
 
-// PromptCreateDescription represents sum type.
-type PromptCreateDescription struct {
-	Type   PromptCreateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// PromptCreateDescriptionType is oneOf type of PromptCreateDescription.
-type PromptCreateDescriptionType string
-
-// Possible values for PromptCreateDescriptionType.
-const (
-	StringPromptCreateDescription PromptCreateDescriptionType = "string"
-	NullPromptCreateDescription   PromptCreateDescriptionType = "struct{}"
-)
-
-// IsString reports whether PromptCreateDescription is string.
-func (s PromptCreateDescription) IsString() bool { return s.Type == StringPromptCreateDescription }
-
-// IsNull reports whether PromptCreateDescription is struct{}.
-func (s PromptCreateDescription) IsNull() bool { return s.Type == NullPromptCreateDescription }
-
-// SetString sets PromptCreateDescription to string.
-func (s *PromptCreateDescription) SetString(v string) {
-	s.Type = StringPromptCreateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if PromptCreateDescription is string.
-func (s PromptCreateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringPromptCreateDescription returns new PromptCreateDescription from string.
-func NewStringPromptCreateDescription(v string) PromptCreateDescription {
-	var s PromptCreateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets PromptCreateDescription to struct{}.
-func (s *PromptCreateDescription) SetNull(v struct{}) {
-	s.Type = NullPromptCreateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptCreateDescription is struct{}.
-func (s PromptCreateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptCreateDescription returns new PromptCreateDescription from struct{}.
-func NewNullPromptCreateDescription(v struct{}) PromptCreateDescription {
-	var s PromptCreateDescription
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/PromptResponse
 type PromptResponse struct {
-	ID            uuid.UUID                    `json:"id"`
-	Name          string                       `json:"name"`
-	Content       string                       `json:"content"`
-	Description   OptPromptResponseDescription `json:"description"`
-	Active        OptBool                      `json:"active"`
-	IsDefault     OptBool                      `json:"is_default"`
-	EnvironmentID uuid.UUID                    `json:"environment_id"`
-	CreatedAt     string                       `json:"created_at"`
-	UpdatedAt     string                       `json:"updated_at"`
+	ID            uuid.UUID    `json:"id"`
+	Name          string       `json:"name"`
+	Content       string       `json:"content"`
+	Description   OptNilString `json:"description"`
+	Active        OptBool      `json:"active"`
+	IsDefault     OptBool      `json:"is_default"`
+	EnvironmentID uuid.UUID    `json:"environment_id"`
+	CreatedAt     string       `json:"created_at"`
+	UpdatedAt     string       `json:"updated_at"`
 }
 
 // GetID returns the value of ID.
@@ -11908,7 +6162,7 @@ func (s *PromptResponse) GetContent() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *PromptResponse) GetDescription() OptPromptResponseDescription {
+func (s *PromptResponse) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -11953,7 +6207,7 @@ func (s *PromptResponse) SetContent(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *PromptResponse) SetDescription(val OptPromptResponseDescription) {
+func (s *PromptResponse) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -11987,372 +6241,52 @@ func (*PromptResponse) getPromptRes()              {}
 func (*PromptResponse) getSystemDefaultPromptRes() {}
 func (*PromptResponse) updatePromptRes()           {}
 
-// PromptResponseDescription represents sum type.
-type PromptResponseDescription struct {
-	Type   PromptResponseDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// PromptResponseDescriptionType is oneOf type of PromptResponseDescription.
-type PromptResponseDescriptionType string
-
-// Possible values for PromptResponseDescriptionType.
-const (
-	StringPromptResponseDescription PromptResponseDescriptionType = "string"
-	NullPromptResponseDescription   PromptResponseDescriptionType = "struct{}"
-)
-
-// IsString reports whether PromptResponseDescription is string.
-func (s PromptResponseDescription) IsString() bool { return s.Type == StringPromptResponseDescription }
-
-// IsNull reports whether PromptResponseDescription is struct{}.
-func (s PromptResponseDescription) IsNull() bool { return s.Type == NullPromptResponseDescription }
-
-// SetString sets PromptResponseDescription to string.
-func (s *PromptResponseDescription) SetString(v string) {
-	s.Type = StringPromptResponseDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if PromptResponseDescription is string.
-func (s PromptResponseDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringPromptResponseDescription returns new PromptResponseDescription from string.
-func NewStringPromptResponseDescription(v string) PromptResponseDescription {
-	var s PromptResponseDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets PromptResponseDescription to struct{}.
-func (s *PromptResponseDescription) SetNull(v struct{}) {
-	s.Type = NullPromptResponseDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptResponseDescription is struct{}.
-func (s PromptResponseDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptResponseDescription returns new PromptResponseDescription from struct{}.
-func NewNullPromptResponseDescription(v struct{}) PromptResponseDescription {
-	var s PromptResponseDescription
-	s.SetNull(v)
-	return s
-}
-
 // Ref: #/components/schemas/PromptUpdate
 type PromptUpdate struct {
-	Content     OptPromptUpdateContent     `json:"content"`
-	Description OptPromptUpdateDescription `json:"description"`
-	Active      OptPromptUpdateActive      `json:"active"`
-	IsDefault   OptPromptUpdateIsDefault   `json:"is_default"`
+	Content     OptNilString `json:"content"`
+	Description OptNilString `json:"description"`
+	Active      OptNilBool   `json:"active"`
+	IsDefault   OptNilBool   `json:"is_default"`
 }
 
 // GetContent returns the value of Content.
-func (s *PromptUpdate) GetContent() OptPromptUpdateContent {
+func (s *PromptUpdate) GetContent() OptNilString {
 	return s.Content
 }
 
 // GetDescription returns the value of Description.
-func (s *PromptUpdate) GetDescription() OptPromptUpdateDescription {
+func (s *PromptUpdate) GetDescription() OptNilString {
 	return s.Description
 }
 
 // GetActive returns the value of Active.
-func (s *PromptUpdate) GetActive() OptPromptUpdateActive {
+func (s *PromptUpdate) GetActive() OptNilBool {
 	return s.Active
 }
 
 // GetIsDefault returns the value of IsDefault.
-func (s *PromptUpdate) GetIsDefault() OptPromptUpdateIsDefault {
+func (s *PromptUpdate) GetIsDefault() OptNilBool {
 	return s.IsDefault
 }
 
 // SetContent sets the value of Content.
-func (s *PromptUpdate) SetContent(val OptPromptUpdateContent) {
+func (s *PromptUpdate) SetContent(val OptNilString) {
 	s.Content = val
 }
 
 // SetDescription sets the value of Description.
-func (s *PromptUpdate) SetDescription(val OptPromptUpdateDescription) {
+func (s *PromptUpdate) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
 // SetActive sets the value of Active.
-func (s *PromptUpdate) SetActive(val OptPromptUpdateActive) {
+func (s *PromptUpdate) SetActive(val OptNilBool) {
 	s.Active = val
 }
 
 // SetIsDefault sets the value of IsDefault.
-func (s *PromptUpdate) SetIsDefault(val OptPromptUpdateIsDefault) {
+func (s *PromptUpdate) SetIsDefault(val OptNilBool) {
 	s.IsDefault = val
-}
-
-// PromptUpdateActive represents sum type.
-type PromptUpdateActive struct {
-	Type PromptUpdateActiveType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// PromptUpdateActiveType is oneOf type of PromptUpdateActive.
-type PromptUpdateActiveType string
-
-// Possible values for PromptUpdateActiveType.
-const (
-	BoolPromptUpdateActive PromptUpdateActiveType = "bool"
-	NullPromptUpdateActive PromptUpdateActiveType = "struct{}"
-)
-
-// IsBool reports whether PromptUpdateActive is bool.
-func (s PromptUpdateActive) IsBool() bool { return s.Type == BoolPromptUpdateActive }
-
-// IsNull reports whether PromptUpdateActive is struct{}.
-func (s PromptUpdateActive) IsNull() bool { return s.Type == NullPromptUpdateActive }
-
-// SetBool sets PromptUpdateActive to bool.
-func (s *PromptUpdateActive) SetBool(v bool) {
-	s.Type = BoolPromptUpdateActive
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if PromptUpdateActive is bool.
-func (s PromptUpdateActive) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolPromptUpdateActive returns new PromptUpdateActive from bool.
-func NewBoolPromptUpdateActive(v bool) PromptUpdateActive {
-	var s PromptUpdateActive
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets PromptUpdateActive to struct{}.
-func (s *PromptUpdateActive) SetNull(v struct{}) {
-	s.Type = NullPromptUpdateActive
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptUpdateActive is struct{}.
-func (s PromptUpdateActive) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptUpdateActive returns new PromptUpdateActive from struct{}.
-func NewNullPromptUpdateActive(v struct{}) PromptUpdateActive {
-	var s PromptUpdateActive
-	s.SetNull(v)
-	return s
-}
-
-// PromptUpdateContent represents sum type.
-type PromptUpdateContent struct {
-	Type   PromptUpdateContentType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// PromptUpdateContentType is oneOf type of PromptUpdateContent.
-type PromptUpdateContentType string
-
-// Possible values for PromptUpdateContentType.
-const (
-	StringPromptUpdateContent PromptUpdateContentType = "string"
-	NullPromptUpdateContent   PromptUpdateContentType = "struct{}"
-)
-
-// IsString reports whether PromptUpdateContent is string.
-func (s PromptUpdateContent) IsString() bool { return s.Type == StringPromptUpdateContent }
-
-// IsNull reports whether PromptUpdateContent is struct{}.
-func (s PromptUpdateContent) IsNull() bool { return s.Type == NullPromptUpdateContent }
-
-// SetString sets PromptUpdateContent to string.
-func (s *PromptUpdateContent) SetString(v string) {
-	s.Type = StringPromptUpdateContent
-	s.String = v
-}
-
-// GetString returns string and true boolean if PromptUpdateContent is string.
-func (s PromptUpdateContent) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringPromptUpdateContent returns new PromptUpdateContent from string.
-func NewStringPromptUpdateContent(v string) PromptUpdateContent {
-	var s PromptUpdateContent
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets PromptUpdateContent to struct{}.
-func (s *PromptUpdateContent) SetNull(v struct{}) {
-	s.Type = NullPromptUpdateContent
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptUpdateContent is struct{}.
-func (s PromptUpdateContent) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptUpdateContent returns new PromptUpdateContent from struct{}.
-func NewNullPromptUpdateContent(v struct{}) PromptUpdateContent {
-	var s PromptUpdateContent
-	s.SetNull(v)
-	return s
-}
-
-// PromptUpdateDescription represents sum type.
-type PromptUpdateDescription struct {
-	Type   PromptUpdateDescriptionType // switch on this field
-	String string
-	Null   struct{}
-}
-
-// PromptUpdateDescriptionType is oneOf type of PromptUpdateDescription.
-type PromptUpdateDescriptionType string
-
-// Possible values for PromptUpdateDescriptionType.
-const (
-	StringPromptUpdateDescription PromptUpdateDescriptionType = "string"
-	NullPromptUpdateDescription   PromptUpdateDescriptionType = "struct{}"
-)
-
-// IsString reports whether PromptUpdateDescription is string.
-func (s PromptUpdateDescription) IsString() bool { return s.Type == StringPromptUpdateDescription }
-
-// IsNull reports whether PromptUpdateDescription is struct{}.
-func (s PromptUpdateDescription) IsNull() bool { return s.Type == NullPromptUpdateDescription }
-
-// SetString sets PromptUpdateDescription to string.
-func (s *PromptUpdateDescription) SetString(v string) {
-	s.Type = StringPromptUpdateDescription
-	s.String = v
-}
-
-// GetString returns string and true boolean if PromptUpdateDescription is string.
-func (s PromptUpdateDescription) GetString() (v string, ok bool) {
-	if !s.IsString() {
-		return v, false
-	}
-	return s.String, true
-}
-
-// NewStringPromptUpdateDescription returns new PromptUpdateDescription from string.
-func NewStringPromptUpdateDescription(v string) PromptUpdateDescription {
-	var s PromptUpdateDescription
-	s.SetString(v)
-	return s
-}
-
-// SetNull sets PromptUpdateDescription to struct{}.
-func (s *PromptUpdateDescription) SetNull(v struct{}) {
-	s.Type = NullPromptUpdateDescription
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptUpdateDescription is struct{}.
-func (s PromptUpdateDescription) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptUpdateDescription returns new PromptUpdateDescription from struct{}.
-func NewNullPromptUpdateDescription(v struct{}) PromptUpdateDescription {
-	var s PromptUpdateDescription
-	s.SetNull(v)
-	return s
-}
-
-// PromptUpdateIsDefault represents sum type.
-type PromptUpdateIsDefault struct {
-	Type PromptUpdateIsDefaultType // switch on this field
-	Bool bool
-	Null struct{}
-}
-
-// PromptUpdateIsDefaultType is oneOf type of PromptUpdateIsDefault.
-type PromptUpdateIsDefaultType string
-
-// Possible values for PromptUpdateIsDefaultType.
-const (
-	BoolPromptUpdateIsDefault PromptUpdateIsDefaultType = "bool"
-	NullPromptUpdateIsDefault PromptUpdateIsDefaultType = "struct{}"
-)
-
-// IsBool reports whether PromptUpdateIsDefault is bool.
-func (s PromptUpdateIsDefault) IsBool() bool { return s.Type == BoolPromptUpdateIsDefault }
-
-// IsNull reports whether PromptUpdateIsDefault is struct{}.
-func (s PromptUpdateIsDefault) IsNull() bool { return s.Type == NullPromptUpdateIsDefault }
-
-// SetBool sets PromptUpdateIsDefault to bool.
-func (s *PromptUpdateIsDefault) SetBool(v bool) {
-	s.Type = BoolPromptUpdateIsDefault
-	s.Bool = v
-}
-
-// GetBool returns bool and true boolean if PromptUpdateIsDefault is bool.
-func (s PromptUpdateIsDefault) GetBool() (v bool, ok bool) {
-	if !s.IsBool() {
-		return v, false
-	}
-	return s.Bool, true
-}
-
-// NewBoolPromptUpdateIsDefault returns new PromptUpdateIsDefault from bool.
-func NewBoolPromptUpdateIsDefault(v bool) PromptUpdateIsDefault {
-	var s PromptUpdateIsDefault
-	s.SetBool(v)
-	return s
-}
-
-// SetNull sets PromptUpdateIsDefault to struct{}.
-func (s *PromptUpdateIsDefault) SetNull(v struct{}) {
-	s.Type = NullPromptUpdateIsDefault
-	s.Null = v
-}
-
-// GetNull returns struct{} and true boolean if PromptUpdateIsDefault is struct{}.
-func (s PromptUpdateIsDefault) GetNull() (v struct{}, ok bool) {
-	if !s.IsNull() {
-		return v, false
-	}
-	return s.Null, true
-}
-
-// NewNullPromptUpdateIsDefault returns new PromptUpdateIsDefault from struct{}.
-func NewNullPromptUpdateIsDefault(v struct{}) PromptUpdateIsDefault {
-	var s PromptUpdateIsDefault
-	s.SetNull(v)
-	return s
 }
 
 // RevokeOAuthTokenNoContent is response for RevokeOAuthToken operation.
@@ -12448,8 +6382,9 @@ func (s *SubscriptionResponse) SetCurrentPeriodEnd(val int) {
 
 // Ref: #/components/schemas/TypedChatMessageContent
 type TypedChatMessageContent struct {
-	Type string `json:"type"`
-	Text string `json:"text"`
+	Type      string       `json:"type"`
+	Text      OptNilString `json:"text"`
+	Reasoning OptNilString `json:"reasoning"`
 }
 
 // GetType returns the value of Type.
@@ -12458,8 +6393,13 @@ func (s *TypedChatMessageContent) GetType() string {
 }
 
 // GetText returns the value of Text.
-func (s *TypedChatMessageContent) GetText() string {
+func (s *TypedChatMessageContent) GetText() OptNilString {
 	return s.Text
+}
+
+// GetReasoning returns the value of Reasoning.
+func (s *TypedChatMessageContent) GetReasoning() OptNilString {
+	return s.Reasoning
 }
 
 // SetType sets the value of Type.
@@ -12468,8 +6408,13 @@ func (s *TypedChatMessageContent) SetType(val string) {
 }
 
 // SetText sets the value of Text.
-func (s *TypedChatMessageContent) SetText(val string) {
+func (s *TypedChatMessageContent) SetText(val OptNilString) {
 	s.Text = val
+}
+
+// SetReasoning sets the value of Reasoning.
+func (s *TypedChatMessageContent) SetReasoning(val OptNilString) {
+	s.Reasoning = val
 }
 
 // UpdateChatNotFound is response for UpdateChat operation.

@@ -69,6 +69,11 @@ type DeleteEnvironmentUserParams struct {
 	UserID        string
 }
 
+// DeleteMcpToolAssociationParams is parameters of delete_mcp_tool_association operation.
+type DeleteMcpToolAssociationParams struct {
+	AssociationID uuid.UUID
+}
+
 // DeleteMcpendpointParams is parameters of delete_mcpendpoint operation.
 type DeleteMcpendpointParams struct {
 	McpendpointID uuid.UUID
@@ -136,6 +141,12 @@ type GetEntityParams struct {
 	Name      string
 }
 
+// GetEntityToolsParams is parameters of get_entity_tools operation.
+type GetEntityToolsParams struct {
+	EntityDefinitionID uuid.UUID
+	EntityVersionID    OptNilUUID
+}
+
 // GetEnvironmentStatusParams is parameters of get_environment_status operation.
 type GetEnvironmentStatusParams struct {
 	EnvID uuid.UUID
@@ -145,6 +156,12 @@ type GetEnvironmentStatusParams struct {
 type GetEnvironmentUserParams struct {
 	EnvironmentID uuid.UUID
 	UserID        string
+}
+
+// GetMcpEndpointEntityTypesParams is parameters of get_mcp_endpoint_entity_types operation.
+type GetMcpEndpointEntityTypesParams struct {
+	McpendpointName string
+	ToolName        OptNilString
 }
 
 // GetMcpendpointParams is parameters of get_mcpendpoint operation.
@@ -185,6 +202,11 @@ type InviteEnvironmentUserParams struct {
 // ListEnvironmentUsersParams is parameters of list_environment_users operation.
 type ListEnvironmentUsersParams struct {
 	EnvironmentID uuid.UUID
+}
+
+// ListMcpendpointToolsParams is parameters of list_mcpendpoint_tools operation.
+type ListMcpendpointToolsParams struct {
+	McpendpointID uuid.UUID
 }
 
 // ListOAuthServicesParams is parameters of list_oauth_services operation.

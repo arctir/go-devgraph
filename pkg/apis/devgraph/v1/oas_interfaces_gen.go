@@ -41,6 +41,10 @@ type CreateEnvironmentUserRes interface {
 	createEnvironmentUserRes()
 }
 
+type CreateMcpToolAssociationRes interface {
+	createMcpToolAssociationRes()
+}
+
 type CreateMcpendpointRes interface {
 	createMcpendpointRes()
 }
@@ -83,6 +87,10 @@ type DeleteEntityRes interface {
 
 type DeleteEnvironmentUserRes interface {
 	deleteEnvironmentUserRes()
+}
+
+type DeleteMcpToolAssociationRes interface {
+	deleteMcpToolAssociationRes()
 }
 
 type DeleteMcpendpointRes interface {
@@ -137,6 +145,10 @@ type GetEntityRes interface {
 	getEntityRes()
 }
 
+type GetEntityToolsRes interface {
+	getEntityToolsRes()
+}
+
 type GetEnvironmentStatusRes interface {
 	getEnvironmentStatusRes()
 }
@@ -147,6 +159,10 @@ type GetEnvironmentUserRes interface {
 
 type GetEnvironmentsRes interface {
 	getEnvironmentsRes()
+}
+
+type GetMcpEndpointEntityTypesRes interface {
+	getMcpEndpointEntityTypesRes()
 }
 
 type GetMcpendpointRes interface {
@@ -207,6 +223,10 @@ type InviteEnvironmentUserRes interface {
 
 type ListEnvironmentUsersRes interface {
 	listEnvironmentUsersRes()
+}
+
+type ListMcpendpointToolsRes interface {
+	listMcpendpointToolsRes()
 }
 
 type ListOAuthServicesRes interface {

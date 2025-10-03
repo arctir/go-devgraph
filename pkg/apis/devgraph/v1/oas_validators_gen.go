@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-
 	"github.com/ogen-go/ogen/validate"
 )
 
@@ -19,8 +18,8 @@ func (s *ApiTokenResponse) Validate() error {
 	if err := func() error {
 		if value, ok := s.Scopes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -38,20 +37,6 @@ func (s *ApiTokenResponse) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s ApiTokenResponseScopes) Validate() error {
-	switch s.Type {
-	case StringArrayApiTokenResponseScopes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullApiTokenResponseScopes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *ApiTokenUpdate) Validate() error {
@@ -63,8 +48,8 @@ func (s *ApiTokenUpdate) Validate() error {
 	if err := func() error {
 		if value, ok := s.Scopes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -82,20 +67,6 @@ func (s *ApiTokenUpdate) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s ApiTokenUpdateScopes) Validate() error {
-	switch s.Type {
-	case StringArrayApiTokenUpdateScopes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullApiTokenUpdateScopes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *BulkEntityRelationCreateRequest) Validate() error {
@@ -313,8 +284,16 @@ func (s *EntityDefinitionResponse) Validate() error {
 	if err := func() error {
 		if value, ok := s.Plural.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if err := (validate.String{
+					MinLength:    1,
+					MinLengthSet: true,
+					MaxLength:    0,
+					MaxLengthSet: false,
+					Email:        false,
+					Hostname:     false,
+					Regex:        nil,
+				}).Validate(string(value)); err != nil {
+					return errors.Wrap(err, "string")
 				}
 				return nil
 			}(); err != nil {
@@ -332,28 +311,6 @@ func (s *EntityDefinitionResponse) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s EntityDefinitionResponsePlural) Validate() error {
-	switch s.Type {
-	case StringEntityDefinitionResponsePlural:
-		if err := (validate.String{
-			MinLength:    1,
-			MinLengthSet: true,
-			MaxLength:    0,
-			MaxLengthSet: false,
-			Email:        false,
-			Hostname:     false,
-			Regex:        nil,
-		}).Validate(string(s.String)); err != nil {
-			return errors.Wrap(err, "string")
-		}
-		return nil
-	case NullEntityDefinitionResponsePlural:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *EntityDefinitionSpec) Validate() error {
@@ -365,8 +322,16 @@ func (s *EntityDefinitionSpec) Validate() error {
 	if err := func() error {
 		if value, ok := s.Plural.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if err := (validate.String{
+					MinLength:    1,
+					MinLengthSet: true,
+					MaxLength:    0,
+					MaxLengthSet: false,
+					Email:        false,
+					Hostname:     false,
+					Regex:        nil,
+				}).Validate(string(value)); err != nil {
+					return errors.Wrap(err, "string")
 				}
 				return nil
 			}(); err != nil {
@@ -384,28 +349,6 @@ func (s *EntityDefinitionSpec) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s EntityDefinitionSpecPlural) Validate() error {
-	switch s.Type {
-	case StringEntityDefinitionSpecPlural:
-		if err := (validate.String{
-			MinLength:    1,
-			MinLengthSet: true,
-			MaxLength:    0,
-			MaxLengthSet: false,
-			Email:        false,
-			Hostname:     false,
-			Regex:        nil,
-		}).Validate(string(s.String)); err != nil {
-			return errors.Wrap(err, "string")
-		}
-		return nil
-	case NullEntityDefinitionSpecPlural:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *EnvironmentUserBulkInvite) Validate() error {
@@ -639,8 +582,24 @@ func (s GetEntityDefinitionsOKApplicationJSON) Validate() error {
 	return nil
 }
 
+func (s GetEntityToolsOKApplicationJSON) Validate() error {
+	alias := ([]MCPToolEntityAssociationResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s GetEnvironmentsOKApplicationJSON) Validate() error {
 	alias := ([]EnvironmentResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s GetMcpEndpointEntityTypesOKApplicationJSON) Validate() error {
+	alias := ([]MCPToolEntityAssociationResponse)(s)
 	if alias == nil {
 		return errors.New("nil is invalid value")
 	}
@@ -651,6 +610,23 @@ func (s GetMcpendpointsOKApplicationJSON) Validate() error {
 	alias := ([]MCPEndpointResponse)(s)
 	if alias == nil {
 		return errors.New("nil is invalid value")
+	}
+	var failures []validate.FieldError
+	for i, elem := range alias {
+		if err := func() error {
+			if err := elem.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			failures = append(failures, validate.FieldError{
+				Name:  fmt.Sprintf("[%d]", i),
+				Error: err,
+			})
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 	return nil
 }
@@ -757,6 +733,14 @@ func (s ListEnvironmentUsersOKApplicationJSON) Validate() error {
 	return nil
 }
 
+func (s ListMcpendpointToolsOKApplicationJSON) Validate() error {
+	alias := ([]ListMcpendpointToolsOKItem)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s ListOrphanedEntitiesOKApplicationJSON) Validate() error {
 	alias := ([]EntityResponse)(s)
 	if alias == nil {
@@ -769,6 +753,150 @@ func (s ListPromptsOKApplicationJSON) Validate() error {
 	alias := ([]PromptResponse)(s)
 	if alias == nil {
 		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s *MCPEndpointCreate) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.AllowedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "allowed_tools",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if value, ok := s.DeniedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "denied_tools",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s *MCPEndpointResponse) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.AllowedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "allowed_tools",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if value, ok := s.DeniedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "denied_tools",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s *MCPEndpointUpdate) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.AllowedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "allowed_tools",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if value, ok := s.DeniedTools.Get(); ok {
+			if err := func() error {
+				if value == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "denied_tools",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 	return nil
 }
@@ -795,8 +923,8 @@ func (s *OAuthAuthorizationRequest) Validate() error {
 	if err := func() error {
 		if value, ok := s.Scopes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -816,20 +944,6 @@ func (s *OAuthAuthorizationRequest) Validate() error {
 	return nil
 }
 
-func (s OAuthAuthorizationRequestScopes) Validate() error {
-	switch s.Type {
-	case StringArrayOAuthAuthorizationRequestScopes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullOAuthAuthorizationRequestScopes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
-}
-
 func (s *OAuthServiceCreate) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -839,8 +953,8 @@ func (s *OAuthServiceCreate) Validate() error {
 	if err := func() error {
 		if value, ok := s.DefaultScopes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -858,20 +972,6 @@ func (s *OAuthServiceCreate) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s OAuthServiceCreateDefaultScopes) Validate() error {
-	switch s.Type {
-	case StringArrayOAuthServiceCreateDefaultScopes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullOAuthServiceCreateDefaultScopes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *OAuthServiceListResponse) Validate() error {
@@ -957,8 +1057,8 @@ func (s *OAuthServiceUpdate) Validate() error {
 	if err := func() error {
 		if value, ok := s.DefaultScopes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -975,8 +1075,8 @@ func (s *OAuthServiceUpdate) Validate() error {
 	if err := func() error {
 		if value, ok := s.SupportedGrantTypes.Get(); ok {
 			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
+				if value == nil {
+					return errors.New("nil is invalid value")
 				}
 				return nil
 			}(); err != nil {
@@ -994,34 +1094,6 @@ func (s *OAuthServiceUpdate) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
-}
-
-func (s OAuthServiceUpdateDefaultScopes) Validate() error {
-	switch s.Type {
-	case StringArrayOAuthServiceUpdateDefaultScopes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullOAuthServiceUpdateDefaultScopes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
-}
-
-func (s OAuthServiceUpdateSupportedGrantTypes) Validate() error {
-	switch s.Type {
-	case StringArrayOAuthServiceUpdateSupportedGrantTypes:
-		if s.StringArray == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	case NullOAuthServiceUpdateSupportedGrantTypes:
-		return nil // no validation needed
-	default:
-		return errors.Errorf("invalid type %q", s.Type)
-	}
 }
 
 func (s *OAuthTokenResponse) Validate() error {

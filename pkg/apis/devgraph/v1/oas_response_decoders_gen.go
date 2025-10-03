@@ -9,7 +9,6 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
-
 	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/validate"
 )
@@ -108,7 +107,7 @@ func decodeBulkInviteEnvironmentUsersResponse(resp *http.Response) (res BulkInvi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCleanupOrphanedEntitiesResponse(resp *http.Response) (res CleanupOrphanedEntitiesRes, _ error) {
@@ -196,7 +195,7 @@ func decodeCleanupOrphanedEntitiesResponse(resp *http.Response) (res CleanupOrph
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateChatResponse(resp *http.Response) (res CreateChatRes, _ error) {
@@ -293,7 +292,7 @@ func decodeCreateChatResponse(resp *http.Response) (res CreateChatRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateChatTitleResponse(resp *http.Response) (res CreateChatTitleRes, _ error) {
@@ -381,7 +380,7 @@ func decodeCreateChatTitleResponse(resp *http.Response) (res CreateChatTitleRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEntityResponse(resp *http.Response) (res CreateEntityRes, _ error) {
@@ -469,7 +468,7 @@ func decodeCreateEntityResponse(resp *http.Response) (res CreateEntityRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEntityDefinitionResponse(resp *http.Response) (res CreateEntityDefinitionRes, _ error) {
@@ -566,7 +565,7 @@ func decodeCreateEntityDefinitionResponse(resp *http.Response) (res CreateEntity
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEntityRelationResponse(resp *http.Response) (res CreateEntityRelationRes, _ error) {
@@ -654,7 +653,7 @@ func decodeCreateEntityRelationResponse(resp *http.Response) (res CreateEntityRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEntityRelationsBulkResponse(resp *http.Response) (res CreateEntityRelationsBulkRes, _ error) {
@@ -742,7 +741,7 @@ func decodeCreateEntityRelationsBulkResponse(resp *http.Response) (res CreateEnt
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEnvironmentResponse(resp *http.Response) (res CreateEnvironmentRes, _ error) {
@@ -830,7 +829,7 @@ func decodeCreateEnvironmentResponse(resp *http.Response) (res CreateEnvironment
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateEnvironmentUserResponse(resp *http.Response) (res CreateEnvironmentUserRes, _ error) {
@@ -918,7 +917,95 @@ func decodeCreateEnvironmentUserResponse(resp *http.Response) (res CreateEnviron
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
+}
+
+func decodeCreateMcpToolAssociationResponse(resp *http.Response) (res CreateMcpToolAssociationRes, _ error) {
+	switch resp.StatusCode {
+	case 201:
+		// Code 201.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response MCPToolEntityAssociationResponse
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		return &CreateMcpToolAssociationNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateMcpendpointResponse(resp *http.Response) (res CreateMcpendpointRes, _ error) {
@@ -953,6 +1040,15 @@ func decodeCreateMcpendpointResponse(resp *http.Response) (res CreateMcpendpoint
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
 		default:
@@ -1006,7 +1102,7 @@ func decodeCreateMcpendpointResponse(resp *http.Response) (res CreateMcpendpoint
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateModelResponse(resp *http.Response) (res CreateModelRes, _ error) {
@@ -1094,7 +1190,7 @@ func decodeCreateModelResponse(resp *http.Response) (res CreateModelRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateModelproviderResponse(resp *http.Response) (res CreateModelproviderRes, _ error) {
@@ -1182,7 +1278,7 @@ func decodeCreateModelproviderResponse(resp *http.Response) (res CreateModelprov
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateOAuthServiceResponse(resp *http.Response) (res CreateOAuthServiceRes, _ error) {
@@ -1279,7 +1375,7 @@ func decodeCreateOAuthServiceResponse(resp *http.Response) (res CreateOAuthServi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreatePromptResponse(resp *http.Response) (res CreatePromptRes, _ error) {
@@ -1367,7 +1463,7 @@ func decodeCreatePromptResponse(resp *http.Response) (res CreatePromptRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeCreateTokenResponse(resp *http.Response) (res CreateTokenRes, _ error) {
@@ -1464,7 +1560,7 @@ func decodeCreateTokenResponse(resp *http.Response) (res CreateTokenRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteChatResponse(resp *http.Response) (res DeleteChatRes, _ error) {
@@ -1520,7 +1616,7 @@ func decodeDeleteChatResponse(resp *http.Response) (res DeleteChatRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteEntityResponse(resp *http.Response) (res DeleteEntityRes, _ error) {
@@ -1576,7 +1672,7 @@ func decodeDeleteEntityResponse(resp *http.Response) (res DeleteEntityRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteEntityDefinitionResponse(resp *http.Response) (res DeleteEntityDefinitionRes, _ error) {
@@ -1632,7 +1728,7 @@ func decodeDeleteEntityDefinitionResponse(resp *http.Response) (res DeleteEntity
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteEntityRelationResponse(resp *http.Response) (res DeleteEntityRelationRes, _ error) {
@@ -1688,7 +1784,7 @@ func decodeDeleteEntityRelationResponse(resp *http.Response) (res DeleteEntityRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteEnvironmentUserResponse(resp *http.Response) (res DeleteEnvironmentUserRes, _ error) {
@@ -1744,7 +1840,63 @@ func decodeDeleteEnvironmentUserResponse(resp *http.Response) (res DeleteEnviron
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
+}
+
+func decodeDeleteMcpToolAssociationResponse(resp *http.Response) (res DeleteMcpToolAssociationRes, _ error) {
+	switch resp.StatusCode {
+	case 204:
+		// Code 204.
+		return &DeleteMcpToolAssociationNoContent{}, nil
+	case 404:
+		// Code 404.
+		return &DeleteMcpToolAssociationNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteMcpendpointResponse(resp *http.Response) (res DeleteMcpendpointRes, _ error) {
@@ -1800,7 +1952,7 @@ func decodeDeleteMcpendpointResponse(resp *http.Response) (res DeleteMcpendpoint
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteModelResponse(resp *http.Response) (res DeleteModelRes, _ error) {
@@ -1856,7 +2008,7 @@ func decodeDeleteModelResponse(resp *http.Response) (res DeleteModelRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteModelproviderResponse(resp *http.Response) (res DeleteModelproviderRes, _ error) {
@@ -1912,7 +2064,7 @@ func decodeDeleteModelproviderResponse(resp *http.Response) (res DeleteModelprov
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteOAuthServiceResponse(resp *http.Response) (res DeleteOAuthServiceRes, _ error) {
@@ -1968,7 +2120,7 @@ func decodeDeleteOAuthServiceResponse(resp *http.Response) (res DeleteOAuthServi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeletePromptResponse(resp *http.Response) (res DeletePromptRes, _ error) {
@@ -2056,7 +2208,7 @@ func decodeDeletePromptResponse(resp *http.Response) (res DeletePromptRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeDeleteTokenResponse(resp *http.Response) (res DeleteTokenRes, _ error) {
@@ -2112,7 +2264,7 @@ func decodeDeleteTokenResponse(resp *http.Response) (res DeleteTokenRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeExchangeOAuthTokenResponse(resp *http.Response) (res ExchangeOAuthTokenRes, _ error) {
@@ -2209,7 +2361,7 @@ func decodeExchangeOAuthTokenResponse(resp *http.Response) (res ExchangeOAuthTok
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetChatResponse(resp *http.Response) (res GetChatRes, _ error) {
@@ -2306,7 +2458,7 @@ func decodeGetChatResponse(resp *http.Response) (res GetChatRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetChatMessagesResponse(resp *http.Response) (res GetChatMessagesRes, _ error) {
@@ -2403,7 +2555,7 @@ func decodeGetChatMessagesResponse(resp *http.Response) (res GetChatMessagesRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetChatsResponse(resp *http.Response) (res GetChatsRes, _ error) {
@@ -2500,7 +2652,7 @@ func decodeGetChatsResponse(resp *http.Response) (res GetChatsRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEntitiesResponse(resp *http.Response) (res GetEntitiesRes, _ error) {
@@ -2588,7 +2740,7 @@ func decodeGetEntitiesResponse(resp *http.Response) (res GetEntitiesRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEntityResponse(resp *http.Response) (res GetEntityRes, _ error) {
@@ -2607,7 +2759,7 @@ func decodeGetEntityResponse(resp *http.Response) (res GetEntityRes, _ error) {
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response EntityResponse
+			var response EntityWithRelationsResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -2676,7 +2828,7 @@ func decodeGetEntityResponse(resp *http.Response) (res GetEntityRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEntityDefinitionsResponse(resp *http.Response) (res GetEntityDefinitionsRes, _ error) {
@@ -2729,7 +2881,104 @@ func decodeGetEntityDefinitionsResponse(resp *http.Response) (res GetEntityDefin
 		// Code 404.
 		return &GetEntityDefinitionsNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
+}
+
+func decodeGetEntityToolsResponse(resp *http.Response) (res GetEntityToolsRes, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response GetEntityToolsOKApplicationJSON
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		return &GetEntityToolsNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEnvironmentStatusResponse(resp *http.Response) (res GetEnvironmentStatusRes, _ error) {
@@ -2817,7 +3066,7 @@ func decodeGetEnvironmentStatusResponse(resp *http.Response) (res GetEnvironment
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEnvironmentUserResponse(resp *http.Response) (res GetEnvironmentUserRes, _ error) {
@@ -2905,7 +3154,7 @@ func decodeGetEnvironmentUserResponse(resp *http.Response) (res GetEnvironmentUs
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetEnvironmentsResponse(resp *http.Response) (res GetEnvironmentsRes, _ error) {
@@ -2958,7 +3207,104 @@ func decodeGetEnvironmentsResponse(resp *http.Response) (res GetEnvironmentsRes,
 		// Code 404.
 		return &GetEnvironmentsNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
+}
+
+func decodeGetMcpEndpointEntityTypesResponse(resp *http.Response) (res GetMcpEndpointEntityTypesRes, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response GetMcpEndpointEntityTypesOKApplicationJSON
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		return &GetMcpEndpointEntityTypesNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetMcpendpointResponse(resp *http.Response) (res GetMcpendpointRes, _ error) {
@@ -2993,6 +3339,15 @@ func decodeGetMcpendpointResponse(resp *http.Response) (res GetMcpendpointRes, _
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
 		default:
@@ -3046,7 +3401,7 @@ func decodeGetMcpendpointResponse(resp *http.Response) (res GetMcpendpointRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetMcpendpointsResponse(resp *http.Response) (res GetMcpendpointsRes, _ error) {
@@ -3099,7 +3454,7 @@ func decodeGetMcpendpointsResponse(resp *http.Response) (res GetMcpendpointsRes,
 		// Code 404.
 		return &GetMcpendpointsNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetModelResponse(resp *http.Response) (res GetModelRes, _ error) {
@@ -3187,7 +3542,7 @@ func decodeGetModelResponse(resp *http.Response) (res GetModelRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetModelproviderResponse(resp *http.Response) (res GetModelproviderRes, _ error) {
@@ -3275,7 +3630,7 @@ func decodeGetModelproviderResponse(resp *http.Response) (res GetModelproviderRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetModelprovidersResponse(resp *http.Response) (res GetModelprovidersRes, _ error) {
@@ -3328,7 +3683,7 @@ func decodeGetModelprovidersResponse(resp *http.Response) (res GetModelproviders
 		// Code 404.
 		return &GetModelprovidersNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetModelsResponse(resp *http.Response) (res GetModelsRes, _ error) {
@@ -3381,7 +3736,7 @@ func decodeGetModelsResponse(resp *http.Response) (res GetModelsRes, _ error) {
 		// Code 404.
 		return &GetModelsNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetOAuthAuthorizationURLResponse(resp *http.Response) (res GetOAuthAuthorizationURLRes, _ error) {
@@ -3469,7 +3824,7 @@ func decodeGetOAuthAuthorizationURLResponse(resp *http.Response) (res GetOAuthAu
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetOAuthServiceResponse(resp *http.Response) (res GetOAuthServiceRes, _ error) {
@@ -3566,7 +3921,7 @@ func decodeGetOAuthServiceResponse(resp *http.Response) (res GetOAuthServiceRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetPendingInvitationsResponse(resp *http.Response) (res GetPendingInvitationsRes, _ error) {
@@ -3663,7 +4018,7 @@ func decodeGetPendingInvitationsResponse(resp *http.Response) (res GetPendingInv
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetPromptResponse(resp *http.Response) (res GetPromptRes, _ error) {
@@ -3751,7 +4106,7 @@ func decodeGetPromptResponse(resp *http.Response) (res GetPromptRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetSubscriptionsResponse(resp *http.Response) (res GetSubscriptionsRes, _ error) {
@@ -3804,7 +4159,7 @@ func decodeGetSubscriptionsResponse(resp *http.Response) (res GetSubscriptionsRe
 		// Code 404.
 		return &GetSubscriptionsNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetSystemDefaultPromptResponse(resp *http.Response) (res GetSystemDefaultPromptRes, _ error) {
@@ -3848,7 +4203,7 @@ func decodeGetSystemDefaultPromptResponse(resp *http.Response) (res GetSystemDef
 		// Code 404.
 		return &GetSystemDefaultPromptNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeGetTokensResponse(resp *http.Response) (res GetTokensRes, _ error) {
@@ -3901,7 +4256,7 @@ func decodeGetTokensResponse(resp *http.Response) (res GetTokensRes, _ error) {
 		// Code 404.
 		return &GetTokensNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeInviteEnvironmentUserResponse(resp *http.Response) (res InviteEnvironmentUserRes, _ error) {
@@ -3989,7 +4344,7 @@ func decodeInviteEnvironmentUserResponse(resp *http.Response) (res InviteEnviron
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeListEnvironmentUsersResponse(resp *http.Response) (res ListEnvironmentUsersRes, _ error) {
@@ -4086,7 +4441,104 @@ func decodeListEnvironmentUsersResponse(resp *http.Response) (res ListEnvironmen
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
+}
+
+func decodeListMcpendpointToolsResponse(resp *http.Response) (res ListMcpendpointToolsRes, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response ListMcpendpointToolsOKApplicationJSON
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		return &ListMcpendpointToolsNotFound{}, nil
+	case 422:
+		// Code 422.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response HTTPValidationError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeListOAuthServicesResponse(resp *http.Response) (res ListOAuthServicesRes, _ error) {
@@ -4183,7 +4635,7 @@ func decodeListOAuthServicesResponse(resp *http.Response) (res ListOAuthServices
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeListOAuthTokensResponse(resp *http.Response) (res ListOAuthTokensRes, _ error) {
@@ -4227,7 +4679,7 @@ func decodeListOAuthTokensResponse(resp *http.Response) (res ListOAuthTokensRes,
 		// Code 404.
 		return &ListOAuthTokensNotFound{}, nil
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeListOrphanedEntitiesResponse(resp *http.Response) (res ListOrphanedEntitiesRes, _ error) {
@@ -4324,7 +4776,7 @@ func decodeListOrphanedEntitiesResponse(resp *http.Response) (res ListOrphanedEn
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeListPromptsResponse(resp *http.Response) (res ListPromptsRes, _ error) {
@@ -4421,7 +4873,7 @@ func decodeListPromptsResponse(resp *http.Response) (res ListPromptsRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodePostChatMessagesResponse(resp *http.Response) (res PostChatMessagesRes, _ error) {
@@ -4518,7 +4970,7 @@ func decodePostChatMessagesResponse(resp *http.Response) (res PostChatMessagesRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodePostClerkWebhookResponse(resp *http.Response) (res PostClerkWebhookRes, _ error) {
@@ -4606,7 +5058,7 @@ func decodePostClerkWebhookResponse(resp *http.Response) (res PostClerkWebhookRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodePostStripeWebhookResponse(resp *http.Response) (res PostStripeWebhookRes, _ error) {
@@ -4694,7 +5146,7 @@ func decodePostStripeWebhookResponse(resp *http.Response) (res PostStripeWebhook
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeRevokeOAuthTokenResponse(resp *http.Response) (res RevokeOAuthTokenRes, _ error) {
@@ -4750,7 +5202,7 @@ func decodeRevokeOAuthTokenResponse(resp *http.Response) (res RevokeOAuthTokenRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdateChatResponse(resp *http.Response) (res UpdateChatRes, _ error) {
@@ -4847,7 +5299,7 @@ func decodeUpdateChatResponse(resp *http.Response) (res UpdateChatRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdateEnvironmentUserResponse(resp *http.Response) (res UpdateEnvironmentUserRes, _ error) {
@@ -4935,7 +5387,7 @@ func decodeUpdateEnvironmentUserResponse(resp *http.Response) (res UpdateEnviron
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdateMcpendpointResponse(resp *http.Response) (res UpdateMcpendpointRes, _ error) {
@@ -4970,6 +5422,15 @@ func decodeUpdateMcpendpointResponse(resp *http.Response) (res UpdateMcpendpoint
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
 		default:
@@ -5023,7 +5484,7 @@ func decodeUpdateMcpendpointResponse(resp *http.Response) (res UpdateMcpendpoint
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdateOAuthServiceResponse(resp *http.Response) (res UpdateOAuthServiceRes, _ error) {
@@ -5120,7 +5581,7 @@ func decodeUpdateOAuthServiceResponse(resp *http.Response) (res UpdateOAuthServi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdatePromptResponse(resp *http.Response) (res UpdatePromptRes, _ error) {
@@ -5208,7 +5669,7 @@ func decodeUpdatePromptResponse(resp *http.Response) (res UpdatePromptRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
 func decodeUpdateTokenResponse(resp *http.Response) (res UpdateTokenRes, _ error) {
@@ -5305,5 +5766,5 @@ func decodeUpdateTokenResponse(resp *http.Response) (res UpdateTokenRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
-	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }

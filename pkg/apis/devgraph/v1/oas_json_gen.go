@@ -4,12 +4,13 @@ package api
 
 import (
 	"math/bits"
+	"net/url"
 	"strconv"
 	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
-
+	"github.com/google/uuid"
 	"github.com/ogen-go/ogen/json"
 	"github.com/ogen-go/ogen/validate"
 )
@@ -470,55 +471,6 @@ func (s *ApiTokenCreate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ApiTokenCreateExpiresAt as json.
-func (s ApiTokenCreateExpiresAt) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringApiTokenCreateExpiresAt:
-		e.Str(s.String)
-	case NullApiTokenCreateExpiresAt:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenCreateExpiresAt from json.
-func (s *ApiTokenCreateExpiresAt) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenCreateExpiresAt to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenCreateExpiresAt
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringApiTokenCreateExpiresAt
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenCreateExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenCreateExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *ApiTokenResponse) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -718,116 +670,6 @@ func (s *ApiTokenResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ApiTokenResponseExpiresAt as json.
-func (s ApiTokenResponseExpiresAt) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringApiTokenResponseExpiresAt:
-		e.Str(s.String)
-	case NullApiTokenResponseExpiresAt:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenResponseExpiresAt from json.
-func (s *ApiTokenResponseExpiresAt) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenResponseExpiresAt to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenResponseExpiresAt
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringApiTokenResponseExpiresAt
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenResponseExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenResponseExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenResponseScopes as json.
-func (s ApiTokenResponseScopes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayApiTokenResponseScopes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullApiTokenResponseScopes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenResponseScopes from json.
-func (s *ApiTokenResponseScopes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenResponseScopes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayApiTokenResponseScopes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenResponseScopes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenResponseScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenResponseScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *ApiTokenUpdate) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -938,214 +780,6 @@ func (s *ApiTokenUpdate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ApiTokenUpdate) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateActive as json.
-func (s ApiTokenUpdateActive) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolApiTokenUpdateActive:
-		e.Bool(s.Bool)
-	case NullApiTokenUpdateActive:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenUpdateActive from json.
-func (s *ApiTokenUpdateActive) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenUpdateActive to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolApiTokenUpdateActive
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenUpdateActive
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenUpdateActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenUpdateActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateExpiresAt as json.
-func (s ApiTokenUpdateExpiresAt) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringApiTokenUpdateExpiresAt:
-		e.Str(s.String)
-	case NullApiTokenUpdateExpiresAt:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenUpdateExpiresAt from json.
-func (s *ApiTokenUpdateExpiresAt) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenUpdateExpiresAt to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenUpdateExpiresAt
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringApiTokenUpdateExpiresAt
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenUpdateExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenUpdateExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateName as json.
-func (s ApiTokenUpdateName) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringApiTokenUpdateName:
-		e.Str(s.String)
-	case NullApiTokenUpdateName:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenUpdateName from json.
-func (s *ApiTokenUpdateName) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenUpdateName to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenUpdateName
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringApiTokenUpdateName
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenUpdateName) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenUpdateName) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateScopes as json.
-func (s ApiTokenUpdateScopes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayApiTokenUpdateScopes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullApiTokenUpdateScopes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ApiTokenUpdateScopes from json.
-func (s *ApiTokenUpdateScopes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ApiTokenUpdateScopes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayApiTokenUpdateScopes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullApiTokenUpdateScopes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ApiTokenUpdateScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ApiTokenUpdateScopes) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2292,55 +1926,6 @@ func (s *ChatSessionCreate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ChatSessionCreateID as json.
-func (s ChatSessionCreateID) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case UUIDChatSessionCreateID:
-		json.EncodeUUID(e, s.UUID)
-	case NullChatSessionCreateID:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ChatSessionCreateID from json.
-func (s *ChatSessionCreateID) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ChatSessionCreateID to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullChatSessionCreateID
-	case jx.String:
-		v, err := json.DecodeUUID(d)
-		s.UUID = v
-		if err != nil {
-			return err
-		}
-		s.Type = UUIDChatSessionCreateID
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ChatSessionCreateID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ChatSessionCreateID) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *ChatSessionUpdate) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -2351,6 +1936,12 @@ func (s *ChatSessionUpdate) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *ChatSessionUpdate) encodeFields(e *jx.Encoder) {
 	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
 		if s.Visibility.Set {
 			e.FieldStart("visibility")
 			s.Visibility.Encode(e)
@@ -2358,8 +1949,9 @@ func (s *ChatSessionUpdate) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfChatSessionUpdate = [1]string{
-	0: "visibility",
+var jsonFieldsNameOfChatSessionUpdate = [2]string{
+	0: "title",
+	1: "visibility",
 }
 
 // Decode decodes ChatSessionUpdate from json.
@@ -2371,6 +1963,16 @@ func (s *ChatSessionUpdate) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
 		case "visibility":
 			if err := func() error {
 				s.Visibility.Reset()
@@ -3149,104 +2751,6 @@ func (s *EntityDefinitionResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes EntityDefinitionResponseDescription as json.
-func (s EntityDefinitionResponseDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringEntityDefinitionResponseDescription:
-		e.Str(s.String)
-	case NullEntityDefinitionResponseDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes EntityDefinitionResponseDescription from json.
-func (s *EntityDefinitionResponseDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode EntityDefinitionResponseDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullEntityDefinitionResponseDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringEntityDefinitionResponseDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s EntityDefinitionResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityDefinitionResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionResponsePlural as json.
-func (s EntityDefinitionResponsePlural) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringEntityDefinitionResponsePlural:
-		e.Str(s.String)
-	case NullEntityDefinitionResponsePlural:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes EntityDefinitionResponsePlural from json.
-func (s *EntityDefinitionResponsePlural) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode EntityDefinitionResponsePlural to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullEntityDefinitionResponsePlural
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringEntityDefinitionResponsePlural
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s EntityDefinitionResponsePlural) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityDefinitionResponsePlural) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s EntityDefinitionResponseSpec) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -3550,104 +3054,6 @@ func (s *EntityDefinitionSpec) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EntityDefinitionSpec) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionSpecDescription as json.
-func (s EntityDefinitionSpecDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringEntityDefinitionSpecDescription:
-		e.Str(s.String)
-	case NullEntityDefinitionSpecDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes EntityDefinitionSpecDescription from json.
-func (s *EntityDefinitionSpecDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode EntityDefinitionSpecDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullEntityDefinitionSpecDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringEntityDefinitionSpecDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s EntityDefinitionSpecDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityDefinitionSpecDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionSpecPlural as json.
-func (s EntityDefinitionSpecPlural) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringEntityDefinitionSpecPlural:
-		e.Str(s.String)
-	case NullEntityDefinitionSpecPlural:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes EntityDefinitionSpecPlural from json.
-func (s *EntityDefinitionSpecPlural) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode EntityDefinitionSpecPlural to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullEntityDefinitionSpecPlural
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringEntityDefinitionSpecPlural
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s EntityDefinitionSpecPlural) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityDefinitionSpecPlural) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -5105,7 +4511,7 @@ func (s *EntityStatus) encodeFields(e *jx.Encoder) {
 	{
 		if s.LastSeen.Set {
 			e.FieldStart("last_seen")
-			s.LastSeen.Encode(e)
+			s.LastSeen.Encode(e, json.EncodeDateTime)
 		}
 	}
 	{
@@ -5162,7 +4568,7 @@ func (s *EntityStatus) Decode(d *jx.Decoder) error {
 		case "last_seen":
 			if err := func() error {
 				s.LastSeen.Reset()
-				if err := s.LastSeen.Decode(d); err != nil {
+				if err := s.LastSeen.Decode(d, json.DecodeDateTime); err != nil {
 					return err
 				}
 				return nil
@@ -5213,100 +4619,152 @@ func (s *EntityStatus) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes EntityStatusDiscoverySource as json.
-func (s EntityStatusDiscoverySource) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringEntityStatusDiscoverySource:
-		e.Str(s.String)
-	case NullEntityStatusDiscoverySource:
-		_ = s.Null
-		e.Null()
+// Encode implements json.Marshaler.
+func (s *EntityWithRelationsResponse) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EntityWithRelationsResponse) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("entity")
+		s.Entity.Encode(e)
+	}
+	{
+		if s.RelatedEntities != nil {
+			e.FieldStart("related_entities")
+			e.ArrStart()
+			for _, elem := range s.RelatedEntities {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Relations != nil {
+			e.FieldStart("relations")
+			e.ArrStart()
+			for _, elem := range s.Relations {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
 	}
 }
 
-// Decode decodes EntityStatusDiscoverySource from json.
-func (s *EntityStatusDiscoverySource) Decode(d *jx.Decoder) error {
+var jsonFieldsNameOfEntityWithRelationsResponse = [3]string{
+	0: "entity",
+	1: "related_entities",
+	2: "relations",
+}
+
+// Decode decodes EntityWithRelationsResponse from json.
+func (s *EntityWithRelationsResponse) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode EntityStatusDiscoverySource to nil")
+		return errors.New("invalid: unable to decode EntityWithRelationsResponse to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "entity":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				if err := s.Entity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity\"")
+			}
+		case "related_entities":
+			if err := func() error {
+				s.RelatedEntities = make([]EntityResponse, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem EntityResponse
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.RelatedEntities = append(s.RelatedEntities, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"related_entities\"")
+			}
+		case "relations":
+			if err := func() error {
+				s.Relations = make([]EntityRelationResponse, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem EntityRelationResponse
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Relations = append(s.Relations, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"relations\"")
+			}
+		default:
+			return d.Skip()
 		}
-		s.Type = NullEntityStatusDiscoverySource
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringEntityStatusDiscoverySource
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EntityWithRelationsResponse")
 	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfEntityWithRelationsResponse) {
+					name = jsonFieldsNameOfEntityWithRelationsResponse[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s EntityStatusDiscoverySource) MarshalJSON() ([]byte, error) {
+func (s *EntityWithRelationsResponse) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityStatusDiscoverySource) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityStatusLastSeen as json.
-func (s EntityStatusLastSeen) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case DateTimeEntityStatusLastSeen:
-		json.EncodeDateTime(e, s.DateTime)
-	case NullEntityStatusLastSeen:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes EntityStatusLastSeen from json.
-func (s *EntityStatusLastSeen) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode EntityStatusLastSeen to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullEntityStatusLastSeen
-	case jx.String:
-		v, err := json.DecodeDateTime(d)
-		s.DateTime = v
-		if err != nil {
-			return err
-		}
-		s.Type = DateTimeEntityStatusLastSeen
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s EntityStatusLastSeen) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *EntityStatusLastSeen) UnmarshalJSON(data []byte) error {
+func (s *EntityWithRelationsResponse) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -6531,6 +5989,56 @@ func (s *GetEntityDefinitionsOKApplicationJSON) UnmarshalJSON(data []byte) error
 	return s.Decode(d)
 }
 
+// Encode encodes GetEntityToolsOKApplicationJSON as json.
+func (s GetEntityToolsOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MCPToolEntityAssociationResponse(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetEntityToolsOKApplicationJSON from json.
+func (s *GetEntityToolsOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetEntityToolsOKApplicationJSON to nil")
+	}
+	var unwrapped []MCPToolEntityAssociationResponse
+	if err := func() error {
+		unwrapped = make([]MCPToolEntityAssociationResponse, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MCPToolEntityAssociationResponse
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetEntityToolsOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetEntityToolsOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetEntityToolsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s GetEnvironmentStatusOK) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -6635,6 +6143,56 @@ func (s GetEnvironmentsOKApplicationJSON) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetEnvironmentsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMcpEndpointEntityTypesOKApplicationJSON as json.
+func (s GetMcpEndpointEntityTypesOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MCPToolEntityAssociationResponse(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetMcpEndpointEntityTypesOKApplicationJSON from json.
+func (s *GetMcpEndpointEntityTypesOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMcpEndpointEntityTypesOKApplicationJSON to nil")
+	}
+	var unwrapped []MCPToolEntityAssociationResponse
+	if err := func() error {
+		unwrapped = make([]MCPToolEntityAssociationResponse, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MCPToolEntityAssociationResponse
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMcpEndpointEntityTypesOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetMcpEndpointEntityTypesOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMcpEndpointEntityTypesOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -7063,6 +6621,114 @@ func (s *ListEnvironmentUsersOKApplicationJSON) UnmarshalJSON(data []byte) error
 	return s.Decode(d)
 }
 
+// Encode encodes ListMcpendpointToolsOKApplicationJSON as json.
+func (s ListMcpendpointToolsOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []ListMcpendpointToolsOKItem(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes ListMcpendpointToolsOKApplicationJSON from json.
+func (s *ListMcpendpointToolsOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ListMcpendpointToolsOKApplicationJSON to nil")
+	}
+	var unwrapped []ListMcpendpointToolsOKItem
+	if err := func() error {
+		unwrapped = make([]ListMcpendpointToolsOKItem, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem ListMcpendpointToolsOKItem
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = ListMcpendpointToolsOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ListMcpendpointToolsOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ListMcpendpointToolsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s ListMcpendpointToolsOKItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s ListMcpendpointToolsOKItem) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
+	}
+}
+
+// Decode decodes ListMcpendpointToolsOKItem from json.
+func (s *ListMcpendpointToolsOKItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ListMcpendpointToolsOKItem to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ListMcpendpointToolsOKItem")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ListMcpendpointToolsOKItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ListMcpendpointToolsOKItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes ListOAuthTokensOKApplicationJSON as json.
 func (s ListOAuthTokensOKApplicationJSON) Encode(e *jx.Encoder) {
 	unwrapped := jx.Raw(s)
@@ -7264,18 +6930,32 @@ func (s *MCPEndpointCreate) encodeFields(e *jx.Encoder) {
 			s.Active.Encode(e)
 		}
 	}
+	{
+		if s.AllowedTools.Set {
+			e.FieldStart("allowed_tools")
+			s.AllowedTools.Encode(e)
+		}
+	}
+	{
+		if s.DeniedTools.Set {
+			e.FieldStart("denied_tools")
+			s.DeniedTools.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointCreate = [9]string{
-	0: "name",
-	1: "url",
-	2: "description",
-	3: "headers",
-	4: "devgraph_auth",
-	5: "supports_resources",
-	6: "oauth_service_id",
-	7: "immutable",
-	8: "active",
+var jsonFieldsNameOfMCPEndpointCreate = [11]string{
+	0:  "name",
+	1:  "url",
+	2:  "description",
+	3:  "headers",
+	4:  "devgraph_auth",
+	5:  "supports_resources",
+	6:  "oauth_service_id",
+	7:  "immutable",
+	8:  "active",
+	9:  "allowed_tools",
+	10: "denied_tools",
 }
 
 // Decode decodes MCPEndpointCreate from json.
@@ -7382,6 +7062,26 @@ func (s *MCPEndpointCreate) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"active\"")
 			}
+		case "allowed_tools":
+			if err := func() error {
+				s.AllowedTools.Reset()
+				if err := s.AllowedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allowed_tools\"")
+			}
+		case "denied_tools":
+			if err := func() error {
+				s.DeniedTools.Reset()
+				if err := s.DeniedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -7439,55 +7139,6 @@ func (s *MCPEndpointCreate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointCreateDescription as json.
-func (s MCPEndpointCreateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringMCPEndpointCreateDescription:
-		e.Str(s.String)
-	case NullMCPEndpointCreateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointCreateDescription from json.
-func (s *MCPEndpointCreateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointCreateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointCreateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringMCPEndpointCreateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s MCPEndpointCreateHeaders) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -7540,55 +7191,6 @@ func (s MCPEndpointCreateHeaders) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MCPEndpointCreateHeaders) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointCreateOAuthServiceID as json.
-func (s MCPEndpointCreateOAuthServiceID) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case UUIDMCPEndpointCreateOAuthServiceID:
-		json.EncodeUUID(e, s.UUID)
-	case NullMCPEndpointCreateOAuthServiceID:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointCreateOAuthServiceID from json.
-func (s *MCPEndpointCreateOAuthServiceID) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointCreateOAuthServiceID to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointCreateOAuthServiceID
-	case jx.String:
-		v, err := json.DecodeUUID(d)
-		s.UUID = v
-		if err != nil {
-			return err
-		}
-		s.Type = UUIDMCPEndpointCreateOAuthServiceID
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointCreateOAuthServiceID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointCreateOAuthServiceID) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -7656,19 +7258,33 @@ func (s *MCPEndpointResponse) encodeFields(e *jx.Encoder) {
 			s.Active.Encode(e)
 		}
 	}
+	{
+		if s.AllowedTools.Set {
+			e.FieldStart("allowed_tools")
+			s.AllowedTools.Encode(e)
+		}
+	}
+	{
+		if s.DeniedTools.Set {
+			e.FieldStart("denied_tools")
+			s.DeniedTools.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointResponse = [10]string{
-	0: "id",
-	1: "name",
-	2: "url",
-	3: "description",
-	4: "headers",
-	5: "devgraph_auth",
-	6: "supports_resources",
-	7: "oauth_service_id",
-	8: "immutable",
-	9: "active",
+var jsonFieldsNameOfMCPEndpointResponse = [12]string{
+	0:  "id",
+	1:  "name",
+	2:  "url",
+	3:  "description",
+	4:  "headers",
+	5:  "devgraph_auth",
+	6:  "supports_resources",
+	7:  "oauth_service_id",
+	8:  "immutable",
+	9:  "active",
+	10: "allowed_tools",
+	11: "denied_tools",
 }
 
 // Decode decodes MCPEndpointResponse from json.
@@ -7787,6 +7403,26 @@ func (s *MCPEndpointResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"active\"")
 			}
+		case "allowed_tools":
+			if err := func() error {
+				s.AllowedTools.Reset()
+				if err := s.AllowedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allowed_tools\"")
+			}
+		case "denied_tools":
+			if err := func() error {
+				s.DeniedTools.Reset()
+				if err := s.DeniedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -7844,55 +7480,6 @@ func (s *MCPEndpointResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointResponseDescription as json.
-func (s MCPEndpointResponseDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringMCPEndpointResponseDescription:
-		e.Str(s.String)
-	case NullMCPEndpointResponseDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointResponseDescription from json.
-func (s *MCPEndpointResponseDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointResponseDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointResponseDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringMCPEndpointResponseDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s MCPEndpointResponseHeaders) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -7945,55 +7532,6 @@ func (s MCPEndpointResponseHeaders) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MCPEndpointResponseHeaders) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointResponseOAuthServiceID as json.
-func (s MCPEndpointResponseOAuthServiceID) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case UUIDMCPEndpointResponseOAuthServiceID:
-		json.EncodeUUID(e, s.UUID)
-	case NullMCPEndpointResponseOAuthServiceID:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointResponseOAuthServiceID from json.
-func (s *MCPEndpointResponseOAuthServiceID) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointResponseOAuthServiceID to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointResponseOAuthServiceID
-	case jx.String:
-		v, err := json.DecodeUUID(d)
-		s.UUID = v
-		if err != nil {
-			return err
-		}
-		s.Type = UUIDMCPEndpointResponseOAuthServiceID
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointResponseOAuthServiceID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointResponseOAuthServiceID) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -8061,18 +7599,32 @@ func (s *MCPEndpointUpdate) encodeFields(e *jx.Encoder) {
 			s.Active.Encode(e)
 		}
 	}
+	{
+		if s.AllowedTools.Set {
+			e.FieldStart("allowed_tools")
+			s.AllowedTools.Encode(e)
+		}
+	}
+	{
+		if s.DeniedTools.Set {
+			e.FieldStart("denied_tools")
+			s.DeniedTools.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointUpdate = [9]string{
-	0: "name",
-	1: "url",
-	2: "description",
-	3: "headers",
-	4: "devgraph_auth",
-	5: "supports_resources",
-	6: "oauth_service_id",
-	7: "immutable",
-	8: "active",
+var jsonFieldsNameOfMCPEndpointUpdate = [11]string{
+	0:  "name",
+	1:  "url",
+	2:  "description",
+	3:  "headers",
+	4:  "devgraph_auth",
+	5:  "supports_resources",
+	6:  "oauth_service_id",
+	7:  "immutable",
+	8:  "active",
+	9:  "allowed_tools",
+	10: "denied_tools",
 }
 
 // Decode decodes MCPEndpointUpdate from json.
@@ -8173,6 +7725,26 @@ func (s *MCPEndpointUpdate) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"active\"")
 			}
+		case "allowed_tools":
+			if err := func() error {
+				s.AllowedTools.Reset()
+				if err := s.AllowedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allowed_tools\"")
+			}
+		case "denied_tools":
+			if err := func() error {
+				s.DeniedTools.Reset()
+				if err := s.DeniedTools.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -8197,209 +7769,15 @@ func (s *MCPEndpointUpdate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateActive as json.
-func (s MCPEndpointUpdateActive) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolMCPEndpointUpdateActive:
-		e.Bool(s.Bool)
-	case NullMCPEndpointUpdateActive:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointUpdateActive from json.
-func (s *MCPEndpointUpdateActive) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateActive to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolMCPEndpointUpdateActive
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateActive
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateDescription as json.
-func (s MCPEndpointUpdateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringMCPEndpointUpdateDescription:
-		e.Str(s.String)
-	case NullMCPEndpointUpdateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointUpdateDescription from json.
-func (s *MCPEndpointUpdateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringMCPEndpointUpdateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateDevgraphAuth as json.
-func (s MCPEndpointUpdateDevgraphAuth) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolMCPEndpointUpdateDevgraphAuth:
-		e.Bool(s.Bool)
-	case NullMCPEndpointUpdateDevgraphAuth:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointUpdateDevgraphAuth from json.
-func (s *MCPEndpointUpdateDevgraphAuth) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateDevgraphAuth to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolMCPEndpointUpdateDevgraphAuth
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateDevgraphAuth
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateDevgraphAuth) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateDevgraphAuth) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateHeaders as json.
-func (s MCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders:
-		s.MCPEndpointUpdateHeaders0.Encode(e)
-	case NullMCPEndpointUpdateHeaders:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointUpdateHeaders from json.
-func (s *MCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateHeaders to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateHeaders
-	case jx.Object:
-		if err := s.MCPEndpointUpdateHeaders0.Decode(d); err != nil {
-			return err
-		}
-		s.Type = MCPEndpointUpdateHeaders0MCPEndpointUpdateHeaders
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
-func (s MCPEndpointUpdateHeaders0) Encode(e *jx.Encoder) {
+func (s MCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields implements json.Marshaler.
-func (s MCPEndpointUpdateHeaders0) encodeFields(e *jx.Encoder) {
+func (s MCPEndpointUpdateHeaders) encodeFields(e *jx.Encoder) {
 	for k, elem := range s {
 		e.FieldStart(k)
 
@@ -8407,10 +7785,10 @@ func (s MCPEndpointUpdateHeaders0) encodeFields(e *jx.Encoder) {
 	}
 }
 
-// Decode decodes MCPEndpointUpdateHeaders0 from json.
-func (s *MCPEndpointUpdateHeaders0) Decode(d *jx.Decoder) error {
+// Decode decodes MCPEndpointUpdateHeaders from json.
+func (s *MCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateHeaders0 to nil")
+		return errors.New("invalid: unable to decode MCPEndpointUpdateHeaders to nil")
 	}
 	m := s.init()
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
@@ -8428,266 +7806,534 @@ func (s *MCPEndpointUpdateHeaders0) Decode(d *jx.Decoder) error {
 		m[string(k)] = elem
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MCPEndpointUpdateHeaders0")
+		return errors.Wrap(err, "decode MCPEndpointUpdateHeaders")
 	}
 
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateHeaders0) MarshalJSON() ([]byte, error) {
+func (s MCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateHeaders0) UnmarshalJSON(data []byte) error {
+func (s *MCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateImmutable as json.
-func (s MCPEndpointUpdateImmutable) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolMCPEndpointUpdateImmutable:
-		e.Bool(s.Bool)
-	case NullMCPEndpointUpdateImmutable:
-		_ = s.Null
-		e.Null()
+// Encode implements json.Marshaler.
+func (s *MCPToolEntityAssociationCreate) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MCPToolEntityAssociationCreate) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("mcp_endpoint_name")
+		e.Str(s.McpEndpointName)
+	}
+	{
+		e.FieldStart("tool_name")
+		e.Str(s.ToolName)
+	}
+	{
+		e.FieldStart("entity_definition_id")
+		json.EncodeUUID(e, s.EntityDefinitionID)
+	}
+	{
+		if s.EntityVersionID.Set {
+			e.FieldStart("entity_version_id")
+			s.EntityVersionID.Encode(e)
+		}
+	}
+	{
+		if s.ToolConfig.Set {
+			e.FieldStart("tool_config")
+			s.ToolConfig.Encode(e)
+		}
 	}
 }
 
-// Decode decodes MCPEndpointUpdateImmutable from json.
-func (s *MCPEndpointUpdateImmutable) Decode(d *jx.Decoder) error {
+var jsonFieldsNameOfMCPToolEntityAssociationCreate = [5]string{
+	0: "mcp_endpoint_name",
+	1: "tool_name",
+	2: "entity_definition_id",
+	3: "entity_version_id",
+	4: "tool_config",
+}
+
+// Decode decodes MCPToolEntityAssociationCreate from json.
+func (s *MCPToolEntityAssociationCreate) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateImmutable to nil")
+		return errors.New("invalid: unable to decode MCPToolEntityAssociationCreate to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "mcp_endpoint_name":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.McpEndpointName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mcp_endpoint_name\"")
+			}
+		case "tool_name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ToolName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tool_name\"")
+			}
+		case "entity_definition_id":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := json.DecodeUUID(d)
+				s.EntityDefinitionID = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity_definition_id\"")
+			}
+		case "entity_version_id":
+			if err := func() error {
+				s.EntityVersionID.Reset()
+				if err := s.EntityVersionID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity_version_id\"")
+			}
+		case "tool_config":
+			if err := func() error {
+				s.ToolConfig.Reset()
+				if err := s.ToolConfig.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tool_config\"")
+			}
+		default:
+			return d.Skip()
 		}
-		s.Type = BoolMCPEndpointUpdateImmutable
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateImmutable
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPToolEntityAssociationCreate")
 	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfMCPToolEntityAssociationCreate) {
+					name = jsonFieldsNameOfMCPToolEntityAssociationCreate[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateImmutable) MarshalJSON() ([]byte, error) {
+func (s *MCPToolEntityAssociationCreate) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateImmutable) UnmarshalJSON(data []byte) error {
+func (s *MCPToolEntityAssociationCreate) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateName as json.
-func (s MCPEndpointUpdateName) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringMCPEndpointUpdateName:
-		e.Str(s.String)
-	case NullMCPEndpointUpdateName:
-		_ = s.Null
-		e.Null()
+// Encode implements json.Marshaler.
+func (s MCPToolEntityAssociationCreateToolConfig) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s MCPToolEntityAssociationCreateToolConfig) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
 	}
 }
 
-// Decode decodes MCPEndpointUpdateName from json.
-func (s *MCPEndpointUpdateName) Decode(d *jx.Decoder) error {
+// Decode decodes MCPToolEntityAssociationCreateToolConfig from json.
+func (s *MCPToolEntityAssociationCreateToolConfig) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateName to nil")
+		return errors.New("invalid: unable to decode MCPToolEntityAssociationCreateToolConfig to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
 		}
-		s.Type = NullMCPEndpointUpdateName
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringMCPEndpointUpdateName
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPToolEntityAssociationCreateToolConfig")
 	}
+
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateName) MarshalJSON() ([]byte, error) {
+func (s MCPToolEntityAssociationCreateToolConfig) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateName) UnmarshalJSON(data []byte) error {
+func (s *MCPToolEntityAssociationCreateToolConfig) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateOAuthServiceID as json.
-func (s MCPEndpointUpdateOAuthServiceID) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case UUIDMCPEndpointUpdateOAuthServiceID:
-		json.EncodeUUID(e, s.UUID)
-	case NullMCPEndpointUpdateOAuthServiceID:
-		_ = s.Null
-		e.Null()
+// Encode implements json.Marshaler.
+func (s *MCPToolEntityAssociationResponse) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MCPToolEntityAssociationResponse) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		json.EncodeUUID(e, s.ID)
+	}
+	{
+		e.FieldStart("mcp_endpoint_name")
+		e.Str(s.McpEndpointName)
+	}
+	{
+		e.FieldStart("tool_name")
+		e.Str(s.ToolName)
+	}
+	{
+		e.FieldStart("entity_definition_id")
+		json.EncodeUUID(e, s.EntityDefinitionID)
+	}
+	{
+		if s.EntityVersionID.Set {
+			e.FieldStart("entity_version_id")
+			s.EntityVersionID.Encode(e)
+		}
+	}
+	{
+		if s.ToolConfig.Set {
+			e.FieldStart("tool_config")
+			s.ToolConfig.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("environment_id")
+		json.EncodeUUID(e, s.EnvironmentID)
+	}
+	{
+		e.FieldStart("created_at")
+		e.Str(s.CreatedAt)
+	}
+	{
+		e.FieldStart("updated_at")
+		e.Str(s.UpdatedAt)
 	}
 }
 
-// Decode decodes MCPEndpointUpdateOAuthServiceID from json.
-func (s *MCPEndpointUpdateOAuthServiceID) Decode(d *jx.Decoder) error {
+var jsonFieldsNameOfMCPToolEntityAssociationResponse = [9]string{
+	0: "id",
+	1: "mcp_endpoint_name",
+	2: "tool_name",
+	3: "entity_definition_id",
+	4: "entity_version_id",
+	5: "tool_config",
+	6: "environment_id",
+	7: "created_at",
+	8: "updated_at",
+}
+
+// Decode decodes MCPToolEntityAssociationResponse from json.
+func (s *MCPToolEntityAssociationResponse) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateOAuthServiceID to nil")
+		return errors.New("invalid: unable to decode MCPToolEntityAssociationResponse to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := json.DecodeUUID(d)
+				s.ID = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "mcp_endpoint_name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.McpEndpointName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mcp_endpoint_name\"")
+			}
+		case "tool_name":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.ToolName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tool_name\"")
+			}
+		case "entity_definition_id":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := json.DecodeUUID(d)
+				s.EntityDefinitionID = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity_definition_id\"")
+			}
+		case "entity_version_id":
+			if err := func() error {
+				s.EntityVersionID.Reset()
+				if err := s.EntityVersionID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity_version_id\"")
+			}
+		case "tool_config":
+			if err := func() error {
+				s.ToolConfig.Reset()
+				if err := s.ToolConfig.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tool_config\"")
+			}
+		case "environment_id":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := json.DecodeUUID(d)
+				s.EnvironmentID = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"environment_id\"")
+			}
+		case "created_at":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				v, err := d.Str()
+				s.CreatedAt = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.UpdatedAt = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
 		}
-		s.Type = NullMCPEndpointUpdateOAuthServiceID
-	case jx.String:
-		v, err := json.DecodeUUID(d)
-		s.UUID = v
-		if err != nil {
-			return err
-		}
-		s.Type = UUIDMCPEndpointUpdateOAuthServiceID
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPToolEntityAssociationResponse")
 	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b11001111,
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfMCPToolEntityAssociationResponse) {
+					name = jsonFieldsNameOfMCPToolEntityAssociationResponse[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateOAuthServiceID) MarshalJSON() ([]byte, error) {
+func (s *MCPToolEntityAssociationResponse) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateOAuthServiceID) UnmarshalJSON(data []byte) error {
+func (s *MCPToolEntityAssociationResponse) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateSupportsResources as json.
-func (s MCPEndpointUpdateSupportsResources) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolMCPEndpointUpdateSupportsResources:
-		e.Bool(s.Bool)
-	case NullMCPEndpointUpdateSupportsResources:
-		_ = s.Null
-		e.Null()
+// Encode implements json.Marshaler.
+func (s MCPToolEntityAssociationResponseToolConfig) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s MCPToolEntityAssociationResponseToolConfig) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
 	}
 }
 
-// Decode decodes MCPEndpointUpdateSupportsResources from json.
-func (s *MCPEndpointUpdateSupportsResources) Decode(d *jx.Decoder) error {
+// Decode decodes MCPToolEntityAssociationResponseToolConfig from json.
+func (s *MCPToolEntityAssociationResponseToolConfig) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateSupportsResources to nil")
+		return errors.New("invalid: unable to decode MCPToolEntityAssociationResponseToolConfig to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
 		}
-		s.Type = BoolMCPEndpointUpdateSupportsResources
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateSupportsResources
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MCPToolEntityAssociationResponseToolConfig")
 	}
+
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateSupportsResources) MarshalJSON() ([]byte, error) {
+func (s MCPToolEntityAssociationResponseToolConfig) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateSupportsResources) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateURL as json.
-func (s MCPEndpointUpdateURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringMCPEndpointUpdateURL:
-		e.Str(s.String)
-	case NullMCPEndpointUpdateURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes MCPEndpointUpdateURL from json.
-func (s *MCPEndpointUpdateURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MCPEndpointUpdateURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullMCPEndpointUpdateURL
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringMCPEndpointUpdateURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s MCPEndpointUpdateURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MCPEndpointUpdateURL) UnmarshalJSON(data []byte) error {
+func (s *MCPToolEntityAssociationResponseToolConfig) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -8836,55 +8482,6 @@ func (s *ModelCreate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ModelCreate) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ModelCreateDescription as json.
-func (s ModelCreateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringModelCreateDescription:
-		e.Str(s.String)
-	case NullModelCreateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes ModelCreateDescription from json.
-func (s *ModelCreateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ModelCreateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullModelCreateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringModelCreateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s ModelCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ModelCreateDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -9458,51 +9055,48 @@ func (s *ModelResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ModelResponseDescription as json.
-func (s ModelResponseDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringModelResponseDescription:
-		e.Str(s.String)
-	case NullModelResponseDescription:
-		_ = s.Null
+// Encode encodes string as json.
+func (o NilString) Encode(e *jx.Encoder) {
+	if o.Null {
 		e.Null()
+		return
 	}
+	e.Str(string(o.Value))
 }
 
-// Decode decodes ModelResponseDescription from json.
-func (s *ModelResponseDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode ModelResponseDescription to nil")
+// Decode decodes string from json.
+func (o *NilString) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode NilString to nil")
 	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
+	if d.Next() == jx.Null {
 		if err := d.Null(); err != nil {
 			return err
 		}
-		s.Type = NullModelResponseDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringModelResponseDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
+
+		var v string
+		o.Value = v
+		o.Null = true
+		return nil
 	}
+	o.Null = false
+	v, err := d.Str()
+	if err != nil {
+		return err
+	}
+	o.Value = string(v)
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s ModelResponseDescription) MarshalJSON() ([]byte, error) {
+func (s NilString) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *ModelResponseDescription) UnmarshalJSON(data []byte) error {
+func (s *NilString) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -9650,165 +9244,6 @@ func (s *OAuthAuthorizationRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OAuthAuthorizationRequest) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestRedirectURI as json.
-func (s OAuthAuthorizationRequestRedirectURI) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthAuthorizationRequestRedirectURI:
-		e.Str(s.String)
-	case NullOAuthAuthorizationRequestRedirectURI:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthAuthorizationRequestRedirectURI from json.
-func (s *OAuthAuthorizationRequestRedirectURI) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthAuthorizationRequestRedirectURI to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthAuthorizationRequestRedirectURI
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthAuthorizationRequestRedirectURI
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthAuthorizationRequestRedirectURI) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthAuthorizationRequestRedirectURI) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestScopes as json.
-func (s OAuthAuthorizationRequestScopes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayOAuthAuthorizationRequestScopes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullOAuthAuthorizationRequestScopes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthAuthorizationRequestScopes from json.
-func (s *OAuthAuthorizationRequestScopes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthAuthorizationRequestScopes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayOAuthAuthorizationRequestScopes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthAuthorizationRequestScopes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthAuthorizationRequestScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthAuthorizationRequestScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestState as json.
-func (s OAuthAuthorizationRequestState) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthAuthorizationRequestState:
-		e.Str(s.String)
-	case NullOAuthAuthorizationRequestState:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthAuthorizationRequestState from json.
-func (s *OAuthAuthorizationRequestState) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthAuthorizationRequestState to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthAuthorizationRequestState
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthAuthorizationRequestState
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthAuthorizationRequestState) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthAuthorizationRequestState) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -10258,62 +9693,15 @@ func (s *OAuthServiceCreate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceCreateAdditionalParams as json.
-func (s OAuthServiceCreateAdditionalParams) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case OAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams:
-		s.OAuthServiceCreateAdditionalParams0.Encode(e)
-	case NullOAuthServiceCreateAdditionalParams:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateAdditionalParams from json.
-func (s *OAuthServiceCreateAdditionalParams) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateAdditionalParams to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateAdditionalParams
-	case jx.Object:
-		if err := s.OAuthServiceCreateAdditionalParams0.Decode(d); err != nil {
-			return err
-		}
-		s.Type = OAuthServiceCreateAdditionalParams0OAuthServiceCreateAdditionalParams
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateAdditionalParams) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateAdditionalParams) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
-func (s OAuthServiceCreateAdditionalParams0) Encode(e *jx.Encoder) {
+func (s OAuthServiceCreateAdditionalParams) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields implements json.Marshaler.
-func (s OAuthServiceCreateAdditionalParams0) encodeFields(e *jx.Encoder) {
+func (s OAuthServiceCreateAdditionalParams) encodeFields(e *jx.Encoder) {
 	for k, elem := range s {
 		e.FieldStart(k)
 
@@ -10323,10 +9711,10 @@ func (s OAuthServiceCreateAdditionalParams0) encodeFields(e *jx.Encoder) {
 	}
 }
 
-// Decode decodes OAuthServiceCreateAdditionalParams0 from json.
-func (s *OAuthServiceCreateAdditionalParams0) Decode(d *jx.Decoder) error {
+// Decode decodes OAuthServiceCreateAdditionalParams from json.
+func (s *OAuthServiceCreateAdditionalParams) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateAdditionalParams0 to nil")
+		return errors.New("invalid: unable to decode OAuthServiceCreateAdditionalParams to nil")
 	}
 	m := s.init()
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
@@ -10344,278 +9732,21 @@ func (s *OAuthServiceCreateAdditionalParams0) Decode(d *jx.Decoder) error {
 		m[string(k)] = elem
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode OAuthServiceCreateAdditionalParams0")
+		return errors.Wrap(err, "decode OAuthServiceCreateAdditionalParams")
 	}
 
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateAdditionalParams0) MarshalJSON() ([]byte, error) {
+func (s OAuthServiceCreateAdditionalParams) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateAdditionalParams0) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateDefaultScopes as json.
-func (s OAuthServiceCreateDefaultScopes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayOAuthServiceCreateDefaultScopes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullOAuthServiceCreateDefaultScopes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateDefaultScopes from json.
-func (s *OAuthServiceCreateDefaultScopes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateDefaultScopes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayOAuthServiceCreateDefaultScopes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateDefaultScopes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateDefaultScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateDefaultScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateDescription as json.
-func (s OAuthServiceCreateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceCreateDescription:
-		e.Str(s.String)
-	case NullOAuthServiceCreateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateDescription from json.
-func (s *OAuthServiceCreateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceCreateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateHomepageURL as json.
-func (s OAuthServiceCreateHomepageURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceCreateHomepageURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceCreateHomepageURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateHomepageURL from json.
-func (s *OAuthServiceCreateHomepageURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateHomepageURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateHomepageURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceCreateHomepageURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateHomepageURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateHomepageURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateIconURL as json.
-func (s OAuthServiceCreateIconURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceCreateIconURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceCreateIconURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateIconURL from json.
-func (s *OAuthServiceCreateIconURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateIconURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateIconURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceCreateIconURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateIconURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateIconURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateUserinfoURL as json.
-func (s OAuthServiceCreateUserinfoURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceCreateUserinfoURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceCreateUserinfoURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceCreateUserinfoURL from json.
-func (s *OAuthServiceCreateUserinfoURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceCreateUserinfoURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceCreateUserinfoURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceCreateUserinfoURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceCreateUserinfoURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceCreateUserinfoURL) UnmarshalJSON(data []byte) error {
+func (s *OAuthServiceCreateAdditionalParams) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -11077,202 +10208,6 @@ func (s *OAuthServiceResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceResponseDescription as json.
-func (s OAuthServiceResponseDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceResponseDescription:
-		e.Str(s.String)
-	case NullOAuthServiceResponseDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceResponseDescription from json.
-func (s *OAuthServiceResponseDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceResponseDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceResponseDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceResponseDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceResponseHomepageURL as json.
-func (s OAuthServiceResponseHomepageURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceResponseHomepageURL:
-		e.Str(s.String)
-	case NullOAuthServiceResponseHomepageURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceResponseHomepageURL from json.
-func (s *OAuthServiceResponseHomepageURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceResponseHomepageURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceResponseHomepageURL
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceResponseHomepageURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceResponseHomepageURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceResponseHomepageURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceResponseIconURL as json.
-func (s OAuthServiceResponseIconURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceResponseIconURL:
-		e.Str(s.String)
-	case NullOAuthServiceResponseIconURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceResponseIconURL from json.
-func (s *OAuthServiceResponseIconURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceResponseIconURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceResponseIconURL
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceResponseIconURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceResponseIconURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceResponseIconURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceResponseUserinfoURL as json.
-func (s OAuthServiceResponseUserinfoURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceResponseUserinfoURL:
-		e.Str(s.String)
-	case NullOAuthServiceResponseUserinfoURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceResponseUserinfoURL from json.
-func (s *OAuthServiceResponseUserinfoURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceResponseUserinfoURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceResponseUserinfoURL
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceResponseUserinfoURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceResponseUserinfoURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceResponseUserinfoURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *OAuthServiceUpdate) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -11540,62 +10475,15 @@ func (s *OAuthServiceUpdate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceUpdateAdditionalParams as json.
-func (s OAuthServiceUpdateAdditionalParams) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case OAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams:
-		s.OAuthServiceUpdateAdditionalParams0.Encode(e)
-	case NullOAuthServiceUpdateAdditionalParams:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateAdditionalParams from json.
-func (s *OAuthServiceUpdateAdditionalParams) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateAdditionalParams to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateAdditionalParams
-	case jx.Object:
-		if err := s.OAuthServiceUpdateAdditionalParams0.Decode(d); err != nil {
-			return err
-		}
-		s.Type = OAuthServiceUpdateAdditionalParams0OAuthServiceUpdateAdditionalParams
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateAdditionalParams) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateAdditionalParams) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
-func (s OAuthServiceUpdateAdditionalParams0) Encode(e *jx.Encoder) {
+func (s OAuthServiceUpdateAdditionalParams) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields implements json.Marshaler.
-func (s OAuthServiceUpdateAdditionalParams0) encodeFields(e *jx.Encoder) {
+func (s OAuthServiceUpdateAdditionalParams) encodeFields(e *jx.Encoder) {
 	for k, elem := range s {
 		e.FieldStart(k)
 
@@ -11605,10 +10493,10 @@ func (s OAuthServiceUpdateAdditionalParams0) encodeFields(e *jx.Encoder) {
 	}
 }
 
-// Decode decodes OAuthServiceUpdateAdditionalParams0 from json.
-func (s *OAuthServiceUpdateAdditionalParams0) Decode(d *jx.Decoder) error {
+// Decode decodes OAuthServiceUpdateAdditionalParams from json.
+func (s *OAuthServiceUpdateAdditionalParams) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateAdditionalParams0 to nil")
+		return errors.New("invalid: unable to decode OAuthServiceUpdateAdditionalParams to nil")
 	}
 	m := s.init()
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
@@ -11626,633 +10514,21 @@ func (s *OAuthServiceUpdateAdditionalParams0) Decode(d *jx.Decoder) error {
 		m[string(k)] = elem
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode OAuthServiceUpdateAdditionalParams0")
+		return errors.Wrap(err, "decode OAuthServiceUpdateAdditionalParams")
 	}
 
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateAdditionalParams0) MarshalJSON() ([]byte, error) {
+func (s OAuthServiceUpdateAdditionalParams) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateAdditionalParams0) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateAuthorizationURL as json.
-func (s OAuthServiceUpdateAuthorizationURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceUpdateAuthorizationURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceUpdateAuthorizationURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateAuthorizationURL from json.
-func (s *OAuthServiceUpdateAuthorizationURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateAuthorizationURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateAuthorizationURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceUpdateAuthorizationURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateAuthorizationURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateAuthorizationURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateClientID as json.
-func (s OAuthServiceUpdateClientID) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceUpdateClientID:
-		e.Str(s.String)
-	case NullOAuthServiceUpdateClientID:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateClientID from json.
-func (s *OAuthServiceUpdateClientID) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateClientID to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateClientID
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceUpdateClientID
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateClientID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateClientID) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateClientSecret as json.
-func (s OAuthServiceUpdateClientSecret) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceUpdateClientSecret:
-		e.Str(s.String)
-	case NullOAuthServiceUpdateClientSecret:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateClientSecret from json.
-func (s *OAuthServiceUpdateClientSecret) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateClientSecret to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateClientSecret
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceUpdateClientSecret
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateClientSecret) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateClientSecret) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateDefaultScopes as json.
-func (s OAuthServiceUpdateDefaultScopes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayOAuthServiceUpdateDefaultScopes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullOAuthServiceUpdateDefaultScopes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateDefaultScopes from json.
-func (s *OAuthServiceUpdateDefaultScopes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateDefaultScopes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayOAuthServiceUpdateDefaultScopes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateDefaultScopes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateDefaultScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateDefaultScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateDescription as json.
-func (s OAuthServiceUpdateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceUpdateDescription:
-		e.Str(s.String)
-	case NullOAuthServiceUpdateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateDescription from json.
-func (s *OAuthServiceUpdateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceUpdateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateDisplayName as json.
-func (s OAuthServiceUpdateDisplayName) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthServiceUpdateDisplayName:
-		e.Str(s.String)
-	case NullOAuthServiceUpdateDisplayName:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateDisplayName from json.
-func (s *OAuthServiceUpdateDisplayName) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateDisplayName to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateDisplayName
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthServiceUpdateDisplayName
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateDisplayName) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateDisplayName) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateHomepageURL as json.
-func (s OAuthServiceUpdateHomepageURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceUpdateHomepageURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceUpdateHomepageURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateHomepageURL from json.
-func (s *OAuthServiceUpdateHomepageURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateHomepageURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateHomepageURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceUpdateHomepageURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateHomepageURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateHomepageURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateIconURL as json.
-func (s OAuthServiceUpdateIconURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceUpdateIconURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceUpdateIconURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateIconURL from json.
-func (s *OAuthServiceUpdateIconURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateIconURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateIconURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceUpdateIconURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateIconURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateIconURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateIsActive as json.
-func (s OAuthServiceUpdateIsActive) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolOAuthServiceUpdateIsActive:
-		e.Bool(s.Bool)
-	case NullOAuthServiceUpdateIsActive:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateIsActive from json.
-func (s *OAuthServiceUpdateIsActive) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateIsActive to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolOAuthServiceUpdateIsActive
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateIsActive
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateIsActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateIsActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateSupportedGrantTypes as json.
-func (s OAuthServiceUpdateSupportedGrantTypes) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringArrayOAuthServiceUpdateSupportedGrantTypes:
-		e.ArrStart()
-		for _, elem := range s.StringArray {
-			e.Str(elem)
-		}
-		e.ArrEnd()
-	case NullOAuthServiceUpdateSupportedGrantTypes:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateSupportedGrantTypes from json.
-func (s *OAuthServiceUpdateSupportedGrantTypes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateSupportedGrantTypes to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Array:
-		s.StringArray = make([]string, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem string
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			s.StringArray = append(s.StringArray, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		s.Type = StringArrayOAuthServiceUpdateSupportedGrantTypes
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateSupportedGrantTypes
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateSupportedGrantTypes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateSupportedGrantTypes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateTokenURL as json.
-func (s OAuthServiceUpdateTokenURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceUpdateTokenURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceUpdateTokenURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateTokenURL from json.
-func (s *OAuthServiceUpdateTokenURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateTokenURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateTokenURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceUpdateTokenURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateTokenURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateTokenURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateUserinfoURL as json.
-func (s OAuthServiceUpdateUserinfoURL) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case URIOAuthServiceUpdateUserinfoURL:
-		json.EncodeURI(e, s.URI)
-	case NullOAuthServiceUpdateUserinfoURL:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthServiceUpdateUserinfoURL from json.
-func (s *OAuthServiceUpdateUserinfoURL) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthServiceUpdateUserinfoURL to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthServiceUpdateUserinfoURL
-	case jx.String:
-		v, err := json.DecodeURI(d)
-		s.URI = v
-		if err != nil {
-			return err
-		}
-		s.Type = URIOAuthServiceUpdateUserinfoURL
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthServiceUpdateUserinfoURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthServiceUpdateUserinfoURL) UnmarshalJSON(data []byte) error {
+func (s *OAuthServiceUpdateAdditionalParams) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -12400,104 +10676,6 @@ func (s *OAuthTokenExchange) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OAuthTokenExchange) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenExchangeRedirectURI as json.
-func (s OAuthTokenExchangeRedirectURI) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthTokenExchangeRedirectURI:
-		e.Str(s.String)
-	case NullOAuthTokenExchangeRedirectURI:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthTokenExchangeRedirectURI from json.
-func (s *OAuthTokenExchangeRedirectURI) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthTokenExchangeRedirectURI to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthTokenExchangeRedirectURI
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthTokenExchangeRedirectURI
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthTokenExchangeRedirectURI) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthTokenExchangeRedirectURI) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenExchangeState as json.
-func (s OAuthTokenExchangeState) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthTokenExchangeState:
-		e.Str(s.String)
-	case NullOAuthTokenExchangeState:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthTokenExchangeState from json.
-func (s *OAuthTokenExchangeState) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthTokenExchangeState to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthTokenExchangeState
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthTokenExchangeState
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthTokenExchangeState) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthTokenExchangeState) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -12674,104 +10852,6 @@ func (s *OAuthTokenResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OAuthTokenResponse) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenResponseExpiresIn as json.
-func (s OAuthTokenResponseExpiresIn) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case IntOAuthTokenResponseExpiresIn:
-		e.Int(s.Int)
-	case NullOAuthTokenResponseExpiresIn:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthTokenResponseExpiresIn from json.
-func (s *OAuthTokenResponseExpiresIn) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthTokenResponseExpiresIn to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthTokenResponseExpiresIn
-	case jx.Number:
-		v, err := d.Int()
-		s.Int = int(v)
-		if err != nil {
-			return err
-		}
-		s.Type = IntOAuthTokenResponseExpiresIn
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthTokenResponseExpiresIn) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthTokenResponseExpiresIn) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenResponseRefreshToken as json.
-func (s OAuthTokenResponseRefreshToken) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringOAuthTokenResponseRefreshToken:
-		e.Str(s.String)
-	case NullOAuthTokenResponseRefreshToken:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes OAuthTokenResponseRefreshToken from json.
-func (s *OAuthTokenResponseRefreshToken) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode OAuthTokenResponseRefreshToken to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullOAuthTokenResponseRefreshToken
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringOAuthTokenResponseRefreshToken
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OAuthTokenResponseRefreshToken) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OAuthTokenResponseRefreshToken) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -13089,237 +11169,6 @@ func (s *OpenAIModelProviderResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ApiTokenCreateExpiresAt as json.
-func (o OptApiTokenCreateExpiresAt) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenCreateExpiresAt from json.
-func (o *OptApiTokenCreateExpiresAt) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenCreateExpiresAt to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenCreateExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenCreateExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenResponseExpiresAt as json.
-func (o OptApiTokenResponseExpiresAt) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenResponseExpiresAt from json.
-func (o *OptApiTokenResponseExpiresAt) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenResponseExpiresAt to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenResponseExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenResponseExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenResponseScopes as json.
-func (o OptApiTokenResponseScopes) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenResponseScopes from json.
-func (o *OptApiTokenResponseScopes) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenResponseScopes to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenResponseScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenResponseScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateActive as json.
-func (o OptApiTokenUpdateActive) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenUpdateActive from json.
-func (o *OptApiTokenUpdateActive) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenUpdateActive to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenUpdateActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenUpdateActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateExpiresAt as json.
-func (o OptApiTokenUpdateExpiresAt) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenUpdateExpiresAt from json.
-func (o *OptApiTokenUpdateExpiresAt) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenUpdateExpiresAt to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenUpdateExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenUpdateExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateName as json.
-func (o OptApiTokenUpdateName) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenUpdateName from json.
-func (o *OptApiTokenUpdateName) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenUpdateName to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenUpdateName) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenUpdateName) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ApiTokenUpdateScopes as json.
-func (o OptApiTokenUpdateScopes) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ApiTokenUpdateScopes from json.
-func (o *OptApiTokenUpdateScopes) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptApiTokenUpdateScopes to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptApiTokenUpdateScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptApiTokenUpdateScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode encodes bool as json.
 func (o OptBool) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -13351,39 +11200,6 @@ func (s OptBool) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptBool) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ChatSessionCreateID as json.
-func (o OptChatSessionCreateID) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ChatSessionCreateID from json.
-func (o *OptChatSessionCreateID) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptChatSessionCreateID to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptChatSessionCreateID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptChatSessionCreateID) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -13454,138 +11270,6 @@ func (s OptDateTime) MarshalJSON() ([]byte, error) {
 func (s *OptDateTime) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d, json.DecodeDateTime)
-}
-
-// Encode encodes EntityDefinitionResponseDescription as json.
-func (o OptEntityDefinitionResponseDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityDefinitionResponseDescription from json.
-func (o *OptEntityDefinitionResponseDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityDefinitionResponseDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityDefinitionResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityDefinitionResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionResponsePlural as json.
-func (o OptEntityDefinitionResponsePlural) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityDefinitionResponsePlural from json.
-func (o *OptEntityDefinitionResponsePlural) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityDefinitionResponsePlural to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityDefinitionResponsePlural) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityDefinitionResponsePlural) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionSpecDescription as json.
-func (o OptEntityDefinitionSpecDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityDefinitionSpecDescription from json.
-func (o *OptEntityDefinitionSpecDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityDefinitionSpecDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityDefinitionSpecDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityDefinitionSpecDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityDefinitionSpecPlural as json.
-func (o OptEntityDefinitionSpecPlural) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityDefinitionSpecPlural from json.
-func (o *OptEntityDefinitionSpecPlural) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityDefinitionSpecPlural to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityDefinitionSpecPlural) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityDefinitionSpecPlural) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
 }
 
 // Encode encodes EntityMetadataAnnotations as json.
@@ -13757,72 +11441,6 @@ func (s *OptEntityStatus) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes EntityStatusDiscoverySource as json.
-func (o OptEntityStatusDiscoverySource) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityStatusDiscoverySource from json.
-func (o *OptEntityStatusDiscoverySource) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityStatusDiscoverySource to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityStatusDiscoverySource) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityStatusDiscoverySource) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes EntityStatusLastSeen as json.
-func (o OptEntityStatusLastSeen) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes EntityStatusLastSeen from json.
-func (o *OptEntityStatusLastSeen) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptEntityStatusLastSeen to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptEntityStatusLastSeen) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptEntityStatusLastSeen) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode encodes EnvironmentUserCreateRole as json.
 func (o OptEnvironmentUserCreateRole) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -13924,39 +11542,6 @@ func (s *OptInt) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointCreateDescription as json.
-func (o OptMCPEndpointCreateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointCreateDescription from json.
-func (o *OptMCPEndpointCreateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointCreateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode encodes MCPEndpointCreateHeaders as json.
 func (o OptMCPEndpointCreateHeaders) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -13987,72 +11572,6 @@ func (s OptMCPEndpointCreateHeaders) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptMCPEndpointCreateHeaders) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointCreateOAuthServiceID as json.
-func (o OptMCPEndpointCreateOAuthServiceID) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointCreateOAuthServiceID from json.
-func (o *OptMCPEndpointCreateOAuthServiceID) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointCreateOAuthServiceID to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointCreateOAuthServiceID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointCreateOAuthServiceID) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointResponseDescription as json.
-func (o OptMCPEndpointResponseDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointResponseDescription from json.
-func (o *OptMCPEndpointResponseDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointResponseDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointResponseDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -14091,152 +11610,190 @@ func (s *OptMCPEndpointResponseHeaders) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointResponseOAuthServiceID as json.
-func (o OptMCPEndpointResponseOAuthServiceID) Encode(e *jx.Encoder) {
+// Encode encodes bool as json.
+func (o OptNilBool) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Bool(bool(o.Value))
 }
 
-// Decode decodes MCPEndpointResponseOAuthServiceID from json.
-func (o *OptMCPEndpointResponseOAuthServiceID) Decode(d *jx.Decoder) error {
+// Decode decodes bool from json.
+func (o *OptNilBool) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointResponseOAuthServiceID to nil")
+		return errors.New("invalid: unable to decode OptNilBool to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v bool
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := d.Bool()
+	if err != nil {
 		return err
 	}
+	o.Value = bool(v)
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointResponseOAuthServiceID) MarshalJSON() ([]byte, error) {
+func (s OptNilBool) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointResponseOAuthServiceID) UnmarshalJSON(data []byte) error {
+func (s *OptNilBool) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateActive as json.
-func (o OptMCPEndpointUpdateActive) Encode(e *jx.Encoder) {
+// Encode encodes time.Time as json.
+func (o OptNilDateTime) Encode(e *jx.Encoder, format func(*jx.Encoder, time.Time)) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	format(e, o.Value)
 }
 
-// Decode decodes MCPEndpointUpdateActive from json.
-func (o *OptMCPEndpointUpdateActive) Decode(d *jx.Decoder) error {
+// Decode decodes time.Time from json.
+func (o *OptNilDateTime) Decode(d *jx.Decoder, format func(*jx.Decoder) (time.Time, error)) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateActive to nil")
+		return errors.New("invalid: unable to decode OptNilDateTime to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v time.Time
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := format(d)
+	if err != nil {
 		return err
 	}
+	o.Value = v
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateActive) MarshalJSON() ([]byte, error) {
+func (s OptNilDateTime) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
-	s.Encode(&e)
+	s.Encode(&e, json.EncodeDateTime)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateActive) UnmarshalJSON(data []byte) error {
+func (s *OptNilDateTime) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
-	return s.Decode(d)
+	return s.Decode(d, json.DecodeDateTime)
 }
 
-// Encode encodes MCPEndpointUpdateDescription as json.
-func (o OptMCPEndpointUpdateDescription) Encode(e *jx.Encoder) {
+// Encode encodes int as json.
+func (o OptNilInt) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Int(int(o.Value))
 }
 
-// Decode decodes MCPEndpointUpdateDescription from json.
-func (o *OptMCPEndpointUpdateDescription) Decode(d *jx.Decoder) error {
+// Decode decodes int from json.
+func (o *OptNilInt) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateDescription to nil")
+		return errors.New("invalid: unable to decode OptNilInt to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v int
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := d.Int()
+	if err != nil {
 		return err
 	}
+	o.Value = int(v)
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateDescription) MarshalJSON() ([]byte, error) {
+func (s OptNilInt) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateDevgraphAuth as json.
-func (o OptMCPEndpointUpdateDevgraphAuth) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointUpdateDevgraphAuth from json.
-func (o *OptMCPEndpointUpdateDevgraphAuth) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateDevgraphAuth to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateDevgraphAuth) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateDevgraphAuth) UnmarshalJSON(data []byte) error {
+func (s *OptNilInt) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes MCPEndpointUpdateHeaders as json.
-func (o OptMCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
+func (o OptNilMCPEndpointUpdateHeaders) Encode(e *jx.Encoder) {
 	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes MCPEndpointUpdateHeaders from json.
-func (o *OptMCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
+func (o *OptNilMCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateHeaders to nil")
+		return errors.New("invalid: unable to decode OptNilMCPEndpointUpdateHeaders to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v MCPEndpointUpdateHeaders
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
+	o.Null = false
+	o.Value = make(MCPEndpointUpdateHeaders)
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -14244,32 +11801,49 @@ func (o *OptMCPEndpointUpdateHeaders) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
+func (s OptNilMCPEndpointUpdateHeaders) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
+func (s *OptNilMCPEndpointUpdateHeaders) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateImmutable as json.
-func (o OptMCPEndpointUpdateImmutable) Encode(e *jx.Encoder) {
+// Encode encodes MCPToolEntityAssociationCreateToolConfig as json.
+func (o OptNilMCPToolEntityAssociationCreateToolConfig) Encode(e *jx.Encoder) {
 	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
-// Decode decodes MCPEndpointUpdateImmutable from json.
-func (o *OptMCPEndpointUpdateImmutable) Decode(d *jx.Decoder) error {
+// Decode decodes MCPToolEntityAssociationCreateToolConfig from json.
+func (o *OptNilMCPToolEntityAssociationCreateToolConfig) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateImmutable to nil")
+		return errors.New("invalid: unable to decode OptNilMCPToolEntityAssociationCreateToolConfig to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v MCPToolEntityAssociationCreateToolConfig
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
+	o.Null = false
+	o.Value = make(MCPToolEntityAssociationCreateToolConfig)
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -14277,32 +11851,49 @@ func (o *OptMCPEndpointUpdateImmutable) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateImmutable) MarshalJSON() ([]byte, error) {
+func (s OptNilMCPToolEntityAssociationCreateToolConfig) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateImmutable) UnmarshalJSON(data []byte) error {
+func (s *OptNilMCPToolEntityAssociationCreateToolConfig) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes MCPEndpointUpdateName as json.
-func (o OptMCPEndpointUpdateName) Encode(e *jx.Encoder) {
+// Encode encodes MCPToolEntityAssociationResponseToolConfig as json.
+func (o OptNilMCPToolEntityAssociationResponseToolConfig) Encode(e *jx.Encoder) {
 	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
-// Decode decodes MCPEndpointUpdateName from json.
-func (o *OptMCPEndpointUpdateName) Decode(d *jx.Decoder) error {
+// Decode decodes MCPToolEntityAssociationResponseToolConfig from json.
+func (o *OptNilMCPToolEntityAssociationResponseToolConfig) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateName to nil")
+		return errors.New("invalid: unable to decode OptNilMCPToolEntityAssociationResponseToolConfig to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v MCPToolEntityAssociationResponseToolConfig
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
+	o.Null = false
+	o.Value = make(MCPToolEntityAssociationResponseToolConfig)
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -14310,296 +11901,49 @@ func (o *OptMCPEndpointUpdateName) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateName) MarshalJSON() ([]byte, error) {
+func (s OptNilMCPToolEntityAssociationResponseToolConfig) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateName) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateOAuthServiceID as json.
-func (o OptMCPEndpointUpdateOAuthServiceID) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointUpdateOAuthServiceID from json.
-func (o *OptMCPEndpointUpdateOAuthServiceID) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateOAuthServiceID to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateOAuthServiceID) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateOAuthServiceID) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateSupportsResources as json.
-func (o OptMCPEndpointUpdateSupportsResources) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointUpdateSupportsResources from json.
-func (o *OptMCPEndpointUpdateSupportsResources) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateSupportsResources to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateSupportsResources) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateSupportsResources) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes MCPEndpointUpdateURL as json.
-func (o OptMCPEndpointUpdateURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes MCPEndpointUpdateURL from json.
-func (o *OptMCPEndpointUpdateURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptMCPEndpointUpdateURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptMCPEndpointUpdateURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptMCPEndpointUpdateURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ModelCreateDescription as json.
-func (o OptModelCreateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ModelCreateDescription from json.
-func (o *OptModelCreateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptModelCreateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptModelCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptModelCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes ModelResponseDescription as json.
-func (o OptModelResponseDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes ModelResponseDescription from json.
-func (o *OptModelResponseDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptModelResponseDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptModelResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptModelResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestRedirectURI as json.
-func (o OptOAuthAuthorizationRequestRedirectURI) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthAuthorizationRequestRedirectURI from json.
-func (o *OptOAuthAuthorizationRequestRedirectURI) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthAuthorizationRequestRedirectURI to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthAuthorizationRequestRedirectURI) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthAuthorizationRequestRedirectURI) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestScopes as json.
-func (o OptOAuthAuthorizationRequestScopes) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthAuthorizationRequestScopes from json.
-func (o *OptOAuthAuthorizationRequestScopes) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthAuthorizationRequestScopes to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthAuthorizationRequestScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthAuthorizationRequestScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthAuthorizationRequestState as json.
-func (o OptOAuthAuthorizationRequestState) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthAuthorizationRequestState from json.
-func (o *OptOAuthAuthorizationRequestState) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthAuthorizationRequestState to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthAuthorizationRequestState) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthAuthorizationRequestState) UnmarshalJSON(data []byte) error {
+func (s *OptNilMCPToolEntityAssociationResponseToolConfig) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes OAuthServiceCreateAdditionalParams as json.
-func (o OptOAuthServiceCreateAdditionalParams) Encode(e *jx.Encoder) {
+func (o OptNilOAuthServiceCreateAdditionalParams) Encode(e *jx.Encoder) {
 	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes OAuthServiceCreateAdditionalParams from json.
-func (o *OptOAuthServiceCreateAdditionalParams) Decode(d *jx.Decoder) error {
+func (o *OptNilOAuthServiceCreateAdditionalParams) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateAdditionalParams to nil")
+		return errors.New("invalid: unable to decode OptNilOAuthServiceCreateAdditionalParams to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v OAuthServiceCreateAdditionalParams
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
+	o.Null = false
+	o.Value = make(OAuthServiceCreateAdditionalParams)
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -14607,197 +11951,49 @@ func (o *OptOAuthServiceCreateAdditionalParams) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateAdditionalParams) MarshalJSON() ([]byte, error) {
+func (s OptNilOAuthServiceCreateAdditionalParams) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateAdditionalParams) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateDefaultScopes as json.
-func (o OptOAuthServiceCreateDefaultScopes) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceCreateDefaultScopes from json.
-func (o *OptOAuthServiceCreateDefaultScopes) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateDefaultScopes to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateDefaultScopes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateDefaultScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateDescription as json.
-func (o OptOAuthServiceCreateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceCreateDescription from json.
-func (o *OptOAuthServiceCreateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateHomepageURL as json.
-func (o OptOAuthServiceCreateHomepageURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceCreateHomepageURL from json.
-func (o *OptOAuthServiceCreateHomepageURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateHomepageURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateHomepageURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateHomepageURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateIconURL as json.
-func (o OptOAuthServiceCreateIconURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceCreateIconURL from json.
-func (o *OptOAuthServiceCreateIconURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateIconURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateIconURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateIconURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceCreateUserinfoURL as json.
-func (o OptOAuthServiceCreateUserinfoURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceCreateUserinfoURL from json.
-func (o *OptOAuthServiceCreateUserinfoURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceCreateUserinfoURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceCreateUserinfoURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceCreateUserinfoURL) UnmarshalJSON(data []byte) error {
+func (s *OptNilOAuthServiceCreateAdditionalParams) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes OAuthServiceUpdateAdditionalParams as json.
-func (o OptOAuthServiceUpdateAdditionalParams) Encode(e *jx.Encoder) {
+func (o OptNilOAuthServiceUpdateAdditionalParams) Encode(e *jx.Encoder) {
 	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes OAuthServiceUpdateAdditionalParams from json.
-func (o *OptOAuthServiceUpdateAdditionalParams) Decode(d *jx.Decoder) error {
+func (o *OptNilOAuthServiceUpdateAdditionalParams) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateAdditionalParams to nil")
+		return errors.New("invalid: unable to decode OptNilOAuthServiceUpdateAdditionalParams to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v OAuthServiceUpdateAdditionalParams
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
+	o.Null = false
+	o.Value = make(OAuthServiceUpdateAdditionalParams)
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -14805,773 +12001,230 @@ func (o *OptOAuthServiceUpdateAdditionalParams) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateAdditionalParams) MarshalJSON() ([]byte, error) {
+func (s OptNilOAuthServiceUpdateAdditionalParams) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateAdditionalParams) UnmarshalJSON(data []byte) error {
+func (s *OptNilOAuthServiceUpdateAdditionalParams) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceUpdateAuthorizationURL as json.
-func (o OptOAuthServiceUpdateAuthorizationURL) Encode(e *jx.Encoder) {
+// Encode encodes string as json.
+func (o OptNilString) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Str(string(o.Value))
 }
 
-// Decode decodes OAuthServiceUpdateAuthorizationURL from json.
-func (o *OptOAuthServiceUpdateAuthorizationURL) Decode(d *jx.Decoder) error {
+// Decode decodes string from json.
+func (o *OptNilString) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateAuthorizationURL to nil")
+		return errors.New("invalid: unable to decode OptNilString to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v string
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := d.Str()
+	if err != nil {
 		return err
 	}
+	o.Value = string(v)
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateAuthorizationURL) MarshalJSON() ([]byte, error) {
+func (s OptNilString) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateAuthorizationURL) UnmarshalJSON(data []byte) error {
+func (s *OptNilString) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceUpdateClientID as json.
-func (o OptOAuthServiceUpdateClientID) Encode(e *jx.Encoder) {
+// Encode encodes []string as json.
+func (o OptNilStringArray) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.ArrStart()
+	for _, elem := range o.Value {
+		e.Str(elem)
+	}
+	e.ArrEnd()
 }
 
-// Decode decodes OAuthServiceUpdateClientID from json.
-func (o *OptOAuthServiceUpdateClientID) Decode(d *jx.Decoder) error {
+// Decode decodes []string from json.
+func (o *OptNilStringArray) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateClientID to nil")
+		return errors.New("invalid: unable to decode OptNilStringArray to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v []string
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	o.Value = make([]string, 0)
+	if err := d.Arr(func(d *jx.Decoder) error {
+		var elem string
+		v, err := d.Str()
+		elem = string(v)
+		if err != nil {
+			return err
+		}
+		o.Value = append(o.Value, elem)
+		return nil
+	}); err != nil {
 		return err
 	}
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateClientID) MarshalJSON() ([]byte, error) {
+func (s OptNilStringArray) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateClientID) UnmarshalJSON(data []byte) error {
+func (s *OptNilStringArray) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceUpdateClientSecret as json.
-func (o OptOAuthServiceUpdateClientSecret) Encode(e *jx.Encoder) {
+// Encode encodes url.URL as json.
+func (o OptNilURI) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	json.EncodeURI(e, o.Value)
 }
 
-// Decode decodes OAuthServiceUpdateClientSecret from json.
-func (o *OptOAuthServiceUpdateClientSecret) Decode(d *jx.Decoder) error {
+// Decode decodes url.URL from json.
+func (o *OptNilURI) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateClientSecret to nil")
+		return errors.New("invalid: unable to decode OptNilURI to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v url.URL
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := json.DecodeURI(d)
+	if err != nil {
 		return err
 	}
+	o.Value = v
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateClientSecret) MarshalJSON() ([]byte, error) {
+func (s OptNilURI) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateClientSecret) UnmarshalJSON(data []byte) error {
+func (s *OptNilURI) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
-// Encode encodes OAuthServiceUpdateDefaultScopes as json.
-func (o OptOAuthServiceUpdateDefaultScopes) Encode(e *jx.Encoder) {
+// Encode encodes uuid.UUID as json.
+func (o OptNilUUID) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	if o.Null {
+		e.Null()
+		return
+	}
+	json.EncodeUUID(e, o.Value)
 }
 
-// Decode decodes OAuthServiceUpdateDefaultScopes from json.
-func (o *OptOAuthServiceUpdateDefaultScopes) Decode(d *jx.Decoder) error {
+// Decode decodes uuid.UUID from json.
+func (o *OptNilUUID) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateDefaultScopes to nil")
+		return errors.New("invalid: unable to decode OptNilUUID to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v uuid.UUID
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
 	}
 	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
+	o.Null = false
+	v, err := json.DecodeUUID(d)
+	if err != nil {
 		return err
 	}
+	o.Value = v
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateDefaultScopes) MarshalJSON() ([]byte, error) {
+func (s OptNilUUID) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateDefaultScopes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateDescription as json.
-func (o OptOAuthServiceUpdateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateDescription from json.
-func (o *OptOAuthServiceUpdateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateDisplayName as json.
-func (o OptOAuthServiceUpdateDisplayName) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateDisplayName from json.
-func (o *OptOAuthServiceUpdateDisplayName) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateDisplayName to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateDisplayName) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateDisplayName) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateHomepageURL as json.
-func (o OptOAuthServiceUpdateHomepageURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateHomepageURL from json.
-func (o *OptOAuthServiceUpdateHomepageURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateHomepageURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateHomepageURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateHomepageURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateIconURL as json.
-func (o OptOAuthServiceUpdateIconURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateIconURL from json.
-func (o *OptOAuthServiceUpdateIconURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateIconURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateIconURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateIconURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateIsActive as json.
-func (o OptOAuthServiceUpdateIsActive) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateIsActive from json.
-func (o *OptOAuthServiceUpdateIsActive) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateIsActive to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateIsActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateIsActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateSupportedGrantTypes as json.
-func (o OptOAuthServiceUpdateSupportedGrantTypes) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateSupportedGrantTypes from json.
-func (o *OptOAuthServiceUpdateSupportedGrantTypes) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateSupportedGrantTypes to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateSupportedGrantTypes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateSupportedGrantTypes) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateTokenURL as json.
-func (o OptOAuthServiceUpdateTokenURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateTokenURL from json.
-func (o *OptOAuthServiceUpdateTokenURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateTokenURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateTokenURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateTokenURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthServiceUpdateUserinfoURL as json.
-func (o OptOAuthServiceUpdateUserinfoURL) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthServiceUpdateUserinfoURL from json.
-func (o *OptOAuthServiceUpdateUserinfoURL) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthServiceUpdateUserinfoURL to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthServiceUpdateUserinfoURL) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthServiceUpdateUserinfoURL) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenExchangeRedirectURI as json.
-func (o OptOAuthTokenExchangeRedirectURI) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthTokenExchangeRedirectURI from json.
-func (o *OptOAuthTokenExchangeRedirectURI) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthTokenExchangeRedirectURI to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthTokenExchangeRedirectURI) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthTokenExchangeRedirectURI) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenExchangeState as json.
-func (o OptOAuthTokenExchangeState) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthTokenExchangeState from json.
-func (o *OptOAuthTokenExchangeState) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthTokenExchangeState to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthTokenExchangeState) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthTokenExchangeState) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenResponseExpiresIn as json.
-func (o OptOAuthTokenResponseExpiresIn) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthTokenResponseExpiresIn from json.
-func (o *OptOAuthTokenResponseExpiresIn) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthTokenResponseExpiresIn to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthTokenResponseExpiresIn) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthTokenResponseExpiresIn) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes OAuthTokenResponseRefreshToken as json.
-func (o OptOAuthTokenResponseRefreshToken) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes OAuthTokenResponseRefreshToken from json.
-func (o *OptOAuthTokenResponseRefreshToken) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptOAuthTokenResponseRefreshToken to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptOAuthTokenResponseRefreshToken) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptOAuthTokenResponseRefreshToken) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PendingInvitationResponseExpiresAt as json.
-func (o OptPendingInvitationResponseExpiresAt) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PendingInvitationResponseExpiresAt from json.
-func (o *OptPendingInvitationResponseExpiresAt) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPendingInvitationResponseExpiresAt to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPendingInvitationResponseExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPendingInvitationResponseExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptCreateDescription as json.
-func (o OptPromptCreateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptCreateDescription from json.
-func (o *OptPromptCreateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptCreateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptCreateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptResponseDescription as json.
-func (o OptPromptResponseDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptResponseDescription from json.
-func (o *OptPromptResponseDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptResponseDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateActive as json.
-func (o OptPromptUpdateActive) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptUpdateActive from json.
-func (o *OptPromptUpdateActive) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptUpdateActive to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptUpdateActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptUpdateActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateContent as json.
-func (o OptPromptUpdateContent) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptUpdateContent from json.
-func (o *OptPromptUpdateContent) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptUpdateContent to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptUpdateContent) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptUpdateContent) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateDescription as json.
-func (o OptPromptUpdateDescription) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptUpdateDescription from json.
-func (o *OptPromptUpdateDescription) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptUpdateDescription to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptUpdateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateIsDefault as json.
-func (o OptPromptUpdateIsDefault) Encode(e *jx.Encoder) {
-	if !o.Set {
-		return
-	}
-	o.Value.Encode(e)
-}
-
-// Decode decodes PromptUpdateIsDefault from json.
-func (o *OptPromptUpdateIsDefault) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode OptPromptUpdateIsDefault to nil")
-	}
-	o.Set = true
-	if err := o.Value.Decode(d); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s OptPromptUpdateIsDefault) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptPromptUpdateIsDefault) UnmarshalJSON(data []byte) error {
+func (s *OptNilUUID) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -15809,55 +12462,6 @@ func (s *PendingInvitationResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes PendingInvitationResponseExpiresAt as json.
-func (s PendingInvitationResponseExpiresAt) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case IntPendingInvitationResponseExpiresAt:
-		e.Int(s.Int)
-	case NullPendingInvitationResponseExpiresAt:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PendingInvitationResponseExpiresAt from json.
-func (s *PendingInvitationResponseExpiresAt) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PendingInvitationResponseExpiresAt to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPendingInvitationResponseExpiresAt
-	case jx.Number:
-		v, err := d.Int()
-		s.Int = int(v)
-		if err != nil {
-			return err
-		}
-		s.Type = IntPendingInvitationResponseExpiresAt
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PendingInvitationResponseExpiresAt) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PendingInvitationResponseExpiresAt) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode encodes PostChatMessagesCreatedApplicationJSON as json.
 func (s PostChatMessagesCreatedApplicationJSON) Encode(e *jx.Encoder) {
 	unwrapped := []ChatMessageRouter(s)
@@ -16069,55 +12673,6 @@ func (s *PromptCreate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PromptCreate) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptCreateDescription as json.
-func (s PromptCreateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringPromptCreateDescription:
-		e.Str(s.String)
-	case NullPromptCreateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptCreateDescription from json.
-func (s *PromptCreateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptCreateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptCreateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringPromptCreateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptCreateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptCreateDescription) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -16356,55 +12911,6 @@ func (s *PromptResponse) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes PromptResponseDescription as json.
-func (s PromptResponseDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringPromptResponseDescription:
-		e.Str(s.String)
-	case NullPromptResponseDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptResponseDescription from json.
-func (s *PromptResponseDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptResponseDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptResponseDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringPromptResponseDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptResponseDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptResponseDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode implements json.Marshaler.
 func (s *PromptUpdate) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -16515,202 +13021,6 @@ func (s *PromptUpdate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PromptUpdate) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateActive as json.
-func (s PromptUpdateActive) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolPromptUpdateActive:
-		e.Bool(s.Bool)
-	case NullPromptUpdateActive:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptUpdateActive from json.
-func (s *PromptUpdateActive) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptUpdateActive to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolPromptUpdateActive
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptUpdateActive
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptUpdateActive) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptUpdateActive) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateContent as json.
-func (s PromptUpdateContent) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringPromptUpdateContent:
-		e.Str(s.String)
-	case NullPromptUpdateContent:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptUpdateContent from json.
-func (s *PromptUpdateContent) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptUpdateContent to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptUpdateContent
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringPromptUpdateContent
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptUpdateContent) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptUpdateContent) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateDescription as json.
-func (s PromptUpdateDescription) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case StringPromptUpdateDescription:
-		e.Str(s.String)
-	case NullPromptUpdateDescription:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptUpdateDescription from json.
-func (s *PromptUpdateDescription) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptUpdateDescription to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptUpdateDescription
-	case jx.String:
-		v, err := d.Str()
-		s.String = string(v)
-		if err != nil {
-			return err
-		}
-		s.Type = StringPromptUpdateDescription
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptUpdateDescription) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptUpdateDescription) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes PromptUpdateIsDefault as json.
-func (s PromptUpdateIsDefault) Encode(e *jx.Encoder) {
-	switch s.Type {
-	case BoolPromptUpdateIsDefault:
-		e.Bool(s.Bool)
-	case NullPromptUpdateIsDefault:
-		_ = s.Null
-		e.Null()
-	}
-}
-
-// Decode decodes PromptUpdateIsDefault from json.
-func (s *PromptUpdateIsDefault) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PromptUpdateIsDefault to nil")
-	}
-	// Sum type type_discriminator.
-	switch t := d.Next(); t {
-	case jx.Bool:
-		v, err := d.Bool()
-		s.Bool = bool(v)
-		if err != nil {
-			return err
-		}
-		s.Type = BoolPromptUpdateIsDefault
-	case jx.Null:
-		if err := d.Null(); err != nil {
-			return err
-		}
-		s.Type = NullPromptUpdateIsDefault
-	default:
-		return errors.Errorf("unexpected json type %q", t)
-	}
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PromptUpdateIsDefault) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PromptUpdateIsDefault) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -16927,14 +13237,23 @@ func (s *TypedChatMessageContent) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("text")
-		e.Str(s.Text)
+		if s.Text.Set {
+			e.FieldStart("text")
+			s.Text.Encode(e)
+		}
+	}
+	{
+		if s.Reasoning.Set {
+			e.FieldStart("reasoning")
+			s.Reasoning.Encode(e)
+		}
 	}
 }
 
-var jsonFieldsNameOfTypedChatMessageContent = [2]string{
+var jsonFieldsNameOfTypedChatMessageContent = [3]string{
 	0: "type",
 	1: "text",
+	2: "reasoning",
 }
 
 // Decode decodes TypedChatMessageContent from json.
@@ -16959,16 +13278,24 @@ func (s *TypedChatMessageContent) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
 		case "text":
-			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Str()
-				s.Text = string(v)
-				if err != nil {
+				s.Text.Reset()
+				if err := s.Text.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"text\"")
+			}
+		case "reasoning":
+			if err := func() error {
+				s.Reasoning.Reset()
+				if err := s.Reasoning.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"reasoning\"")
 			}
 		default:
 			return d.Skip()
@@ -16980,7 +13307,7 @@ func (s *TypedChatMessageContent) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

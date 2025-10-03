@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/go-faster/jx"
-
 	ht "github.com/ogen-go/ogen/http"
 )
 
@@ -125,6 +124,20 @@ func encodeCreateEnvironmentRequest(
 
 func encodeCreateEnvironmentUserRequest(
 	req *EnvironmentUserCreate,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateMcpToolAssociationRequest(
+	req *MCPToolEntityAssociationCreate,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
