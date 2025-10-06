@@ -14,9 +14,9 @@ type BulkInviteEnvironmentUsersParams struct {
 // CleanupOrphanedEntitiesParams is parameters of cleanup_orphaned_entities operation.
 type CleanupOrphanedEntitiesParams struct {
 	// Namespace to clean up (default: 'default').
-	Namespace OptString
+	Namespace OptString `json:",omitempty,omitzero"`
 	// Only delete orphans older than this many hours.
-	MaxAgeHours OptInt
+	MaxAgeHours OptInt `json:",omitempty,omitzero"`
 }
 
 // CreateEntityParams is parameters of create_entity operation.
@@ -42,6 +42,12 @@ type DeleteChatParams struct {
 	ChatID string
 }
 
+// DeleteChatsBulkParams is parameters of delete_chats_bulk operation.
+type DeleteChatsBulkParams struct {
+	// List of chat IDs to delete.
+	ChatIds []string `json:",omitempty"`
+}
+
 // DeleteEntityParams is parameters of delete_entity operation.
 type DeleteEntityParams struct {
 	Group     string
@@ -55,7 +61,7 @@ type DeleteEntityParams struct {
 type DeleteEntityDefinitionParams struct {
 	DefinitionID uuid.UUID
 	// If true, mark entities as orphans instead of deleting them immediately.
-	MarkOrphansOnly OptBool
+	MarkOrphansOnly OptBool `json:",omitempty,omitzero"`
 }
 
 // DeleteEntityRelationParams is parameters of delete_entity_relation operation.
@@ -112,24 +118,24 @@ type GetChatParams struct {
 // GetChatMessagesParams is parameters of get_chat_messages operation.
 type GetChatMessagesParams struct {
 	ChatID string
-	Limit  OptInt
-	Offset OptInt
+	Limit  OptInt `json:",omitempty,omitzero"`
+	Offset OptInt `json:",omitempty,omitzero"`
 }
 
 // GetChatsParams is parameters of get_chats operation.
 type GetChatsParams struct {
-	Offset OptInt
-	Limit  OptInt
+	Offset OptInt `json:",omitempty,omitzero"`
+	Limit  OptInt `json:",omitempty,omitzero"`
 }
 
 // GetEntitiesParams is parameters of get_entities operation.
 type GetEntitiesParams struct {
-	Name   OptString
-	Label  OptString
-	Limit  OptInt
-	Offset OptInt
+	Name   OptString `json:",omitempty,omitzero"`
+	Label  OptString `json:",omitempty,omitzero"`
+	Limit  OptInt    `json:",omitempty,omitzero"`
+	Offset OptInt    `json:",omitempty,omitzero"`
 	// Comma-separated field selectors in format 'key=value', supports dot notation for nested properties.
-	FieldSelector OptString
+	FieldSelector OptString `json:",omitempty,omitzero"`
 }
 
 // GetEntityParams is parameters of get_entity operation.
@@ -141,10 +147,16 @@ type GetEntityParams struct {
 	Name      string
 }
 
+// GetEntityByUIDParams is parameters of get_entity_by_uid operation.
+type GetEntityByUIDParams struct {
+	UID       string
+	Namespace OptString `json:",omitempty,omitzero"`
+}
+
 // GetEntityToolsParams is parameters of get_entity_tools operation.
 type GetEntityToolsParams struct {
 	EntityDefinitionID uuid.UUID
-	EntityVersionID    OptNilUUID
+	EntityVersionID    OptNilUUID `json:",omitempty,omitzero"`
 }
 
 // GetEnvironmentStatusParams is parameters of get_environment_status operation.
@@ -161,7 +173,7 @@ type GetEnvironmentUserParams struct {
 // GetMcpEndpointEntityTypesParams is parameters of get_mcp_endpoint_entity_types operation.
 type GetMcpEndpointEntityTypesParams struct {
 	McpendpointName string
-	ToolName        OptNilString
+	ToolName        OptNilString `json:",omitempty,omitzero"`
 }
 
 // GetMcpendpointParams is parameters of get_mcpendpoint operation.
@@ -212,18 +224,18 @@ type ListMcpendpointToolsParams struct {
 // ListOAuthServicesParams is parameters of list_oauth_services operation.
 type ListOAuthServicesParams struct {
 	// Only return active services.
-	ActiveOnly OptBool
+	ActiveOnly OptBool `json:",omitempty,omitzero"`
 }
 
 // ListOrphanedEntitiesParams is parameters of list_orphaned_entities operation.
 type ListOrphanedEntitiesParams struct {
 	// Namespace to query (default: 'default').
-	Namespace OptString
+	Namespace OptString `json:",omitempty,omitzero"`
 }
 
 // ListPromptsParams is parameters of list_prompts operation.
 type ListPromptsParams struct {
-	Active OptNullBooleanEnum
+	Active OptNullBooleanEnum `json:",omitempty,omitzero"`
 }
 
 // PostChatMessagesParams is parameters of post_chat_messages operation.

@@ -935,6 +935,15 @@ type DeleteChatNotFound struct{}
 
 func (*DeleteChatNotFound) deleteChatRes() {}
 
+// DeleteChatsBulkNotFound is response for DeleteChatsBulk operation.
+type DeleteChatsBulkNotFound struct{}
+
+func (*DeleteChatsBulkNotFound) deleteChatsBulkRes() {}
+
+type DeleteChatsBulkOKApplicationJSON jx.Raw
+
+func (*DeleteChatsBulkOKApplicationJSON) deleteChatsBulkRes() {}
+
 // DeleteEntityDefinitionNoContent is response for DeleteEntityDefinition operation.
 type DeleteEntityDefinitionNoContent struct{}
 
@@ -1370,6 +1379,7 @@ func (s *EntityDefinitionSpecSpec) init() EntityDefinitionSpecSpec {
 type EntityMetadata struct {
 	Name        string                       `json:"name"`
 	Namespace   string                       `json:"namespace"`
+	UID         OptString                    `json:"uid"`
 	Labels      OptEntityMetadataLabels      `json:"labels"`
 	Annotations OptEntityMetadataAnnotations `json:"annotations"`
 }
@@ -1382,6 +1392,11 @@ func (s *EntityMetadata) GetName() string {
 // GetNamespace returns the value of Namespace.
 func (s *EntityMetadata) GetNamespace() string {
 	return s.Namespace
+}
+
+// GetUID returns the value of UID.
+func (s *EntityMetadata) GetUID() OptString {
+	return s.UID
 }
 
 // GetLabels returns the value of Labels.
@@ -1402,6 +1417,11 @@ func (s *EntityMetadata) SetName(val string) {
 // SetNamespace sets the value of Namespace.
 func (s *EntityMetadata) SetNamespace(val string) {
 	s.Namespace = val
+}
+
+// SetUID sets the value of UID.
+func (s *EntityMetadata) SetUID(val OptString) {
+	s.UID = val
 }
 
 // SetLabels sets the value of Labels.
@@ -1938,7 +1958,8 @@ func (s *EntityWithRelationsResponse) SetRelations(val []EntityRelationResponse)
 	s.Relations = val
 }
 
-func (*EntityWithRelationsResponse) getEntityRes() {}
+func (*EntityWithRelationsResponse) getEntityByUIDRes() {}
+func (*EntityWithRelationsResponse) getEntityRes()      {}
 
 // Ref: #/components/schemas/EnvironmentCreate
 type EnvironmentCreate struct {
@@ -2373,6 +2394,11 @@ type GetEntitiesNotFound struct{}
 
 func (*GetEntitiesNotFound) getEntitiesRes() {}
 
+// GetEntityByUIDNotFound is response for GetEntityByUID operation.
+type GetEntityByUIDNotFound struct{}
+
+func (*GetEntityByUIDNotFound) getEntityByUIDRes() {}
+
 // GetEntityDefinitionsNotFound is response for GetEntityDefinitions operation.
 type GetEntityDefinitionsNotFound struct{}
 
@@ -2559,6 +2585,7 @@ func (*HTTPValidationError) createOAuthServiceRes()         {}
 func (*HTTPValidationError) createPromptRes()               {}
 func (*HTTPValidationError) createTokenRes()                {}
 func (*HTTPValidationError) deleteChatRes()                 {}
+func (*HTTPValidationError) deleteChatsBulkRes()            {}
 func (*HTTPValidationError) deleteEntityDefinitionRes()     {}
 func (*HTTPValidationError) deleteEntityRelationRes()       {}
 func (*HTTPValidationError) deleteEntityRes()               {}
@@ -2575,6 +2602,7 @@ func (*HTTPValidationError) getChatMessagesRes()            {}
 func (*HTTPValidationError) getChatRes()                    {}
 func (*HTTPValidationError) getChatsRes()                   {}
 func (*HTTPValidationError) getEntitiesRes()                {}
+func (*HTTPValidationError) getEntityByUIDRes()             {}
 func (*HTTPValidationError) getEntityRes()                  {}
 func (*HTTPValidationError) getEntityToolsRes()             {}
 func (*HTTPValidationError) getEnvironmentStatusRes()       {}

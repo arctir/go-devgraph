@@ -2281,6 +2281,48 @@ func (s *CleanupOrphanedEntitiesOKApplicationJSON) UnmarshalJSON(data []byte) er
 	return s.Decode(d)
 }
 
+// Encode encodes DeleteChatsBulkOKApplicationJSON as json.
+func (s DeleteChatsBulkOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := jx.Raw(s)
+
+	if len(unwrapped) != 0 {
+		e.Raw(unwrapped)
+	}
+}
+
+// Decode decodes DeleteChatsBulkOKApplicationJSON from json.
+func (s *DeleteChatsBulkOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode DeleteChatsBulkOKApplicationJSON to nil")
+	}
+	var unwrapped jx.Raw
+	if err := func() error {
+		v, err := d.RawAppend(nil)
+		unwrapped = jx.Raw(v)
+		if err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = DeleteChatsBulkOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s DeleteChatsBulkOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *DeleteChatsBulkOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes DeletePromptOKApplicationJSON as json.
 func (s DeletePromptOKApplicationJSON) Encode(e *jx.Encoder) {
 	unwrapped := jx.Raw(s)
@@ -3134,6 +3176,12 @@ func (s *EntityMetadata) encodeFields(e *jx.Encoder) {
 		e.Str(s.Namespace)
 	}
 	{
+		if s.UID.Set {
+			e.FieldStart("uid")
+			s.UID.Encode(e)
+		}
+	}
+	{
 		if s.Labels.Set {
 			e.FieldStart("labels")
 			s.Labels.Encode(e)
@@ -3147,11 +3195,12 @@ func (s *EntityMetadata) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfEntityMetadata = [4]string{
+var jsonFieldsNameOfEntityMetadata = [5]string{
 	0: "name",
 	1: "namespace",
-	2: "labels",
-	3: "annotations",
+	2: "uid",
+	3: "labels",
+	4: "annotations",
 }
 
 // Decode decodes EntityMetadata from json.
@@ -3186,6 +3235,16 @@ func (s *EntityMetadata) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"namespace\"")
+			}
+		case "uid":
+			if err := func() error {
+				s.UID.Reset()
+				if err := s.UID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"uid\"")
 			}
 		case "labels":
 			if err := func() error {

@@ -73,6 +73,10 @@ type DeleteChatRes interface {
 	deleteChatRes()
 }
 
+type DeleteChatsBulkRes interface {
+	deleteChatsBulkRes()
+}
+
 type DeleteEntityDefinitionRes interface {
 	deleteEntityDefinitionRes()
 }
@@ -135,6 +139,10 @@ type GetChatsRes interface {
 
 type GetEntitiesRes interface {
 	getEntitiesRes()
+}
+
+type GetEntityByUIDRes interface {
+	getEntityByUIDRes()
 }
 
 type GetEntityDefinitionsRes interface {
