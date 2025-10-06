@@ -452,6 +452,18 @@ type Invoker interface {
 	//
 	// PUT /system/api/v1/mcpendpoints/{mcpendpoint_id}
 	UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error)
+	// UpdateModel invokes update_model operation.
+	//
+	// Update a model configuration by name.
+	//
+	// PUT /system/api/v1/models/{model_name}
+	UpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error)
+	// UpdateModelprovider invokes update_modelprovider operation.
+	//
+	// Update a specific Model Provider configuration by ID.
+	//
+	// PUT /system/api/v1/modelproviders/{provider_id}
+	UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error)
 	// UpdateOAuthService invokes update_oauth_service operation.
 	//
 	// Update Oauth Service.
@@ -6825,6 +6837,186 @@ func (c *Client) sendUpdateMcpendpoint(ctx context.Context, request *MCPEndpoint
 	defer resp.Body.Close()
 
 	result, err := decodeUpdateMcpendpointResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateModel invokes update_model operation.
+//
+// Update a model configuration by name.
+//
+// PUT /system/api/v1/models/{model_name}
+func (c *Client) UpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error) {
+	res, err := c.sendUpdateModel(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (res UpdateModelRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/models/"
+	{
+		// Encode "model_name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "model_name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ModelName))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateModelRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateModelOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateModelResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateModelprovider invokes update_modelprovider operation.
+//
+// Update a specific Model Provider configuration by ID.
+//
+// PUT /system/api/v1/modelproviders/{provider_id}
+func (c *Client) UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error) {
+	res, err := c.sendUpdateModelprovider(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (res UpdateModelproviderRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/system/api/v1/modelproviders/"
+	{
+		// Encode "provider_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "provider_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.ProviderID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PUT", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateModelproviderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateModelproviderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateModelproviderResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

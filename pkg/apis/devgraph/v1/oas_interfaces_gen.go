@@ -281,6 +281,14 @@ type UpdateMcpendpointRes interface {
 	updateMcpendpointRes()
 }
 
+type UpdateModelRes interface {
+	updateModelRes()
+}
+
+type UpdateModelproviderRes interface {
+	updateModelproviderRes()
+}
+
 type UpdateOAuthServiceRes interface {
 	updateOAuthServiceRes()
 }

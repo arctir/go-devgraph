@@ -76,6 +76,8 @@ const (
 	UpdateChatOperation                 OperationName = "UpdateChat"
 	UpdateEnvironmentUserOperation      OperationName = "UpdateEnvironmentUser"
 	UpdateMcpendpointOperation          OperationName = "UpdateMcpendpoint"
+	UpdateModelOperation                OperationName = "UpdateModel"
+	UpdateModelproviderOperation        OperationName = "UpdateModelprovider"
 	UpdateOAuthServiceOperation         OperationName = "UpdateOAuthService"
 	UpdatePromptOperation               OperationName = "UpdatePrompt"
 	UpdateTokenOperation                OperationName = "UpdateToken"

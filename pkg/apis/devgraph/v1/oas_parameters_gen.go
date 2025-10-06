@@ -276,6 +276,16 @@ type UpdateMcpendpointParams struct {
 	McpendpointID uuid.UUID
 }
 
+// UpdateModelParams is parameters of update_model operation.
+type UpdateModelParams struct {
+	ModelName string
+}
+
+// UpdateModelproviderParams is parameters of update_modelprovider operation.
+type UpdateModelproviderParams struct {
+	ProviderID uuid.UUID
+}
+
 // UpdateOAuthServiceParams is parameters of update_oauth_service operation.
 type UpdateOAuthServiceParams struct {
 	ServiceID uuid.UUID

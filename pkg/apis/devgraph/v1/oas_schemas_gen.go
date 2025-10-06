@@ -2628,6 +2628,8 @@ func (*HTTPValidationError) revokeOAuthTokenRes()           {}
 func (*HTTPValidationError) updateChatRes()                 {}
 func (*HTTPValidationError) updateEnvironmentUserRes()      {}
 func (*HTTPValidationError) updateMcpendpointRes()          {}
+func (*HTTPValidationError) updateModelRes()                {}
+func (*HTTPValidationError) updateModelproviderRes()        {}
 func (*HTTPValidationError) updateOAuthServiceRes()         {}
 func (*HTTPValidationError) updatePromptRes()               {}
 func (*HTTPValidationError) updateTokenRes()                {}
@@ -3565,6 +3567,44 @@ func NewAnthropicModelProviderResponseModelProviderResponse(v AnthropicModelProv
 
 func (*ModelProviderResponse) createModelproviderRes() {}
 func (*ModelProviderResponse) getModelproviderRes()    {}
+func (*ModelProviderResponse) updateModelproviderRes() {}
+
+// Ref: #/components/schemas/ModelProviderUpdate
+type ModelProviderUpdate struct {
+	Name    OptNilString `json:"name"`
+	APIKey  OptNilString `json:"api_key"`
+	Default OptNilBool   `json:"default"`
+}
+
+// GetName returns the value of Name.
+func (s *ModelProviderUpdate) GetName() OptNilString {
+	return s.Name
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *ModelProviderUpdate) GetAPIKey() OptNilString {
+	return s.APIKey
+}
+
+// GetDefault returns the value of Default.
+func (s *ModelProviderUpdate) GetDefault() OptNilBool {
+	return s.Default
+}
+
+// SetName sets the value of Name.
+func (s *ModelProviderUpdate) SetName(val OptNilString) {
+	s.Name = val
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *ModelProviderUpdate) SetAPIKey(val OptNilString) {
+	s.APIKey = val
+}
+
+// SetDefault sets the value of Default.
+func (s *ModelProviderUpdate) SetDefault(val OptNilBool) {
+	s.Default = val
+}
 
 // Ref: #/components/schemas/ModelResponse
 type ModelResponse struct {
@@ -3627,6 +3667,44 @@ func (s *ModelResponse) SetDefault(val OptBool) {
 
 func (*ModelResponse) createModelRes() {}
 func (*ModelResponse) getModelRes()    {}
+func (*ModelResponse) updateModelRes() {}
+
+// Ref: #/components/schemas/ModelUpdate
+type ModelUpdate struct {
+	Description OptNilString `json:"description"`
+	ProviderID  OptNilUUID   `json:"provider_id"`
+	Default     OptNilBool   `json:"default"`
+}
+
+// GetDescription returns the value of Description.
+func (s *ModelUpdate) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetProviderID returns the value of ProviderID.
+func (s *ModelUpdate) GetProviderID() OptNilUUID {
+	return s.ProviderID
+}
+
+// GetDefault returns the value of Default.
+func (s *ModelUpdate) GetDefault() OptNilBool {
+	return s.Default
+}
+
+// SetDescription sets the value of Description.
+func (s *ModelUpdate) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetProviderID sets the value of ProviderID.
+func (s *ModelUpdate) SetProviderID(val OptNilUUID) {
+	s.ProviderID = val
+}
+
+// SetDefault sets the value of Default.
+func (s *ModelUpdate) SetDefault(val OptNilBool) {
+	s.Default = val
+}
 
 // NewNilString returns new NilString with value set to v.
 func NewNilString(v string) NilString {
@@ -6459,6 +6537,16 @@ func (*UpdateEnvironmentUserNotFound) updateEnvironmentUserRes() {}
 type UpdateMcpendpointNotFound struct{}
 
 func (*UpdateMcpendpointNotFound) updateMcpendpointRes() {}
+
+// UpdateModelNotFound is response for UpdateModel operation.
+type UpdateModelNotFound struct{}
+
+func (*UpdateModelNotFound) updateModelRes() {}
+
+// UpdateModelproviderNotFound is response for UpdateModelprovider operation.
+type UpdateModelproviderNotFound struct{}
+
+func (*UpdateModelproviderNotFound) updateModelproviderRes() {}
 
 // UpdateOAuthServiceNotFound is response for UpdateOAuthService operation.
 type UpdateOAuthServiceNotFound struct{}
