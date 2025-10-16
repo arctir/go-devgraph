@@ -19,6 +19,14 @@ type CleanupOrphanedEntitiesParams struct {
 	MaxAgeHours OptInt `json:",omitempty,omitzero"`
 }
 
+// CreateEntitiesBulkParams is parameters of create_entities_bulk operation.
+type CreateEntitiesBulkParams struct {
+	Group     string
+	Version   string
+	Namespace string
+	Plural    string
+}
+
 // CreateEntityParams is parameters of create_entity operation.
 type CreateEntityParams struct {
 	Group     string
@@ -134,6 +142,8 @@ type GetEntitiesParams struct {
 	Label  OptString `json:",omitempty,omitzero"`
 	Limit  OptInt    `json:",omitempty,omitzero"`
 	Offset OptInt    `json:",omitempty,omitzero"`
+	// Include relations in the response. Set to false for faster queries when relations are not needed.
+	IncludeRelations OptBool `json:",omitempty,omitzero"`
 	// Comma-separated field selectors in format 'key=value', supports dot notation for nested properties.
 	FieldSelector OptString `json:",omitempty,omitzero"`
 }

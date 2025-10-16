@@ -17,6 +17,10 @@ type CreateChatTitleRes interface {
 	createChatTitleRes()
 }
 
+type CreateEntitiesBulkRes interface {
+	createEntitiesBulkRes()
+}
+
 type CreateEntityDefinitionRes interface {
 	createEntityDefinitionRes()
 }

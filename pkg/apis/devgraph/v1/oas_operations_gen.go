@@ -10,6 +10,7 @@ const (
 	CleanupOrphanedEntitiesOperation    OperationName = "CleanupOrphanedEntities"
 	CreateChatOperation                 OperationName = "CreateChat"
 	CreateChatTitleOperation            OperationName = "CreateChatTitle"
+	CreateEntitiesBulkOperation         OperationName = "CreateEntitiesBulk"
 	CreateEntityOperation               OperationName = "CreateEntity"
 	CreateEntityDefinitionOperation     OperationName = "CreateEntityDefinition"
 	CreateEntityRelationOperation       OperationName = "CreateEntityRelation"

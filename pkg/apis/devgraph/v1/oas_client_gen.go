@@ -47,6 +47,13 @@ type Invoker interface {
 	//
 	// POST /api/v1/chat/title
 	CreateChatTitle(ctx context.Context, request *ChatTitleRequest) (CreateChatTitleRes, error)
+	// CreateEntitiesBulk invokes create_entities_bulk operation.
+	//
+	// Creates multiple entities in a single request with concurrent processing. Provides detailed
+	// success/failure information for each entity. Requires 'create:entities' permission.
+	//
+	// POST /api/v1/entities/bulk
+	CreateEntitiesBulk(ctx context.Context, request []Entity, params CreateEntitiesBulkParams) (CreateEntitiesBulkRes, error)
 	// CreateEntity invokes create_entity operation.
 	//
 	// Creates a new entity based on the specified group, version, namespace, and kind. Requires
@@ -877,6 +884,147 @@ func (c *Client) sendCreateChatTitle(ctx context.Context, request *ChatTitleRequ
 	defer resp.Body.Close()
 
 	result, err := decodeCreateChatTitleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateEntitiesBulk invokes create_entities_bulk operation.
+//
+// Creates multiple entities in a single request with concurrent processing. Provides detailed
+// success/failure information for each entity. Requires 'create:entities' permission.
+//
+// POST /api/v1/entities/bulk
+func (c *Client) CreateEntitiesBulk(ctx context.Context, request []Entity, params CreateEntitiesBulkParams) (CreateEntitiesBulkRes, error) {
+	res, err := c.sendCreateEntitiesBulk(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateEntitiesBulk(ctx context.Context, request []Entity, params CreateEntitiesBulkParams) (res CreateEntitiesBulkRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if request == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/entities/bulk"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "group" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "group",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Group))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "version" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "version",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Version))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "namespace" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Namespace))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "plural" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "plural",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Plural))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateEntitiesBulkRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityOAuth2PasswordBearer(ctx, CreateEntitiesBulkOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateEntitiesBulkResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3706,6 +3854,23 @@ func (c *Client) sendGetEntities(ctx context.Context, params GetEntitiesParams) 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Offset.Get(); ok {
 				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "include_relations" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "include_relations",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.IncludeRelations.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
 		}); err != nil {

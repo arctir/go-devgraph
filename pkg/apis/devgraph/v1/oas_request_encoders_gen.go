@@ -52,6 +52,24 @@ func encodeCreateChatTitleRequest(
 	return nil
 }
 
+func encodeCreateEntitiesBulkRequest(
+	req []Entity,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		e.ArrStart()
+		for _, elem := range req {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreateEntityRequest(
 	req *Entity,
 	r *http.Request,

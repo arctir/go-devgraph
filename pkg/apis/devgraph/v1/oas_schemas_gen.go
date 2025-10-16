@@ -860,6 +860,24 @@ type CreateChatTitleNotFound struct{}
 
 func (*CreateChatTitleNotFound) createChatTitleRes() {}
 
+type CreateEntitiesBulkCreated map[string]jx.Raw
+
+func (s *CreateEntitiesBulkCreated) init() CreateEntitiesBulkCreated {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+func (*CreateEntitiesBulkCreated) createEntitiesBulkRes() {}
+
+// CreateEntitiesBulkNotFound is response for CreateEntitiesBulk operation.
+type CreateEntitiesBulkNotFound struct{}
+
+func (*CreateEntitiesBulkNotFound) createEntitiesBulkRes() {}
+
 // CreateEntityDefinitionNotFound is response for CreateEntityDefinition operation.
 type CreateEntityDefinitionNotFound struct{}
 
@@ -2571,6 +2589,7 @@ func (*HTTPValidationError) bulkInviteEnvironmentUsersRes() {}
 func (*HTTPValidationError) cleanupOrphanedEntitiesRes()    {}
 func (*HTTPValidationError) createChatRes()                 {}
 func (*HTTPValidationError) createChatTitleRes()            {}
+func (*HTTPValidationError) createEntitiesBulkRes()         {}
 func (*HTTPValidationError) createEntityDefinitionRes()     {}
 func (*HTTPValidationError) createEntityRelationRes()       {}
 func (*HTTPValidationError) createEntityRelationsBulkRes()  {}
