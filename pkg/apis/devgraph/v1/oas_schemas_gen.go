@@ -287,6 +287,22 @@ func (s *ApiTokenUpdate) SetActive(val OptNilBool) {
 	s.Active = val
 }
 
+// Request model for bulk chat deletion.
+// Ref: #/components/schemas/BulkDeleteRequest
+type BulkDeleteRequest struct {
+	ChatIds []string `json:"chat_ids"`
+}
+
+// GetChatIds returns the value of ChatIds.
+func (s *BulkDeleteRequest) GetChatIds() []string {
+	return s.ChatIds
+}
+
+// SetChatIds sets the value of ChatIds.
+func (s *BulkDeleteRequest) SetChatIds(val []string) {
+	s.ChatIds = val
+}
+
 // Request model for creating multiple entity relations in bulk.
 // Ref: #/components/schemas/BulkEntityRelationCreateRequest
 type BulkEntityRelationCreateRequest struct {

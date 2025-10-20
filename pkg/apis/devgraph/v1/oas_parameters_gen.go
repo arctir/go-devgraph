@@ -50,12 +50,6 @@ type DeleteChatParams struct {
 	ChatID string
 }
 
-// DeleteChatsBulkParams is parameters of delete_chats_bulk operation.
-type DeleteChatsBulkParams struct {
-	// List of chat IDs to delete.
-	ChatIds []string `json:",omitempty"`
-}
-
 // DeleteEntityParams is parameters of delete_entity operation.
 type DeleteEntityParams struct {
 	Group     string

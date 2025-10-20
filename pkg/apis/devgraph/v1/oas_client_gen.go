@@ -27,7 +27,7 @@ type Invoker interface {
 	//
 	// Bulk invite multiple users to an environment (organization).
 	//
-	// POST /system/api/v1/environments/{environment_id}/users/bulk-invite
+	// POST /api/v1/system/environments/{environment_id}/users/bulk-invite
 	BulkInviteEnvironmentUsers(ctx context.Context, request *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error)
 	// CleanupOrphanedEntities invokes cleanup_orphaned_entities operation.
 	//
@@ -84,37 +84,37 @@ type Invoker interface {
 	//
 	// Create Environment.
 	//
-	// POST /system/api/v1/environments
+	// POST /api/v1/system/environments
 	CreateEnvironment(ctx context.Context, request *EnvironmentCreate) (CreateEnvironmentRes, error)
 	// CreateEnvironmentUser invokes create_environment_user operation.
 	//
 	// Create a new environment user by adding them to the Clerk organization.
 	//
-	// POST /system/api/v1/environments/{environment_id}/users
+	// POST /api/v1/system/environments/{environment_id}/users
 	CreateEnvironmentUser(ctx context.Context, request *EnvironmentUserCreate, params CreateEnvironmentUserParams) (CreateEnvironmentUserRes, error)
 	// CreateMcpToolAssociation invokes create_mcp_tool_association operation.
 	//
 	// Create an association between an MCP tool and an entity definition.
 	//
-	// POST /system/api/v1/mcp-tool-associations
+	// POST /api/v1/system/mcp-tool-associations
 	CreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error)
 	// CreateMcpendpoint invokes create_mcpendpoint operation.
 	//
 	// Create a new MCP Endpoint configuration.
 	//
-	// POST /system/api/v1/mcpendpoints
+	// POST /api/v1/system/mcpendpoints
 	CreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (CreateMcpendpointRes, error)
 	// CreateModel invokes create_model operation.
 	//
 	// Create a new model configuration.
 	//
-	// POST /system/api/v1/models
+	// POST /api/v1/system/models
 	CreateModel(ctx context.Context, request *ModelCreate) (CreateModelRes, error)
 	// CreateModelprovider invokes create_modelprovider operation.
 	//
 	// Create a new Model Provider configuration.
 	//
-	// POST /system/api/v1/modelproviders
+	// POST /api/v1/system/modelproviders
 	CreateModelprovider(ctx context.Context, request *ModelProviderCreate) (CreateModelproviderRes, error)
 	// CreateOAuthService invokes create_oauth_service operation.
 	//
@@ -126,13 +126,13 @@ type Invoker interface {
 	//
 	// Create a new prompt for the environment.
 	//
-	// POST /system/api/v1/prompts
+	// POST /api/v1/system/prompts
 	CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error)
 	// CreateToken invokes create_token operation.
 	//
 	// Create Token.
 	//
-	// POST /system/api/v1/tokens
+	// POST /api/v1/system/tokens
 	CreateToken(ctx context.Context, request *ApiTokenCreate) (CreateTokenRes, error)
 	// DeleteChat invokes delete_chat operation.
 	//
@@ -145,7 +145,7 @@ type Invoker interface {
 	// Bulk delete multiple chat sessions.
 	//
 	// DELETE /api/v1/chat/
-	DeleteChatsBulk(ctx context.Context, params DeleteChatsBulkParams) (DeleteChatsBulkRes, error)
+	DeleteChatsBulk(ctx context.Context, request *BulkDeleteRequest) (DeleteChatsBulkRes, error)
 	// DeleteEntity invokes delete_entity operation.
 	//
 	// Deletes a specific entity from the ontology. Requires 'delete:entities' permission.
@@ -168,31 +168,31 @@ type Invoker interface {
 	//
 	// Remove a user from an environment (organization).
 	//
-	// DELETE /system/api/v1/environments/{environment_id}/users/{user_id}
+	// DELETE /api/v1/system/environments/{environment_id}/users/{user_id}
 	DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error)
 	// DeleteMcpToolAssociation invokes delete_mcp_tool_association operation.
 	//
 	// Delete an MCP tool-entity association.
 	//
-	// DELETE /system/api/v1/mcp-tool-associations/{association_id}
+	// DELETE /api/v1/system/mcp-tool-associations/{association_id}
 	DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error)
 	// DeleteMcpendpoint invokes delete_mcpendpoint operation.
 	//
 	// Delete a specific MCP Endpoint configuration by ID.
 	//
-	// DELETE /system/api/v1/mcpendpoints/{mcpendpoint_id}
+	// DELETE /api/v1/system/mcpendpoints/{mcpendpoint_id}
 	DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (DeleteMcpendpointRes, error)
 	// DeleteModel invokes delete_model operation.
 	//
 	// Delete a specific model configuration by name.
 	//
-	// DELETE /system/api/v1/models/{model_name}
+	// DELETE /api/v1/system/models/{model_name}
 	DeleteModel(ctx context.Context, params DeleteModelParams) (DeleteModelRes, error)
 	// DeleteModelprovider invokes delete_modelprovider operation.
 	//
 	// Delete a specific Model Provider configuration by ID.
 	//
-	// DELETE /system/api/v1/modelproviders/{provider_id}
+	// DELETE /api/v1/system/modelproviders/{provider_id}
 	DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error)
 	// DeleteOAuthService invokes delete_oauth_service operation.
 	//
@@ -204,13 +204,13 @@ type Invoker interface {
 	//
 	// Delete a specific prompt by ID.
 	//
-	// DELETE /system/api/v1/prompts/{prompt_id}
+	// DELETE /api/v1/system/prompts/{prompt_id}
 	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)
 	// DeleteToken invokes delete_token operation.
 	//
 	// Delete a specific API token by ID.
 	//
-	// DELETE /system/api/v1/tokens/{token_id}
+	// DELETE /api/v1/system/tokens/{token_id}
 	DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error)
 	// ExchangeOAuthToken invokes exchange_oauth_token operation.
 	//
@@ -269,67 +269,67 @@ type Invoker interface {
 	//
 	// Get all MCP tools associated with an entity definition.
 	//
-	// GET /system/api/v1/entity-definitions/{entity_definition_id}/tools
+	// GET /api/v1/system/entity-definitions/{entity_definition_id}/tools
 	GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error)
 	// GetEnvironmentStatus invokes get_environment_status operation.
 	//
 	// Get Environment Status.
 	//
-	// GET /system/api/v1/environments/{env_id}/status
+	// GET /api/v1/system/environments/{env_id}/status
 	GetEnvironmentStatus(ctx context.Context, params GetEnvironmentStatusParams) (GetEnvironmentStatusRes, error)
 	// GetEnvironmentUser invokes get_environment_user operation.
 	//
 	// Get a specific environment user.
 	//
-	// GET /system/api/v1/environments/{environment_id}/users/{user_id}
+	// GET /api/v1/system/environments/{environment_id}/users/{user_id}
 	GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (GetEnvironmentUserRes, error)
 	// GetEnvironments invokes get_environments operation.
 	//
 	// Get Environments.
 	//
-	// GET /system/api/v1/environments
+	// GET /api/v1/system/environments
 	GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error)
 	// GetMcpEndpointEntityTypes invokes get_mcp_endpoint_entity_types operation.
 	//
 	// Get all entity types associated with an MCP endpoint's tools.
 	//
-	// GET /system/api/v1/mcpendpoints/{mcpendpoint_name}/entity-types
+	// GET /api/v1/system/mcpendpoints/{mcpendpoint_name}/entity-types
 	GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error)
 	// GetMcpendpoint invokes get_mcpendpoint operation.
 	//
 	// Get a specific MCP Endpoint configuration by ID.
 	//
-	// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}
+	// GET /api/v1/system/mcpendpoints/{mcpendpoint_id}
 	GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (GetMcpendpointRes, error)
 	// GetMcpendpoints invokes get_mcpendpoints operation.
 	//
 	// List all MCP Endpoint configurations for the authenticated user and environment.
 	//
-	// GET /system/api/v1/mcpendpoints
+	// GET /api/v1/system/mcpendpoints
 	GetMcpendpoints(ctx context.Context) (GetMcpendpointsRes, error)
 	// GetModel invokes get_model operation.
 	//
 	// Get a specific model configuration by name.
 	//
-	// GET /system/api/v1/models/{model_name}
+	// GET /api/v1/system/models/{model_name}
 	GetModel(ctx context.Context, params GetModelParams) (GetModelRes, error)
 	// GetModelprovider invokes get_modelprovider operation.
 	//
 	// Get a specific Model Provider configuration by ID.
 	//
-	// GET /system/api/v1/modelproviders/{provider_id}
+	// GET /api/v1/system/modelproviders/{provider_id}
 	GetModelprovider(ctx context.Context, params GetModelproviderParams) (GetModelproviderRes, error)
 	// GetModelproviders invokes get_modelproviders operation.
 	//
 	// List all Model Provider configurations for the authenticated user and environment.
 	//
-	// GET /system/api/v1/modelproviders
+	// GET /api/v1/system/modelproviders
 	GetModelproviders(ctx context.Context) (GetModelprovidersRes, error)
 	// GetModels invokes get_models operation.
 	//
 	// List all model configurations for the authenticated user and environment.
 	//
-	// GET /system/api/v1/models
+	// GET /api/v1/system/models
 	GetModels(ctx context.Context) (GetModelsRes, error)
 	// GetOAuthAuthorizationURL invokes get_oauth_authorization_url operation.
 	//
@@ -348,50 +348,50 @@ type Invoker interface {
 	// Get all pending invitations for an environment (users who have been invited but haven't joined
 	// yet).
 	//
-	// GET /system/api/v1/environments/{environment_id}/users/pending
+	// GET /api/v1/system/environments/{environment_id}/users/pending
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
 	// GetPrompt invokes get_prompt operation.
 	//
 	// Get a specific prompt by ID.
 	//
-	// GET /system/api/v1/prompts/{prompt_id}
+	// GET /api/v1/system/prompts/{prompt_id}
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
 	// Get Subscriptions.
 	//
-	// GET /system/api/v1/subscriptions
+	// GET /api/v1/system/subscriptions
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
 	// GetSystemDefaultPrompt invokes get_system_default_prompt operation.
 	//
 	// Get the built-in system default prompt.
 	//
-	// GET /system/api/v1/prompts/system-default
+	// GET /api/v1/system/prompts/system-default
 	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
 	// GetTokens invokes get_tokens operation.
 	//
 	// Get all API tokens for the authenticated user.
 	//
-	// GET /system/api/v1/tokens
+	// GET /api/v1/system/tokens
 	GetTokens(ctx context.Context) (GetTokensRes, error)
 	// InviteEnvironmentUser invokes invite_environment_user operation.
 	//
 	// Invite a user to an environment (organization).
 	//
-	// POST /system/api/v1/environments/{environment_id}/users/invite
+	// POST /api/v1/system/environments/{environment_id}/users/invite
 	InviteEnvironmentUser(ctx context.Context, request *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error)
 	// ListEnvironmentUsers invokes list_environment_users operation.
 	//
 	// List all users in an environment (organization members).
 	//
-	// GET /system/api/v1/environments/{environment_id}/users
+	// GET /api/v1/system/environments/{environment_id}/users
 	ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error)
 	// ListMcpendpointTools invokes list_mcpendpoint_tools operation.
 	//
 	// List all available tools from a specific MCP Endpoint.
 	// This interrogates the MCP server to discover its available tools.
 	//
-	// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}/tools
+	// GET /api/v1/system/mcpendpoints/{mcpendpoint_id}/tools
 	ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error)
 	// ListOAuthServices invokes list_oauth_services operation.
 	//
@@ -415,7 +415,7 @@ type Invoker interface {
 	//
 	// List all prompts for the environment.
 	//
-	// GET /system/api/v1/prompts
+	// GET /api/v1/system/prompts
 	ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error)
 	// PostChatMessages invokes post_chat_messages operation.
 	//
@@ -427,13 +427,13 @@ type Invoker interface {
 	//
 	// Post Clerk Webhook.
 	//
-	// POST /system/api/v1/webhooks/clerk
+	// POST /api/v1/webhooks/clerk
 	PostClerkWebhook(ctx context.Context, params PostClerkWebhookParams) (PostClerkWebhookRes, error)
 	// PostStripeWebhook invokes post_stripe_webhook operation.
 	//
 	// Post Stripe Webhook.
 	//
-	// POST /system/api/v1/webhooks/stripe
+	// POST /api/v1/webhooks/stripe
 	PostStripeWebhook(ctx context.Context, params PostStripeWebhookParams) (PostStripeWebhookRes, error)
 	// RevokeOAuthToken invokes revoke_oauth_token operation.
 	//
@@ -451,25 +451,25 @@ type Invoker interface {
 	//
 	// Update an environment user's role.
 	//
-	// PUT /system/api/v1/environments/{environment_id}/users/{user_id}
+	// PUT /api/v1/system/environments/{environment_id}/users/{user_id}
 	UpdateEnvironmentUser(ctx context.Context, request *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error)
 	// UpdateMcpendpoint invokes update_mcpendpoint operation.
 	//
 	// Update a specific MCP Endpoint configuration by ID.
 	//
-	// PUT /system/api/v1/mcpendpoints/{mcpendpoint_id}
+	// PUT /api/v1/system/mcpendpoints/{mcpendpoint_id}
 	UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error)
 	// UpdateModel invokes update_model operation.
 	//
 	// Update a model configuration by name.
 	//
-	// PUT /system/api/v1/models/{model_name}
+	// PUT /api/v1/system/models/{model_name}
 	UpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error)
 	// UpdateModelprovider invokes update_modelprovider operation.
 	//
 	// Update a specific Model Provider configuration by ID.
 	//
-	// PUT /system/api/v1/modelproviders/{provider_id}
+	// PUT /api/v1/system/modelproviders/{provider_id}
 	UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error)
 	// UpdateOAuthService invokes update_oauth_service operation.
 	//
@@ -481,13 +481,13 @@ type Invoker interface {
 	//
 	// Update a specific prompt by ID.
 	//
-	// PUT /system/api/v1/prompts/{prompt_id}
+	// PUT /api/v1/system/prompts/{prompt_id}
 	UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error)
 	// UpdateToken invokes update_token operation.
 	//
 	// Update a specific API token by ID.
 	//
-	// PUT /system/api/v1/tokens/{token_id}
+	// PUT /api/v1/system/tokens/{token_id}
 	UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error)
 }
 
@@ -536,7 +536,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 //
 // Bulk invite multiple users to an environment (organization).
 //
-// POST /system/api/v1/environments/{environment_id}/users/bulk-invite
+// POST /api/v1/system/environments/{environment_id}/users/bulk-invite
 func (c *Client) BulkInviteEnvironmentUsers(ctx context.Context, request *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error) {
 	res, err := c.sendBulkInviteEnvironmentUsers(ctx, request, params)
 	return res, err
@@ -555,7 +555,7 @@ func (c *Client) sendBulkInviteEnvironmentUsers(ctx context.Context, request *En
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1436,7 +1436,7 @@ func (c *Client) sendCreateEntityRelationsBulk(ctx context.Context, request *Bul
 //
 // Create Environment.
 //
-// POST /system/api/v1/environments
+// POST /api/v1/system/environments
 func (c *Client) CreateEnvironment(ctx context.Context, request *EnvironmentCreate) (CreateEnvironmentRes, error) {
 	res, err := c.sendCreateEnvironment(ctx, request)
 	return res, err
@@ -1446,7 +1446,7 @@ func (c *Client) sendCreateEnvironment(ctx context.Context, request *Environment
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/environments"
+	pathParts[0] = "/api/v1/system/environments"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -1508,7 +1508,7 @@ func (c *Client) sendCreateEnvironment(ctx context.Context, request *Environment
 //
 // Create a new environment user by adding them to the Clerk organization.
 //
-// POST /system/api/v1/environments/{environment_id}/users
+// POST /api/v1/system/environments/{environment_id}/users
 func (c *Client) CreateEnvironmentUser(ctx context.Context, request *EnvironmentUserCreate, params CreateEnvironmentUserParams) (CreateEnvironmentUserRes, error) {
 	res, err := c.sendCreateEnvironmentUser(ctx, request, params)
 	return res, err
@@ -1527,7 +1527,7 @@ func (c *Client) sendCreateEnvironmentUser(ctx context.Context, request *Environ
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1608,7 +1608,7 @@ func (c *Client) sendCreateEnvironmentUser(ctx context.Context, request *Environ
 //
 // Create an association between an MCP tool and an entity definition.
 //
-// POST /system/api/v1/mcp-tool-associations
+// POST /api/v1/system/mcp-tool-associations
 func (c *Client) CreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error) {
 	res, err := c.sendCreateMcpToolAssociation(ctx, request)
 	return res, err
@@ -1618,7 +1618,7 @@ func (c *Client) sendCreateMcpToolAssociation(ctx context.Context, request *MCPT
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/mcp-tool-associations"
+	pathParts[0] = "/api/v1/system/mcp-tool-associations"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -1680,7 +1680,7 @@ func (c *Client) sendCreateMcpToolAssociation(ctx context.Context, request *MCPT
 //
 // Create a new MCP Endpoint configuration.
 //
-// POST /system/api/v1/mcpendpoints
+// POST /api/v1/system/mcpendpoints
 func (c *Client) CreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (CreateMcpendpointRes, error) {
 	res, err := c.sendCreateMcpendpoint(ctx, request)
 	return res, err
@@ -1699,7 +1699,7 @@ func (c *Client) sendCreateMcpendpoint(ctx context.Context, request *MCPEndpoint
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/mcpendpoints"
+	pathParts[0] = "/api/v1/system/mcpendpoints"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -1761,7 +1761,7 @@ func (c *Client) sendCreateMcpendpoint(ctx context.Context, request *MCPEndpoint
 //
 // Create a new model configuration.
 //
-// POST /system/api/v1/models
+// POST /api/v1/system/models
 func (c *Client) CreateModel(ctx context.Context, request *ModelCreate) (CreateModelRes, error) {
 	res, err := c.sendCreateModel(ctx, request)
 	return res, err
@@ -1771,7 +1771,7 @@ func (c *Client) sendCreateModel(ctx context.Context, request *ModelCreate) (res
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/models"
+	pathParts[0] = "/api/v1/system/models"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -1833,7 +1833,7 @@ func (c *Client) sendCreateModel(ctx context.Context, request *ModelCreate) (res
 //
 // Create a new Model Provider configuration.
 //
-// POST /system/api/v1/modelproviders
+// POST /api/v1/system/modelproviders
 func (c *Client) CreateModelprovider(ctx context.Context, request *ModelProviderCreate) (CreateModelproviderRes, error) {
 	res, err := c.sendCreateModelprovider(ctx, request)
 	return res, err
@@ -1843,7 +1843,7 @@ func (c *Client) sendCreateModelprovider(ctx context.Context, request *ModelProv
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/modelproviders"
+	pathParts[0] = "/api/v1/system/modelproviders"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -1986,7 +1986,7 @@ func (c *Client) sendCreateOAuthService(ctx context.Context, request *OAuthServi
 //
 // Create a new prompt for the environment.
 //
-// POST /system/api/v1/prompts
+// POST /api/v1/system/prompts
 func (c *Client) CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error) {
 	res, err := c.sendCreatePrompt(ctx, request)
 	return res, err
@@ -1996,7 +1996,7 @@ func (c *Client) sendCreatePrompt(ctx context.Context, request *PromptCreate) (r
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/prompts"
+	pathParts[0] = "/api/v1/system/prompts"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -2058,7 +2058,7 @@ func (c *Client) sendCreatePrompt(ctx context.Context, request *PromptCreate) (r
 //
 // Create Token.
 //
-// POST /system/api/v1/tokens
+// POST /api/v1/system/tokens
 func (c *Client) CreateToken(ctx context.Context, request *ApiTokenCreate) (CreateTokenRes, error) {
 	res, err := c.sendCreateToken(ctx, request)
 	return res, err
@@ -2068,7 +2068,7 @@ func (c *Client) sendCreateToken(ctx context.Context, request *ApiTokenCreate) (
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/tokens"
+	pathParts[0] = "/api/v1/system/tokens"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -2218,47 +2218,33 @@ func (c *Client) sendDeleteChat(ctx context.Context, params DeleteChatParams) (r
 // Bulk delete multiple chat sessions.
 //
 // DELETE /api/v1/chat/
-func (c *Client) DeleteChatsBulk(ctx context.Context, params DeleteChatsBulkParams) (DeleteChatsBulkRes, error) {
-	res, err := c.sendDeleteChatsBulk(ctx, params)
+func (c *Client) DeleteChatsBulk(ctx context.Context, request *BulkDeleteRequest) (DeleteChatsBulkRes, error) {
+	res, err := c.sendDeleteChatsBulk(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendDeleteChatsBulk(ctx context.Context, params DeleteChatsBulkParams) (res DeleteChatsBulkRes, err error) {
+func (c *Client) sendDeleteChatsBulk(ctx context.Context, request *BulkDeleteRequest) (res DeleteChatsBulkRes, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/api/v1/chat/"
 	uri.AddPathParts(u, pathParts[:]...)
 
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "chat_ids" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "chat_ids",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return e.EncodeArray(func(e uri.Encoder) error {
-				for i, item := range params.ChatIds {
-					if err := func() error {
-						return e.EncodeValue(conv.StringToString(item))
-					}(); err != nil {
-						return errors.Wrapf(err, "[%d]", i)
-					}
-				}
-				return nil
-			})
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteChatsBulkRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -2671,7 +2657,7 @@ func (c *Client) sendDeleteEntityRelation(ctx context.Context, request *EntityRe
 //
 // Remove a user from an environment (organization).
 //
-// DELETE /system/api/v1/environments/{environment_id}/users/{user_id}
+// DELETE /api/v1/system/environments/{environment_id}/users/{user_id}
 func (c *Client) DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error) {
 	res, err := c.sendDeleteEnvironmentUser(ctx, params)
 	return res, err
@@ -2681,7 +2667,7 @@ func (c *Client) sendDeleteEnvironmentUser(ctx context.Context, params DeleteEnv
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2777,7 +2763,7 @@ func (c *Client) sendDeleteEnvironmentUser(ctx context.Context, params DeleteEnv
 //
 // Delete an MCP tool-entity association.
 //
-// DELETE /system/api/v1/mcp-tool-associations/{association_id}
+// DELETE /api/v1/system/mcp-tool-associations/{association_id}
 func (c *Client) DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error) {
 	res, err := c.sendDeleteMcpToolAssociation(ctx, params)
 	return res, err
@@ -2787,7 +2773,7 @@ func (c *Client) sendDeleteMcpToolAssociation(ctx context.Context, params Delete
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/mcp-tool-associations/"
+	pathParts[0] = "/api/v1/system/mcp-tool-associations/"
 	{
 		// Encode "association_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2864,7 +2850,7 @@ func (c *Client) sendDeleteMcpToolAssociation(ctx context.Context, params Delete
 //
 // Delete a specific MCP Endpoint configuration by ID.
 //
-// DELETE /system/api/v1/mcpendpoints/{mcpendpoint_id}
+// DELETE /api/v1/system/mcpendpoints/{mcpendpoint_id}
 func (c *Client) DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (DeleteMcpendpointRes, error) {
 	res, err := c.sendDeleteMcpendpoint(ctx, params)
 	return res, err
@@ -2874,7 +2860,7 @@ func (c *Client) sendDeleteMcpendpoint(ctx context.Context, params DeleteMcpendp
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	pathParts[0] = "/api/v1/system/mcpendpoints/"
 	{
 		// Encode "mcpendpoint_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2951,7 +2937,7 @@ func (c *Client) sendDeleteMcpendpoint(ctx context.Context, params DeleteMcpendp
 //
 // Delete a specific model configuration by name.
 //
-// DELETE /system/api/v1/models/{model_name}
+// DELETE /api/v1/system/models/{model_name}
 func (c *Client) DeleteModel(ctx context.Context, params DeleteModelParams) (DeleteModelRes, error) {
 	res, err := c.sendDeleteModel(ctx, params)
 	return res, err
@@ -2961,7 +2947,7 @@ func (c *Client) sendDeleteModel(ctx context.Context, params DeleteModelParams) 
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/models/"
+	pathParts[0] = "/api/v1/system/models/"
 	{
 		// Encode "model_name" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3038,7 +3024,7 @@ func (c *Client) sendDeleteModel(ctx context.Context, params DeleteModelParams) 
 //
 // Delete a specific Model Provider configuration by ID.
 //
-// DELETE /system/api/v1/modelproviders/{provider_id}
+// DELETE /api/v1/system/modelproviders/{provider_id}
 func (c *Client) DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error) {
 	res, err := c.sendDeleteModelprovider(ctx, params)
 	return res, err
@@ -3048,7 +3034,7 @@ func (c *Client) sendDeleteModelprovider(ctx context.Context, params DeleteModel
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/modelproviders/"
+	pathParts[0] = "/api/v1/system/modelproviders/"
 	{
 		// Encode "provider_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3212,7 +3198,7 @@ func (c *Client) sendDeleteOAuthService(ctx context.Context, params DeleteOAuthS
 //
 // Delete a specific prompt by ID.
 //
-// DELETE /system/api/v1/prompts/{prompt_id}
+// DELETE /api/v1/system/prompts/{prompt_id}
 func (c *Client) DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error) {
 	res, err := c.sendDeletePrompt(ctx, params)
 	return res, err
@@ -3222,7 +3208,7 @@ func (c *Client) sendDeletePrompt(ctx context.Context, params DeletePromptParams
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/prompts/"
+	pathParts[0] = "/api/v1/system/prompts/"
 	{
 		// Encode "prompt_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3299,7 +3285,7 @@ func (c *Client) sendDeletePrompt(ctx context.Context, params DeletePromptParams
 //
 // Delete a specific API token by ID.
 //
-// DELETE /system/api/v1/tokens/{token_id}
+// DELETE /api/v1/system/tokens/{token_id}
 func (c *Client) DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error) {
 	res, err := c.sendDeleteToken(ctx, params)
 	return res, err
@@ -3309,7 +3295,7 @@ func (c *Client) sendDeleteToken(ctx context.Context, params DeleteTokenParams) 
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/tokens/"
+	pathParts[0] = "/api/v1/system/tokens/"
 	{
 		// Encode "token_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4262,7 +4248,7 @@ func (c *Client) sendGetEntityDefinitions(ctx context.Context) (res GetEntityDef
 //
 // Get all MCP tools associated with an entity definition.
 //
-// GET /system/api/v1/entity-definitions/{entity_definition_id}/tools
+// GET /api/v1/system/entity-definitions/{entity_definition_id}/tools
 func (c *Client) GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error) {
 	res, err := c.sendGetEntityTools(ctx, params)
 	return res, err
@@ -4272,7 +4258,7 @@ func (c *Client) sendGetEntityTools(ctx context.Context, params GetEntityToolsPa
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/entity-definitions/"
+	pathParts[0] = "/api/v1/system/entity-definitions/"
 	{
 		// Encode "entity_definition_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4370,7 +4356,7 @@ func (c *Client) sendGetEntityTools(ctx context.Context, params GetEntityToolsPa
 //
 // Get Environment Status.
 //
-// GET /system/api/v1/environments/{env_id}/status
+// GET /api/v1/system/environments/{env_id}/status
 func (c *Client) GetEnvironmentStatus(ctx context.Context, params GetEnvironmentStatusParams) (GetEnvironmentStatusRes, error) {
 	res, err := c.sendGetEnvironmentStatus(ctx, params)
 	return res, err
@@ -4380,7 +4366,7 @@ func (c *Client) sendGetEnvironmentStatus(ctx context.Context, params GetEnviron
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "env_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4458,7 +4444,7 @@ func (c *Client) sendGetEnvironmentStatus(ctx context.Context, params GetEnviron
 //
 // Get a specific environment user.
 //
-// GET /system/api/v1/environments/{environment_id}/users/{user_id}
+// GET /api/v1/system/environments/{environment_id}/users/{user_id}
 func (c *Client) GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (GetEnvironmentUserRes, error) {
 	res, err := c.sendGetEnvironmentUser(ctx, params)
 	return res, err
@@ -4468,7 +4454,7 @@ func (c *Client) sendGetEnvironmentUser(ctx context.Context, params GetEnvironme
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4564,7 +4550,7 @@ func (c *Client) sendGetEnvironmentUser(ctx context.Context, params GetEnvironme
 //
 // Get Environments.
 //
-// GET /system/api/v1/environments
+// GET /api/v1/system/environments
 func (c *Client) GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error) {
 	res, err := c.sendGetEnvironments(ctx)
 	return res, err
@@ -4574,7 +4560,7 @@ func (c *Client) sendGetEnvironments(ctx context.Context) (res GetEnvironmentsRe
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/environments"
+	pathParts[0] = "/api/v1/system/environments"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -4633,7 +4619,7 @@ func (c *Client) sendGetEnvironments(ctx context.Context) (res GetEnvironmentsRe
 //
 // Get all entity types associated with an MCP endpoint's tools.
 //
-// GET /system/api/v1/mcpendpoints/{mcpendpoint_name}/entity-types
+// GET /api/v1/system/mcpendpoints/{mcpendpoint_name}/entity-types
 func (c *Client) GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error) {
 	res, err := c.sendGetMcpEndpointEntityTypes(ctx, params)
 	return res, err
@@ -4643,7 +4629,7 @@ func (c *Client) sendGetMcpEndpointEntityTypes(ctx context.Context, params GetMc
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	pathParts[0] = "/api/v1/system/mcpendpoints/"
 	{
 		// Encode "mcpendpoint_name" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4741,7 +4727,7 @@ func (c *Client) sendGetMcpEndpointEntityTypes(ctx context.Context, params GetMc
 //
 // Get a specific MCP Endpoint configuration by ID.
 //
-// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}
+// GET /api/v1/system/mcpendpoints/{mcpendpoint_id}
 func (c *Client) GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (GetMcpendpointRes, error) {
 	res, err := c.sendGetMcpendpoint(ctx, params)
 	return res, err
@@ -4751,7 +4737,7 @@ func (c *Client) sendGetMcpendpoint(ctx context.Context, params GetMcpendpointPa
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	pathParts[0] = "/api/v1/system/mcpendpoints/"
 	{
 		// Encode "mcpendpoint_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4828,7 +4814,7 @@ func (c *Client) sendGetMcpendpoint(ctx context.Context, params GetMcpendpointPa
 //
 // List all MCP Endpoint configurations for the authenticated user and environment.
 //
-// GET /system/api/v1/mcpendpoints
+// GET /api/v1/system/mcpendpoints
 func (c *Client) GetMcpendpoints(ctx context.Context) (GetMcpendpointsRes, error) {
 	res, err := c.sendGetMcpendpoints(ctx)
 	return res, err
@@ -4838,7 +4824,7 @@ func (c *Client) sendGetMcpendpoints(ctx context.Context) (res GetMcpendpointsRe
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/mcpendpoints"
+	pathParts[0] = "/api/v1/system/mcpendpoints"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -4897,7 +4883,7 @@ func (c *Client) sendGetMcpendpoints(ctx context.Context) (res GetMcpendpointsRe
 //
 // Get a specific model configuration by name.
 //
-// GET /system/api/v1/models/{model_name}
+// GET /api/v1/system/models/{model_name}
 func (c *Client) GetModel(ctx context.Context, params GetModelParams) (GetModelRes, error) {
 	res, err := c.sendGetModel(ctx, params)
 	return res, err
@@ -4907,7 +4893,7 @@ func (c *Client) sendGetModel(ctx context.Context, params GetModelParams) (res G
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/models/"
+	pathParts[0] = "/api/v1/system/models/"
 	{
 		// Encode "model_name" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4984,7 +4970,7 @@ func (c *Client) sendGetModel(ctx context.Context, params GetModelParams) (res G
 //
 // Get a specific Model Provider configuration by ID.
 //
-// GET /system/api/v1/modelproviders/{provider_id}
+// GET /api/v1/system/modelproviders/{provider_id}
 func (c *Client) GetModelprovider(ctx context.Context, params GetModelproviderParams) (GetModelproviderRes, error) {
 	res, err := c.sendGetModelprovider(ctx, params)
 	return res, err
@@ -4994,7 +4980,7 @@ func (c *Client) sendGetModelprovider(ctx context.Context, params GetModelprovid
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/modelproviders/"
+	pathParts[0] = "/api/v1/system/modelproviders/"
 	{
 		// Encode "provider_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5071,7 +5057,7 @@ func (c *Client) sendGetModelprovider(ctx context.Context, params GetModelprovid
 //
 // List all Model Provider configurations for the authenticated user and environment.
 //
-// GET /system/api/v1/modelproviders
+// GET /api/v1/system/modelproviders
 func (c *Client) GetModelproviders(ctx context.Context) (GetModelprovidersRes, error) {
 	res, err := c.sendGetModelproviders(ctx)
 	return res, err
@@ -5081,7 +5067,7 @@ func (c *Client) sendGetModelproviders(ctx context.Context) (res GetModelprovide
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/modelproviders"
+	pathParts[0] = "/api/v1/system/modelproviders"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -5140,7 +5126,7 @@ func (c *Client) sendGetModelproviders(ctx context.Context) (res GetModelprovide
 //
 // List all model configurations for the authenticated user and environment.
 //
-// GET /system/api/v1/models
+// GET /api/v1/system/models
 func (c *Client) GetModels(ctx context.Context) (GetModelsRes, error) {
 	res, err := c.sendGetModels(ctx)
 	return res, err
@@ -5150,7 +5136,7 @@ func (c *Client) sendGetModels(ctx context.Context) (res GetModelsRes, err error
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/models"
+	pathParts[0] = "/api/v1/system/models"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -5378,7 +5364,7 @@ func (c *Client) sendGetOAuthService(ctx context.Context, params GetOAuthService
 // Get all pending invitations for an environment (users who have been invited but haven't joined
 // yet).
 //
-// GET /system/api/v1/environments/{environment_id}/users/pending
+// GET /api/v1/system/environments/{environment_id}/users/pending
 func (c *Client) GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error) {
 	res, err := c.sendGetPendingInvitations(ctx, params)
 	return res, err
@@ -5388,7 +5374,7 @@ func (c *Client) sendGetPendingInvitations(ctx context.Context, params GetPendin
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5466,7 +5452,7 @@ func (c *Client) sendGetPendingInvitations(ctx context.Context, params GetPendin
 //
 // Get a specific prompt by ID.
 //
-// GET /system/api/v1/prompts/{prompt_id}
+// GET /api/v1/system/prompts/{prompt_id}
 func (c *Client) GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error) {
 	res, err := c.sendGetPrompt(ctx, params)
 	return res, err
@@ -5476,7 +5462,7 @@ func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/prompts/"
+	pathParts[0] = "/api/v1/system/prompts/"
 	{
 		// Encode "prompt_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5553,7 +5539,7 @@ func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res
 //
 // Get Subscriptions.
 //
-// GET /system/api/v1/subscriptions
+// GET /api/v1/system/subscriptions
 func (c *Client) GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error) {
 	res, err := c.sendGetSubscriptions(ctx)
 	return res, err
@@ -5563,7 +5549,7 @@ func (c *Client) sendGetSubscriptions(ctx context.Context) (res GetSubscriptions
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/subscriptions"
+	pathParts[0] = "/api/v1/system/subscriptions"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -5622,7 +5608,7 @@ func (c *Client) sendGetSubscriptions(ctx context.Context) (res GetSubscriptions
 //
 // Get the built-in system default prompt.
 //
-// GET /system/api/v1/prompts/system-default
+// GET /api/v1/system/prompts/system-default
 func (c *Client) GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error) {
 	res, err := c.sendGetSystemDefaultPrompt(ctx)
 	return res, err
@@ -5632,7 +5618,7 @@ func (c *Client) sendGetSystemDefaultPrompt(ctx context.Context) (res GetSystemD
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/prompts/system-default"
+	pathParts[0] = "/api/v1/system/prompts/system-default"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -5691,7 +5677,7 @@ func (c *Client) sendGetSystemDefaultPrompt(ctx context.Context) (res GetSystemD
 //
 // Get all API tokens for the authenticated user.
 //
-// GET /system/api/v1/tokens
+// GET /api/v1/system/tokens
 func (c *Client) GetTokens(ctx context.Context) (GetTokensRes, error) {
 	res, err := c.sendGetTokens(ctx)
 	return res, err
@@ -5701,7 +5687,7 @@ func (c *Client) sendGetTokens(ctx context.Context) (res GetTokensRes, err error
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/tokens"
+	pathParts[0] = "/api/v1/system/tokens"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -5760,7 +5746,7 @@ func (c *Client) sendGetTokens(ctx context.Context) (res GetTokensRes, err error
 //
 // Invite a user to an environment (organization).
 //
-// POST /system/api/v1/environments/{environment_id}/users/invite
+// POST /api/v1/system/environments/{environment_id}/users/invite
 func (c *Client) InviteEnvironmentUser(ctx context.Context, request *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error) {
 	res, err := c.sendInviteEnvironmentUser(ctx, request, params)
 	return res, err
@@ -5779,7 +5765,7 @@ func (c *Client) sendInviteEnvironmentUser(ctx context.Context, request *Environ
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5860,7 +5846,7 @@ func (c *Client) sendInviteEnvironmentUser(ctx context.Context, request *Environ
 //
 // List all users in an environment (organization members).
 //
-// GET /system/api/v1/environments/{environment_id}/users
+// GET /api/v1/system/environments/{environment_id}/users
 func (c *Client) ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error) {
 	res, err := c.sendListEnvironmentUsers(ctx, params)
 	return res, err
@@ -5870,7 +5856,7 @@ func (c *Client) sendListEnvironmentUsers(ctx context.Context, params ListEnviro
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5949,7 +5935,7 @@ func (c *Client) sendListEnvironmentUsers(ctx context.Context, params ListEnviro
 // List all available tools from a specific MCP Endpoint.
 // This interrogates the MCP server to discover its available tools.
 //
-// GET /system/api/v1/mcpendpoints/{mcpendpoint_id}/tools
+// GET /api/v1/system/mcpendpoints/{mcpendpoint_id}/tools
 func (c *Client) ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error) {
 	res, err := c.sendListMcpendpointTools(ctx, params)
 	return res, err
@@ -5959,7 +5945,7 @@ func (c *Client) sendListMcpendpointTools(ctx context.Context, params ListMcpend
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	pathParts[0] = "/api/v1/system/mcpendpoints/"
 	{
 		// Encode "mcpendpoint_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -6284,7 +6270,7 @@ func (c *Client) sendListOrphanedEntities(ctx context.Context, params ListOrphan
 //
 // List all prompts for the environment.
 //
-// GET /system/api/v1/prompts
+// GET /api/v1/system/prompts
 func (c *Client) ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error) {
 	res, err := c.sendListPrompts(ctx, params)
 	return res, err
@@ -6294,7 +6280,7 @@ func (c *Client) sendListPrompts(ctx context.Context, params ListPromptsParams) 
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/prompts"
+	pathParts[0] = "/api/v1/system/prompts"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	q := uri.NewQueryEncoder()
@@ -6490,7 +6476,7 @@ func (c *Client) sendPostChatMessages(ctx context.Context, request []ChatMessage
 //
 // Post Clerk Webhook.
 //
-// POST /system/api/v1/webhooks/clerk
+// POST /api/v1/webhooks/clerk
 func (c *Client) PostClerkWebhook(ctx context.Context, params PostClerkWebhookParams) (PostClerkWebhookRes, error) {
 	res, err := c.sendPostClerkWebhook(ctx, params)
 	return res, err
@@ -6500,7 +6486,7 @@ func (c *Client) sendPostClerkWebhook(ctx context.Context, params PostClerkWebho
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/webhooks/clerk"
+	pathParts[0] = "/api/v1/webhooks/clerk"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -6561,7 +6547,7 @@ func (c *Client) sendPostClerkWebhook(ctx context.Context, params PostClerkWebho
 //
 // Post Stripe Webhook.
 //
-// POST /system/api/v1/webhooks/stripe
+// POST /api/v1/webhooks/stripe
 func (c *Client) PostStripeWebhook(ctx context.Context, params PostStripeWebhookParams) (PostStripeWebhookRes, error) {
 	res, err := c.sendPostStripeWebhook(ctx, params)
 	return res, err
@@ -6571,7 +6557,7 @@ func (c *Client) sendPostStripeWebhook(ctx context.Context, params PostStripeWeb
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/system/api/v1/webhooks/stripe"
+	pathParts[0] = "/api/v1/webhooks/stripe"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -6796,7 +6782,7 @@ func (c *Client) sendUpdateChat(ctx context.Context, request *ChatSessionUpdate,
 //
 // Update an environment user's role.
 //
-// PUT /system/api/v1/environments/{environment_id}/users/{user_id}
+// PUT /api/v1/system/environments/{environment_id}/users/{user_id}
 func (c *Client) UpdateEnvironmentUser(ctx context.Context, request *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error) {
 	res, err := c.sendUpdateEnvironmentUser(ctx, request, params)
 	return res, err
@@ -6815,7 +6801,7 @@ func (c *Client) sendUpdateEnvironmentUser(ctx context.Context, request *Environ
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/system/api/v1/environments/"
+	pathParts[0] = "/api/v1/system/environments/"
 	{
 		// Encode "environment_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -6914,7 +6900,7 @@ func (c *Client) sendUpdateEnvironmentUser(ctx context.Context, request *Environ
 //
 // Update a specific MCP Endpoint configuration by ID.
 //
-// PUT /system/api/v1/mcpendpoints/{mcpendpoint_id}
+// PUT /api/v1/system/mcpendpoints/{mcpendpoint_id}
 func (c *Client) UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error) {
 	res, err := c.sendUpdateMcpendpoint(ctx, request, params)
 	return res, err
@@ -6933,7 +6919,7 @@ func (c *Client) sendUpdateMcpendpoint(ctx context.Context, request *MCPEndpoint
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/mcpendpoints/"
+	pathParts[0] = "/api/v1/system/mcpendpoints/"
 	{
 		// Encode "mcpendpoint_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -7013,7 +6999,7 @@ func (c *Client) sendUpdateMcpendpoint(ctx context.Context, request *MCPEndpoint
 //
 // Update a model configuration by name.
 //
-// PUT /system/api/v1/models/{model_name}
+// PUT /api/v1/system/models/{model_name}
 func (c *Client) UpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error) {
 	res, err := c.sendUpdateModel(ctx, request, params)
 	return res, err
@@ -7023,7 +7009,7 @@ func (c *Client) sendUpdateModel(ctx context.Context, request *ModelUpdate, para
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/models/"
+	pathParts[0] = "/api/v1/system/models/"
 	{
 		// Encode "model_name" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -7103,7 +7089,7 @@ func (c *Client) sendUpdateModel(ctx context.Context, request *ModelUpdate, para
 //
 // Update a specific Model Provider configuration by ID.
 //
-// PUT /system/api/v1/modelproviders/{provider_id}
+// PUT /api/v1/system/modelproviders/{provider_id}
 func (c *Client) UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error) {
 	res, err := c.sendUpdateModelprovider(ctx, request, params)
 	return res, err
@@ -7113,7 +7099,7 @@ func (c *Client) sendUpdateModelprovider(ctx context.Context, request *ModelProv
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/modelproviders/"
+	pathParts[0] = "/api/v1/system/modelproviders/"
 	{
 		// Encode "provider_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -7292,7 +7278,7 @@ func (c *Client) sendUpdateOAuthService(ctx context.Context, request *OAuthServi
 //
 // Update a specific prompt by ID.
 //
-// PUT /system/api/v1/prompts/{prompt_id}
+// PUT /api/v1/system/prompts/{prompt_id}
 func (c *Client) UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error) {
 	res, err := c.sendUpdatePrompt(ctx, request, params)
 	return res, err
@@ -7302,7 +7288,7 @@ func (c *Client) sendUpdatePrompt(ctx context.Context, request *PromptUpdate, pa
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/prompts/"
+	pathParts[0] = "/api/v1/system/prompts/"
 	{
 		// Encode "prompt_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -7382,7 +7368,7 @@ func (c *Client) sendUpdatePrompt(ctx context.Context, request *PromptUpdate, pa
 //
 // Update a specific API token by ID.
 //
-// PUT /system/api/v1/tokens/{token_id}
+// PUT /api/v1/system/tokens/{token_id}
 func (c *Client) UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error) {
 	res, err := c.sendUpdateToken(ctx, request, params)
 	return res, err
@@ -7401,7 +7387,7 @@ func (c *Client) sendUpdateToken(ctx context.Context, request *ApiTokenUpdate, p
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/system/api/v1/tokens/"
+	pathParts[0] = "/api/v1/system/tokens/"
 	{
 		// Encode "token_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
