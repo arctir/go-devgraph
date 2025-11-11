@@ -172,7 +172,8 @@ type Handler interface {
 	DeleteEntity(ctx context.Context, params DeleteEntityParams) (DeleteEntityRes, error)
 	// DeleteEntityDefinition implements delete_entity_definition operation.
 	//
-	// Deletes an entity definition and all its versions. Requires 'delete:entitydefinitions' permission.
+	// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
+	// orphans.
 	//
 	// DELETE /api/v1/entities/definitions/{definition_id}
 	DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (DeleteEntityDefinitionRes, error)

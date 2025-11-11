@@ -4966,7 +4966,8 @@ func (s *Server) handleDeleteEntityRequest(args [5]string, argsEscaped bool, w h
 
 // handleDeleteEntityDefinitionRequest handles delete_entity_definition operation.
 //
-// Deletes an entity definition and all its versions. Requires 'delete:entitydefinitions' permission.
+// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
+// orphans.
 //
 // DELETE /api/v1/entities/definitions/{definition_id}
 func (s *Server) handleDeleteEntityDefinitionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

@@ -255,7 +255,8 @@ func (UnimplementedHandler) DeleteEntity(ctx context.Context, params DeleteEntit
 
 // DeleteEntityDefinition implements delete_entity_definition operation.
 //
-// Deletes an entity definition and all its versions. Requires 'delete:entitydefinitions' permission.
+// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
+// orphans.
 //
 // DELETE /api/v1/entities/definitions/{definition_id}
 func (UnimplementedHandler) DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (r DeleteEntityDefinitionRes, _ error) {
