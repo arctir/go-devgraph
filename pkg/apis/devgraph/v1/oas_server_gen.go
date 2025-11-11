@@ -433,7 +433,7 @@ type Handler interface {
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
 	// GetSystemDefaultPrompt implements get_system_default_prompt operation.
 	//
-	// Get the built-in system default prompt.
+	// Retrieve the system default prompt template.
 	//
 	// GET /api/v1/prompts/system-default
 	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
@@ -503,7 +503,7 @@ type Handler interface {
 	ListOrphanedEntities(ctx context.Context, params ListOrphanedEntitiesParams) (ListOrphanedEntitiesRes, error)
 	// ListPrompts implements list_prompts operation.
 	//
-	// List all prompts for the environment.
+	// List all prompt templates for the environment, optionally filtered by active status.
 	//
 	// GET /api/v1/prompts
 	ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error)

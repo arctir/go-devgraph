@@ -12494,7 +12494,7 @@ func (s *Server) handleGetSubscriptionsRequest(args [0]string, argsEscaped bool,
 
 // handleGetSystemDefaultPromptRequest handles get_system_default_prompt operation.
 //
-// Get the built-in system default prompt.
+// Retrieve the system default prompt template.
 //
 // GET /api/v1/prompts/system-default
 func (s *Server) handleGetSystemDefaultPromptRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -14473,7 +14473,7 @@ func (s *Server) handleListOrphanedEntitiesRequest(args [0]string, argsEscaped b
 
 // handleListPromptsRequest handles list_prompts operation.
 //
-// List all prompts for the environment.
+// List all prompt templates for the environment, optionally filtered by active status.
 //
 // GET /api/v1/prompts
 func (s *Server) handleListPromptsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

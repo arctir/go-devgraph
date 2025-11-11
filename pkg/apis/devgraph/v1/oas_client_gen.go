@@ -453,7 +453,7 @@ type Invoker interface {
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
 	// GetSystemDefaultPrompt invokes get_system_default_prompt operation.
 	//
-	// Get the built-in system default prompt.
+	// Retrieve the system default prompt template.
 	//
 	// GET /api/v1/prompts/system-default
 	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
@@ -523,7 +523,7 @@ type Invoker interface {
 	ListOrphanedEntities(ctx context.Context, params ListOrphanedEntitiesParams) (ListOrphanedEntitiesRes, error)
 	// ListPrompts invokes list_prompts operation.
 	//
-	// List all prompts for the environment.
+	// List all prompt templates for the environment, optionally filtered by active status.
 	//
 	// GET /api/v1/prompts
 	ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error)
@@ -9141,7 +9141,7 @@ func (c *Client) sendGetSubscriptions(ctx context.Context) (res GetSubscriptions
 
 // GetSystemDefaultPrompt invokes get_system_default_prompt operation.
 //
-// Get the built-in system default prompt.
+// Retrieve the system default prompt template.
 //
 // GET /api/v1/prompts/system-default
 func (c *Client) GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error) {
@@ -10434,7 +10434,7 @@ func (c *Client) sendListOrphanedEntities(ctx context.Context, params ListOrphan
 
 // ListPrompts invokes list_prompts operation.
 //
-// List all prompts for the environment.
+// List all prompt templates for the environment, optionally filtered by active status.
 //
 // GET /api/v1/prompts
 func (c *Client) ListPrompts(ctx context.Context, params ListPromptsParams) (ListPromptsRes, error) {

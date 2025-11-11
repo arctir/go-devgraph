@@ -640,7 +640,7 @@ func (UnimplementedHandler) GetSubscriptions(ctx context.Context) (r GetSubscrip
 
 // GetSystemDefaultPrompt implements get_system_default_prompt operation.
 //
-// Get the built-in system default prompt.
+// Retrieve the system default prompt template.
 //
 // GET /api/v1/prompts/system-default
 func (UnimplementedHandler) GetSystemDefaultPrompt(ctx context.Context) (r GetSystemDefaultPromptRes, _ error) {
@@ -743,7 +743,7 @@ func (UnimplementedHandler) ListOrphanedEntities(ctx context.Context, params Lis
 
 // ListPrompts implements list_prompts operation.
 //
-// List all prompts for the environment.
+// List all prompt templates for the environment, optionally filtered by active status.
 //
 // GET /api/v1/prompts
 func (UnimplementedHandler) ListPrompts(ctx context.Context, params ListPromptsParams) (r ListPromptsRes, _ error) {

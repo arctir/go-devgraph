@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.12
+  version: 1.0.0-beta.13
 paths:
   /api/v1/entities/definitions:
     get:
@@ -2156,7 +2156,8 @@ paths:
       tags:
       - prompts
       summary: List Prompts
-      description: List all prompts for the environment.
+      description: List all prompt templates for the environment, optionally filtered
+        by active status
       operationId: list_prompts
       security:
       - OAuth2PasswordBearer: []
@@ -2190,7 +2191,7 @@ paths:
       tags:
       - prompts
       summary: Get System Default Prompt
-      description: Get the built-in system default prompt.
+      description: Retrieve the system default prompt template
       operationId: get_system_default_prompt
       responses:
         '200':
