@@ -10,15 +10,13 @@ import (
 type Handler interface {
 	// BulkInviteEnvironmentUsers implements bulk_invite_environment_users operation.
 	//
-	// Bulk invite multiple users to an environment (organization).
+	// Bulk invite multiple users to an environment.
 	//
 	// POST /api/v1/environments/{environment_id}/users/bulk-invite
 	BulkInviteEnvironmentUsers(ctx context.Context, req *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error)
 	// CheckEntitlement implements check_entitlement operation.
 	//
 	// Check a specific entitlement for the authenticated user.
-	// For numeric limits (e.g., max_environments), returns current usage and remaining quota.
-	// For boolean features (e.g., enable_sso), returns whether the feature is enabled.
 	//
 	// GET /api/v1/entitlements/check/{entitlement_type}
 	CheckEntitlement(ctx context.Context, params CheckEntitlementParams) (CheckEntitlementRes, error)
@@ -30,7 +28,7 @@ type Handler interface {
 	CleanupOrphanedEntities(ctx context.Context, params CleanupOrphanedEntitiesParams) (CleanupOrphanedEntitiesRes, error)
 	// CreateChat implements create_chat operation.
 	//
-	// Create Chat.
+	// Create a new chat session.
 	//
 	// POST /api/v1/chats/
 	CreateChat(ctx context.Context, req *ChatSessionCreate) (CreateChatRes, error)
@@ -75,7 +73,7 @@ type Handler interface {
 	CreateEntityDefinition(ctx context.Context, req *EntityDefinitionSpec) (CreateEntityDefinitionRes, error)
 	// CreateEntityRelation implements create_entity_relation operation.
 	//
-	// Create Entity Relation.
+	// Create a relation between two entities in the knowledge graph.
 	//
 	// POST /api/v1/entities/relations
 	CreateEntityRelation(ctx context.Context, req *EntityRelation, params CreateEntityRelationParams) (CreateEntityRelationRes, error)
@@ -88,7 +86,7 @@ type Handler interface {
 	CreateEntityRelationsBulk(ctx context.Context, req *BulkEntityRelationCreateRequest) (CreateEntityRelationsBulkRes, error)
 	// CreateEnvironment implements create_environment operation.
 	//
-	// Create Environment.
+	// Create a new environment with associated Clerk organization.
 	//
 	// POST /api/v1/environments
 	CreateEnvironment(ctx context.Context, req *EnvironmentCreate) (CreateEnvironmentRes, error)
@@ -106,7 +104,7 @@ type Handler interface {
 	CreateMcpToolAssociation(ctx context.Context, req *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error)
 	// CreateMcpendpoint implements create_mcpendpoint operation.
 	//
-	// Create a new MCP Endpoint configuration.
+	// Create a new MCP endpoint configuration.
 	//
 	// POST /api/v1/mcp/endpoints
 	CreateMcpendpoint(ctx context.Context, req *MCPEndpointCreate) (CreateMcpendpointRes, error)
@@ -118,13 +116,13 @@ type Handler interface {
 	CreateModel(ctx context.Context, req *ModelCreate) (CreateModelRes, error)
 	// CreateModelprovider implements create_modelprovider operation.
 	//
-	// Create a new Model Provider configuration.
+	// Create a new model provider configuration.
 	//
 	// POST /api/v1/models/providers
 	CreateModelprovider(ctx context.Context, req *ModelProviderCreate) (CreateModelproviderRes, error)
 	// CreateOAuthService implements create_oauth_service operation.
 	//
-	// Create Oauth Service.
+	// Create a new OAuth service configuration.
 	//
 	// POST /api/v1/oauth/services
 	CreateOAuthService(ctx context.Context, req *OAuthServiceCreate) (CreateOAuthServiceRes, error)
@@ -136,25 +134,25 @@ type Handler interface {
 	CreatePrompt(ctx context.Context, req *PromptCreate) (CreatePromptRes, error)
 	// CreateToken implements create_token operation.
 	//
-	// Create Token.
+	// Create a new API token for the authenticated user.
 	//
 	// POST /api/v1/tokens
 	CreateToken(ctx context.Context, req *ApiTokenCreate) (CreateTokenRes, error)
 	// DeleteChat implements delete_chat operation.
 	//
-	// Delete Chat.
+	// Delete a chat session by ID.
 	//
 	// DELETE /api/v1/chats/{chat_id}
 	DeleteChat(ctx context.Context, params DeleteChatParams) (DeleteChatRes, error)
 	// DeleteChatSuggestion implements delete_chat_suggestion operation.
 	//
-	// Delete a chat suggestion. Can only delete user's own suggestions (not system ones).
+	// Delete a chat suggestion owned by the user.
 	//
 	// DELETE /api/v1/chats/suggestions/{suggestion_id}
 	DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error)
 	// DeleteChatsBulk implements delete_chats_bulk operation.
 	//
-	// Bulk delete multiple chat sessions.
+	// Delete multiple chat sessions in bulk.
 	//
 	// DELETE /api/v1/chats/
 	DeleteChatsBulk(ctx context.Context, req *BulkDeleteRequest) (DeleteChatsBulkRes, error)
@@ -172,8 +170,7 @@ type Handler interface {
 	DeleteEntity(ctx context.Context, params DeleteEntityParams) (DeleteEntityRes, error)
 	// DeleteEntityDefinition implements delete_entity_definition operation.
 	//
-	// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
-	// orphans.
+	// Delete an entity definition, all its versions, and optionally mark associated entities as orphans.
 	//
 	// DELETE /api/v1/entities/definitions/{definition_id}
 	DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (DeleteEntityDefinitionRes, error)
@@ -185,23 +182,19 @@ type Handler interface {
 	DeleteEntityRelation(ctx context.Context, req *EntityRelation, params DeleteEntityRelationParams) (DeleteEntityRelationRes, error)
 	// DeleteEnvironment implements delete_environment operation.
 	//
-	// Soft delete an environment.
-	// This marks the environment as deleted (sets deleted_at timestamp) which triggers
-	// the Kubernetes controller to clean up all associated resources (namespace, database, etc.).
-	// The environment record is retained for the configured retention period for potential recovery.
-	// For permanent GDPR-compliant deletion, use the Admin API endpoint.
+	// Delete an environment with grace period for recovery.
 	//
 	// DELETE /api/v1/environments/{env_id}
 	DeleteEnvironment(ctx context.Context, params DeleteEnvironmentParams) (DeleteEnvironmentRes, error)
 	// DeleteEnvironmentInvitation implements delete_environment_invitation operation.
 	//
-	// Revoke a pending invitation to an environment (organization).
+	// Revoke a pending invitation to an environment.
 	//
 	// DELETE /api/v1/environments/{environment_id}/users/invitations/{invitation_id}
 	DeleteEnvironmentInvitation(ctx context.Context, params DeleteEnvironmentInvitationParams) (DeleteEnvironmentInvitationRes, error)
 	// DeleteEnvironmentUser implements delete_environment_user operation.
 	//
-	// Remove a user from an environment (organization).
+	// Remove a user from an environment.
 	//
 	// DELETE /api/v1/environments/{environment_id}/users/{user_id}
 	DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error)
@@ -213,43 +206,43 @@ type Handler interface {
 	DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error)
 	// DeleteMcpendpoint implements delete_mcpendpoint operation.
 	//
-	// Delete a specific MCP Endpoint configuration by ID.
+	// Delete a specific MCP endpoint configuration by ID.
 	//
 	// DELETE /api/v1/mcp/endpoints/{mcpendpoint_id}
 	DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (DeleteMcpendpointRes, error)
 	// DeleteModel implements delete_model operation.
 	//
-	// Soft delete an AI model configuration by name.
+	// Delete an AI model configuration by name.
 	//
 	// DELETE /api/v1/models/{model_name}
 	DeleteModel(ctx context.Context, params DeleteModelParams) (DeleteModelRes, error)
 	// DeleteModelprovider implements delete_modelprovider operation.
 	//
-	// Delete a specific Model Provider configuration by ID.
+	// Delete a specific model provider configuration by ID.
 	//
 	// DELETE /api/v1/models/providers/{provider_id}
 	DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error)
 	// DeleteOAuthService implements delete_oauth_service operation.
 	//
-	// Delete Oauth Service.
+	// Delete an OAuth service configuration.
 	//
 	// DELETE /api/v1/oauth/services/{service_id}
 	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
 	// DeletePrompt implements delete_prompt operation.
 	//
-	// Soft delete a prompt template by ID.
+	// Delete a prompt template by ID.
 	//
 	// DELETE /api/v1/prompts/{prompt_id}
 	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)
 	// DeleteToken implements delete_token operation.
 	//
-	// Delete a specific API token by ID.
+	// Delete an API token.
 	//
 	// DELETE /api/v1/tokens/{token_id}
 	DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error)
 	// ExchangeOAuthToken implements exchange_oauth_token operation.
 	//
-	// Exchange Code For Token.
+	// Exchange an authorization code for an access token.
 	//
 	// POST /api/v1/oauth/token
 	ExchangeOAuthToken(ctx context.Context, req *OAuthTokenExchange) (ExchangeOAuthTokenRes, error)
@@ -261,19 +254,19 @@ type Handler interface {
 	GetAllProviderVersions(ctx context.Context) (GetAllProviderVersionsRes, error)
 	// GetChat implements get_chat operation.
 	//
-	// Get Chat.
+	// Retrieve a specific chat session by ID.
 	//
 	// GET /api/v1/chats/{chat_id}
 	GetChat(ctx context.Context, params GetChatParams) (GetChatRes, error)
 	// GetChatMessages implements get_chat_messages operation.
 	//
-	// Get Chat Messages.
+	// Retrieve all messages from a specific chat session.
 	//
 	// GET /api/v1/chats/{chat_id}/messages
 	GetChatMessages(ctx context.Context, params GetChatMessagesParams) (GetChatMessagesRes, error)
 	// GetChats implements get_chats operation.
 	//
-	// Get Chats.
+	// List all chat sessions for the authenticated user.
 	//
 	// GET /api/v1/chats/
 	GetChats(ctx context.Context, params GetChatsParams) (GetChatsRes, error)
@@ -293,10 +286,6 @@ type Handler interface {
 	// GetDiscoveryProviderConfigSchema implements get_discovery_provider_config_schema operation.
 	//
 	// Get the configuration schema for a specific discovery provider type.
-	// Args:
-	// provider_type: The type identifier of the provider (e.g., 'github', 'gitlab')
-	// Returns:
-	// JSON schema for the provider's configuration.
 	//
 	// GET /api/v1/discovery/providers/{provider_type}/config-schema
 	GetDiscoveryProviderConfigSchema(ctx context.Context, params GetDiscoveryProviderConfigSchemaParams) (GetDiscoveryProviderConfigSchemaRes, error)
@@ -348,13 +337,13 @@ type Handler interface {
 	GetEnvironmentStatus(ctx context.Context, params GetEnvironmentStatusParams) (GetEnvironmentStatusRes, error)
 	// GetEnvironmentUser implements get_environment_user operation.
 	//
-	// Get a specific environment user.
+	// Get a specific environment user by ID.
 	//
 	// GET /api/v1/environments/{environment_id}/users/{user_id}
 	GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (GetEnvironmentUserRes, error)
 	// GetEnvironments implements get_environments operation.
 	//
-	// Get Environments.
+	// List all environments accessible to the authenticated user.
 	//
 	// GET /api/v1/environments
 	GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error)
@@ -366,13 +355,13 @@ type Handler interface {
 	GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error)
 	// GetMcpendpoint implements get_mcpendpoint operation.
 	//
-	// Get a specific MCP Endpoint configuration by ID.
+	// Get a specific MCP endpoint configuration by ID.
 	//
 	// GET /api/v1/mcp/endpoints/{mcpendpoint_id}
 	GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (GetMcpendpointRes, error)
 	// GetMcpendpoints implements get_mcpendpoints operation.
 	//
-	// List all MCP Endpoint configurations for the authenticated user and environment.
+	// List all MCP endpoint configurations for the authenticated user and environment.
 	//
 	// GET /api/v1/mcp/endpoints
 	GetMcpendpoints(ctx context.Context) (GetMcpendpointsRes, error)
@@ -384,13 +373,13 @@ type Handler interface {
 	GetModel(ctx context.Context, params GetModelParams) (GetModelRes, error)
 	// GetModelprovider implements get_modelprovider operation.
 	//
-	// Get a specific Model Provider configuration by ID.
+	// Get a specific model provider configuration by ID.
 	//
 	// GET /api/v1/models/providers/{provider_id}
 	GetModelprovider(ctx context.Context, params GetModelproviderParams) (GetModelproviderRes, error)
 	// GetModelproviders implements get_modelproviders operation.
 	//
-	// List all Model Provider configurations for the authenticated user and environment.
+	// List all model provider configurations for the authenticated user and environment.
 	//
 	// GET /api/v1/models/providers
 	GetModelproviders(ctx context.Context) (GetModelprovidersRes, error)
@@ -402,20 +391,19 @@ type Handler interface {
 	GetModels(ctx context.Context) (GetModelsRes, error)
 	// GetOAuthAuthorizationURL implements get_oauth_authorization_url operation.
 	//
-	// Get Authorization Url.
+	// Generate an OAuth authorization URL for a service.
 	//
 	// POST /api/v1/oauth/authorize
 	GetOAuthAuthorizationURL(ctx context.Context, req *OAuthAuthorizationRequest) (GetOAuthAuthorizationURLRes, error)
 	// GetOAuthService implements get_oauth_service operation.
 	//
-	// Get Oauth Service.
+	// Get a specific OAuth service configuration by ID.
 	//
 	// GET /api/v1/oauth/services/{service_id}
 	GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error)
 	// GetPendingInvitations implements get_pending_invitations operation.
 	//
-	// Get all pending invitations for an environment (users who have been invited but haven't joined
-	// yet).
+	// Get all pending invitations for an environment.
 	//
 	// GET /api/v1/environments/{environment_id}/users/pending
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
@@ -427,7 +415,7 @@ type Handler interface {
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
 	// GetSubscriptions implements get_subscriptions operation.
 	//
-	// Get Subscriptions.
+	// List all subscriptions for the authenticated user.
 	//
 	// GET /api/v1/subscriptions
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
@@ -439,19 +427,19 @@ type Handler interface {
 	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
 	// GetTokens implements get_tokens operation.
 	//
-	// Get all API tokens for the authenticated user.
+	// List all API tokens for the authenticated user.
 	//
 	// GET /api/v1/tokens
 	GetTokens(ctx context.Context) (GetTokensRes, error)
 	// InviteEnvironmentUser implements invite_environment_user operation.
 	//
-	// Invite a user to an environment (organization).
+	// Invite a user to an environment.
 	//
 	// POST /api/v1/environments/{environment_id}/users/invite
 	InviteEnvironmentUser(ctx context.Context, req *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error)
 	// ListChatSuggestions implements list_chat_suggestions operation.
 	//
-	// List chat suggestions. Returns system-wide suggestions + environment/user-specific ones.
+	// List chat suggestions including system-wide and user-specific ones.
 	//
 	// GET /api/v1/chats/suggestions
 	ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error)
@@ -465,33 +453,30 @@ type Handler interface {
 	// ListDiscoveryProviders implements list_discovery_providers operation.
 	//
 	// List all available discovery provider types with their configuration schemas.
-	// This endpoint discovers all registered discovery providers using the plugin system
-	// and returns their metadata including JSON schemas for configuration.
 	//
 	// GET /api/v1/discovery/providers
 	ListDiscoveryProviders(ctx context.Context) (ListDiscoveryProvidersRes, error)
 	// ListEnvironmentUsers implements list_environment_users operation.
 	//
-	// List all users in an environment (organization members).
+	// List all users in an environment.
 	//
 	// GET /api/v1/environments/{environment_id}/users
 	ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error)
 	// ListMcpendpointTools implements list_mcpendpoint_tools operation.
 	//
-	// List all available tools from a specific MCP Endpoint.
-	// This interrogates the MCP server to discover its available tools.
+	// List all available tools from a specific MCP endpoint.
 	//
 	// GET /api/v1/mcp/endpoints/{mcpendpoint_id}/tools
 	ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error)
 	// ListOAuthServices implements list_oauth_services operation.
 	//
-	// List Oauth Services.
+	// List all OAuth service configurations.
 	//
 	// GET /api/v1/oauth/services
 	ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (ListOAuthServicesRes, error)
 	// ListOAuthTokens implements list_oauth_tokens operation.
 	//
-	// List User Tokens.
+	// List all OAuth tokens for the authenticated user.
 	//
 	// GET /api/v1/oauth/tokens
 	ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error)
@@ -521,19 +506,19 @@ type Handler interface {
 	MigrateProviderConfig(ctx context.Context, params MigrateProviderConfigParams) (MigrateProviderConfigRes, error)
 	// PostChatMessages implements post_chat_messages operation.
 	//
-	// Post Chat Messages.
+	// Add one or more messages to a chat session.
 	//
 	// POST /api/v1/chats/{chat_id}/messages
 	PostChatMessages(ctx context.Context, req []ChatMessageCreate, params PostChatMessagesParams) (PostChatMessagesRes, error)
 	// RevokeOAuthToken implements revoke_oauth_token operation.
 	//
-	// Revoke Token.
+	// Revoke an OAuth token for a service.
 	//
 	// DELETE /api/v1/oauth/tokens/{service_name}
 	RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (RevokeOAuthTokenRes, error)
 	// UpdateChat implements update_chat operation.
 	//
-	// Update Chat.
+	// Update an existing chat session.
 	//
 	// PUT /api/v1/chats/{chat_id}
 	UpdateChat(ctx context.Context, req *ChatSessionUpdate, params UpdateChatParams) (UpdateChatRes, error)
@@ -553,7 +538,7 @@ type Handler interface {
 	UpdateEnvironmentUser(ctx context.Context, req *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error)
 	// UpdateMcpendpoint implements update_mcpendpoint operation.
 	//
-	// Update a specific MCP Endpoint configuration by ID.
+	// Update a specific MCP endpoint configuration by ID.
 	//
 	// PUT /api/v1/mcp/endpoints/{mcpendpoint_id}
 	UpdateMcpendpoint(ctx context.Context, req *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error)
@@ -565,13 +550,13 @@ type Handler interface {
 	UpdateModel(ctx context.Context, req *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error)
 	// UpdateModelprovider implements update_modelprovider operation.
 	//
-	// Update a specific Model Provider configuration by ID.
+	// Update a specific model provider configuration by ID.
 	//
 	// PUT /api/v1/models/providers/{provider_id}
 	UpdateModelprovider(ctx context.Context, req *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error)
 	// UpdateOAuthService implements update_oauth_service operation.
 	//
-	// Update Oauth Service.
+	// Update an existing OAuth service configuration.
 	//
 	// PUT /api/v1/oauth/services/{service_id}
 	UpdateOAuthService(ctx context.Context, req *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error)
@@ -583,7 +568,7 @@ type Handler interface {
 	UpdatePrompt(ctx context.Context, req *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error)
 	// UpdateToken implements update_token operation.
 	//
-	// Update a specific API token by ID.
+	// Update an existing API token.
 	//
 	// PUT /api/v1/tokens/{token_id}
 	UpdateToken(ctx context.Context, req *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error)

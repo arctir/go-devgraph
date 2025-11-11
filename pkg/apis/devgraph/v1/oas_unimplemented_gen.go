@@ -15,7 +15,7 @@ var _ Handler = UnimplementedHandler{}
 
 // BulkInviteEnvironmentUsers implements bulk_invite_environment_users operation.
 //
-// Bulk invite multiple users to an environment (organization).
+// Bulk invite multiple users to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/bulk-invite
 func (UnimplementedHandler) BulkInviteEnvironmentUsers(ctx context.Context, req *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (r BulkInviteEnvironmentUsersRes, _ error) {
@@ -25,8 +25,6 @@ func (UnimplementedHandler) BulkInviteEnvironmentUsers(ctx context.Context, req 
 // CheckEntitlement implements check_entitlement operation.
 //
 // Check a specific entitlement for the authenticated user.
-// For numeric limits (e.g., max_environments), returns current usage and remaining quota.
-// For boolean features (e.g., enable_sso), returns whether the feature is enabled.
 //
 // GET /api/v1/entitlements/check/{entitlement_type}
 func (UnimplementedHandler) CheckEntitlement(ctx context.Context, params CheckEntitlementParams) (r CheckEntitlementRes, _ error) {
@@ -44,7 +42,7 @@ func (UnimplementedHandler) CleanupOrphanedEntities(ctx context.Context, params 
 
 // CreateChat implements create_chat operation.
 //
-// Create Chat.
+// Create a new chat session.
 //
 // POST /api/v1/chats/
 func (UnimplementedHandler) CreateChat(ctx context.Context, req *ChatSessionCreate) (r CreateChatRes, _ error) {
@@ -110,7 +108,7 @@ func (UnimplementedHandler) CreateEntityDefinition(ctx context.Context, req *Ent
 
 // CreateEntityRelation implements create_entity_relation operation.
 //
-// Create Entity Relation.
+// Create a relation between two entities in the knowledge graph.
 //
 // POST /api/v1/entities/relations
 func (UnimplementedHandler) CreateEntityRelation(ctx context.Context, req *EntityRelation, params CreateEntityRelationParams) (r CreateEntityRelationRes, _ error) {
@@ -129,7 +127,7 @@ func (UnimplementedHandler) CreateEntityRelationsBulk(ctx context.Context, req *
 
 // CreateEnvironment implements create_environment operation.
 //
-// Create Environment.
+// Create a new environment with associated Clerk organization.
 //
 // POST /api/v1/environments
 func (UnimplementedHandler) CreateEnvironment(ctx context.Context, req *EnvironmentCreate) (r CreateEnvironmentRes, _ error) {
@@ -156,7 +154,7 @@ func (UnimplementedHandler) CreateMcpToolAssociation(ctx context.Context, req *M
 
 // CreateMcpendpoint implements create_mcpendpoint operation.
 //
-// Create a new MCP Endpoint configuration.
+// Create a new MCP endpoint configuration.
 //
 // POST /api/v1/mcp/endpoints
 func (UnimplementedHandler) CreateMcpendpoint(ctx context.Context, req *MCPEndpointCreate) (r CreateMcpendpointRes, _ error) {
@@ -174,7 +172,7 @@ func (UnimplementedHandler) CreateModel(ctx context.Context, req *ModelCreate) (
 
 // CreateModelprovider implements create_modelprovider operation.
 //
-// Create a new Model Provider configuration.
+// Create a new model provider configuration.
 //
 // POST /api/v1/models/providers
 func (UnimplementedHandler) CreateModelprovider(ctx context.Context, req *ModelProviderCreate) (r CreateModelproviderRes, _ error) {
@@ -183,7 +181,7 @@ func (UnimplementedHandler) CreateModelprovider(ctx context.Context, req *ModelP
 
 // CreateOAuthService implements create_oauth_service operation.
 //
-// Create Oauth Service.
+// Create a new OAuth service configuration.
 //
 // POST /api/v1/oauth/services
 func (UnimplementedHandler) CreateOAuthService(ctx context.Context, req *OAuthServiceCreate) (r CreateOAuthServiceRes, _ error) {
@@ -201,7 +199,7 @@ func (UnimplementedHandler) CreatePrompt(ctx context.Context, req *PromptCreate)
 
 // CreateToken implements create_token operation.
 //
-// Create Token.
+// Create a new API token for the authenticated user.
 //
 // POST /api/v1/tokens
 func (UnimplementedHandler) CreateToken(ctx context.Context, req *ApiTokenCreate) (r CreateTokenRes, _ error) {
@@ -210,7 +208,7 @@ func (UnimplementedHandler) CreateToken(ctx context.Context, req *ApiTokenCreate
 
 // DeleteChat implements delete_chat operation.
 //
-// Delete Chat.
+// Delete a chat session by ID.
 //
 // DELETE /api/v1/chats/{chat_id}
 func (UnimplementedHandler) DeleteChat(ctx context.Context, params DeleteChatParams) (r DeleteChatRes, _ error) {
@@ -219,7 +217,7 @@ func (UnimplementedHandler) DeleteChat(ctx context.Context, params DeleteChatPar
 
 // DeleteChatSuggestion implements delete_chat_suggestion operation.
 //
-// Delete a chat suggestion. Can only delete user's own suggestions (not system ones).
+// Delete a chat suggestion owned by the user.
 //
 // DELETE /api/v1/chats/suggestions/{suggestion_id}
 func (UnimplementedHandler) DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (r DeleteChatSuggestionRes, _ error) {
@@ -228,7 +226,7 @@ func (UnimplementedHandler) DeleteChatSuggestion(ctx context.Context, params Del
 
 // DeleteChatsBulk implements delete_chats_bulk operation.
 //
-// Bulk delete multiple chat sessions.
+// Delete multiple chat sessions in bulk.
 //
 // DELETE /api/v1/chats/
 func (UnimplementedHandler) DeleteChatsBulk(ctx context.Context, req *BulkDeleteRequest) (r DeleteChatsBulkRes, _ error) {
@@ -255,8 +253,7 @@ func (UnimplementedHandler) DeleteEntity(ctx context.Context, params DeleteEntit
 
 // DeleteEntityDefinition implements delete_entity_definition operation.
 //
-// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
-// orphans.
+// Delete an entity definition, all its versions, and optionally mark associated entities as orphans.
 //
 // DELETE /api/v1/entities/definitions/{definition_id}
 func (UnimplementedHandler) DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (r DeleteEntityDefinitionRes, _ error) {
@@ -274,11 +271,7 @@ func (UnimplementedHandler) DeleteEntityRelation(ctx context.Context, req *Entit
 
 // DeleteEnvironment implements delete_environment operation.
 //
-// Soft delete an environment.
-// This marks the environment as deleted (sets deleted_at timestamp) which triggers
-// the Kubernetes controller to clean up all associated resources (namespace, database, etc.).
-// The environment record is retained for the configured retention period for potential recovery.
-// For permanent GDPR-compliant deletion, use the Admin API endpoint.
+// Delete an environment with grace period for recovery.
 //
 // DELETE /api/v1/environments/{env_id}
 func (UnimplementedHandler) DeleteEnvironment(ctx context.Context, params DeleteEnvironmentParams) (r DeleteEnvironmentRes, _ error) {
@@ -287,7 +280,7 @@ func (UnimplementedHandler) DeleteEnvironment(ctx context.Context, params Delete
 
 // DeleteEnvironmentInvitation implements delete_environment_invitation operation.
 //
-// Revoke a pending invitation to an environment (organization).
+// Revoke a pending invitation to an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/invitations/{invitation_id}
 func (UnimplementedHandler) DeleteEnvironmentInvitation(ctx context.Context, params DeleteEnvironmentInvitationParams) (r DeleteEnvironmentInvitationRes, _ error) {
@@ -296,7 +289,7 @@ func (UnimplementedHandler) DeleteEnvironmentInvitation(ctx context.Context, par
 
 // DeleteEnvironmentUser implements delete_environment_user operation.
 //
-// Remove a user from an environment (organization).
+// Remove a user from an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/{user_id}
 func (UnimplementedHandler) DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (r DeleteEnvironmentUserRes, _ error) {
@@ -314,7 +307,7 @@ func (UnimplementedHandler) DeleteMcpToolAssociation(ctx context.Context, params
 
 // DeleteMcpendpoint implements delete_mcpendpoint operation.
 //
-// Delete a specific MCP Endpoint configuration by ID.
+// Delete a specific MCP endpoint configuration by ID.
 //
 // DELETE /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (UnimplementedHandler) DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (r DeleteMcpendpointRes, _ error) {
@@ -323,7 +316,7 @@ func (UnimplementedHandler) DeleteMcpendpoint(ctx context.Context, params Delete
 
 // DeleteModel implements delete_model operation.
 //
-// Soft delete an AI model configuration by name.
+// Delete an AI model configuration by name.
 //
 // DELETE /api/v1/models/{model_name}
 func (UnimplementedHandler) DeleteModel(ctx context.Context, params DeleteModelParams) (r DeleteModelRes, _ error) {
@@ -332,7 +325,7 @@ func (UnimplementedHandler) DeleteModel(ctx context.Context, params DeleteModelP
 
 // DeleteModelprovider implements delete_modelprovider operation.
 //
-// Delete a specific Model Provider configuration by ID.
+// Delete a specific model provider configuration by ID.
 //
 // DELETE /api/v1/models/providers/{provider_id}
 func (UnimplementedHandler) DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (r DeleteModelproviderRes, _ error) {
@@ -341,7 +334,7 @@ func (UnimplementedHandler) DeleteModelprovider(ctx context.Context, params Dele
 
 // DeleteOAuthService implements delete_oauth_service operation.
 //
-// Delete Oauth Service.
+// Delete an OAuth service configuration.
 //
 // DELETE /api/v1/oauth/services/{service_id}
 func (UnimplementedHandler) DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (r DeleteOAuthServiceRes, _ error) {
@@ -350,7 +343,7 @@ func (UnimplementedHandler) DeleteOAuthService(ctx context.Context, params Delet
 
 // DeletePrompt implements delete_prompt operation.
 //
-// Soft delete a prompt template by ID.
+// Delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (UnimplementedHandler) DeletePrompt(ctx context.Context, params DeletePromptParams) (r DeletePromptRes, _ error) {
@@ -359,7 +352,7 @@ func (UnimplementedHandler) DeletePrompt(ctx context.Context, params DeletePromp
 
 // DeleteToken implements delete_token operation.
 //
-// Delete a specific API token by ID.
+// Delete an API token.
 //
 // DELETE /api/v1/tokens/{token_id}
 func (UnimplementedHandler) DeleteToken(ctx context.Context, params DeleteTokenParams) (r DeleteTokenRes, _ error) {
@@ -368,7 +361,7 @@ func (UnimplementedHandler) DeleteToken(ctx context.Context, params DeleteTokenP
 
 // ExchangeOAuthToken implements exchange_oauth_token operation.
 //
-// Exchange Code For Token.
+// Exchange an authorization code for an access token.
 //
 // POST /api/v1/oauth/token
 func (UnimplementedHandler) ExchangeOAuthToken(ctx context.Context, req *OAuthTokenExchange) (r ExchangeOAuthTokenRes, _ error) {
@@ -386,7 +379,7 @@ func (UnimplementedHandler) GetAllProviderVersions(ctx context.Context) (r GetAl
 
 // GetChat implements get_chat operation.
 //
-// Get Chat.
+// Retrieve a specific chat session by ID.
 //
 // GET /api/v1/chats/{chat_id}
 func (UnimplementedHandler) GetChat(ctx context.Context, params GetChatParams) (r GetChatRes, _ error) {
@@ -395,7 +388,7 @@ func (UnimplementedHandler) GetChat(ctx context.Context, params GetChatParams) (
 
 // GetChatMessages implements get_chat_messages operation.
 //
-// Get Chat Messages.
+// Retrieve all messages from a specific chat session.
 //
 // GET /api/v1/chats/{chat_id}/messages
 func (UnimplementedHandler) GetChatMessages(ctx context.Context, params GetChatMessagesParams) (r GetChatMessagesRes, _ error) {
@@ -404,7 +397,7 @@ func (UnimplementedHandler) GetChatMessages(ctx context.Context, params GetChatM
 
 // GetChats implements get_chats operation.
 //
-// Get Chats.
+// List all chat sessions for the authenticated user.
 //
 // GET /api/v1/chats/
 func (UnimplementedHandler) GetChats(ctx context.Context, params GetChatsParams) (r GetChatsRes, _ error) {
@@ -433,10 +426,6 @@ func (UnimplementedHandler) GetDeprecatedProviderConfigs(ctx context.Context, pa
 // GetDiscoveryProviderConfigSchema implements get_discovery_provider_config_schema operation.
 //
 // Get the configuration schema for a specific discovery provider type.
-// Args:
-// provider_type: The type identifier of the provider (e.g., 'github', 'gitlab')
-// Returns:
-// JSON schema for the provider's configuration.
 //
 // GET /api/v1/discovery/providers/{provider_type}/config-schema
 func (UnimplementedHandler) GetDiscoveryProviderConfigSchema(ctx context.Context, params GetDiscoveryProviderConfigSchemaParams) (r GetDiscoveryProviderConfigSchemaRes, _ error) {
@@ -513,7 +502,7 @@ func (UnimplementedHandler) GetEnvironmentStatus(ctx context.Context, params Get
 
 // GetEnvironmentUser implements get_environment_user operation.
 //
-// Get a specific environment user.
+// Get a specific environment user by ID.
 //
 // GET /api/v1/environments/{environment_id}/users/{user_id}
 func (UnimplementedHandler) GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (r GetEnvironmentUserRes, _ error) {
@@ -522,7 +511,7 @@ func (UnimplementedHandler) GetEnvironmentUser(ctx context.Context, params GetEn
 
 // GetEnvironments implements get_environments operation.
 //
-// Get Environments.
+// List all environments accessible to the authenticated user.
 //
 // GET /api/v1/environments
 func (UnimplementedHandler) GetEnvironments(ctx context.Context) (r GetEnvironmentsRes, _ error) {
@@ -540,7 +529,7 @@ func (UnimplementedHandler) GetMcpEndpointEntityTypes(ctx context.Context, param
 
 // GetMcpendpoint implements get_mcpendpoint operation.
 //
-// Get a specific MCP Endpoint configuration by ID.
+// Get a specific MCP endpoint configuration by ID.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (UnimplementedHandler) GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (r GetMcpendpointRes, _ error) {
@@ -549,7 +538,7 @@ func (UnimplementedHandler) GetMcpendpoint(ctx context.Context, params GetMcpend
 
 // GetMcpendpoints implements get_mcpendpoints operation.
 //
-// List all MCP Endpoint configurations for the authenticated user and environment.
+// List all MCP endpoint configurations for the authenticated user and environment.
 //
 // GET /api/v1/mcp/endpoints
 func (UnimplementedHandler) GetMcpendpoints(ctx context.Context) (r GetMcpendpointsRes, _ error) {
@@ -567,7 +556,7 @@ func (UnimplementedHandler) GetModel(ctx context.Context, params GetModelParams)
 
 // GetModelprovider implements get_modelprovider operation.
 //
-// Get a specific Model Provider configuration by ID.
+// Get a specific model provider configuration by ID.
 //
 // GET /api/v1/models/providers/{provider_id}
 func (UnimplementedHandler) GetModelprovider(ctx context.Context, params GetModelproviderParams) (r GetModelproviderRes, _ error) {
@@ -576,7 +565,7 @@ func (UnimplementedHandler) GetModelprovider(ctx context.Context, params GetMode
 
 // GetModelproviders implements get_modelproviders operation.
 //
-// List all Model Provider configurations for the authenticated user and environment.
+// List all model provider configurations for the authenticated user and environment.
 //
 // GET /api/v1/models/providers
 func (UnimplementedHandler) GetModelproviders(ctx context.Context) (r GetModelprovidersRes, _ error) {
@@ -594,7 +583,7 @@ func (UnimplementedHandler) GetModels(ctx context.Context) (r GetModelsRes, _ er
 
 // GetOAuthAuthorizationURL implements get_oauth_authorization_url operation.
 //
-// Get Authorization Url.
+// Generate an OAuth authorization URL for a service.
 //
 // POST /api/v1/oauth/authorize
 func (UnimplementedHandler) GetOAuthAuthorizationURL(ctx context.Context, req *OAuthAuthorizationRequest) (r GetOAuthAuthorizationURLRes, _ error) {
@@ -603,7 +592,7 @@ func (UnimplementedHandler) GetOAuthAuthorizationURL(ctx context.Context, req *O
 
 // GetOAuthService implements get_oauth_service operation.
 //
-// Get Oauth Service.
+// Get a specific OAuth service configuration by ID.
 //
 // GET /api/v1/oauth/services/{service_id}
 func (UnimplementedHandler) GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (r GetOAuthServiceRes, _ error) {
@@ -612,8 +601,7 @@ func (UnimplementedHandler) GetOAuthService(ctx context.Context, params GetOAuth
 
 // GetPendingInvitations implements get_pending_invitations operation.
 //
-// Get all pending invitations for an environment (users who have been invited but haven't joined
-// yet).
+// Get all pending invitations for an environment.
 //
 // GET /api/v1/environments/{environment_id}/users/pending
 func (UnimplementedHandler) GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (r GetPendingInvitationsRes, _ error) {
@@ -631,7 +619,7 @@ func (UnimplementedHandler) GetPrompt(ctx context.Context, params GetPromptParam
 
 // GetSubscriptions implements get_subscriptions operation.
 //
-// Get Subscriptions.
+// List all subscriptions for the authenticated user.
 //
 // GET /api/v1/subscriptions
 func (UnimplementedHandler) GetSubscriptions(ctx context.Context) (r GetSubscriptionsRes, _ error) {
@@ -649,7 +637,7 @@ func (UnimplementedHandler) GetSystemDefaultPrompt(ctx context.Context) (r GetSy
 
 // GetTokens implements get_tokens operation.
 //
-// Get all API tokens for the authenticated user.
+// List all API tokens for the authenticated user.
 //
 // GET /api/v1/tokens
 func (UnimplementedHandler) GetTokens(ctx context.Context) (r GetTokensRes, _ error) {
@@ -658,7 +646,7 @@ func (UnimplementedHandler) GetTokens(ctx context.Context) (r GetTokensRes, _ er
 
 // InviteEnvironmentUser implements invite_environment_user operation.
 //
-// Invite a user to an environment (organization).
+// Invite a user to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/invite
 func (UnimplementedHandler) InviteEnvironmentUser(ctx context.Context, req *EnvironmentUserInvite, params InviteEnvironmentUserParams) (r InviteEnvironmentUserRes, _ error) {
@@ -667,7 +655,7 @@ func (UnimplementedHandler) InviteEnvironmentUser(ctx context.Context, req *Envi
 
 // ListChatSuggestions implements list_chat_suggestions operation.
 //
-// List chat suggestions. Returns system-wide suggestions + environment/user-specific ones.
+// List chat suggestions including system-wide and user-specific ones.
 //
 // GET /api/v1/chats/suggestions
 func (UnimplementedHandler) ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (r ListChatSuggestionsRes, _ error) {
@@ -687,8 +675,6 @@ func (UnimplementedHandler) ListConfiguredProviders(ctx context.Context) (r List
 // ListDiscoveryProviders implements list_discovery_providers operation.
 //
 // List all available discovery provider types with their configuration schemas.
-// This endpoint discovers all registered discovery providers using the plugin system
-// and returns their metadata including JSON schemas for configuration.
 //
 // GET /api/v1/discovery/providers
 func (UnimplementedHandler) ListDiscoveryProviders(ctx context.Context) (r ListDiscoveryProvidersRes, _ error) {
@@ -697,7 +683,7 @@ func (UnimplementedHandler) ListDiscoveryProviders(ctx context.Context) (r ListD
 
 // ListEnvironmentUsers implements list_environment_users operation.
 //
-// List all users in an environment (organization members).
+// List all users in an environment.
 //
 // GET /api/v1/environments/{environment_id}/users
 func (UnimplementedHandler) ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (r ListEnvironmentUsersRes, _ error) {
@@ -706,8 +692,7 @@ func (UnimplementedHandler) ListEnvironmentUsers(ctx context.Context, params Lis
 
 // ListMcpendpointTools implements list_mcpendpoint_tools operation.
 //
-// List all available tools from a specific MCP Endpoint.
-// This interrogates the MCP server to discover its available tools.
+// List all available tools from a specific MCP endpoint.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}/tools
 func (UnimplementedHandler) ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (r ListMcpendpointToolsRes, _ error) {
@@ -716,7 +701,7 @@ func (UnimplementedHandler) ListMcpendpointTools(ctx context.Context, params Lis
 
 // ListOAuthServices implements list_oauth_services operation.
 //
-// List Oauth Services.
+// List all OAuth service configurations.
 //
 // GET /api/v1/oauth/services
 func (UnimplementedHandler) ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (r ListOAuthServicesRes, _ error) {
@@ -725,7 +710,7 @@ func (UnimplementedHandler) ListOAuthServices(ctx context.Context, params ListOA
 
 // ListOAuthTokens implements list_oauth_tokens operation.
 //
-// List User Tokens.
+// List all OAuth tokens for the authenticated user.
 //
 // GET /api/v1/oauth/tokens
 func (UnimplementedHandler) ListOAuthTokens(ctx context.Context) (r ListOAuthTokensRes, _ error) {
@@ -770,7 +755,7 @@ func (UnimplementedHandler) MigrateProviderConfig(ctx context.Context, params Mi
 
 // PostChatMessages implements post_chat_messages operation.
 //
-// Post Chat Messages.
+// Add one or more messages to a chat session.
 //
 // POST /api/v1/chats/{chat_id}/messages
 func (UnimplementedHandler) PostChatMessages(ctx context.Context, req []ChatMessageCreate, params PostChatMessagesParams) (r PostChatMessagesRes, _ error) {
@@ -779,7 +764,7 @@ func (UnimplementedHandler) PostChatMessages(ctx context.Context, req []ChatMess
 
 // RevokeOAuthToken implements revoke_oauth_token operation.
 //
-// Revoke Token.
+// Revoke an OAuth token for a service.
 //
 // DELETE /api/v1/oauth/tokens/{service_name}
 func (UnimplementedHandler) RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (r RevokeOAuthTokenRes, _ error) {
@@ -788,7 +773,7 @@ func (UnimplementedHandler) RevokeOAuthToken(ctx context.Context, params RevokeO
 
 // UpdateChat implements update_chat operation.
 //
-// Update Chat.
+// Update an existing chat session.
 //
 // PUT /api/v1/chats/{chat_id}
 func (UnimplementedHandler) UpdateChat(ctx context.Context, req *ChatSessionUpdate, params UpdateChatParams) (r UpdateChatRes, _ error) {
@@ -817,7 +802,7 @@ func (UnimplementedHandler) UpdateEnvironmentUser(ctx context.Context, req *Envi
 
 // UpdateMcpendpoint implements update_mcpendpoint operation.
 //
-// Update a specific MCP Endpoint configuration by ID.
+// Update a specific MCP endpoint configuration by ID.
 //
 // PUT /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (UnimplementedHandler) UpdateMcpendpoint(ctx context.Context, req *MCPEndpointUpdate, params UpdateMcpendpointParams) (r UpdateMcpendpointRes, _ error) {
@@ -835,7 +820,7 @@ func (UnimplementedHandler) UpdateModel(ctx context.Context, req *ModelUpdate, p
 
 // UpdateModelprovider implements update_modelprovider operation.
 //
-// Update a specific Model Provider configuration by ID.
+// Update a specific model provider configuration by ID.
 //
 // PUT /api/v1/models/providers/{provider_id}
 func (UnimplementedHandler) UpdateModelprovider(ctx context.Context, req *ModelProviderUpdate, params UpdateModelproviderParams) (r UpdateModelproviderRes, _ error) {
@@ -844,7 +829,7 @@ func (UnimplementedHandler) UpdateModelprovider(ctx context.Context, req *ModelP
 
 // UpdateOAuthService implements update_oauth_service operation.
 //
-// Update Oauth Service.
+// Update an existing OAuth service configuration.
 //
 // PUT /api/v1/oauth/services/{service_id}
 func (UnimplementedHandler) UpdateOAuthService(ctx context.Context, req *OAuthServiceUpdate, params UpdateOAuthServiceParams) (r UpdateOAuthServiceRes, _ error) {
@@ -862,7 +847,7 @@ func (UnimplementedHandler) UpdatePrompt(ctx context.Context, req *PromptUpdate,
 
 // UpdateToken implements update_token operation.
 //
-// Update a specific API token by ID.
+// Update an existing API token.
 //
 // PUT /api/v1/tokens/{token_id}
 func (UnimplementedHandler) UpdateToken(ctx context.Context, req *ApiTokenUpdate, params UpdateTokenParams) (r UpdateTokenRes, _ error) {

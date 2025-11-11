@@ -1,4 +1,4 @@
-// Generated for API v1.0.0-beta.16
+// Generated for API v1.0.0-beta.17
 package v1
 
-const APIVersion = "1.0.0-beta.16"
+const APIVersion = "1.0.0-beta.17"

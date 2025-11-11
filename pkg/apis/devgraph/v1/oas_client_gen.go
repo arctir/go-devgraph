@@ -30,15 +30,13 @@ func trimTrailingSlashes(u *url.URL) {
 type Invoker interface {
 	// BulkInviteEnvironmentUsers invokes bulk_invite_environment_users operation.
 	//
-	// Bulk invite multiple users to an environment (organization).
+	// Bulk invite multiple users to an environment.
 	//
 	// POST /api/v1/environments/{environment_id}/users/bulk-invite
 	BulkInviteEnvironmentUsers(ctx context.Context, request *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error)
 	// CheckEntitlement invokes check_entitlement operation.
 	//
 	// Check a specific entitlement for the authenticated user.
-	// For numeric limits (e.g., max_environments), returns current usage and remaining quota.
-	// For boolean features (e.g., enable_sso), returns whether the feature is enabled.
 	//
 	// GET /api/v1/entitlements/check/{entitlement_type}
 	CheckEntitlement(ctx context.Context, params CheckEntitlementParams) (CheckEntitlementRes, error)
@@ -50,7 +48,7 @@ type Invoker interface {
 	CleanupOrphanedEntities(ctx context.Context, params CleanupOrphanedEntitiesParams) (CleanupOrphanedEntitiesRes, error)
 	// CreateChat invokes create_chat operation.
 	//
-	// Create Chat.
+	// Create a new chat session.
 	//
 	// POST /api/v1/chats/
 	CreateChat(ctx context.Context, request *ChatSessionCreate) (CreateChatRes, error)
@@ -95,7 +93,7 @@ type Invoker interface {
 	CreateEntityDefinition(ctx context.Context, request *EntityDefinitionSpec) (CreateEntityDefinitionRes, error)
 	// CreateEntityRelation invokes create_entity_relation operation.
 	//
-	// Create Entity Relation.
+	// Create a relation between two entities in the knowledge graph.
 	//
 	// POST /api/v1/entities/relations
 	CreateEntityRelation(ctx context.Context, request *EntityRelation, params CreateEntityRelationParams) (CreateEntityRelationRes, error)
@@ -108,7 +106,7 @@ type Invoker interface {
 	CreateEntityRelationsBulk(ctx context.Context, request *BulkEntityRelationCreateRequest) (CreateEntityRelationsBulkRes, error)
 	// CreateEnvironment invokes create_environment operation.
 	//
-	// Create Environment.
+	// Create a new environment with associated Clerk organization.
 	//
 	// POST /api/v1/environments
 	CreateEnvironment(ctx context.Context, request *EnvironmentCreate) (CreateEnvironmentRes, error)
@@ -126,7 +124,7 @@ type Invoker interface {
 	CreateMcpToolAssociation(ctx context.Context, request *MCPToolEntityAssociationCreate) (CreateMcpToolAssociationRes, error)
 	// CreateMcpendpoint invokes create_mcpendpoint operation.
 	//
-	// Create a new MCP Endpoint configuration.
+	// Create a new MCP endpoint configuration.
 	//
 	// POST /api/v1/mcp/endpoints
 	CreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (CreateMcpendpointRes, error)
@@ -138,13 +136,13 @@ type Invoker interface {
 	CreateModel(ctx context.Context, request *ModelCreate) (CreateModelRes, error)
 	// CreateModelprovider invokes create_modelprovider operation.
 	//
-	// Create a new Model Provider configuration.
+	// Create a new model provider configuration.
 	//
 	// POST /api/v1/models/providers
 	CreateModelprovider(ctx context.Context, request *ModelProviderCreate) (CreateModelproviderRes, error)
 	// CreateOAuthService invokes create_oauth_service operation.
 	//
-	// Create Oauth Service.
+	// Create a new OAuth service configuration.
 	//
 	// POST /api/v1/oauth/services
 	CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error)
@@ -156,25 +154,25 @@ type Invoker interface {
 	CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error)
 	// CreateToken invokes create_token operation.
 	//
-	// Create Token.
+	// Create a new API token for the authenticated user.
 	//
 	// POST /api/v1/tokens
 	CreateToken(ctx context.Context, request *ApiTokenCreate) (CreateTokenRes, error)
 	// DeleteChat invokes delete_chat operation.
 	//
-	// Delete Chat.
+	// Delete a chat session by ID.
 	//
 	// DELETE /api/v1/chats/{chat_id}
 	DeleteChat(ctx context.Context, params DeleteChatParams) (DeleteChatRes, error)
 	// DeleteChatSuggestion invokes delete_chat_suggestion operation.
 	//
-	// Delete a chat suggestion. Can only delete user's own suggestions (not system ones).
+	// Delete a chat suggestion owned by the user.
 	//
 	// DELETE /api/v1/chats/suggestions/{suggestion_id}
 	DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error)
 	// DeleteChatsBulk invokes delete_chats_bulk operation.
 	//
-	// Bulk delete multiple chat sessions.
+	// Delete multiple chat sessions in bulk.
 	//
 	// DELETE /api/v1/chats/
 	DeleteChatsBulk(ctx context.Context, request *BulkDeleteRequest) (DeleteChatsBulkRes, error)
@@ -192,8 +190,7 @@ type Invoker interface {
 	DeleteEntity(ctx context.Context, params DeleteEntityParams) (DeleteEntityRes, error)
 	// DeleteEntityDefinition invokes delete_entity_definition operation.
 	//
-	// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
-	// orphans.
+	// Delete an entity definition, all its versions, and optionally mark associated entities as orphans.
 	//
 	// DELETE /api/v1/entities/definitions/{definition_id}
 	DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (DeleteEntityDefinitionRes, error)
@@ -205,23 +202,19 @@ type Invoker interface {
 	DeleteEntityRelation(ctx context.Context, request *EntityRelation, params DeleteEntityRelationParams) (DeleteEntityRelationRes, error)
 	// DeleteEnvironment invokes delete_environment operation.
 	//
-	// Soft delete an environment.
-	// This marks the environment as deleted (sets deleted_at timestamp) which triggers
-	// the Kubernetes controller to clean up all associated resources (namespace, database, etc.).
-	// The environment record is retained for the configured retention period for potential recovery.
-	// For permanent GDPR-compliant deletion, use the Admin API endpoint.
+	// Delete an environment with grace period for recovery.
 	//
 	// DELETE /api/v1/environments/{env_id}
 	DeleteEnvironment(ctx context.Context, params DeleteEnvironmentParams) (DeleteEnvironmentRes, error)
 	// DeleteEnvironmentInvitation invokes delete_environment_invitation operation.
 	//
-	// Revoke a pending invitation to an environment (organization).
+	// Revoke a pending invitation to an environment.
 	//
 	// DELETE /api/v1/environments/{environment_id}/users/invitations/{invitation_id}
 	DeleteEnvironmentInvitation(ctx context.Context, params DeleteEnvironmentInvitationParams) (DeleteEnvironmentInvitationRes, error)
 	// DeleteEnvironmentUser invokes delete_environment_user operation.
 	//
-	// Remove a user from an environment (organization).
+	// Remove a user from an environment.
 	//
 	// DELETE /api/v1/environments/{environment_id}/users/{user_id}
 	DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error)
@@ -233,43 +226,43 @@ type Invoker interface {
 	DeleteMcpToolAssociation(ctx context.Context, params DeleteMcpToolAssociationParams) (DeleteMcpToolAssociationRes, error)
 	// DeleteMcpendpoint invokes delete_mcpendpoint operation.
 	//
-	// Delete a specific MCP Endpoint configuration by ID.
+	// Delete a specific MCP endpoint configuration by ID.
 	//
 	// DELETE /api/v1/mcp/endpoints/{mcpendpoint_id}
 	DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (DeleteMcpendpointRes, error)
 	// DeleteModel invokes delete_model operation.
 	//
-	// Soft delete an AI model configuration by name.
+	// Delete an AI model configuration by name.
 	//
 	// DELETE /api/v1/models/{model_name}
 	DeleteModel(ctx context.Context, params DeleteModelParams) (DeleteModelRes, error)
 	// DeleteModelprovider invokes delete_modelprovider operation.
 	//
-	// Delete a specific Model Provider configuration by ID.
+	// Delete a specific model provider configuration by ID.
 	//
 	// DELETE /api/v1/models/providers/{provider_id}
 	DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error)
 	// DeleteOAuthService invokes delete_oauth_service operation.
 	//
-	// Delete Oauth Service.
+	// Delete an OAuth service configuration.
 	//
 	// DELETE /api/v1/oauth/services/{service_id}
 	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
 	// DeletePrompt invokes delete_prompt operation.
 	//
-	// Soft delete a prompt template by ID.
+	// Delete a prompt template by ID.
 	//
 	// DELETE /api/v1/prompts/{prompt_id}
 	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)
 	// DeleteToken invokes delete_token operation.
 	//
-	// Delete a specific API token by ID.
+	// Delete an API token.
 	//
 	// DELETE /api/v1/tokens/{token_id}
 	DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error)
 	// ExchangeOAuthToken invokes exchange_oauth_token operation.
 	//
-	// Exchange Code For Token.
+	// Exchange an authorization code for an access token.
 	//
 	// POST /api/v1/oauth/token
 	ExchangeOAuthToken(ctx context.Context, request *OAuthTokenExchange) (ExchangeOAuthTokenRes, error)
@@ -281,19 +274,19 @@ type Invoker interface {
 	GetAllProviderVersions(ctx context.Context) (GetAllProviderVersionsRes, error)
 	// GetChat invokes get_chat operation.
 	//
-	// Get Chat.
+	// Retrieve a specific chat session by ID.
 	//
 	// GET /api/v1/chats/{chat_id}
 	GetChat(ctx context.Context, params GetChatParams) (GetChatRes, error)
 	// GetChatMessages invokes get_chat_messages operation.
 	//
-	// Get Chat Messages.
+	// Retrieve all messages from a specific chat session.
 	//
 	// GET /api/v1/chats/{chat_id}/messages
 	GetChatMessages(ctx context.Context, params GetChatMessagesParams) (GetChatMessagesRes, error)
 	// GetChats invokes get_chats operation.
 	//
-	// Get Chats.
+	// List all chat sessions for the authenticated user.
 	//
 	// GET /api/v1/chats/
 	GetChats(ctx context.Context, params GetChatsParams) (GetChatsRes, error)
@@ -313,10 +306,6 @@ type Invoker interface {
 	// GetDiscoveryProviderConfigSchema invokes get_discovery_provider_config_schema operation.
 	//
 	// Get the configuration schema for a specific discovery provider type.
-	// Args:
-	// provider_type: The type identifier of the provider (e.g., 'github', 'gitlab')
-	// Returns:
-	// JSON schema for the provider's configuration.
 	//
 	// GET /api/v1/discovery/providers/{provider_type}/config-schema
 	GetDiscoveryProviderConfigSchema(ctx context.Context, params GetDiscoveryProviderConfigSchemaParams) (GetDiscoveryProviderConfigSchemaRes, error)
@@ -368,13 +357,13 @@ type Invoker interface {
 	GetEnvironmentStatus(ctx context.Context, params GetEnvironmentStatusParams) (GetEnvironmentStatusRes, error)
 	// GetEnvironmentUser invokes get_environment_user operation.
 	//
-	// Get a specific environment user.
+	// Get a specific environment user by ID.
 	//
 	// GET /api/v1/environments/{environment_id}/users/{user_id}
 	GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (GetEnvironmentUserRes, error)
 	// GetEnvironments invokes get_environments operation.
 	//
-	// Get Environments.
+	// List all environments accessible to the authenticated user.
 	//
 	// GET /api/v1/environments
 	GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error)
@@ -386,13 +375,13 @@ type Invoker interface {
 	GetMcpEndpointEntityTypes(ctx context.Context, params GetMcpEndpointEntityTypesParams) (GetMcpEndpointEntityTypesRes, error)
 	// GetMcpendpoint invokes get_mcpendpoint operation.
 	//
-	// Get a specific MCP Endpoint configuration by ID.
+	// Get a specific MCP endpoint configuration by ID.
 	//
 	// GET /api/v1/mcp/endpoints/{mcpendpoint_id}
 	GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (GetMcpendpointRes, error)
 	// GetMcpendpoints invokes get_mcpendpoints operation.
 	//
-	// List all MCP Endpoint configurations for the authenticated user and environment.
+	// List all MCP endpoint configurations for the authenticated user and environment.
 	//
 	// GET /api/v1/mcp/endpoints
 	GetMcpendpoints(ctx context.Context) (GetMcpendpointsRes, error)
@@ -404,13 +393,13 @@ type Invoker interface {
 	GetModel(ctx context.Context, params GetModelParams) (GetModelRes, error)
 	// GetModelprovider invokes get_modelprovider operation.
 	//
-	// Get a specific Model Provider configuration by ID.
+	// Get a specific model provider configuration by ID.
 	//
 	// GET /api/v1/models/providers/{provider_id}
 	GetModelprovider(ctx context.Context, params GetModelproviderParams) (GetModelproviderRes, error)
 	// GetModelproviders invokes get_modelproviders operation.
 	//
-	// List all Model Provider configurations for the authenticated user and environment.
+	// List all model provider configurations for the authenticated user and environment.
 	//
 	// GET /api/v1/models/providers
 	GetModelproviders(ctx context.Context) (GetModelprovidersRes, error)
@@ -422,20 +411,19 @@ type Invoker interface {
 	GetModels(ctx context.Context) (GetModelsRes, error)
 	// GetOAuthAuthorizationURL invokes get_oauth_authorization_url operation.
 	//
-	// Get Authorization Url.
+	// Generate an OAuth authorization URL for a service.
 	//
 	// POST /api/v1/oauth/authorize
 	GetOAuthAuthorizationURL(ctx context.Context, request *OAuthAuthorizationRequest) (GetOAuthAuthorizationURLRes, error)
 	// GetOAuthService invokes get_oauth_service operation.
 	//
-	// Get Oauth Service.
+	// Get a specific OAuth service configuration by ID.
 	//
 	// GET /api/v1/oauth/services/{service_id}
 	GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error)
 	// GetPendingInvitations invokes get_pending_invitations operation.
 	//
-	// Get all pending invitations for an environment (users who have been invited but haven't joined
-	// yet).
+	// Get all pending invitations for an environment.
 	//
 	// GET /api/v1/environments/{environment_id}/users/pending
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
@@ -447,7 +435,7 @@ type Invoker interface {
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
-	// Get Subscriptions.
+	// List all subscriptions for the authenticated user.
 	//
 	// GET /api/v1/subscriptions
 	GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error)
@@ -459,19 +447,19 @@ type Invoker interface {
 	GetSystemDefaultPrompt(ctx context.Context) (GetSystemDefaultPromptRes, error)
 	// GetTokens invokes get_tokens operation.
 	//
-	// Get all API tokens for the authenticated user.
+	// List all API tokens for the authenticated user.
 	//
 	// GET /api/v1/tokens
 	GetTokens(ctx context.Context) (GetTokensRes, error)
 	// InviteEnvironmentUser invokes invite_environment_user operation.
 	//
-	// Invite a user to an environment (organization).
+	// Invite a user to an environment.
 	//
 	// POST /api/v1/environments/{environment_id}/users/invite
 	InviteEnvironmentUser(ctx context.Context, request *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error)
 	// ListChatSuggestions invokes list_chat_suggestions operation.
 	//
-	// List chat suggestions. Returns system-wide suggestions + environment/user-specific ones.
+	// List chat suggestions including system-wide and user-specific ones.
 	//
 	// GET /api/v1/chats/suggestions
 	ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error)
@@ -485,33 +473,30 @@ type Invoker interface {
 	// ListDiscoveryProviders invokes list_discovery_providers operation.
 	//
 	// List all available discovery provider types with their configuration schemas.
-	// This endpoint discovers all registered discovery providers using the plugin system
-	// and returns their metadata including JSON schemas for configuration.
 	//
 	// GET /api/v1/discovery/providers
 	ListDiscoveryProviders(ctx context.Context) (ListDiscoveryProvidersRes, error)
 	// ListEnvironmentUsers invokes list_environment_users operation.
 	//
-	// List all users in an environment (organization members).
+	// List all users in an environment.
 	//
 	// GET /api/v1/environments/{environment_id}/users
 	ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error)
 	// ListMcpendpointTools invokes list_mcpendpoint_tools operation.
 	//
-	// List all available tools from a specific MCP Endpoint.
-	// This interrogates the MCP server to discover its available tools.
+	// List all available tools from a specific MCP endpoint.
 	//
 	// GET /api/v1/mcp/endpoints/{mcpendpoint_id}/tools
 	ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error)
 	// ListOAuthServices invokes list_oauth_services operation.
 	//
-	// List Oauth Services.
+	// List all OAuth service configurations.
 	//
 	// GET /api/v1/oauth/services
 	ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (ListOAuthServicesRes, error)
 	// ListOAuthTokens invokes list_oauth_tokens operation.
 	//
-	// List User Tokens.
+	// List all OAuth tokens for the authenticated user.
 	//
 	// GET /api/v1/oauth/tokens
 	ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error)
@@ -541,19 +526,19 @@ type Invoker interface {
 	MigrateProviderConfig(ctx context.Context, params MigrateProviderConfigParams) (MigrateProviderConfigRes, error)
 	// PostChatMessages invokes post_chat_messages operation.
 	//
-	// Post Chat Messages.
+	// Add one or more messages to a chat session.
 	//
 	// POST /api/v1/chats/{chat_id}/messages
 	PostChatMessages(ctx context.Context, request []ChatMessageCreate, params PostChatMessagesParams) (PostChatMessagesRes, error)
 	// RevokeOAuthToken invokes revoke_oauth_token operation.
 	//
-	// Revoke Token.
+	// Revoke an OAuth token for a service.
 	//
 	// DELETE /api/v1/oauth/tokens/{service_name}
 	RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (RevokeOAuthTokenRes, error)
 	// UpdateChat invokes update_chat operation.
 	//
-	// Update Chat.
+	// Update an existing chat session.
 	//
 	// PUT /api/v1/chats/{chat_id}
 	UpdateChat(ctx context.Context, request *ChatSessionUpdate, params UpdateChatParams) (UpdateChatRes, error)
@@ -573,7 +558,7 @@ type Invoker interface {
 	UpdateEnvironmentUser(ctx context.Context, request *EnvironmentUserUpdate, params UpdateEnvironmentUserParams) (UpdateEnvironmentUserRes, error)
 	// UpdateMcpendpoint invokes update_mcpendpoint operation.
 	//
-	// Update a specific MCP Endpoint configuration by ID.
+	// Update a specific MCP endpoint configuration by ID.
 	//
 	// PUT /api/v1/mcp/endpoints/{mcpendpoint_id}
 	UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error)
@@ -585,13 +570,13 @@ type Invoker interface {
 	UpdateModel(ctx context.Context, request *ModelUpdate, params UpdateModelParams) (UpdateModelRes, error)
 	// UpdateModelprovider invokes update_modelprovider operation.
 	//
-	// Update a specific Model Provider configuration by ID.
+	// Update a specific model provider configuration by ID.
 	//
 	// PUT /api/v1/models/providers/{provider_id}
 	UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error)
 	// UpdateOAuthService invokes update_oauth_service operation.
 	//
-	// Update Oauth Service.
+	// Update an existing OAuth service configuration.
 	//
 	// PUT /api/v1/oauth/services/{service_id}
 	UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error)
@@ -603,7 +588,7 @@ type Invoker interface {
 	UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error)
 	// UpdateToken invokes update_token operation.
 	//
-	// Update a specific API token by ID.
+	// Update an existing API token.
 	//
 	// PUT /api/v1/tokens/{token_id}
 	UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error)
@@ -656,7 +641,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 
 // BulkInviteEnvironmentUsers invokes bulk_invite_environment_users operation.
 //
-// Bulk invite multiple users to an environment (organization).
+// Bulk invite multiple users to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/bulk-invite
 func (c *Client) BulkInviteEnvironmentUsers(ctx context.Context, request *EnvironmentUserBulkInvite, params BulkInviteEnvironmentUsersParams) (BulkInviteEnvironmentUsersRes, error) {
@@ -785,8 +770,6 @@ func (c *Client) sendBulkInviteEnvironmentUsers(ctx context.Context, request *En
 // CheckEntitlement invokes check_entitlement operation.
 //
 // Check a specific entitlement for the authenticated user.
-// For numeric limits (e.g., max_environments), returns current usage and remaining quota.
-// For boolean features (e.g., enable_sso), returns whether the feature is enabled.
 //
 // GET /api/v1/entitlements/check/{entitlement_type}
 func (c *Client) CheckEntitlement(ctx context.Context, params CheckEntitlementParams) (CheckEntitlementRes, error) {
@@ -1054,7 +1037,7 @@ func (c *Client) sendCleanupOrphanedEntities(ctx context.Context, params Cleanup
 
 // CreateChat invokes create_chat operation.
 //
-// Create Chat.
+// Create a new chat session.
 //
 // POST /api/v1/chats/
 func (c *Client) CreateChat(ctx context.Context, request *ChatSessionCreate) (CreateChatRes, error) {
@@ -1955,7 +1938,7 @@ func (c *Client) sendCreateEntityDefinition(ctx context.Context, request *Entity
 
 // CreateEntityRelation invokes create_entity_relation operation.
 //
-// Create Entity Relation.
+// Create a relation between two entities in the knowledge graph.
 //
 // POST /api/v1/entities/relations
 func (c *Client) CreateEntityRelation(ctx context.Context, request *EntityRelation, params CreateEntityRelationParams) (CreateEntityRelationRes, error) {
@@ -2192,7 +2175,7 @@ func (c *Client) sendCreateEntityRelationsBulk(ctx context.Context, request *Bul
 
 // CreateEnvironment invokes create_environment operation.
 //
-// Create Environment.
+// Create a new environment with associated Clerk organization.
 //
 // POST /api/v1/environments
 func (c *Client) CreateEnvironment(ctx context.Context, request *EnvironmentCreate) (CreateEnvironmentRes, error) {
@@ -2538,7 +2521,7 @@ func (c *Client) sendCreateMcpToolAssociation(ctx context.Context, request *MCPT
 
 // CreateMcpendpoint invokes create_mcpendpoint operation.
 //
-// Create a new MCP Endpoint configuration.
+// Create a new MCP endpoint configuration.
 //
 // POST /api/v1/mcp/endpoints
 func (c *Client) CreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (CreateMcpendpointRes, error) {
@@ -2756,7 +2739,7 @@ func (c *Client) sendCreateModel(ctx context.Context, request *ModelCreate) (res
 
 // CreateModelprovider invokes create_modelprovider operation.
 //
-// Create a new Model Provider configuration.
+// Create a new model provider configuration.
 //
 // POST /api/v1/models/providers
 func (c *Client) CreateModelprovider(ctx context.Context, request *ModelProviderCreate) (CreateModelproviderRes, error) {
@@ -2865,7 +2848,7 @@ func (c *Client) sendCreateModelprovider(ctx context.Context, request *ModelProv
 
 // CreateOAuthService invokes create_oauth_service operation.
 //
-// Create Oauth Service.
+// Create a new OAuth service configuration.
 //
 // POST /api/v1/oauth/services
 func (c *Client) CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error) {
@@ -3083,7 +3066,7 @@ func (c *Client) sendCreatePrompt(ctx context.Context, request *PromptCreate) (r
 
 // CreateToken invokes create_token operation.
 //
-// Create Token.
+// Create a new API token for the authenticated user.
 //
 // POST /api/v1/tokens
 func (c *Client) CreateToken(ctx context.Context, request *ApiTokenCreate) (CreateTokenRes, error) {
@@ -3192,7 +3175,7 @@ func (c *Client) sendCreateToken(ctx context.Context, request *ApiTokenCreate) (
 
 // DeleteChat invokes delete_chat operation.
 //
-// Delete Chat.
+// Delete a chat session by ID.
 //
 // DELETE /api/v1/chats/{chat_id}
 func (c *Client) DeleteChat(ctx context.Context, params DeleteChatParams) (DeleteChatRes, error) {
@@ -3316,7 +3299,7 @@ func (c *Client) sendDeleteChat(ctx context.Context, params DeleteChatParams) (r
 
 // DeleteChatSuggestion invokes delete_chat_suggestion operation.
 //
-// Delete a chat suggestion. Can only delete user's own suggestions (not system ones).
+// Delete a chat suggestion owned by the user.
 //
 // DELETE /api/v1/chats/suggestions/{suggestion_id}
 func (c *Client) DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error) {
@@ -3440,7 +3423,7 @@ func (c *Client) sendDeleteChatSuggestion(ctx context.Context, params DeleteChat
 
 // DeleteChatsBulk invokes delete_chats_bulk operation.
 //
-// Bulk delete multiple chat sessions.
+// Delete multiple chat sessions in bulk.
 //
 // DELETE /api/v1/chats/
 func (c *Client) DeleteChatsBulk(ctx context.Context, request *BulkDeleteRequest) (DeleteChatsBulkRes, error) {
@@ -3873,8 +3856,7 @@ func (c *Client) sendDeleteEntity(ctx context.Context, params DeleteEntityParams
 
 // DeleteEntityDefinition invokes delete_entity_definition operation.
 //
-// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
-// orphans.
+// Delete an entity definition, all its versions, and optionally mark associated entities as orphans.
 //
 // DELETE /api/v1/entities/definitions/{definition_id}
 func (c *Client) DeleteEntityDefinition(ctx context.Context, params DeleteEntityDefinitionParams) (DeleteEntityDefinitionRes, error) {
@@ -4146,11 +4128,7 @@ func (c *Client) sendDeleteEntityRelation(ctx context.Context, request *EntityRe
 
 // DeleteEnvironment invokes delete_environment operation.
 //
-// Soft delete an environment.
-// This marks the environment as deleted (sets deleted_at timestamp) which triggers
-// the Kubernetes controller to clean up all associated resources (namespace, database, etc.).
-// The environment record is retained for the configured retention period for potential recovery.
-// For permanent GDPR-compliant deletion, use the Admin API endpoint.
+// Delete an environment with grace period for recovery.
 //
 // DELETE /api/v1/environments/{env_id}
 func (c *Client) DeleteEnvironment(ctx context.Context, params DeleteEnvironmentParams) (DeleteEnvironmentRes, error) {
@@ -4274,7 +4252,7 @@ func (c *Client) sendDeleteEnvironment(ctx context.Context, params DeleteEnviron
 
 // DeleteEnvironmentInvitation invokes delete_environment_invitation operation.
 //
-// Revoke a pending invitation to an environment (organization).
+// Revoke a pending invitation to an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/invitations/{invitation_id}
 func (c *Client) DeleteEnvironmentInvitation(ctx context.Context, params DeleteEnvironmentInvitationParams) (DeleteEnvironmentInvitationRes, error) {
@@ -4417,7 +4395,7 @@ func (c *Client) sendDeleteEnvironmentInvitation(ctx context.Context, params Del
 
 // DeleteEnvironmentUser invokes delete_environment_user operation.
 //
-// Remove a user from an environment (organization).
+// Remove a user from an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/{user_id}
 func (c *Client) DeleteEnvironmentUser(ctx context.Context, params DeleteEnvironmentUserParams) (DeleteEnvironmentUserRes, error) {
@@ -4684,7 +4662,7 @@ func (c *Client) sendDeleteMcpToolAssociation(ctx context.Context, params Delete
 
 // DeleteMcpendpoint invokes delete_mcpendpoint operation.
 //
-// Delete a specific MCP Endpoint configuration by ID.
+// Delete a specific MCP endpoint configuration by ID.
 //
 // DELETE /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (c *Client) DeleteMcpendpoint(ctx context.Context, params DeleteMcpendpointParams) (DeleteMcpendpointRes, error) {
@@ -4808,7 +4786,7 @@ func (c *Client) sendDeleteMcpendpoint(ctx context.Context, params DeleteMcpendp
 
 // DeleteModel invokes delete_model operation.
 //
-// Soft delete an AI model configuration by name.
+// Delete an AI model configuration by name.
 //
 // DELETE /api/v1/models/{model_name}
 func (c *Client) DeleteModel(ctx context.Context, params DeleteModelParams) (DeleteModelRes, error) {
@@ -4932,7 +4910,7 @@ func (c *Client) sendDeleteModel(ctx context.Context, params DeleteModelParams) 
 
 // DeleteModelprovider invokes delete_modelprovider operation.
 //
-// Delete a specific Model Provider configuration by ID.
+// Delete a specific model provider configuration by ID.
 //
 // DELETE /api/v1/models/providers/{provider_id}
 func (c *Client) DeleteModelprovider(ctx context.Context, params DeleteModelproviderParams) (DeleteModelproviderRes, error) {
@@ -5056,7 +5034,7 @@ func (c *Client) sendDeleteModelprovider(ctx context.Context, params DeleteModel
 
 // DeleteOAuthService invokes delete_oauth_service operation.
 //
-// Delete Oauth Service.
+// Delete an OAuth service configuration.
 //
 // DELETE /api/v1/oauth/services/{service_id}
 func (c *Client) DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error) {
@@ -5180,7 +5158,7 @@ func (c *Client) sendDeleteOAuthService(ctx context.Context, params DeleteOAuthS
 
 // DeletePrompt invokes delete_prompt operation.
 //
-// Soft delete a prompt template by ID.
+// Delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (c *Client) DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error) {
@@ -5304,7 +5282,7 @@ func (c *Client) sendDeletePrompt(ctx context.Context, params DeletePromptParams
 
 // DeleteToken invokes delete_token operation.
 //
-// Delete a specific API token by ID.
+// Delete an API token.
 //
 // DELETE /api/v1/tokens/{token_id}
 func (c *Client) DeleteToken(ctx context.Context, params DeleteTokenParams) (DeleteTokenRes, error) {
@@ -5428,7 +5406,7 @@ func (c *Client) sendDeleteToken(ctx context.Context, params DeleteTokenParams) 
 
 // ExchangeOAuthToken invokes exchange_oauth_token operation.
 //
-// Exchange Code For Token.
+// Exchange an authorization code for an access token.
 //
 // POST /api/v1/oauth/token
 func (c *Client) ExchangeOAuthToken(ctx context.Context, request *OAuthTokenExchange) (ExchangeOAuthTokenRes, error) {
@@ -5643,7 +5621,7 @@ func (c *Client) sendGetAllProviderVersions(ctx context.Context) (res GetAllProv
 
 // GetChat invokes get_chat operation.
 //
-// Get Chat.
+// Retrieve a specific chat session by ID.
 //
 // GET /api/v1/chats/{chat_id}
 func (c *Client) GetChat(ctx context.Context, params GetChatParams) (GetChatRes, error) {
@@ -5767,7 +5745,7 @@ func (c *Client) sendGetChat(ctx context.Context, params GetChatParams) (res Get
 
 // GetChatMessages invokes get_chat_messages operation.
 //
-// Get Chat Messages.
+// Retrieve all messages from a specific chat session.
 //
 // GET /api/v1/chats/{chat_id}/messages
 func (c *Client) GetChatMessages(ctx context.Context, params GetChatMessagesParams) (GetChatMessagesRes, error) {
@@ -5930,7 +5908,7 @@ func (c *Client) sendGetChatMessages(ctx context.Context, params GetChatMessages
 
 // GetChats invokes get_chats operation.
 //
-// Get Chats.
+// List all chat sessions for the authenticated user.
 //
 // GET /api/v1/chats/
 func (c *Client) GetChats(ctx context.Context, params GetChatsParams) (GetChatsRes, error) {
@@ -6327,10 +6305,6 @@ func (c *Client) sendGetDeprecatedProviderConfigs(ctx context.Context, params Ge
 // GetDiscoveryProviderConfigSchema invokes get_discovery_provider_config_schema operation.
 //
 // Get the configuration schema for a specific discovery provider type.
-// Args:
-// provider_type: The type identifier of the provider (e.g., 'github', 'gitlab')
-// Returns:
-// JSON schema for the provider's configuration.
 //
 // GET /api/v1/discovery/providers/{provider_type}/config-schema
 func (c *Client) GetDiscoveryProviderConfigSchema(ctx context.Context, params GetDiscoveryProviderConfigSchemaParams) (GetDiscoveryProviderConfigSchemaRes, error) {
@@ -7467,7 +7441,7 @@ func (c *Client) sendGetEnvironmentStatus(ctx context.Context, params GetEnviron
 
 // GetEnvironmentUser invokes get_environment_user operation.
 //
-// Get a specific environment user.
+// Get a specific environment user by ID.
 //
 // GET /api/v1/environments/{environment_id}/users/{user_id}
 func (c *Client) GetEnvironmentUser(ctx context.Context, params GetEnvironmentUserParams) (GetEnvironmentUserRes, error) {
@@ -7610,7 +7584,7 @@ func (c *Client) sendGetEnvironmentUser(ctx context.Context, params GetEnvironme
 
 // GetEnvironments invokes get_environments operation.
 //
-// Get Environments.
+// List all environments accessible to the authenticated user.
 //
 // GET /api/v1/environments
 func (c *Client) GetEnvironments(ctx context.Context) (GetEnvironmentsRes, error) {
@@ -7862,7 +7836,7 @@ func (c *Client) sendGetMcpEndpointEntityTypes(ctx context.Context, params GetMc
 
 // GetMcpendpoint invokes get_mcpendpoint operation.
 //
-// Get a specific MCP Endpoint configuration by ID.
+// Get a specific MCP endpoint configuration by ID.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (c *Client) GetMcpendpoint(ctx context.Context, params GetMcpendpointParams) (GetMcpendpointRes, error) {
@@ -7986,7 +7960,7 @@ func (c *Client) sendGetMcpendpoint(ctx context.Context, params GetMcpendpointPa
 
 // GetMcpendpoints invokes get_mcpendpoints operation.
 //
-// List all MCP Endpoint configurations for the authenticated user and environment.
+// List all MCP endpoint configurations for the authenticated user and environment.
 //
 // GET /api/v1/mcp/endpoints
 func (c *Client) GetMcpendpoints(ctx context.Context) (GetMcpendpointsRes, error) {
@@ -8216,7 +8190,7 @@ func (c *Client) sendGetModel(ctx context.Context, params GetModelParams) (res G
 
 // GetModelprovider invokes get_modelprovider operation.
 //
-// Get a specific Model Provider configuration by ID.
+// Get a specific model provider configuration by ID.
 //
 // GET /api/v1/models/providers/{provider_id}
 func (c *Client) GetModelprovider(ctx context.Context, params GetModelproviderParams) (GetModelproviderRes, error) {
@@ -8340,7 +8314,7 @@ func (c *Client) sendGetModelprovider(ctx context.Context, params GetModelprovid
 
 // GetModelproviders invokes get_modelproviders operation.
 //
-// List all Model Provider configurations for the authenticated user and environment.
+// List all model provider configurations for the authenticated user and environment.
 //
 // GET /api/v1/models/providers
 func (c *Client) GetModelproviders(ctx context.Context) (GetModelprovidersRes, error) {
@@ -8552,7 +8526,7 @@ func (c *Client) sendGetModels(ctx context.Context) (res GetModelsRes, err error
 
 // GetOAuthAuthorizationURL invokes get_oauth_authorization_url operation.
 //
-// Get Authorization Url.
+// Generate an OAuth authorization URL for a service.
 //
 // POST /api/v1/oauth/authorize
 func (c *Client) GetOAuthAuthorizationURL(ctx context.Context, request *OAuthAuthorizationRequest) (GetOAuthAuthorizationURLRes, error) {
@@ -8661,7 +8635,7 @@ func (c *Client) sendGetOAuthAuthorizationURL(ctx context.Context, request *OAut
 
 // GetOAuthService invokes get_oauth_service operation.
 //
-// Get Oauth Service.
+// Get a specific OAuth service configuration by ID.
 //
 // GET /api/v1/oauth/services/{service_id}
 func (c *Client) GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error) {
@@ -8785,8 +8759,7 @@ func (c *Client) sendGetOAuthService(ctx context.Context, params GetOAuthService
 
 // GetPendingInvitations invokes get_pending_invitations operation.
 //
-// Get all pending invitations for an environment (users who have been invited but haven't joined
-// yet).
+// Get all pending invitations for an environment.
 //
 // GET /api/v1/environments/{environment_id}/users/pending
 func (c *Client) GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error) {
@@ -9035,7 +9008,7 @@ func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res
 
 // GetSubscriptions invokes get_subscriptions operation.
 //
-// Get Subscriptions.
+// List all subscriptions for the authenticated user.
 //
 // GET /api/v1/subscriptions
 func (c *Client) GetSubscriptions(ctx context.Context) (GetSubscriptionsRes, error) {
@@ -9247,7 +9220,7 @@ func (c *Client) sendGetSystemDefaultPrompt(ctx context.Context) (res GetSystemD
 
 // GetTokens invokes get_tokens operation.
 //
-// Get all API tokens for the authenticated user.
+// List all API tokens for the authenticated user.
 //
 // GET /api/v1/tokens
 func (c *Client) GetTokens(ctx context.Context) (GetTokensRes, error) {
@@ -9353,7 +9326,7 @@ func (c *Client) sendGetTokens(ctx context.Context) (res GetTokensRes, err error
 
 // InviteEnvironmentUser invokes invite_environment_user operation.
 //
-// Invite a user to an environment (organization).
+// Invite a user to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/invite
 func (c *Client) InviteEnvironmentUser(ctx context.Context, request *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error) {
@@ -9481,7 +9454,7 @@ func (c *Client) sendInviteEnvironmentUser(ctx context.Context, request *Environ
 
 // ListChatSuggestions invokes list_chat_suggestions operation.
 //
-// List chat suggestions. Returns system-wide suggestions + environment/user-specific ones.
+// List chat suggestions including system-wide and user-specific ones.
 //
 // GET /api/v1/chats/suggestions
 func (c *Client) ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error) {
@@ -9716,8 +9689,6 @@ func (c *Client) sendListConfiguredProviders(ctx context.Context) (res ListConfi
 // ListDiscoveryProviders invokes list_discovery_providers operation.
 //
 // List all available discovery provider types with their configuration schemas.
-// This endpoint discovers all registered discovery providers using the plugin system
-// and returns their metadata including JSON schemas for configuration.
 //
 // GET /api/v1/discovery/providers
 func (c *Client) ListDiscoveryProviders(ctx context.Context) (ListDiscoveryProvidersRes, error) {
@@ -9823,7 +9794,7 @@ func (c *Client) sendListDiscoveryProviders(ctx context.Context) (res ListDiscov
 
 // ListEnvironmentUsers invokes list_environment_users operation.
 //
-// List all users in an environment (organization members).
+// List all users in an environment.
 //
 // GET /api/v1/environments/{environment_id}/users
 func (c *Client) ListEnvironmentUsers(ctx context.Context, params ListEnvironmentUsersParams) (ListEnvironmentUsersRes, error) {
@@ -9948,8 +9919,7 @@ func (c *Client) sendListEnvironmentUsers(ctx context.Context, params ListEnviro
 
 // ListMcpendpointTools invokes list_mcpendpoint_tools operation.
 //
-// List all available tools from a specific MCP Endpoint.
-// This interrogates the MCP server to discover its available tools.
+// List all available tools from a specific MCP endpoint.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}/tools
 func (c *Client) ListMcpendpointTools(ctx context.Context, params ListMcpendpointToolsParams) (ListMcpendpointToolsRes, error) {
@@ -10074,7 +10044,7 @@ func (c *Client) sendListMcpendpointTools(ctx context.Context, params ListMcpend
 
 // ListOAuthServices invokes list_oauth_services operation.
 //
-// List Oauth Services.
+// List all OAuth service configurations.
 //
 // GET /api/v1/oauth/services
 func (c *Client) ListOAuthServices(ctx context.Context, params ListOAuthServicesParams) (ListOAuthServicesRes, error) {
@@ -10201,7 +10171,7 @@ func (c *Client) sendListOAuthServices(ctx context.Context, params ListOAuthServ
 
 // ListOAuthTokens invokes list_oauth_tokens operation.
 //
-// List User Tokens.
+// List all OAuth tokens for the authenticated user.
 //
 // GET /api/v1/oauth/tokens
 func (c *Client) ListOAuthTokens(ctx context.Context) (ListOAuthTokensRes, error) {
@@ -10813,7 +10783,7 @@ func (c *Client) sendMigrateProviderConfig(ctx context.Context, params MigratePr
 
 // PostChatMessages invokes post_chat_messages operation.
 //
-// Post Chat Messages.
+// Add one or more messages to a chat session.
 //
 // POST /api/v1/chats/{chat_id}/messages
 func (c *Client) PostChatMessages(ctx context.Context, request []ChatMessageCreate, params PostChatMessagesParams) (PostChatMessagesRes, error) {
@@ -10941,7 +10911,7 @@ func (c *Client) sendPostChatMessages(ctx context.Context, request []ChatMessage
 
 // RevokeOAuthToken invokes revoke_oauth_token operation.
 //
-// Revoke Token.
+// Revoke an OAuth token for a service.
 //
 // DELETE /api/v1/oauth/tokens/{service_name}
 func (c *Client) RevokeOAuthToken(ctx context.Context, params RevokeOAuthTokenParams) (RevokeOAuthTokenRes, error) {
@@ -11065,7 +11035,7 @@ func (c *Client) sendRevokeOAuthToken(ctx context.Context, params RevokeOAuthTok
 
 // UpdateChat invokes update_chat operation.
 //
-// Update Chat.
+// Update an existing chat session.
 //
 // PUT /api/v1/chats/{chat_id}
 func (c *Client) UpdateChat(ctx context.Context, request *ChatSessionUpdate, params UpdateChatParams) (UpdateChatRes, error) {
@@ -11467,7 +11437,7 @@ func (c *Client) sendUpdateEnvironmentUser(ctx context.Context, request *Environ
 
 // UpdateMcpendpoint invokes update_mcpendpoint operation.
 //
-// Update a specific MCP Endpoint configuration by ID.
+// Update a specific MCP endpoint configuration by ID.
 //
 // PUT /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (c *Client) UpdateMcpendpoint(ctx context.Context, request *MCPEndpointUpdate, params UpdateMcpendpointParams) (UpdateMcpendpointRes, error) {
@@ -11721,7 +11691,7 @@ func (c *Client) sendUpdateModel(ctx context.Context, request *ModelUpdate, para
 
 // UpdateModelprovider invokes update_modelprovider operation.
 //
-// Update a specific Model Provider configuration by ID.
+// Update a specific model provider configuration by ID.
 //
 // PUT /api/v1/models/providers/{provider_id}
 func (c *Client) UpdateModelprovider(ctx context.Context, request *ModelProviderUpdate, params UpdateModelproviderParams) (UpdateModelproviderRes, error) {
@@ -11848,7 +11818,7 @@ func (c *Client) sendUpdateModelprovider(ctx context.Context, request *ModelProv
 
 // UpdateOAuthService invokes update_oauth_service operation.
 //
-// Update Oauth Service.
+// Update an existing OAuth service configuration.
 //
 // PUT /api/v1/oauth/services/{service_id}
 func (c *Client) UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error) {
@@ -12102,7 +12072,7 @@ func (c *Client) sendUpdatePrompt(ctx context.Context, request *PromptUpdate, pa
 
 // UpdateToken invokes update_token operation.
 //
-// Update a specific API token by ID.
+// Update an existing API token.
 //
 // PUT /api/v1/tokens/{token_id}
 func (c *Client) UpdateToken(ctx context.Context, request *ApiTokenUpdate, params UpdateTokenParams) (UpdateTokenRes, error) {

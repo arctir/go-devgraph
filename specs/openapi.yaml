@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.16
+  version: 1.0.0-beta.17
 paths:
   /api/v1/entities/definitions:
     get:
@@ -60,8 +60,8 @@ paths:
       tags:
       - entities
       summary: Delete an entity definition
-      description: Soft deletes an entity definition, all its versions, and optionally
-        marks associated entities as orphans
+      description: Delete an entity definition, all its versions, and optionally mark
+        associated entities as orphans
       operationId: delete_entity_definition
       security:
       - OAuth2PasswordBearer: []
@@ -516,6 +516,7 @@ paths:
       tags:
       - entities
       summary: Create Entity Relation
+      description: Create a relation between two entities in the knowledge graph
       operationId: create_entity_relation
       security:
       - OAuth2PasswordBearer: []
@@ -617,7 +618,7 @@ paths:
       tags:
       - chats
       summary: Post Chat Title
-      description: Generate a title for a chat based on the first message.
+      description: Generate a title for a chat based on the first message
       operationId: create_chat_title
       requestBody:
         content:
@@ -647,6 +648,7 @@ paths:
       tags:
       - chats
       summary: Get Chats
+      description: List all chat sessions for the authenticated user
       operationId: get_chats
       security:
       - OAuth2PasswordBearer: []
@@ -690,6 +692,7 @@ paths:
       tags:
       - chats
       summary: Create Chat
+      description: Create a new chat session
       operationId: create_chat
       security:
       - OAuth2PasswordBearer: []
@@ -718,7 +721,7 @@ paths:
       tags:
       - chats
       summary: Delete Chats Bulk
-      description: Bulk delete multiple chat sessions.
+      description: Delete multiple chat sessions in bulk
       operationId: delete_chats_bulk
       security:
       - OAuth2PasswordBearer: []
@@ -747,6 +750,7 @@ paths:
       tags:
       - chats
       summary: Get Chat
+      description: Retrieve a specific chat session by ID
       operationId: get_chat
       security:
       - OAuth2PasswordBearer: []
@@ -777,6 +781,7 @@ paths:
       tags:
       - chats
       summary: Update Chat
+      description: Update an existing chat session
       operationId: update_chat
       security:
       - OAuth2PasswordBearer: []
@@ -813,6 +818,7 @@ paths:
       tags:
       - chats
       summary: Delete Chat
+      description: Delete a chat session by ID
       operationId: delete_chat
       security:
       - OAuth2PasswordBearer: []
@@ -840,6 +846,7 @@ paths:
       tags:
       - chats
       summary: Get Chat Messages
+      description: Retrieve all messages from a specific chat session
       operationId: get_chat_messages
       security:
       - OAuth2PasswordBearer: []
@@ -890,6 +897,7 @@ paths:
       tags:
       - chats
       summary: Post Chat Messages
+      description: Add one or more messages to a chat session
       operationId: post_chat_messages
       security:
       - OAuth2PasswordBearer: []
@@ -933,7 +941,7 @@ paths:
       tags:
       - chats
       summary: Create Chat Suggestion
-      description: Create a new chat suggestion for the environment.
+      description: Create a new chat suggestion for the environment
       operationId: create_chat_suggestion
       security:
       - OAuth2PasswordBearer: []
@@ -962,8 +970,7 @@ paths:
       tags:
       - chats
       summary: List Chat Suggestions
-      description: List chat suggestions. Returns system-wide suggestions + environment/user-specific
-        ones.
+      description: List chat suggestions including system-wide and user-specific ones
       operationId: list_chat_suggestions
       security:
       - OAuth2PasswordBearer: []
@@ -998,8 +1005,7 @@ paths:
       tags:
       - chats
       summary: Delete Chat Suggestion
-      description: Delete a chat suggestion. Can only delete user's own suggestions
-        (not system ones).
+      description: Delete a chat suggestion owned by the user
       operationId: delete_chat_suggestion
       security:
       - OAuth2PasswordBearer: []
@@ -1027,7 +1033,7 @@ paths:
       tags:
       - chat_completions
       summary: Post Chat Completions
-      description: Handle chat completions requests.
+      description: Create a chat completion with optional streaming response
       operationId: create_chat_completions
       requestBody:
         content:
@@ -1057,6 +1063,7 @@ paths:
       tags:
       - environments
       summary: Get Environments
+      description: List all environments accessible to the authenticated user
       operationId: get_environments
       responses:
         '200':
@@ -1076,6 +1083,7 @@ paths:
       tags:
       - environments
       summary: Create Environment
+      description: Create a new environment with associated Clerk organization
       operationId: create_environment
       requestBody:
         content:
@@ -1136,19 +1144,7 @@ paths:
       tags:
       - environments
       summary: Delete Environment
-      description: 'Soft delete an environment.
-
-
-        This marks the environment as deleted (sets deleted_at timestamp) which triggers
-
-        the Kubernetes controller to clean up all associated resources (namespace,
-        database, etc.).
-
-        The environment record is retained for the configured retention period for
-        potential recovery.
-
-
-        For permanent GDPR-compliant deletion, use the Admin API endpoint.'
+      description: Delete an environment with grace period for recovery
       operationId: delete_environment
       security:
       - OAuth2PasswordBearer: []
@@ -1176,7 +1172,7 @@ paths:
       tags:
       - environments
       summary: Create Environment User
-      description: Create a new environment user by adding them to the Clerk organization.
+      description: Create a new environment user by adding them to the Clerk organization
       operationId: create_environment_user
       security:
       - OAuth2PasswordBearer: []
@@ -1213,7 +1209,7 @@ paths:
       tags:
       - environments
       summary: List Environment Users
-      description: List all users in an environment (organization members).
+      description: List all users in an environment
       operationId: list_environment_users
       security:
       - OAuth2PasswordBearer: []
@@ -1248,8 +1244,7 @@ paths:
       tags:
       - environments
       summary: Get Pending Invitations
-      description: Get all pending invitations for an environment (users who have
-        been invited but haven't joined yet).
+      description: Get all pending invitations for an environment
       operationId: get_pending_invitations
       security:
       - OAuth2PasswordBearer: []
@@ -1284,7 +1279,7 @@ paths:
       tags:
       - environments
       summary: Get Environment User
-      description: Get a specific environment user.
+      description: Get a specific environment user by ID
       operationId: get_environment_user
       security:
       - OAuth2PasswordBearer: []
@@ -1321,7 +1316,7 @@ paths:
       tags:
       - environments
       summary: Update Environment User
-      description: Update an environment user's role.
+      description: Update an environment user's role
       operationId: update_environment_user
       security:
       - OAuth2PasswordBearer: []
@@ -1364,7 +1359,7 @@ paths:
       tags:
       - environments
       summary: Delete Environment User
-      description: Remove a user from an environment (organization).
+      description: Remove a user from an environment
       operationId: delete_environment_user
       security:
       - OAuth2PasswordBearer: []
@@ -1398,7 +1393,7 @@ paths:
       tags:
       - environments
       summary: Invite Environment User
-      description: Invite a user to an environment (organization).
+      description: Invite a user to an environment
       operationId: invite_environment_user
       security:
       - OAuth2PasswordBearer: []
@@ -1436,7 +1431,7 @@ paths:
       tags:
       - environments
       summary: Bulk Invite Environment Users
-      description: Bulk invite multiple users to an environment (organization).
+      description: Bulk invite multiple users to an environment
       operationId: bulk_invite_environment_users
       security:
       - OAuth2PasswordBearer: []
@@ -1477,7 +1472,7 @@ paths:
       tags:
       - environments
       summary: Delete Environment Invitation
-      description: Revoke a pending invitation to an environment (organization).
+      description: Revoke a pending invitation to an environment
       operationId: delete_environment_invitation
       security:
       - OAuth2PasswordBearer: []
@@ -1511,8 +1506,8 @@ paths:
       tags:
       - mcp
       summary: Get Mcpendpoints
-      description: List all MCP Endpoint configurations for the authenticated user
-        and environment.
+      description: List all MCP endpoint configurations for the authenticated user
+        and environment
       operationId: get_mcpendpoints
       responses:
         '200':
@@ -1532,7 +1527,7 @@ paths:
       tags:
       - mcp
       summary: Create Mcpendpoint
-      description: Create a new MCP Endpoint configuration.
+      description: Create a new MCP endpoint configuration
       operationId: create_mcpendpoint
       requestBody:
         content:
@@ -1562,7 +1557,7 @@ paths:
       tags:
       - mcp
       summary: Get Mcpendpoint
-      description: Get a specific MCP Endpoint configuration by ID.
+      description: Get a specific MCP endpoint configuration by ID
       operationId: get_mcpendpoint
       security:
       - OAuth2PasswordBearer: []
@@ -1593,7 +1588,7 @@ paths:
       tags:
       - mcp
       summary: Update Mcpendpoint
-      description: Update a specific MCP Endpoint configuration by ID.
+      description: Update a specific MCP endpoint configuration by ID
       operationId: update_mcpendpoint
       security:
       - OAuth2PasswordBearer: []
@@ -1630,7 +1625,7 @@ paths:
       tags:
       - mcp
       summary: Delete Mcpendpoint
-      description: Delete a specific MCP Endpoint configuration by ID.
+      description: Delete a specific MCP endpoint configuration by ID
       operationId: delete_mcpendpoint
       security:
       - OAuth2PasswordBearer: []
@@ -1658,9 +1653,7 @@ paths:
       tags:
       - mcp
       summary: List Mcpendpoint Tools
-      description: 'List all available tools from a specific MCP Endpoint.
-
-        This interrogates the MCP server to discover its available tools.'
+      description: List all available tools from a specific MCP endpoint
       operationId: list_mcpendpoint_tools
       security:
       - OAuth2PasswordBearer: []
@@ -1696,7 +1689,7 @@ paths:
       tags:
       - mcp
       summary: Create Mcp Tool Association
-      description: Create an association between an MCP tool and an entity definition.
+      description: Create an association between an MCP tool and an entity definition
       operationId: create_mcp_tool_association
       requestBody:
         content:
@@ -1726,7 +1719,7 @@ paths:
       tags:
       - mcp
       summary: Get Entity Tools
-      description: Get all MCP tools associated with an entity definition.
+      description: Get all MCP tools associated with an entity definition
       operationId: get_entity_tools
       security:
       - OAuth2PasswordBearer: []
@@ -1768,7 +1761,7 @@ paths:
       tags:
       - mcp
       summary: Get Mcp Endpoint Entity Types
-      description: Get all entity types associated with an MCP endpoint's tools.
+      description: Get all entity types associated with an MCP endpoint's tools
       operationId: get_mcp_endpoint_entity_types
       security:
       - OAuth2PasswordBearer: []
@@ -1808,7 +1801,7 @@ paths:
       tags:
       - mcp
       summary: Delete Mcp Tool Association
-      description: Delete an MCP tool-entity association.
+      description: Delete an MCP tool-entity association
       operationId: delete_mcp_tool_association
       security:
       - OAuth2PasswordBearer: []
@@ -1836,8 +1829,8 @@ paths:
       tags:
       - model_providers
       summary: Get Modelproviders
-      description: List all Model Provider configurations for the authenticated user
-        and environment.
+      description: List all model provider configurations for the authenticated user
+        and environment
       operationId: get_modelproviders
       responses:
         '200':
@@ -1857,7 +1850,7 @@ paths:
       tags:
       - model_providers
       summary: Create Modelprovider
-      description: Create a new Model Provider configuration.
+      description: Create a new model provider configuration
       operationId: create_modelprovider
       requestBody:
         content:
@@ -1887,7 +1880,7 @@ paths:
       tags:
       - model_providers
       summary: Get Modelprovider
-      description: Get a specific Model Provider configuration by ID.
+      description: Get a specific model provider configuration by ID
       operationId: get_modelprovider
       security:
       - OAuth2PasswordBearer: []
@@ -1918,7 +1911,7 @@ paths:
       tags:
       - model_providers
       summary: Update Modelprovider
-      description: Update a specific Model Provider configuration by ID.
+      description: Update a specific model provider configuration by ID
       operationId: update_modelprovider
       security:
       - OAuth2PasswordBearer: []
@@ -1955,7 +1948,7 @@ paths:
       tags:
       - model_providers
       summary: Delete Modelprovider
-      description: Delete a specific Model Provider configuration by ID.
+      description: Delete a specific model provider configuration by ID
       operationId: delete_modelprovider
       security:
       - OAuth2PasswordBearer: []
@@ -2100,7 +2093,7 @@ paths:
       tags:
       - models
       summary: Delete Model
-      description: Soft delete an AI model configuration by name
+      description: Delete an AI model configuration by name
       operationId: delete_model
       security:
       - OAuth2PasswordBearer: []
@@ -2277,7 +2270,7 @@ paths:
       tags:
       - prompts
       summary: Delete Prompt
-      description: Soft delete a prompt template by ID
+      description: Delete a prompt template by ID
       operationId: delete_prompt
       security:
       - OAuth2PasswordBearer: []
@@ -2305,6 +2298,7 @@ paths:
       tags:
       - subscriptions
       summary: Get Subscriptions
+      description: List all subscriptions for the authenticated user
       operationId: get_subscriptions
       responses:
         '200':
@@ -2325,7 +2319,7 @@ paths:
       tags:
       - subscriptions
       summary: Get Entitlements
-      description: Get all entitlements and current usage for the authenticated user.
+      description: Get all entitlements and current usage for the authenticated user
       operationId: get_entitlements
       responses:
         '200':
@@ -2343,13 +2337,7 @@ paths:
       tags:
       - subscriptions
       summary: Check Entitlement
-      description: 'Check a specific entitlement for the authenticated user.
-
-
-        For numeric limits (e.g., max_environments), returns current usage and remaining
-        quota.
-
-        For boolean features (e.g., enable_sso), returns whether the feature is enabled.'
+      description: Check a specific entitlement for the authenticated user
       operationId: check_entitlement
       security:
       - OAuth2PasswordBearer: []
@@ -2380,7 +2368,7 @@ paths:
       tags:
       - tokens
       summary: Get Tokens
-      description: Get all API tokens for the authenticated user.
+      description: List all API tokens for the authenticated user
       operationId: get_tokens
       responses:
         '200':
@@ -2400,6 +2388,7 @@ paths:
       tags:
       - tokens
       summary: Create Token
+      description: Create a new API token for the authenticated user
       operationId: create_token
       requestBody:
         content:
@@ -2429,7 +2418,7 @@ paths:
       tags:
       - tokens
       summary: Update Token
-      description: Update a specific API token by ID.
+      description: Update an existing API token
       operationId: update_token
       security:
       - OAuth2PasswordBearer: []
@@ -2466,7 +2455,7 @@ paths:
       tags:
       - tokens
       summary: Delete Token
-      description: Delete a specific API token by ID.
+      description: Delete an API token
       operationId: delete_token
       security:
       - OAuth2PasswordBearer: []
@@ -2494,6 +2483,7 @@ paths:
       tags:
       - oauth
       summary: Create Oauth Service
+      description: Create a new OAuth service configuration
       operationId: create_oauth_service
       security:
       - OAuth2PasswordBearer: []
@@ -2522,6 +2512,7 @@ paths:
       tags:
       - oauth
       summary: List Oauth Services
+      description: List all OAuth service configurations
       operationId: list_oauth_services
       security:
       - OAuth2PasswordBearer: []
@@ -2555,6 +2546,7 @@ paths:
       tags:
       - oauth
       summary: Get Oauth Service
+      description: Get a specific OAuth service configuration by ID
       operationId: get_oauth_service
       security:
       - OAuth2PasswordBearer: []
@@ -2585,6 +2577,7 @@ paths:
       tags:
       - oauth
       summary: Update Oauth Service
+      description: Update an existing OAuth service configuration
       operationId: update_oauth_service
       security:
       - OAuth2PasswordBearer: []
@@ -2621,6 +2614,7 @@ paths:
       tags:
       - oauth
       summary: Delete Oauth Service
+      description: Delete an OAuth service configuration
       operationId: delete_oauth_service
       security:
       - OAuth2PasswordBearer: []
@@ -2648,6 +2642,7 @@ paths:
       tags:
       - oauth
       summary: Get Authorization Url
+      description: Generate an OAuth authorization URL for a service
       operationId: get_oauth_authorization_url
       requestBody:
         content:
@@ -2677,6 +2672,7 @@ paths:
       tags:
       - oauth
       summary: Exchange Code For Token
+      description: Exchange an authorization code for an access token
       operationId: exchange_oauth_token
       requestBody:
         content:
@@ -2706,6 +2702,7 @@ paths:
       tags:
       - oauth
       summary: List User Tokens
+      description: List all OAuth tokens for the authenticated user
       operationId: list_oauth_tokens
       responses:
         '200':
@@ -2722,6 +2719,7 @@ paths:
       tags:
       - oauth
       summary: Revoke Token
+      description: Revoke an OAuth token for a service
       operationId: revoke_oauth_token
       security:
       - OAuth2PasswordBearer: []
@@ -2748,14 +2746,8 @@ paths:
       tags:
       - discovery
       summary: List Discovery Providers
-      description: 'List all available discovery provider types with their configuration
-        schemas.
-
-
-        This endpoint discovers all registered discovery providers using the plugin
-        system
-
-        and returns their metadata including JSON schemas for configuration.'
+      description: List all available discovery provider types with their configuration
+        schemas
       operationId: list_discovery_providers
       responses:
         '200':
@@ -2773,9 +2765,8 @@ paths:
       tags:
       - discovery
       summary: Get Discovery Provider Config Schema
-      description: "Get the configuration schema for a specific discovery provider\
-        \ type.\n\nArgs:\n    provider_type: The type identifier of the provider (e.g.,\
-        \ 'github', 'gitlab')\n\nReturns:\n    JSON schema for the provider's configuration"
+      description: Get the configuration schema for a specific discovery provider
+        type
       operationId: get_discovery_provider_config_schema
       security:
       - OAuth2PasswordBearer: []
@@ -2934,7 +2925,7 @@ paths:
       tags:
       - discovery
       summary: Delete Configured Provider
-      description: Delete a configured discovery provider.
+      description: Delete a configured discovery provider
       operationId: delete_configured_provider
       security:
       - OAuth2PasswordBearer: []
@@ -3044,7 +3035,7 @@ paths:
       tags:
       - discovery
       summary: Migrate All Deprecated Configs
-      description: Batch migrate all configs using deprecated versions.
+      description: Batch migrate all configs using deprecated versions
       operationId: migrate_all_deprecated_configs
       security:
       - OAuth2PasswordBearer: []

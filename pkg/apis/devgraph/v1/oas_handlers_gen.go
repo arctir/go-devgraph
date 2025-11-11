@@ -31,7 +31,7 @@ func (c *codeRecorder) WriteHeader(status int) {
 
 // handleBulkInviteEnvironmentUsersRequest handles bulk_invite_environment_users operation.
 //
-// Bulk invite multiple users to an environment (organization).
+// Bulk invite multiple users to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/bulk-invite
 func (s *Server) handleBulkInviteEnvironmentUsersRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -232,8 +232,6 @@ func (s *Server) handleBulkInviteEnvironmentUsersRequest(args [1]string, argsEsc
 // handleCheckEntitlementRequest handles check_entitlement operation.
 //
 // Check a specific entitlement for the authenticated user.
-// For numeric limits (e.g., max_environments), returns current usage and remaining quota.
-// For boolean features (e.g., enable_sso), returns whether the feature is enabled.
 //
 // GET /api/v1/entitlements/check/{entitlement_type}
 func (s *Server) handleCheckEntitlementRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -607,7 +605,7 @@ func (s *Server) handleCleanupOrphanedEntitiesRequest(args [0]string, argsEscape
 
 // handleCreateChatRequest handles create_chat operation.
 //
-// Create Chat.
+// Create a new chat session.
 //
 // POST /api/v1/chats/
 func (s *Server) handleCreateChatRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -1959,7 +1957,7 @@ func (s *Server) handleCreateEntityDefinitionRequest(args [0]string, argsEscaped
 
 // handleCreateEntityRelationRequest handles create_entity_relation operation.
 //
-// Create Entity Relation.
+// Create a relation between two entities in the knowledge graph.
 //
 // POST /api/v1/entities/relations
 func (s *Server) handleCreateEntityRelationRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -2345,7 +2343,7 @@ func (s *Server) handleCreateEntityRelationsBulkRequest(args [0]string, argsEsca
 
 // handleCreateEnvironmentRequest handles create_environment operation.
 //
-// Create Environment.
+// Create a new environment with associated Clerk organization.
 //
 // POST /api/v1/environments
 func (s *Server) handleCreateEnvironmentRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -2915,7 +2913,7 @@ func (s *Server) handleCreateMcpToolAssociationRequest(args [0]string, argsEscap
 
 // handleCreateMcpendpointRequest handles create_mcpendpoint operation.
 //
-// Create a new MCP Endpoint configuration.
+// Create a new MCP endpoint configuration.
 //
 // POST /api/v1/mcp/endpoints
 func (s *Server) handleCreateMcpendpointRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -3285,7 +3283,7 @@ func (s *Server) handleCreateModelRequest(args [0]string, argsEscaped bool, w ht
 
 // handleCreateModelproviderRequest handles create_modelprovider operation.
 //
-// Create a new Model Provider configuration.
+// Create a new model provider configuration.
 //
 // POST /api/v1/models/providers
 func (s *Server) handleCreateModelproviderRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -3470,7 +3468,7 @@ func (s *Server) handleCreateModelproviderRequest(args [0]string, argsEscaped bo
 
 // handleCreateOAuthServiceRequest handles create_oauth_service operation.
 //
-// Create Oauth Service.
+// Create a new OAuth service configuration.
 //
 // POST /api/v1/oauth/services
 func (s *Server) handleCreateOAuthServiceRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -3840,7 +3838,7 @@ func (s *Server) handleCreatePromptRequest(args [0]string, argsEscaped bool, w h
 
 // handleCreateTokenRequest handles create_token operation.
 //
-// Create Token.
+// Create a new API token for the authenticated user.
 //
 // POST /api/v1/tokens
 func (s *Server) handleCreateTokenRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -4025,7 +4023,7 @@ func (s *Server) handleCreateTokenRequest(args [0]string, argsEscaped bool, w ht
 
 // handleDeleteChatRequest handles delete_chat operation.
 //
-// Delete Chat.
+// Delete a chat session by ID.
 //
 // DELETE /api/v1/chats/{chat_id}
 func (s *Server) handleDeleteChatRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -4210,7 +4208,7 @@ func (s *Server) handleDeleteChatRequest(args [1]string, argsEscaped bool, w htt
 
 // handleDeleteChatSuggestionRequest handles delete_chat_suggestion operation.
 //
-// Delete a chat suggestion. Can only delete user's own suggestions (not system ones).
+// Delete a chat suggestion owned by the user.
 //
 // DELETE /api/v1/chats/suggestions/{suggestion_id}
 func (s *Server) handleDeleteChatSuggestionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -4395,7 +4393,7 @@ func (s *Server) handleDeleteChatSuggestionRequest(args [1]string, argsEscaped b
 
 // handleDeleteChatsBulkRequest handles delete_chats_bulk operation.
 //
-// Bulk delete multiple chat sessions.
+// Delete multiple chat sessions in bulk.
 //
 // DELETE /api/v1/chats/
 func (s *Server) handleDeleteChatsBulkRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -4966,8 +4964,7 @@ func (s *Server) handleDeleteEntityRequest(args [5]string, argsEscaped bool, w h
 
 // handleDeleteEntityDefinitionRequest handles delete_entity_definition operation.
 //
-// Soft deletes an entity definition, all its versions, and optionally marks associated entities as
-// orphans.
+// Delete an entity definition, all its versions, and optionally mark associated entities as orphans.
 //
 // DELETE /api/v1/entities/definitions/{definition_id}
 func (s *Server) handleDeleteEntityDefinitionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -5356,11 +5353,7 @@ func (s *Server) handleDeleteEntityRelationRequest(args [0]string, argsEscaped b
 
 // handleDeleteEnvironmentRequest handles delete_environment operation.
 //
-// Soft delete an environment.
-// This marks the environment as deleted (sets deleted_at timestamp) which triggers
-// the Kubernetes controller to clean up all associated resources (namespace, database, etc.).
-// The environment record is retained for the configured retention period for potential recovery.
-// For permanent GDPR-compliant deletion, use the Admin API endpoint.
+// Delete an environment with grace period for recovery.
 //
 // DELETE /api/v1/environments/{env_id}
 func (s *Server) handleDeleteEnvironmentRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -5545,7 +5538,7 @@ func (s *Server) handleDeleteEnvironmentRequest(args [1]string, argsEscaped bool
 
 // handleDeleteEnvironmentInvitationRequest handles delete_environment_invitation operation.
 //
-// Revoke a pending invitation to an environment (organization).
+// Revoke a pending invitation to an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/invitations/{invitation_id}
 func (s *Server) handleDeleteEnvironmentInvitationRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -5734,7 +5727,7 @@ func (s *Server) handleDeleteEnvironmentInvitationRequest(args [2]string, argsEs
 
 // handleDeleteEnvironmentUserRequest handles delete_environment_user operation.
 //
-// Remove a user from an environment (organization).
+// Remove a user from an environment.
 //
 // DELETE /api/v1/environments/{environment_id}/users/{user_id}
 func (s *Server) handleDeleteEnvironmentUserRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -6108,7 +6101,7 @@ func (s *Server) handleDeleteMcpToolAssociationRequest(args [1]string, argsEscap
 
 // handleDeleteMcpendpointRequest handles delete_mcpendpoint operation.
 //
-// Delete a specific MCP Endpoint configuration by ID.
+// Delete a specific MCP endpoint configuration by ID.
 //
 // DELETE /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (s *Server) handleDeleteMcpendpointRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -6293,7 +6286,7 @@ func (s *Server) handleDeleteMcpendpointRequest(args [1]string, argsEscaped bool
 
 // handleDeleteModelRequest handles delete_model operation.
 //
-// Soft delete an AI model configuration by name.
+// Delete an AI model configuration by name.
 //
 // DELETE /api/v1/models/{model_name}
 func (s *Server) handleDeleteModelRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -6478,7 +6471,7 @@ func (s *Server) handleDeleteModelRequest(args [1]string, argsEscaped bool, w ht
 
 // handleDeleteModelproviderRequest handles delete_modelprovider operation.
 //
-// Delete a specific Model Provider configuration by ID.
+// Delete a specific model provider configuration by ID.
 //
 // DELETE /api/v1/models/providers/{provider_id}
 func (s *Server) handleDeleteModelproviderRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -6663,7 +6656,7 @@ func (s *Server) handleDeleteModelproviderRequest(args [1]string, argsEscaped bo
 
 // handleDeleteOAuthServiceRequest handles delete_oauth_service operation.
 //
-// Delete Oauth Service.
+// Delete an OAuth service configuration.
 //
 // DELETE /api/v1/oauth/services/{service_id}
 func (s *Server) handleDeleteOAuthServiceRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -6848,7 +6841,7 @@ func (s *Server) handleDeleteOAuthServiceRequest(args [1]string, argsEscaped boo
 
 // handleDeletePromptRequest handles delete_prompt operation.
 //
-// Soft delete a prompt template by ID.
+// Delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (s *Server) handleDeletePromptRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7033,7 +7026,7 @@ func (s *Server) handleDeletePromptRequest(args [1]string, argsEscaped bool, w h
 
 // handleDeleteTokenRequest handles delete_token operation.
 //
-// Delete a specific API token by ID.
+// Delete an API token.
 //
 // DELETE /api/v1/tokens/{token_id}
 func (s *Server) handleDeleteTokenRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7218,7 +7211,7 @@ func (s *Server) handleDeleteTokenRequest(args [1]string, argsEscaped bool, w ht
 
 // handleExchangeOAuthTokenRequest handles exchange_oauth_token operation.
 //
-// Exchange Code For Token.
+// Exchange an authorization code for an access token.
 //
 // POST /api/v1/oauth/token
 func (s *Server) handleExchangeOAuthTokenRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7573,7 +7566,7 @@ func (s *Server) handleGetAllProviderVersionsRequest(args [0]string, argsEscaped
 
 // handleGetChatRequest handles get_chat operation.
 //
-// Get Chat.
+// Retrieve a specific chat session by ID.
 //
 // GET /api/v1/chats/{chat_id}
 func (s *Server) handleGetChatRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7758,7 +7751,7 @@ func (s *Server) handleGetChatRequest(args [1]string, argsEscaped bool, w http.R
 
 // handleGetChatMessagesRequest handles get_chat_messages operation.
 //
-// Get Chat Messages.
+// Retrieve all messages from a specific chat session.
 //
 // GET /api/v1/chats/{chat_id}/messages
 func (s *Server) handleGetChatMessagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7951,7 +7944,7 @@ func (s *Server) handleGetChatMessagesRequest(args [1]string, argsEscaped bool, 
 
 // handleGetChatsRequest handles get_chats operation.
 //
-// Get Chats.
+// List all chat sessions for the authenticated user.
 //
 // GET /api/v1/chats/
 func (s *Server) handleGetChatsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -8512,10 +8505,6 @@ func (s *Server) handleGetDeprecatedProviderConfigsRequest(args [0]string, argsE
 // handleGetDiscoveryProviderConfigSchemaRequest handles get_discovery_provider_config_schema operation.
 //
 // Get the configuration schema for a specific discovery provider type.
-// Args:
-// provider_type: The type identifier of the provider (e.g., 'github', 'gitlab')
-// Returns:
-// JSON schema for the provider's configuration.
 //
 // GET /api/v1/discovery/providers/{provider_type}/config-schema
 func (s *Server) handleGetDiscoveryProviderConfigSchemaRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -9970,7 +9959,7 @@ func (s *Server) handleGetEnvironmentStatusRequest(args [1]string, argsEscaped b
 
 // handleGetEnvironmentUserRequest handles get_environment_user operation.
 //
-// Get a specific environment user.
+// Get a specific environment user by ID.
 //
 // GET /api/v1/environments/{environment_id}/users/{user_id}
 func (s *Server) handleGetEnvironmentUserRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -10159,7 +10148,7 @@ func (s *Server) handleGetEnvironmentUserRequest(args [2]string, argsEscaped boo
 
 // handleGetEnvironmentsRequest handles get_environments operation.
 //
-// Get Environments.
+// List all environments accessible to the authenticated user.
 //
 // GET /api/v1/environments
 func (s *Server) handleGetEnvironmentsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -10518,7 +10507,7 @@ func (s *Server) handleGetMcpEndpointEntityTypesRequest(args [1]string, argsEsca
 
 // handleGetMcpendpointRequest handles get_mcpendpoint operation.
 //
-// Get a specific MCP Endpoint configuration by ID.
+// Get a specific MCP endpoint configuration by ID.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (s *Server) handleGetMcpendpointRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -10703,7 +10692,7 @@ func (s *Server) handleGetMcpendpointRequest(args [1]string, argsEscaped bool, w
 
 // handleGetMcpendpointsRequest handles get_mcpendpoints operation.
 //
-// List all MCP Endpoint configurations for the authenticated user and environment.
+// List all MCP endpoint configurations for the authenticated user and environment.
 //
 // GET /api/v1/mcp/endpoints
 func (s *Server) handleGetMcpendpointsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -11058,7 +11047,7 @@ func (s *Server) handleGetModelRequest(args [1]string, argsEscaped bool, w http.
 
 // handleGetModelproviderRequest handles get_modelprovider operation.
 //
-// Get a specific Model Provider configuration by ID.
+// Get a specific model provider configuration by ID.
 //
 // GET /api/v1/models/providers/{provider_id}
 func (s *Server) handleGetModelproviderRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -11243,7 +11232,7 @@ func (s *Server) handleGetModelproviderRequest(args [1]string, argsEscaped bool,
 
 // handleGetModelprovidersRequest handles get_modelproviders operation.
 //
-// List all Model Provider configurations for the authenticated user and environment.
+// List all model provider configurations for the authenticated user and environment.
 //
 // GET /api/v1/models/providers
 func (s *Server) handleGetModelprovidersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -11583,7 +11572,7 @@ func (s *Server) handleGetModelsRequest(args [0]string, argsEscaped bool, w http
 
 // handleGetOAuthAuthorizationURLRequest handles get_oauth_authorization_url operation.
 //
-// Get Authorization Url.
+// Generate an OAuth authorization URL for a service.
 //
 // POST /api/v1/oauth/authorize
 func (s *Server) handleGetOAuthAuthorizationURLRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -11768,7 +11757,7 @@ func (s *Server) handleGetOAuthAuthorizationURLRequest(args [0]string, argsEscap
 
 // handleGetOAuthServiceRequest handles get_oauth_service operation.
 //
-// Get Oauth Service.
+// Get a specific OAuth service configuration by ID.
 //
 // GET /api/v1/oauth/services/{service_id}
 func (s *Server) handleGetOAuthServiceRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -11953,8 +11942,7 @@ func (s *Server) handleGetOAuthServiceRequest(args [1]string, argsEscaped bool, 
 
 // handleGetPendingInvitationsRequest handles get_pending_invitations operation.
 //
-// Get all pending invitations for an environment (users who have been invited but haven't joined
-// yet).
+// Get all pending invitations for an environment.
 //
 // GET /api/v1/environments/{environment_id}/users/pending
 func (s *Server) handleGetPendingInvitationsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -12324,7 +12312,7 @@ func (s *Server) handleGetPromptRequest(args [1]string, argsEscaped bool, w http
 
 // handleGetSubscriptionsRequest handles get_subscriptions operation.
 //
-// Get Subscriptions.
+// List all subscriptions for the authenticated user.
 //
 // GET /api/v1/subscriptions
 func (s *Server) handleGetSubscriptionsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -12664,7 +12652,7 @@ func (s *Server) handleGetSystemDefaultPromptRequest(args [0]string, argsEscaped
 
 // handleGetTokensRequest handles get_tokens operation.
 //
-// Get all API tokens for the authenticated user.
+// List all API tokens for the authenticated user.
 //
 // GET /api/v1/tokens
 func (s *Server) handleGetTokensRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -12834,7 +12822,7 @@ func (s *Server) handleGetTokensRequest(args [0]string, argsEscaped bool, w http
 
 // handleInviteEnvironmentUserRequest handles invite_environment_user operation.
 //
-// Invite a user to an environment (organization).
+// Invite a user to an environment.
 //
 // POST /api/v1/environments/{environment_id}/users/invite
 func (s *Server) handleInviteEnvironmentUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -13034,7 +13022,7 @@ func (s *Server) handleInviteEnvironmentUserRequest(args [1]string, argsEscaped 
 
 // handleListChatSuggestionsRequest handles list_chat_suggestions operation.
 //
-// List chat suggestions. Returns system-wide suggestions + environment/user-specific ones.
+// List chat suggestions including system-wide and user-specific ones.
 //
 // GET /api/v1/chats/suggestions
 func (s *Server) handleListChatSuggestionsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -13391,8 +13379,6 @@ func (s *Server) handleListConfiguredProvidersRequest(args [0]string, argsEscape
 // handleListDiscoveryProvidersRequest handles list_discovery_providers operation.
 //
 // List all available discovery provider types with their configuration schemas.
-// This endpoint discovers all registered discovery providers using the plugin system
-// and returns their metadata including JSON schemas for configuration.
 //
 // GET /api/v1/discovery/providers
 func (s *Server) handleListDiscoveryProvidersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -13562,7 +13548,7 @@ func (s *Server) handleListDiscoveryProvidersRequest(args [0]string, argsEscaped
 
 // handleListEnvironmentUsersRequest handles list_environment_users operation.
 //
-// List all users in an environment (organization members).
+// List all users in an environment.
 //
 // GET /api/v1/environments/{environment_id}/users
 func (s *Server) handleListEnvironmentUsersRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -13747,8 +13733,7 @@ func (s *Server) handleListEnvironmentUsersRequest(args [1]string, argsEscaped b
 
 // handleListMcpendpointToolsRequest handles list_mcpendpoint_tools operation.
 //
-// List all available tools from a specific MCP Endpoint.
-// This interrogates the MCP server to discover its available tools.
+// List all available tools from a specific MCP endpoint.
 //
 // GET /api/v1/mcp/endpoints/{mcpendpoint_id}/tools
 func (s *Server) handleListMcpendpointToolsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -13933,7 +13918,7 @@ func (s *Server) handleListMcpendpointToolsRequest(args [1]string, argsEscaped b
 
 // handleListOAuthServicesRequest handles list_oauth_services operation.
 //
-// List Oauth Services.
+// List all OAuth service configurations.
 //
 // GET /api/v1/oauth/services
 func (s *Server) handleListOAuthServicesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -14118,7 +14103,7 @@ func (s *Server) handleListOAuthServicesRequest(args [0]string, argsEscaped bool
 
 // handleListOAuthTokensRequest handles list_oauth_tokens operation.
 //
-// List User Tokens.
+// List all OAuth tokens for the authenticated user.
 //
 // GET /api/v1/oauth/tokens
 func (s *Server) handleListOAuthTokensRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -15028,7 +15013,7 @@ func (s *Server) handleMigrateProviderConfigRequest(args [1]string, argsEscaped 
 
 // handlePostChatMessagesRequest handles post_chat_messages operation.
 //
-// Post Chat Messages.
+// Add one or more messages to a chat session.
 //
 // POST /api/v1/chats/{chat_id}/messages
 func (s *Server) handlePostChatMessagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -15228,7 +15213,7 @@ func (s *Server) handlePostChatMessagesRequest(args [1]string, argsEscaped bool,
 
 // handleRevokeOAuthTokenRequest handles revoke_oauth_token operation.
 //
-// Revoke Token.
+// Revoke an OAuth token for a service.
 //
 // DELETE /api/v1/oauth/tokens/{service_name}
 func (s *Server) handleRevokeOAuthTokenRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -15413,7 +15398,7 @@ func (s *Server) handleRevokeOAuthTokenRequest(args [1]string, argsEscaped bool,
 
 // handleUpdateChatRequest handles update_chat operation.
 //
-// Update Chat.
+// Update an existing chat session.
 //
 // PUT /api/v1/chats/{chat_id}
 func (s *Server) handleUpdateChatRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -16019,7 +16004,7 @@ func (s *Server) handleUpdateEnvironmentUserRequest(args [2]string, argsEscaped 
 
 // handleUpdateMcpendpointRequest handles update_mcpendpoint operation.
 //
-// Update a specific MCP Endpoint configuration by ID.
+// Update a specific MCP endpoint configuration by ID.
 //
 // PUT /api/v1/mcp/endpoints/{mcpendpoint_id}
 func (s *Server) handleUpdateMcpendpointRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -16419,7 +16404,7 @@ func (s *Server) handleUpdateModelRequest(args [1]string, argsEscaped bool, w ht
 
 // handleUpdateModelproviderRequest handles update_modelprovider operation.
 //
-// Update a specific Model Provider configuration by ID.
+// Update a specific model provider configuration by ID.
 //
 // PUT /api/v1/models/providers/{provider_id}
 func (s *Server) handleUpdateModelproviderRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -16619,7 +16604,7 @@ func (s *Server) handleUpdateModelproviderRequest(args [1]string, argsEscaped bo
 
 // handleUpdateOAuthServiceRequest handles update_oauth_service operation.
 //
-// Update Oauth Service.
+// Update an existing OAuth service configuration.
 //
 // PUT /api/v1/oauth/services/{service_id}
 func (s *Server) handleUpdateOAuthServiceRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -17019,7 +17004,7 @@ func (s *Server) handleUpdatePromptRequest(args [1]string, argsEscaped bool, w h
 
 // handleUpdateTokenRequest handles update_token operation.
 //
-// Update a specific API token by ID.
+// Update an existing API token.
 //
 // PUT /api/v1/tokens/{token_id}
 func (s *Server) handleUpdateTokenRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
