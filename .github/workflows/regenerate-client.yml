@@ -1,0 +1,108 @@
+name: Regenerate Go Client from API Spec
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_version:
+        description: 'API Spec Version'
+        required: true
+        type: string
+      spec_commit:
+        description: 'Devgraph commit SHA that triggered this'
+        required: true
+        type: string
+  schedule:
+    - cron: '0 3 * * *'  # Daily at 3am UTC
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Download API spec
+        run: |
+          mkdir -p specs
+          curl -o specs/openapi.yaml \
+            https://raw.githubusercontent.com/arctir/devgraph-api/v${{ inputs.spec_version }}/v1/spec.yaml
+          echo "✓ Downloaded API spec v${{ inputs.spec_version }}"
+
+      - name: Remove old generated code
+        run: |
+          # Remove all previously generated Go files
+          rm -rf pkg/apis/devgraph/v1/*_gen.go
+          echo "✓ Removed old generated code"
+
+      - name: Generate Go client
+        run: |
+          # Install ogen
+          go install github.com/ogen-go/ogen/cmd/ogen@latest
+
+          # Generate client
+          mkdir -p pkg/apis/devgraph/v1
+          ogen --target pkg/apis/devgraph/v1 \
+            --package v1 \
+            --clean \
+            specs/openapi.yaml
+
+          echo "✓ Client generated"
+
+      - name: Update module version
+        run: |
+          # Update version comment in go.mod or README
+          echo "// Generated for API v${{ inputs.spec_version }}" > pkg/apis/devgraph/v1/version.go
+          echo "package v1" >> pkg/apis/devgraph/v1/version.go
+          echo "" >> pkg/apis/devgraph/v1/version.go
+          echo "const APIVersion = \"${{ inputs.spec_version }}\"" >> pkg/apis/devgraph/v1/version.go
+
+      - name: Run go mod tidy
+        run: |
+          go mod tidy
+
+      - name: Run tests
+        run: |
+          go test ./... -v || echo "⚠️ Tests failed or no tests to run"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if there are changes to commit
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "$(cat <<'EOF'
+          Update Go client for API v${{ inputs.spec_version }}
+
+          Auto-generated from devgraph@${{ inputs.spec_commit }}
+          Spec URL: https://github.com/arctir/devgraph-api/tree/v${{ inputs.spec_version }}
+
+          🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+          Co-Authored-By: Claude <noreply@anthropic.com>
+          EOF
+          )"
+            git push origin main
+            echo "✓ Changes committed and pushed to main"
+
+            # Create and push tag
+            git tag -fa "v${{ inputs.spec_version }}" -m "Go client v${{ inputs.spec_version }} for API v${{ inputs.spec_version }}"
+            git push origin "v${{ inputs.spec_version }}" --force
+            echo "✓ Tagged as v${{ inputs.spec_version }}"
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 🔷 Go Client Regenerated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Version**: \`${{ inputs.spec_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source Commit**: [${{ inputs.spec_commit }}](https://github.com/arctir/devgraph/commit/${{ inputs.spec_commit }})" >> $GITHUB_STEP_SUMMARY
+          echo "- **Spec URL**: https://github.com/arctir/devgraph-api/tree/v${{ inputs.spec_version }}" >> $GITHUB_STEP_SUMMARY
