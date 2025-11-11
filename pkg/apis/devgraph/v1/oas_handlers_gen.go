@@ -3100,7 +3100,7 @@ func (s *Server) handleCreateMcpendpointRequest(args [0]string, argsEscaped bool
 
 // handleCreateModelRequest handles create_model operation.
 //
-// Create a new AI model configuration in the environment.
+// Create a new AI model configuration with provider details in the environment.
 //
 // POST /api/v1/models
 func (s *Server) handleCreateModelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

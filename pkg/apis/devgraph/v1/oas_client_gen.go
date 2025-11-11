@@ -132,7 +132,7 @@ type Invoker interface {
 	CreateMcpendpoint(ctx context.Context, request *MCPEndpointCreate) (CreateMcpendpointRes, error)
 	// CreateModel invokes create_model operation.
 	//
-	// Create a new AI model configuration in the environment.
+	// Create a new AI model configuration with provider details in the environment.
 	//
 	// POST /api/v1/models
 	CreateModel(ctx context.Context, request *ModelCreate) (CreateModelRes, error)
@@ -2647,7 +2647,7 @@ func (c *Client) sendCreateMcpendpoint(ctx context.Context, request *MCPEndpoint
 
 // CreateModel invokes create_model operation.
 //
-// Create a new AI model configuration in the environment.
+// Create a new AI model configuration with provider details in the environment.
 //
 // POST /api/v1/models
 func (c *Client) CreateModel(ctx context.Context, request *ModelCreate) (CreateModelRes, error) {

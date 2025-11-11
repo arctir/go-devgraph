@@ -165,7 +165,7 @@ func (UnimplementedHandler) CreateMcpendpoint(ctx context.Context, req *MCPEndpo
 
 // CreateModel implements create_model operation.
 //
-// Create a new AI model configuration in the environment.
+// Create a new AI model configuration with provider details in the environment.
 //
 // POST /api/v1/models
 func (UnimplementedHandler) CreateModel(ctx context.Context, req *ModelCreate) (r CreateModelRes, _ error) {

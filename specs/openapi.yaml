@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.7
+  version: 1.0.0-beta.8
 paths:
   /api/v1/entities/definitions:
     get:
@@ -2002,7 +2002,8 @@ paths:
       tags:
       - models
       summary: Create Model
-      description: Create a new AI model configuration in the environment
+      description: Create a new AI model configuration with provider details in the
+        environment
       operationId: create_model
       requestBody:
         content:

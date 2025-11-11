@@ -112,7 +112,7 @@ type Handler interface {
 	CreateMcpendpoint(ctx context.Context, req *MCPEndpointCreate) (CreateMcpendpointRes, error)
 	// CreateModel implements create_model operation.
 	//
-	// Create a new AI model configuration in the environment.
+	// Create a new AI model configuration with provider details in the environment.
 	//
 	// POST /api/v1/models
 	CreateModel(ctx context.Context, req *ModelCreate) (CreateModelRes, error)
