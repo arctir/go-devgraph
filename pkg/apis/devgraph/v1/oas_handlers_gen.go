@@ -16819,7 +16819,7 @@ func (s *Server) handleUpdateOAuthServiceRequest(args [1]string, argsEscaped boo
 
 // handleUpdatePromptRequest handles update_prompt operation.
 //
-// Update a specific prompt by ID.
+// Update an existing prompt template by ID.
 //
 // PUT /api/v1/prompts/{prompt_id}
 func (s *Server) handleUpdatePromptRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

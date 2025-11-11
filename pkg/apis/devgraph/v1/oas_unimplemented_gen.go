@@ -853,7 +853,7 @@ func (UnimplementedHandler) UpdateOAuthService(ctx context.Context, req *OAuthSe
 
 // UpdatePrompt implements update_prompt operation.
 //
-// Update a specific prompt by ID.
+// Update an existing prompt template by ID.
 //
 // PUT /api/v1/prompts/{prompt_id}
 func (UnimplementedHandler) UpdatePrompt(ctx context.Context, req *PromptUpdate, params UpdatePromptParams) (r UpdatePromptRes, _ error) {

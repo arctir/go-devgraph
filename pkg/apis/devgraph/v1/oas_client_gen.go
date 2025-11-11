@@ -597,7 +597,7 @@ type Invoker interface {
 	UpdateOAuthService(ctx context.Context, request *OAuthServiceUpdate, params UpdateOAuthServiceParams) (UpdateOAuthServiceRes, error)
 	// UpdatePrompt invokes update_prompt operation.
 	//
-	// Update a specific prompt by ID.
+	// Update an existing prompt template by ID.
 	//
 	// PUT /api/v1/prompts/{prompt_id}
 	UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error)
@@ -11975,7 +11975,7 @@ func (c *Client) sendUpdateOAuthService(ctx context.Context, request *OAuthServi
 
 // UpdatePrompt invokes update_prompt operation.
 //
-// Update a specific prompt by ID.
+// Update an existing prompt template by ID.
 //
 // PUT /api/v1/prompts/{prompt_id}
 func (c *Client) UpdatePrompt(ctx context.Context, request *PromptUpdate, params UpdatePromptParams) (UpdatePromptRes, error) {
