@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       spec_version:
-        description: 'API Spec Version'
+        description: "API Spec Version"
         required: true
         type: string
       spec_commit:
-        description: 'Devgraph commit SHA that triggered this'
+        description: "Devgraph commit SHA that triggered this"
         required: true
         type: string
   schedule:
-    - cron: '0 3 * * *'  # Daily at 3am UTC
+    - cron: "0 3 * * *" # Daily at 3am UTC
 
 jobs:
   regenerate:
@@ -23,7 +23,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: "1.21"
 
       - name: Download API spec
         run: |
@@ -82,9 +82,6 @@ jobs:
           Auto-generated from devgraph@${{ inputs.spec_commit }}
           Spec URL: https://github.com/arctir/devgraph-api/tree/v${{ inputs.spec_version }}
 
-          🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-          Co-Authored-By: Claude <noreply@anthropic.com>
           EOF
           )"
             git push origin main
