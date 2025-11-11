@@ -349,8 +349,7 @@ type Invoker interface {
 	GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (GetEntityByUIDRes, error)
 	// GetEntityDefinitions invokes get_entity_definitions operation.
 	//
-	// Fetches a list of all entity definitions and their associated versions from the database. Requires
-	// 'list:entitydefinitions' permission.
+	// Fetches a list of all entity definitions with versions, ordered by group and kind.
 	//
 	// GET /api/v1/entities/definitions
 	GetEntityDefinitions(ctx context.Context) (GetEntityDefinitionsRes, error)
@@ -7089,8 +7088,7 @@ func (c *Client) sendGetEntityByUID(ctx context.Context, params GetEntityByUIDPa
 
 // GetEntityDefinitions invokes get_entity_definitions operation.
 //
-// Fetches a list of all entity definitions and their associated versions from the database. Requires
-// 'list:entitydefinitions' permission.
+// Fetches a list of all entity definitions with versions, ordered by group and kind.
 //
 // GET /api/v1/entities/definitions
 func (c *Client) GetEntityDefinitions(ctx context.Context) (GetEntityDefinitionsRes, error) {

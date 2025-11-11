@@ -9425,8 +9425,7 @@ func (s *Server) handleGetEntityByUIDRequest(args [1]string, argsEscaped bool, w
 
 // handleGetEntityDefinitionsRequest handles get_entity_definitions operation.
 //
-// Fetches a list of all entity definitions and their associated versions from the database. Requires
-// 'list:entitydefinitions' permission.
+// Fetches a list of all entity definitions with versions, ordered by group and kind.
 //
 // GET /api/v1/entities/definitions
 func (s *Server) handleGetEntityDefinitionsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

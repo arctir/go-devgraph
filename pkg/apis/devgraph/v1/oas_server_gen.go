@@ -329,8 +329,7 @@ type Handler interface {
 	GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (GetEntityByUIDRes, error)
 	// GetEntityDefinitions implements get_entity_definitions operation.
 	//
-	// Fetches a list of all entity definitions and their associated versions from the database. Requires
-	// 'list:entitydefinitions' permission.
+	// Fetches a list of all entity definitions with versions, ordered by group and kind.
 	//
 	// GET /api/v1/entities/definitions
 	GetEntityDefinitions(ctx context.Context) (GetEntityDefinitionsRes, error)

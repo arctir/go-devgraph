@@ -485,8 +485,7 @@ func (UnimplementedHandler) GetEntityByUID(ctx context.Context, params GetEntity
 
 // GetEntityDefinitions implements get_entity_definitions operation.
 //
-// Fetches a list of all entity definitions and their associated versions from the database. Requires
-// 'list:entitydefinitions' permission.
+// Fetches a list of all entity definitions with versions, ordered by group and kind.
 //
 // GET /api/v1/entities/definitions
 func (UnimplementedHandler) GetEntityDefinitions(ctx context.Context) (r GetEntityDefinitionsRes, _ error) {
