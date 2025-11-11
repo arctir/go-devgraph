@@ -16,7 +16,7 @@ generate: install
 	fi
 	@echo "Generating Go client from $(SPEC)..."
 	mkdir -p pkg/apis/devgraph/v1
-	ogen --config .ogen.yaml --target pkg/apis/devgraph/v1 --clean $(SPEC)
+	ogen --config .ogen.yaml --target pkg/apis/devgraph/v1 --package v1 --clean $(SPEC)
 	go mod tidy
 	@echo "✓ Client generated successfully"
 

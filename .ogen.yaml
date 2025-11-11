@@ -1,6 +1,5 @@
-package: v1
-generate:
-  models: true
-  client: true
-output-options:
-  nullable-type: true
+generator:
+  ignore_not_implemented:
+    - "complex anyOf"
+    - "array defaults"
+    - "object defaults"
