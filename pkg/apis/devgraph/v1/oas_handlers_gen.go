@@ -3655,7 +3655,7 @@ func (s *Server) handleCreateOAuthServiceRequest(args [0]string, argsEscaped boo
 
 // handleCreatePromptRequest handles create_prompt operation.
 //
-// Create a new prompt for the environment.
+// Create a new prompt template in the environment.
 //
 // POST /api/v1/prompts
 func (s *Server) handleCreatePromptRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

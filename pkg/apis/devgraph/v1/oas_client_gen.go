@@ -150,7 +150,7 @@ type Invoker interface {
 	CreateOAuthService(ctx context.Context, request *OAuthServiceCreate) (CreateOAuthServiceRes, error)
 	// CreatePrompt invokes create_prompt operation.
 	//
-	// Create a new prompt for the environment.
+	// Create a new prompt template in the environment.
 	//
 	// POST /api/v1/prompts
 	CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error)
@@ -2974,7 +2974,7 @@ func (c *Client) sendCreateOAuthService(ctx context.Context, request *OAuthServi
 
 // CreatePrompt invokes create_prompt operation.
 //
-// Create a new prompt for the environment.
+// Create a new prompt template in the environment.
 //
 // POST /api/v1/prompts
 func (c *Client) CreatePrompt(ctx context.Context, request *PromptCreate) (CreatePromptRes, error) {

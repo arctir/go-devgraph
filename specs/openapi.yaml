@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.11
+  version: 1.0.0-beta.12
 paths:
   /api/v1/entities/definitions:
     get:
@@ -2127,7 +2127,7 @@ paths:
       tags:
       - prompts
       summary: Create Prompt
-      description: Create a new prompt for the environment.
+      description: Create a new prompt template in the environment
       operationId: create_prompt
       security:
       - OAuth2PasswordBearer: []

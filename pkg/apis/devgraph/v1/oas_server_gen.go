@@ -130,7 +130,7 @@ type Handler interface {
 	CreateOAuthService(ctx context.Context, req *OAuthServiceCreate) (CreateOAuthServiceRes, error)
 	// CreatePrompt implements create_prompt operation.
 	//
-	// Create a new prompt for the environment.
+	// Create a new prompt template in the environment.
 	//
 	// POST /api/v1/prompts
 	CreatePrompt(ctx context.Context, req *PromptCreate) (CreatePromptRes, error)

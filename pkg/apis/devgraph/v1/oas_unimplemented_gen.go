@@ -192,7 +192,7 @@ func (UnimplementedHandler) CreateOAuthService(ctx context.Context, req *OAuthSe
 
 // CreatePrompt implements create_prompt operation.
 //
-// Create a new prompt for the environment.
+// Create a new prompt template in the environment.
 //
 // POST /api/v1/prompts
 func (UnimplementedHandler) CreatePrompt(ctx context.Context, req *PromptCreate) (r CreatePromptRes, _ error) {
