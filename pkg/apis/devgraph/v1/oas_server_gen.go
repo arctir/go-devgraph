@@ -237,7 +237,7 @@ type Handler interface {
 	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
 	// DeletePrompt implements delete_prompt operation.
 	//
-	// Delete a specific prompt by ID.
+	// Soft delete a prompt template by ID.
 	//
 	// DELETE /api/v1/prompts/{prompt_id}
 	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)

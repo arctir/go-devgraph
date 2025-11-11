@@ -6848,7 +6848,7 @@ func (s *Server) handleDeleteOAuthServiceRequest(args [1]string, argsEscaped boo
 
 // handleDeletePromptRequest handles delete_prompt operation.
 //
-// Delete a specific prompt by ID.
+// Soft delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (s *Server) handleDeletePromptRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

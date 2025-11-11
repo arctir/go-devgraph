@@ -350,7 +350,7 @@ func (UnimplementedHandler) DeleteOAuthService(ctx context.Context, params Delet
 
 // DeletePrompt implements delete_prompt operation.
 //
-// Delete a specific prompt by ID.
+// Soft delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (UnimplementedHandler) DeletePrompt(ctx context.Context, params DeletePromptParams) (r DeletePromptRes, _ error) {

@@ -1579,14 +1579,15 @@ type DeleteOAuthServiceNotFound struct{}
 
 func (*DeleteOAuthServiceNotFound) deleteOAuthServiceRes() {}
 
+// DeletePromptNoContent is response for DeletePrompt operation.
+type DeletePromptNoContent struct{}
+
+func (*DeletePromptNoContent) deletePromptRes() {}
+
 // DeletePromptNotFound is response for DeletePrompt operation.
 type DeletePromptNotFound struct{}
 
 func (*DeletePromptNotFound) deletePromptRes() {}
-
-type DeletePromptOKApplicationJSON jx.Raw
-
-func (*DeletePromptOKApplicationJSON) deletePromptRes() {}
 
 // DeleteTokenNoContent is response for DeleteToken operation.
 type DeleteTokenNoContent struct{}

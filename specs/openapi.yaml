@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.15
+  version: 1.0.0-beta.16
 paths:
   /api/v1/entities/definitions:
     get:
@@ -2277,7 +2277,7 @@ paths:
       tags:
       - prompts
       summary: Delete Prompt
-      description: Delete a specific prompt by ID.
+      description: Soft delete a prompt template by ID
       operationId: delete_prompt
       security:
       - OAuth2PasswordBearer: []
@@ -2290,11 +2290,8 @@ paths:
           format: uuid
           title: Prompt Id
       responses:
-        '200':
+        '204':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
         '404':
           description: Not found
         '422':

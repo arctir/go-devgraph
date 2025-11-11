@@ -257,7 +257,7 @@ type Invoker interface {
 	DeleteOAuthService(ctx context.Context, params DeleteOAuthServiceParams) (DeleteOAuthServiceRes, error)
 	// DeletePrompt invokes delete_prompt operation.
 	//
-	// Delete a specific prompt by ID.
+	// Soft delete a prompt template by ID.
 	//
 	// DELETE /api/v1/prompts/{prompt_id}
 	DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error)
@@ -5180,7 +5180,7 @@ func (c *Client) sendDeleteOAuthService(ctx context.Context, params DeleteOAuthS
 
 // DeletePrompt invokes delete_prompt operation.
 //
-// Delete a specific prompt by ID.
+// Soft delete a prompt template by ID.
 //
 // DELETE /api/v1/prompts/{prompt_id}
 func (c *Client) DeletePrompt(ctx context.Context, params DeletePromptParams) (DeletePromptRes, error) {
