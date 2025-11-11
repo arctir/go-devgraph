@@ -622,7 +622,7 @@ func (UnimplementedHandler) GetPendingInvitations(ctx context.Context, params Ge
 
 // GetPrompt implements get_prompt operation.
 //
-// Get a specific prompt by ID.
+// Retrieve a specific prompt template by ID.
 //
 // GET /api/v1/prompts/{prompt_id}
 func (UnimplementedHandler) GetPrompt(ctx context.Context, params GetPromptParams) (r GetPromptRes, _ error) {

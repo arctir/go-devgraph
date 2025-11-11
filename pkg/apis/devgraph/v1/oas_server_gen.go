@@ -421,7 +421,7 @@ type Handler interface {
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
 	// GetPrompt implements get_prompt operation.
 	//
-	// Get a specific prompt by ID.
+	// Retrieve a specific prompt template by ID.
 	//
 	// GET /api/v1/prompts/{prompt_id}
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)

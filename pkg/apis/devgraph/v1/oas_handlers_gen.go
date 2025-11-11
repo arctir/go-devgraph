@@ -12139,7 +12139,7 @@ func (s *Server) handleGetPendingInvitationsRequest(args [1]string, argsEscaped 
 
 // handleGetPromptRequest handles get_prompt operation.
 //
-// Get a specific prompt by ID.
+// Retrieve a specific prompt template by ID.
 //
 // GET /api/v1/prompts/{prompt_id}
 func (s *Server) handleGetPromptRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

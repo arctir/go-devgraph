@@ -441,7 +441,7 @@ type Invoker interface {
 	GetPendingInvitations(ctx context.Context, params GetPendingInvitationsParams) (GetPendingInvitationsRes, error)
 	// GetPrompt invokes get_prompt operation.
 	//
-	// Get a specific prompt by ID.
+	// Retrieve a specific prompt template by ID.
 	//
 	// GET /api/v1/prompts/{prompt_id}
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
@@ -8911,7 +8911,7 @@ func (c *Client) sendGetPendingInvitations(ctx context.Context, params GetPendin
 
 // GetPrompt invokes get_prompt operation.
 //
-// Get a specific prompt by ID.
+// Retrieve a specific prompt template by ID.
 //
 // GET /api/v1/prompts/{prompt_id}
 func (c *Client) GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error) {
