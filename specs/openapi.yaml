@@ -1,0 +1,5762 @@
+openapi: 3.1.0
+info:
+  title: Devgraph AI API
+  description: The Devgraph AI ontology engine and entity management API
+  version: 1.0.0-beta.7
+paths:
+  /api/v1/entities/definitions:
+    get:
+      tags:
+      - entities
+      summary: Retrieve all entity definitions with their versions
+      description: Fetches a list of all entity definitions and their associated versions
+        from the database. Requires 'list:entitydefinitions' permission.
+      operationId: get_entity_definitions
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EntityDefinitionResponse'
+                type: array
+                title: Response Get Entity Definitions
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - entities
+      summary: Create Entity Definition
+      operationId: create_entity_definition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityDefinitionSpec'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityDefinitionResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/entities/definitions/{definition_id}:
+    delete:
+      tags:
+      - entities
+      summary: Delete an entity definition
+      description: Deletes an entity definition and all its versions. Requires 'delete:entitydefinitions'
+        permission.
+      operationId: delete_entity_definition
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: definition_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Definition Id
+      - name: mark_orphans_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: If true, mark entities as orphans instead of deleting them
+            immediately
+          default: false
+          title: Mark Orphans Only
+        description: If true, mark entities as orphans instead of deleting them immediately
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/orphans:
+    get:
+      tags:
+      - entities
+      summary: List orphaned entities
+      description: Lists all entities marked as orphans across all namespaces. Requires
+        'read:entities' permission.
+      operationId: list_orphaned_entities
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: namespace
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 'Namespace to query (default: ''default'')'
+          default: default
+          title: Namespace
+        description: 'Namespace to query (default: ''default'')'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityResponse'
+                title: Response List Orphaned Entities
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - entities
+      summary: Clean up orphaned entities
+      description: Delete all entities marked as orphans. Requires 'delete:entities'
+        permission.
+      operationId: cleanup_orphaned_entities
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: namespace
+        in: query
+        required: false
+        schema:
+          type: string
+          description: 'Namespace to clean up (default: ''default'')'
+          default: default
+          title: Namespace
+        description: 'Namespace to clean up (default: ''default'')'
+      - name: max_age_hours
+        in: query
+        required: false
+        schema:
+          type: integer
+          description: Only delete orphans older than this many hours
+          default: 24
+          title: Max Age Hours
+        description: Only delete orphans older than this many hours
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/{group}/{version}/namespace/{namespace}/{plural}:
+    post:
+      tags:
+      - entities
+      summary: Create a resource based on an entity definition
+      description: Creates a new entity based on the specified group, version, namespace,
+        and kind. Requires 'create:entities' permission.
+      operationId: create_entity
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: group
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Group
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Version
+      - name: namespace
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      - name: plural
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Plural
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entity'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/bulk:
+    post:
+      tags:
+      - entities
+      summary: Create multiple entities in bulk
+      description: Creates multiple entities in a single request with concurrent processing.
+        Provides detailed success/failure information for each entity. Requires 'create:entities'
+        permission.
+      operationId: create_entities_bulk
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: group
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Group
+      - name: version
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Version
+      - name: namespace
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      - name: plural
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Plural
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Entity'
+              title: Entities
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Create Entities Bulk
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/uid/{uid}:
+    get:
+      tags:
+      - entities
+      summary: Retrieve a specific entity by UID with its relations
+      description: Fetches a specific entity by its unique identifier (UID), including
+        related entities and relations. Requires 'read:entities' permission.
+      operationId: get_entity_by_uid
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Uid
+      - name: namespace
+        in: query
+        required: false
+        schema:
+          type: string
+          default: default
+          title: Namespace
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityWithRelationsResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}:
+    get:
+      tags:
+      - entities
+      summary: Retrieve a specific entity by name with its relations
+      description: Fetches a specific entity based on group, version, namespace, plural,
+        and name, including related entities and relations. Requires 'read:entities'
+        permission.
+      operationId: get_entity
+      parameters:
+      - name: group
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Group
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Version
+      - name: kind
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Kind
+      - name: namespace
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityWithRelationsResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - entities
+      summary: Delete a specific entity
+      description: Deletes a specific entity from the ontology. Requires 'delete:entities'
+        permission.
+      operationId: delete_entity
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: group
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Group
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Version
+      - name: kind
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Kind
+      - name: namespace
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/:
+    get:
+      tags:
+      - entities
+      summary: Query entities with optional field selectors
+      description: Retrieves entities from the ontology, optionally filtered by field
+        selectors. Field selectors use dot notation for nested properties (e.g., 'spec.metadata.owner=team-a').
+        Requires 'read:entities' permission.
+      operationId: get_entities
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Name
+      - name: label
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Label
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Offset
+      - name: include_relations
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Include relations in the response. Set to false for faster
+            queries when relations are not needed.
+          default: true
+          title: Include Relations
+        description: Include relations in the response. Set to false for faster queries
+          when relations are not needed.
+      - name: fieldSelector
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Comma-separated field selectors in format 'key=value', supports
+            dot notation for nested properties
+          title: Fieldselector
+        description: Comma-separated field selectors in format 'key=value', supports
+          dot notation for nested properties
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResultSetResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/relations:
+    post:
+      tags:
+      - entities
+      summary: Create Entity Relation
+      operationId: create_entity_relation
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: namespace
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRelation'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityRelationResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - entities
+      summary: Delete a relation between entities
+      description: Deletes a specific relation between two entities. Requires 'delete:entityrelations'
+        permission.
+      operationId: delete_entity_relation
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: namespace
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityRelation'
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/relations/bulk:
+    post:
+      tags:
+      - entities
+      summary: Create multiple entity relations in bulk
+      description: Creates multiple entity relations in a single request. Provides
+        detailed success/failure information for each relation. Requires 'create:entityrelations'
+        permission.
+      operationId: create_entity_relations_bulk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkEntityRelationCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEntityRelationResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/chats/title:
+    post:
+      tags:
+      - chats
+      summary: Post Chat Title
+      description: Generate a title for a chat based on the first message.
+      operationId: create_chat_title
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatTitleRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatTitleResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/chats/:
+    get:
+      tags:
+      - chats
+      summary: Get Chats
+      operationId: get_chats
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatSession'
+                title: Response Get Chats
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - chats
+      summary: Create Chat
+      operationId: create_chat
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSessionCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSession'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - chats
+      summary: Delete Chats Bulk
+      description: Bulk delete multiple chat sessions.
+      operationId: delete_chats_bulk
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkDeleteRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chats/{chat_id}:
+    get:
+      tags:
+      - chats
+      summary: Get Chat
+      operationId: get_chat
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: chat_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid4
+          title: Chat Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSession'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - chats
+      summary: Update Chat
+      operationId: update_chat
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: chat_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid4
+          title: Chat Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSessionUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSession'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - chats
+      summary: Delete Chat
+      operationId: delete_chat
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: chat_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid4
+          title: Chat Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chats/{chat_id}/messages:
+    get:
+      tags:
+      - chats
+      summary: Get Chat Messages
+      operationId: get_chat_messages
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: chat_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid4
+          title: Chat Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          default: 100
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessageRouter'
+                title: Response Get Chat Messages
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - chats
+      summary: Post Chat Messages
+      operationId: post_chat_messages
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: chat_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid4
+          title: Chat Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ChatMessageCreate'
+              title: Msgs
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessageRouter'
+                title: Response Post Chat Messages
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chats/suggestions:
+    post:
+      tags:
+      - chats
+      summary: Create Chat Suggestion
+      description: Create a new chat suggestion for the environment.
+      operationId: create_chat_suggestion
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSuggestionCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSuggestionResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - chats
+      summary: List Chat Suggestions
+      description: List chat suggestions. Returns system-wide suggestions + environment/user-specific
+        ones.
+      operationId: list_chat_suggestions
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+          title: Active Only
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatSuggestionResponse'
+                title: Response List Chat Suggestions
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chats/suggestions/{suggestion_id}:
+    delete:
+      tags:
+      - chats
+      summary: Delete Chat Suggestion
+      description: Delete a chat suggestion. Can only delete user's own suggestions
+        (not system ones).
+      operationId: delete_chat_suggestion
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: suggestion_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Suggestion Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chat/completions:
+    post:
+      tags:
+      - chat_completions
+      summary: Post Chat Completions
+      description: Handle chat completions requests.
+      operationId: create_chat_completions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionChunk'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/environments:
+    get:
+      tags:
+      - environments
+      summary: Get Environments
+      operationId: get_environments
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EnvironmentResponse'
+                type: array
+                title: Response Get Environments
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - environments
+      summary: Create Environment
+      operationId: create_environment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/environments/{env_id}/status:
+    get:
+      tags:
+      - environments
+      summary: Get Environment Status
+      operationId: get_environment_status
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: env_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Env Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentStatusResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{env_id}:
+    delete:
+      tags:
+      - environments
+      summary: Delete Environment
+      description: 'Soft delete an environment.
+
+
+        This marks the environment as deleted (sets deleted_at timestamp) which triggers
+
+        the Kubernetes controller to clean up all associated resources (namespace,
+        database, etc.).
+
+        The environment record is retained for the configured retention period for
+        potential recovery.
+
+
+        For permanent GDPR-compliant deletion, use the Admin API endpoint.'
+      operationId: delete_environment
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: env_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Env Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users:
+    post:
+      tags:
+      - environments
+      summary: Create Environment User
+      description: Create a new environment user by adding them to the Clerk organization.
+      operationId: create_environment_user
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentUserCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentUserResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - environments
+      summary: List Environment Users
+      description: List all users in an environment (organization members).
+      operationId: list_environment_users
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnvironmentUserResponse'
+                title: Response List Environment Users
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users/pending:
+    get:
+      tags:
+      - environments
+      summary: Get Pending Invitations
+      description: Get all pending invitations for an environment (users who have
+        been invited but haven't joined yet).
+      operationId: get_pending_invitations
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PendingInvitationResponse'
+                title: Response Get Pending Invitations
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users/{user_id}:
+    get:
+      tags:
+      - environments
+      summary: Get Environment User
+      description: Get a specific environment user.
+      operationId: get_environment_user
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentUserResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - environments
+      summary: Update Environment User
+      description: Update an environment user's role.
+      operationId: update_environment_user
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentUserUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentUserResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - environments
+      summary: Delete Environment User
+      description: Remove a user from an environment (organization).
+      operationId: delete_environment_user
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users/invite:
+    post:
+      tags:
+      - environments
+      summary: Invite Environment User
+      description: Invite a user to an environment (organization).
+      operationId: invite_environment_user
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentUserInvite'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentUserResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users/bulk-invite:
+    post:
+      tags:
+      - environments
+      summary: Bulk Invite Environment Users
+      description: Bulk invite multiple users to an environment (organization).
+      operationId: bulk_invite_environment_users
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentUserBulkInvite'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnvironmentUserResponse'
+                title: Response Bulk Invite Environment Users
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{environment_id}/users/invitations/{invitation_id}:
+    delete:
+      tags:
+      - environments
+      summary: Delete Environment Invitation
+      description: Revoke a pending invitation to an environment (organization).
+      operationId: delete_environment_invitation
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Environment Id
+      - name: invitation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Invitation Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/endpoints:
+    get:
+      tags:
+      - mcp
+      summary: Get Mcpendpoints
+      description: List all MCP Endpoint configurations for the authenticated user
+        and environment.
+      operationId: get_mcpendpoints
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/MCPEndpointResponse'
+                type: array
+                title: Response Get Mcpendpoints
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - mcp
+      summary: Create Mcpendpoint
+      description: Create a new MCP Endpoint configuration.
+      operationId: create_mcpendpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPEndpointCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPEndpointResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/mcp/endpoints/{mcpendpoint_id}:
+    get:
+      tags:
+      - mcp
+      summary: Get Mcpendpoint
+      description: Get a specific MCP Endpoint configuration by ID.
+      operationId: get_mcpendpoint
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: mcpendpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mcpendpoint Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPEndpointResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - mcp
+      summary: Update Mcpendpoint
+      description: Update a specific MCP Endpoint configuration by ID.
+      operationId: update_mcpendpoint
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: mcpendpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mcpendpoint Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPEndpointUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPEndpointResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - mcp
+      summary: Delete Mcpendpoint
+      description: Delete a specific MCP Endpoint configuration by ID.
+      operationId: delete_mcpendpoint
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: mcpendpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mcpendpoint Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/endpoints/{mcpendpoint_id}/tools:
+    get:
+      tags:
+      - mcp
+      summary: List Mcpendpoint Tools
+      description: 'List all available tools from a specific MCP Endpoint.
+
+        This interrogates the MCP server to discover its available tools.'
+      operationId: list_mcpendpoint_tools
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: mcpendpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Mcpendpoint Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                title: Response List Mcpendpoint Tools
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/tool-associations:
+    post:
+      tags:
+      - mcp
+      summary: Create Mcp Tool Association
+      description: Create an association between an MCP tool and an entity definition.
+      operationId: create_mcp_tool_association
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPToolEntityAssociationCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPToolEntityAssociationResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/mcp/entity-definitions/{entity_definition_id}/tools:
+    get:
+      tags:
+      - mcp
+      summary: Get Entity Tools
+      description: Get all MCP tools associated with an entity definition.
+      operationId: get_entity_tools
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: entity_definition_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Entity Definition Id
+      - name: entity_version_id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MCPToolEntityAssociationResponse'
+                title: Response Get Entity Tools
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/endpoints/{mcpendpoint_name}/entity-types:
+    get:
+      tags:
+      - mcp
+      summary: Get Mcp Endpoint Entity Types
+      description: Get all entity types associated with an MCP endpoint's tools.
+      operationId: get_mcp_endpoint_entity_types
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: mcpendpoint_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Mcpendpoint Name
+      - name: tool_name
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MCPToolEntityAssociationResponse'
+                title: Response Get Mcp Endpoint Entity Types
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/tool-associations/{association_id}:
+    delete:
+      tags:
+      - mcp
+      summary: Delete Mcp Tool Association
+      description: Delete an MCP tool-entity association.
+      operationId: delete_mcp_tool_association
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: association_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Association Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/models/providers:
+    get:
+      tags:
+      - model_providers
+      summary: Get Modelproviders
+      description: List all Model Provider configurations for the authenticated user
+        and environment.
+      operationId: get_modelproviders
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ModelProviderResponse'
+                type: array
+                title: Response Get Modelproviders
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - model_providers
+      summary: Create Modelprovider
+      description: Create a new Model Provider configuration.
+      operationId: create_modelprovider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelProviderCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/models/providers/{provider_id}:
+    get:
+      tags:
+      - model_providers
+      summary: Get Modelprovider
+      description: Get a specific Model Provider configuration by ID.
+      operationId: get_modelprovider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - model_providers
+      summary: Update Modelprovider
+      description: Update a specific Model Provider configuration by ID.
+      operationId: update_modelprovider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelProviderUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - model_providers
+      summary: Delete Modelprovider
+      description: Delete a specific Model Provider configuration by ID.
+      operationId: delete_modelprovider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/models:
+    get:
+      tags:
+      - models
+      summary: Get Models
+      description: Retrieve all AI model configurations for the current environment
+      operationId: get_models
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ModelResponse'
+                type: array
+                title: Response Get Models
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - models
+      summary: Create Model
+      description: Create a new AI model configuration in the environment
+      operationId: create_model
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/models/{model_name}:
+    get:
+      tags:
+      - models
+      summary: Get Model
+      description: Retrieve a specific AI model configuration by name
+      operationId: get_model
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: model_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Model Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - models
+      summary: Update Model
+      description: Update an existing AI model configuration by name
+      operationId: update_model
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: model_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Model Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - models
+      summary: Delete Model
+      description: Soft delete an AI model configuration by name
+      operationId: delete_model
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: model_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Model Name
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prompts:
+    post:
+      tags:
+      - prompts
+      summary: Create Prompt
+      description: Create a new prompt for the environment.
+      operationId: create_prompt
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - prompts
+      summary: List Prompts
+      description: List all prompts for the environment.
+      operationId: list_prompts
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/NullBooleanEnum'
+          default: 'null'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PromptResponse'
+                title: Response List Prompts
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prompts/system-default:
+    get:
+      tags:
+      - prompts
+      summary: Get System Default Prompt
+      description: Get the built-in system default prompt.
+      operationId: get_system_default_prompt
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/prompts/{prompt_id}:
+    get:
+      tags:
+      - prompts
+      summary: Get Prompt
+      description: Get a specific prompt by ID.
+      operationId: get_prompt
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Prompt Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - prompts
+      summary: Update Prompt
+      description: Update a specific prompt by ID.
+      operationId: update_prompt
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Prompt Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - prompts
+      summary: Delete Prompt
+      description: Delete a specific prompt by ID.
+      operationId: delete_prompt
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Prompt Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/subscriptions:
+    get:
+      tags:
+      - subscriptions
+      summary: Get Subscriptions
+      operationId: get_subscriptions
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SubscriptionResponse'
+                type: array
+                title: Response Get Subscriptions
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/entitlements:
+    get:
+      tags:
+      - subscriptions
+      summary: Get Entitlements
+      description: Get all entitlements and current usage for the authenticated user.
+      operationId: get_entitlements
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntitlementsResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/entitlements/check/{entitlement_type}:
+    get:
+      tags:
+      - subscriptions
+      summary: Check Entitlement
+      description: 'Check a specific entitlement for the authenticated user.
+
+
+        For numeric limits (e.g., max_environments), returns current usage and remaining
+        quota.
+
+        For boolean features (e.g., enable_sso), returns whether the feature is enabled.'
+      operationId: check_entitlement
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: entitlement_type
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entitlement Type
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementCheckResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/tokens:
+    get:
+      tags:
+      - tokens
+      summary: Get Tokens
+      description: Get all API tokens for the authenticated user.
+      operationId: get_tokens
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ApiTokenResponse'
+                type: array
+                title: Response Get Tokens
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - tokens
+      summary: Create Token
+      operationId: create_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiTokenCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiTokenResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/tokens/{token_id}:
+    put:
+      tags:
+      - tokens
+      summary: Update Token
+      description: Update a specific API token by ID.
+      operationId: update_token
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: token_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Token Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiTokenUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiTokenResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - tokens
+      summary: Delete Token
+      description: Delete a specific API token by ID.
+      operationId: delete_token
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: token_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Token Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/oauth/services:
+    post:
+      tags:
+      - oauth
+      summary: Create Oauth Service
+      operationId: create_oauth_service
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthServiceCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthServiceResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - oauth
+      summary: List Oauth Services
+      operationId: list_oauth_services
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Only return active services
+          default: true
+          title: Active Only
+        description: Only return active services
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthServiceListResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/oauth/services/{service_id}:
+    get:
+      tags:
+      - oauth
+      summary: Get Oauth Service
+      operationId: get_oauth_service
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: service_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Service Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthServiceResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - oauth
+      summary: Update Oauth Service
+      operationId: update_oauth_service
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: service_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Service Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthServiceUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthServiceResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - oauth
+      summary: Delete Oauth Service
+      operationId: delete_oauth_service
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: service_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Service Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/oauth/authorize:
+    post:
+      tags:
+      - oauth
+      summary: Get Authorization Url
+      operationId: get_oauth_authorization_url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthAuthorizationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthAuthorizationResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/oauth/token:
+    post:
+      tags:
+      - oauth
+      summary: Exchange Code For Token
+      operationId: exchange_oauth_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthTokenExchange'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/oauth/tokens:
+    get:
+      tags:
+      - oauth
+      summary: List User Tokens
+      operationId: list_oauth_tokens
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/oauth/tokens/{service_name}:
+    delete:
+      tags:
+      - oauth
+      summary: Revoke Token
+      operationId: revoke_oauth_token
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: service_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Service Name
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/providers:
+    get:
+      tags:
+      - discovery
+      summary: List Discovery Providers
+      description: 'List all available discovery provider types with their configuration
+        schemas.
+
+
+        This endpoint discovers all registered discovery providers using the plugin
+        system
+
+        and returns their metadata including JSON schemas for configuration.'
+      operationId: list_discovery_providers
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryProvidersListResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/discovery/providers/{provider_type}/config-schema:
+    get:
+      tags:
+      - discovery
+      summary: Get Discovery Provider Config Schema
+      description: "Get the configuration schema for a specific discovery provider\
+        \ type.\n\nArgs:\n    provider_type: The type identifier of the provider (e.g.,\
+        \ 'github', 'gitlab')\n\nReturns:\n    JSON schema for the provider's configuration"
+      operationId: get_discovery_provider_config_schema
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_type
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider Type
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/configured-providers:
+    get:
+      tags:
+      - discovery
+      summary: List Configured Providers
+      description: 'List all configured discovery providers for the current environment.
+
+
+        Secrets in provider configurations are masked.'
+      operationId: list_configured_providers
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguredProvidersListResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - discovery
+      summary: Create Configured Provider
+      description: 'Create a new configured discovery provider.
+
+
+        The provider configuration (including secrets) will be encrypted and stored.'
+      operationId: create_configured_provider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfiguredProviderCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguredProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/discovery/configured-providers/{provider_id}:
+    get:
+      tags:
+      - discovery
+      summary: Get Configured Provider
+      description: 'Get a specific configured discovery provider.
+
+
+        Secrets in the provider configuration are masked.'
+      operationId: get_configured_provider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguredProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - discovery
+      summary: Update Configured Provider
+      description: 'Update a configured discovery provider.
+
+
+        Only provided fields will be updated. To update secrets, provide the full
+
+        config object with new secret values.'
+      operationId: update_configured_provider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfiguredProviderUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguredProviderResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - discovery
+      summary: Delete Configured Provider
+      description: Delete a configured discovery provider.
+      operationId: delete_configured_provider
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/versions:
+    get:
+      tags:
+      - discovery
+      summary: Get All Provider Versions
+      description: Get version support info for all available provider types.
+      operationId: get_all_provider_versions
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllProviderVersionsResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
+  /api/v1/discovery/versions/deprecated:
+    get:
+      tags:
+      - discovery
+      summary: Get Deprecated Provider Configs
+      description: Get all provider instances using deprecated config versions.
+      operationId: get_deprecated_provider_configs
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeprecatedProvidersResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/versions/{provider_id}/migrate:
+    post:
+      tags:
+      - discovery
+      summary: Migrate Provider Config
+      description: Migrate a specific provider config to the latest version.
+      operationId: migrate_provider_config
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: provider_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Provider Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationResult'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/versions/migrate-all:
+    post:
+      tags:
+      - discovery
+      summary: Migrate All Deprecated Configs
+      description: Batch migrate all configs using deprecated versions.
+      operationId: migrate_all_deprecated_configs
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: environment_id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+          nullable: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationResultsResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    AllProviderVersionsResponse:
+      properties:
+        providers:
+          items:
+            $ref: '#/components/schemas/ProviderTypeVersionInfo'
+          type: array
+          title: Providers
+      type: object
+      required:
+      - providers
+      title: AllProviderVersionsResponse
+      description: Response containing version info for all provider types.
+    AnthropicModelProviderCreate:
+      properties:
+        type:
+          type: string
+          const: anthropic
+          title: Type
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - name
+      - api_key
+      title: AnthropicModelProviderCreate
+    AnthropicModelProviderResponse:
+      properties:
+        type:
+          type: string
+          const: anthropic
+          title: Type
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - id
+      - name
+      - api_key
+      title: AnthropicModelProviderResponse
+    ApiTokenCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        expires_at:
+          type: string
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          title: Scopes
+          default: []
+      type: object
+      required:
+      - name
+      title: ApiTokenCreate
+    ApiTokenResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        user_id:
+          type: string
+          title: User Id
+        expires_at:
+          type: string
+          nullable: true
+        token:
+          type: string
+          title: Token
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        active:
+          type: boolean
+          title: Active
+          default: true
+      type: object
+      required:
+      - id
+      - name
+      - user_id
+      - token
+      title: ApiTokenResponse
+    ApiTokenUpdate:
+      properties:
+        name:
+          type: string
+          nullable: true
+        expires_at:
+          type: string
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+      type: object
+      title: ApiTokenUpdate
+    AudioBlock:
+      properties:
+        block_type:
+          type: string
+          const: audio
+          title: Block Type
+          default: audio
+        audio:
+          type: string
+          format: binary
+          nullable: true
+        path:
+          type: string
+          format: file-path
+          nullable: true
+        url:
+          anyOf:
+          - type: string
+            minLength: 1
+            format: uri
+          - type: string
+          - type: 'null'
+          title: Url
+        format:
+          type: string
+          nullable: true
+      type: object
+      title: AudioBlock
+      description: A representation of audio data to directly pass to/from the LLM.
+    BulkDeleteRequest:
+      properties:
+        chat_ids:
+          items:
+            type: string
+            format: uuid4
+          type: array
+          title: Chat Ids
+      type: object
+      required:
+      - chat_ids
+      title: BulkDeleteRequest
+      description: Request model for bulk chat deletion.
+    BulkEntityRelationCreateRequest:
+      properties:
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+        relations:
+          items:
+            $ref: '#/components/schemas/EntityRelation'
+          type: array
+          title: Relations
+          description: List of entity relations to create
+      type: object
+      required:
+      - relations
+      title: BulkEntityRelationCreateRequest
+      description: Request model for creating multiple entity relations in bulk.
+    BulkEntityRelationResponse:
+      properties:
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+        created_relations:
+          items:
+            $ref: '#/components/schemas/EntityRelationResponse'
+          type: array
+          title: Created Relations
+          description: Successfully created relations
+        failed_relations:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Failed Relations
+          description: Relations that failed to create with error details
+        total_requested:
+          type: integer
+          title: Total Requested
+          description: Total number of relations requested for creation.
+          readOnly: true
+        success_count:
+          type: integer
+          title: Success Count
+          description: Number of successfully created relations.
+          readOnly: true
+        failure_count:
+          type: integer
+          title: Failure Count
+          description: Number of failed relation creations.
+          readOnly: true
+      type: object
+      required:
+      - total_requested
+      - success_count
+      - failure_count
+      title: BulkEntityRelationResponse
+      description: Response model for bulk entity relation creation.
+    CacheControl:
+      properties:
+        type:
+          type: string
+          title: Type
+        ttl:
+          type: string
+          title: Ttl
+          default: 5m
+      type: object
+      required:
+      - type
+      title: CacheControl
+    CachePoint:
+      properties:
+        block_type:
+          type: string
+          const: cache
+          title: Block Type
+          default: cache
+        cache_control:
+          $ref: '#/components/schemas/CacheControl'
+      type: object
+      required:
+      - cache_control
+      title: CachePoint
+      description: Used to set the point to cache up to, if the LLM supports caching.
+    ChatCompletionChunk:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the chat completion
+        object:
+          type: string
+          title: Object
+          description: Type of the response object
+          default: chat.completion.chunk
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of creation
+        model:
+          type: string
+          title: Model
+          description: Model used, e.g., gpt-3.5-turbo
+        choices:
+          items:
+            $ref: '#/components/schemas/Choice'
+          type: array
+          title: Choices
+          description: List of response choices (usually one)
+        usage:
+          $ref: '#/components/schemas/Usage'
+          nullable: true
+        system_fingerprint:
+          type: string
+          nullable: true
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - created
+      - model
+      - choices
+      title: ChatCompletionChunk
+    ChatCompletionRequest:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: The model to use, e.g., 'gpt-3.5-turbo' or 'gpt-4'
+        messages:
+          items:
+            $ref: '#/components/schemas/ChatMessage-Input'
+          type: array
+          title: Messages
+          description: List of messages comprising the conversation
+        temperature:
+          type: number
+          maximum: 2.0
+          minimum: 0.0
+          nullable: true
+        max_tokens:
+          type: integer
+          minimum: 1.0
+          nullable: true
+        stream:
+          type: boolean
+          nullable: true
+        n:
+          type: integer
+          minimum: 1.0
+          nullable: true
+        response_format:
+          $ref: '#/components/schemas/ResponseFormat'
+          nullable: true
+      additionalProperties: true
+      type: object
+      required:
+      - model
+      - messages
+      title: ChatCompletionRequest
+    ChatMessage-Input:
+      properties:
+        role:
+          $ref: '#/components/schemas/MessageRole'
+          default: user
+        additional_kwargs:
+          additionalProperties: true
+          type: object
+          title: Additional Kwargs
+        blocks:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/TextBlock'
+            - $ref: '#/components/schemas/ImageBlock'
+            - $ref: '#/components/schemas/AudioBlock'
+            - $ref: '#/components/schemas/VideoBlock'
+            - $ref: '#/components/schemas/DocumentBlock'
+            - $ref: '#/components/schemas/CachePoint'
+            - $ref: '#/components/schemas/CitableBlock'
+            - $ref: '#/components/schemas/CitationBlock'
+            - $ref: '#/components/schemas/ThinkingBlock'
+            - $ref: '#/components/schemas/ToolCallBlock'
+            discriminator:
+              propertyName: block_type
+              mapping:
+                audio: '#/components/schemas/AudioBlock'
+                cache: '#/components/schemas/CachePoint'
+                citable: '#/components/schemas/CitableBlock'
+                citation: '#/components/schemas/CitationBlock'
+                document: '#/components/schemas/DocumentBlock'
+                image: '#/components/schemas/ImageBlock'
+                text: '#/components/schemas/TextBlock'
+                thinking: '#/components/schemas/ThinkingBlock'
+                tool_call: '#/components/schemas/ToolCallBlock'
+                video: '#/components/schemas/VideoBlock'
+          type: array
+          title: Blocks
+      type: object
+      title: ChatMessage
+      description: Chat message.
+    ChatMessage-Output:
+      properties:
+        role:
+          type: string
+          title: Role
+        content:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - role
+      title: ChatMessage
+    ChatMessageCreate:
+      properties:
+        role:
+          type: string
+          title: Role
+        content:
+          anyOf:
+          - type: string
+          - items:
+              $ref: '#/components/schemas/TypedChatMessageContent'
+            type: array
+          title: Content
+      type: object
+      required:
+      - role
+      - content
+      title: ChatMessageCreate
+    ChatMessageRouter:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        chatId:
+          type: string
+          format: uuid
+          title: Chatid
+        role:
+          type: string
+          title: Role
+        content:
+          anyOf:
+          - type: string
+          - items:
+              $ref: '#/components/schemas/TypedChatMessageContent'
+            type: array
+          title: Content
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - chatId
+      - role
+      - content
+      - createdAt
+      title: ChatMessageRouter
+    ChatSession:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        userId:
+          type: string
+          title: Userid
+        title:
+          type: string
+          title: Title
+        visibility:
+          $ref: '#/components/schemas/ChatVisibility'
+          default: private
+        createdAt:
+          type: string
+          format: date-time
+          title: Createdat
+      type: object
+      required:
+      - id
+      - userId
+      - title
+      title: ChatSession
+    ChatSessionCreate:
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: true
+        userId:
+          type: string
+          title: Userid
+        title:
+          type: string
+          title: Title
+        visibility:
+          $ref: '#/components/schemas/ChatVisibility'
+          default: private
+      type: object
+      required:
+      - userId
+      - title
+      title: ChatSessionCreate
+    ChatSessionUpdate:
+      properties:
+        title:
+          type: string
+          nullable: true
+        visibility:
+          $ref: '#/components/schemas/ChatVisibility'
+          nullable: true
+      type: object
+      title: ChatSessionUpdate
+    ChatSuggestionCreate:
+      properties:
+        title:
+          type: string
+          title: Title
+        label:
+          type: string
+          title: Label
+        action:
+          type: string
+          title: Action
+        active:
+          type: boolean
+          title: Active
+          default: true
+      type: object
+      required:
+      - title
+      - label
+      - action
+      title: ChatSuggestionCreate
+    ChatSuggestionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        title:
+          type: string
+          title: Title
+        label:
+          type: string
+          title: Label
+        action:
+          type: string
+          title: Action
+        active:
+          type: boolean
+          title: Active
+          default: true
+        is_system:
+          type: boolean
+          title: Is System
+          default: false
+        environment_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          title: Created At
+        updated_at:
+          type: string
+          title: Updated At
+      type: object
+      required:
+      - id
+      - title
+      - label
+      - action
+      - created_at
+      - updated_at
+      title: ChatSuggestionResponse
+    ChatTitleRequest:
+      properties:
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - message
+      title: ChatTitleRequest
+    ChatTitleResponse:
+      properties:
+        title:
+          type: string
+          title: Title
+      type: object
+      required:
+      - title
+      title: ChatTitleResponse
+    ChatVisibility:
+      type: string
+      enum:
+      - public
+      - private
+      title: ChatVisibility
+    Choice:
+      properties:
+        index:
+          type: integer
+          title: Index
+          description: Index of this choice (usually 0)
+        message:
+          $ref: '#/components/schemas/ChatMessage-Output'
+          nullable: true
+        delta:
+          $ref: '#/components/schemas/Delta'
+          nullable: true
+        finish_reason:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - index
+      title: Choice
+    CitableBlock:
+      properties:
+        block_type:
+          type: string
+          const: citable
+          title: Block Type
+          default: citable
+        title:
+          type: string
+          title: Title
+        source:
+          type: string
+          title: Source
+        content:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/TextBlock'
+            - $ref: '#/components/schemas/ImageBlock'
+            - $ref: '#/components/schemas/DocumentBlock'
+            discriminator:
+              propertyName: block_type
+              mapping:
+                document: '#/components/schemas/DocumentBlock'
+                image: '#/components/schemas/ImageBlock'
+                text: '#/components/schemas/TextBlock'
+          type: array
+          title: Content
+      type: object
+      required:
+      - title
+      - source
+      - content
+      title: CitableBlock
+      description: Supports providing citable content to LLMs that have built-in citation
+        support.
+    CitationBlock:
+      properties:
+        block_type:
+          type: string
+          const: citation
+          title: Block Type
+          default: citation
+        cited_content:
+          oneOf:
+          - $ref: '#/components/schemas/TextBlock'
+          - $ref: '#/components/schemas/ImageBlock'
+          title: Cited Content
+          discriminator:
+            propertyName: block_type
+            mapping:
+              image: '#/components/schemas/ImageBlock'
+              text: '#/components/schemas/TextBlock'
+        source:
+          type: string
+          title: Source
+        title:
+          type: string
+          title: Title
+        additional_location_info:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Additional Location Info
+      type: object
+      required:
+      - cited_content
+      - source
+      - title
+      - additional_location_info
+      title: CitationBlock
+      description: A representation of cited content from past messages.
+    ConfiguredProviderCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Human-readable name for this provider instance
+        provider_type:
+          type: string
+          title: Provider Type
+          description: Type of provider (github, gitlab, etc.)
+        enabled:
+          type: boolean
+          title: Enabled
+          description: Whether this provider is active
+          default: true
+        interval:
+          type: integer
+          minimum: 60.0
+          title: Interval
+          description: Discovery interval in seconds (minimum 60)
+          default: 300
+        config:
+          additionalProperties: true
+          type: object
+          title: Config
+          description: Provider configuration (will be encrypted)
+      type: object
+      required:
+      - name
+      - provider_type
+      - config
+      title: ConfiguredProviderCreate
+      description: Request to create a configured discovery provider.
+    ConfiguredProviderResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        environment_id:
+          type: string
+          format: uuid
+          title: Environment Id
+        name:
+          type: string
+          title: Name
+        provider_type:
+          type: string
+          title: Provider Type
+        enabled:
+          type: boolean
+          title: Enabled
+        interval:
+          type: integer
+          title: Interval
+        config:
+          additionalProperties: true
+          type: object
+          title: Config
+        last_run_at:
+          type: string
+          nullable: true
+        last_run_status:
+          type: string
+          nullable: true
+        last_error_message:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - id
+      - environment_id
+      - name
+      - provider_type
+      - enabled
+      - interval
+      - config
+      title: ConfiguredProviderResponse
+      description: Response for a configured discovery provider (secrets masked).
+    ConfiguredProviderUpdate:
+      properties:
+        name:
+          type: string
+          nullable: true
+        enabled:
+          type: boolean
+          nullable: true
+        interval:
+          type: integer
+          minimum: 60.0
+          nullable: true
+        config:
+          additionalProperties: true
+          type: object
+          nullable: true
+      type: object
+      title: ConfiguredProviderUpdate
+      description: Request to update a configured discovery provider.
+    ConfiguredProvidersListResponse:
+      properties:
+        providers:
+          items:
+            $ref: '#/components/schemas/ConfiguredProviderResponse'
+          type: array
+          title: Providers
+      type: object
+      required:
+      - providers
+      title: ConfiguredProvidersListResponse
+      description: Response containing list of configured providers.
+    Delta:
+      properties:
+        role:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+      type: object
+      title: Delta
+    DeprecatedProviderConfig:
+      properties:
+        provider_id:
+          type: string
+          format: uuid
+          title: Provider Id
+        name:
+          type: string
+          title: Name
+        provider_type:
+          type: string
+          title: Provider Type
+        current_version:
+          type: integer
+          title: Current Version
+        latest_version:
+          type: integer
+          title: Latest Version
+        warning:
+          type: string
+          title: Warning
+        can_auto_migrate:
+          type: boolean
+          title: Can Auto Migrate
+        auto_upgrade_enabled:
+          type: boolean
+          title: Auto Upgrade Enabled
+      type: object
+      required:
+      - provider_id
+      - name
+      - provider_type
+      - current_version
+      - latest_version
+      - warning
+      - can_auto_migrate
+      - auto_upgrade_enabled
+      title: DeprecatedProviderConfig
+      description: Information about a provider instance with deprecated config.
+    DeprecatedProvidersResponse:
+      properties:
+        deprecated_providers:
+          items:
+            $ref: '#/components/schemas/DeprecatedProviderConfig'
+          type: array
+          title: Deprecated Providers
+      type: object
+      required:
+      - deprecated_providers
+      title: DeprecatedProvidersResponse
+      description: Response containing deprecated provider configs.
+    DiscoveryProviderMetadata:
+      properties:
+        type:
+          type: string
+          title: Type
+        display_name:
+          type: string
+          title: Display Name
+        description:
+          type: string
+          title: Description
+        config_schema:
+          additionalProperties: true
+          type: object
+          title: Config Schema
+        logo:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - type
+      - display_name
+      - description
+      - config_schema
+      title: DiscoveryProviderMetadata
+      description: Metadata about a discovery provider.
+    DiscoveryProvidersListResponse:
+      properties:
+        providers:
+          items:
+            $ref: '#/components/schemas/DiscoveryProviderMetadata'
+          type: array
+          title: Providers
+      type: object
+      required:
+      - providers
+      title: DiscoveryProvidersListResponse
+      description: Response containing list of available discovery providers.
+    DocumentBlock:
+      properties:
+        block_type:
+          type: string
+          const: document
+          title: Block Type
+          default: document
+        data:
+          type: string
+          format: binary
+          nullable: true
+        path:
+          anyOf:
+          - type: string
+            format: file-path
+          - type: string
+          - type: 'null'
+          title: Path
+        url:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        document_mimetype:
+          type: string
+          nullable: true
+      type: object
+      title: DocumentBlock
+      description: A representation of a document to directly pass to the LLM.
+    EntitlementCheckResponse:
+      properties:
+        allowed:
+          type: boolean
+          title: Allowed
+        limit:
+          type: integer
+          nullable: true
+        current_usage:
+          type: integer
+          nullable: true
+        remaining:
+          type: integer
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - allowed
+      title: EntitlementCheckResponse
+    EntitlementDetail:
+      properties:
+        limit_value:
+          type: integer
+          nullable: true
+        enabled:
+          type: boolean
+          nullable: true
+        config_value:
+          type: string
+          nullable: true
+        current_usage:
+          type: integer
+          nullable: true
+        remaining:
+          type: integer
+          nullable: true
+      type: object
+      title: EntitlementDetail
+    EntitlementResponse:
+      properties:
+        entitlement_type:
+          type: string
+          title: Entitlement Type
+        limit_value:
+          type: integer
+          nullable: true
+        enabled:
+          type: boolean
+          nullable: true
+        config_value:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - entitlement_type
+      title: EntitlementResponse
+    Entity:
+      properties:
+        apiVersion:
+          type: string
+          title: Apiversion
+        kind:
+          type: string
+          title: Kind
+        metadata:
+          $ref: '#/components/schemas/EntityMetadata'
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
+          default: {}
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - metadata
+      title: Entity
+    EntityDefinitionResponse:
+      properties:
+        group:
+          type: string
+          title: Group
+        kind:
+          type: string
+          title: Kind
+        list_kind:
+          type: string
+          title: List Kind
+        plural:
+          type: string
+          minLength: 1
+          nullable: true
+        singular:
+          type: string
+          title: Singular
+        name:
+          type: string
+          title: Name
+          default: v1
+        description:
+          type: string
+          nullable: true
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
+        storage:
+          type: boolean
+          title: Storage
+          default: true
+        served:
+          type: boolean
+          title: Served
+          default: true
+        id:
+          type: string
+          format: uuid
+          title: Id
+      type: object
+      required:
+      - group
+      - kind
+      - list_kind
+      - singular
+      - spec
+      - id
+      title: EntityDefinitionResponse
+    EntityDefinitionSpec:
+      properties:
+        group:
+          type: string
+          title: Group
+        kind:
+          type: string
+          title: Kind
+        list_kind:
+          type: string
+          title: List Kind
+        plural:
+          type: string
+          minLength: 1
+          nullable: true
+        singular:
+          type: string
+          title: Singular
+        name:
+          type: string
+          title: Name
+          default: v1
+        description:
+          type: string
+          nullable: true
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
+        storage:
+          type: boolean
+          title: Storage
+          default: true
+        served:
+          type: boolean
+          title: Served
+          default: true
+      type: object
+      required:
+      - group
+      - kind
+      - list_kind
+      - singular
+      - spec
+      title: EntityDefinitionSpec
+    EntityMetadata:
+      properties:
+        name:
+          type: string
+          title: Name
+        namespace:
+          type: string
+          title: Namespace
+        uid:
+          type: string
+          title: Uid
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+          title: Labels
+          default: {}
+        annotations:
+          additionalProperties:
+            type: string
+          type: object
+          title: Annotations
+          default: {}
+      type: object
+      required:
+      - name
+      - namespace
+      title: EntityMetadata
+    EntityReference:
+      properties:
+        apiVersion:
+          type: string
+          title: Apiversion
+        kind:
+          type: string
+          title: Kind
+        name:
+          type: string
+          title: Name
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - name
+      title: EntityReference
+    EntityReferenceResponse:
+      properties:
+        apiVersion:
+          type: string
+          title: Apiversion
+        kind:
+          type: string
+          title: Kind
+        name:
+          type: string
+          title: Name
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+        id:
+          type: string
+          title: Id
+          description: Return a unique identifier for the entity.
+          readOnly: true
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - name
+      - id
+      title: EntityReferenceResponse
+    EntityRelation:
+      properties:
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+        relation:
+          type: string
+          title: Relation
+        source:
+          $ref: '#/components/schemas/EntityReference'
+        target:
+          $ref: '#/components/schemas/EntityReference'
+      type: object
+      required:
+      - relation
+      - source
+      - target
+      title: EntityRelation
+    EntityRelationResponse:
+      properties:
+        namespace:
+          type: string
+          title: Namespace
+          default: default
+        relation:
+          type: string
+          title: Relation
+        source:
+          $ref: '#/components/schemas/EntityReferenceResponse'
+        target:
+          $ref: '#/components/schemas/EntityReferenceResponse'
+      type: object
+      required:
+      - relation
+      - source
+      - target
+      title: EntityRelationResponse
+    EntityResponse:
+      properties:
+        apiVersion:
+          type: string
+          title: Apiversion
+        kind:
+          type: string
+          title: Kind
+        metadata:
+          $ref: '#/components/schemas/EntityMetadata'
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
+          default: {}
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+        id:
+          type: string
+          title: Id
+          description: Return a unique identifier for the entity.
+          readOnly: true
+        plural:
+          type: string
+          title: Plural
+          description: Return the plural form of the kind.
+          readOnly: true
+        group:
+          type: string
+          title: Group
+          description: Return the group part of the apiVersion.
+          readOnly: true
+        version:
+          type: string
+          title: Version
+          description: Return the version part of the apiVersion.
+          readOnly: true
+        name:
+          type: string
+          title: Name
+          description: Return the name of the resource.
+          readOnly: true
+        namespace:
+          type: string
+          title: Namespace
+          description: Return the namespace of the resource.
+          readOnly: true
+      type: object
+      required:
+      - apiVersion
+      - kind
+      - metadata
+      - id
+      - plural
+      - group
+      - version
+      - name
+      - namespace
+      title: EntityResponse
+    EntityResultSetResponse:
+      properties:
+        primary_entities:
+          items:
+            $ref: '#/components/schemas/EntityResponse'
+          type: array
+          title: Primary Entities
+          default: []
+        related_entities:
+          items:
+            $ref: '#/components/schemas/EntityResponse'
+          type: array
+          title: Related Entities
+          default: []
+        relations:
+          items:
+            $ref: '#/components/schemas/EntityRelationResponse'
+          type: array
+          title: Relations
+          default: []
+      type: object
+      title: EntityResultSetResponse
+      description: Response for a set of entities with their relations (used for queries
+        returning multiple entities).
+    EntityStatus:
+      properties:
+        last_updated:
+          type: string
+          format: date-time
+          title: Last Updated
+          description: Timestamp when the entity was last updated
+        is_orphan:
+          type: boolean
+          title: Is Orphan
+          description: Whether this entity is orphaned (definition no longer exists)
+          default: false
+        last_seen:
+          type: string
+          format: date-time
+          nullable: true
+        discovery_source:
+          type: string
+          nullable: true
+        generation:
+          type: integer
+          title: Generation
+          description: Generation number, incremented on each update
+          default: 1
+      type: object
+      title: EntityStatus
+      description: Status information for an entity including lifecycle tracking.
+    EntityWithRelationsResponse:
+      properties:
+        entity:
+          $ref: '#/components/schemas/EntityResponse'
+        related_entities:
+          items:
+            $ref: '#/components/schemas/EntityResponse'
+          type: array
+          title: Related Entities
+          default: []
+        relations:
+          items:
+            $ref: '#/components/schemas/EntityRelationResponse'
+          type: array
+          title: Relations
+          default: []
+      type: object
+      required:
+      - entity
+      title: EntityWithRelationsResponse
+      description: Response for a single entity with its related entities and relations.
+    EnvironmentCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        invited_users:
+          items:
+            type: string
+          type: array
+          title: Invited Users
+          default: []
+        stripe_subscription_id:
+          type: string
+          title: Stripe Subscription Id
+        instance_url:
+          type: string
+          title: Instance Url
+      type: object
+      required:
+      - name
+      - stripe_subscription_id
+      - instance_url
+      title: EnvironmentCreate
+    EnvironmentResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        slug:
+          type: string
+          title: Slug
+        clerk_organization_id:
+          type: string
+          title: Clerk Organization Id
+        customer_id:
+          type: string
+          title: Customer Id
+        subscription_id:
+          type: string
+          format: uuid
+          title: Subscription Id
+        active:
+          type: boolean
+          title: Active
+          default: true
+      type: object
+      required:
+      - id
+      - name
+      - slug
+      - clerk_organization_id
+      - customer_id
+      - subscription_id
+      title: EnvironmentResponse
+    EnvironmentStatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - status
+      title: EnvironmentStatusResponse
+    EnvironmentUserBulkInvite:
+      properties:
+        invitations:
+          items:
+            $ref: '#/components/schemas/EnvironmentUserInvite'
+          type: array
+          title: Invitations
+      type: object
+      required:
+      - invitations
+      title: EnvironmentUserBulkInvite
+    EnvironmentUserCreate:
+      properties:
+        email_address:
+          type: string
+          title: Email Address
+        role:
+          type: string
+          enum:
+          - member
+          - admin
+          title: Role
+          default: member
+      type: object
+      required:
+      - email_address
+      title: EnvironmentUserCreate
+    EnvironmentUserInvite:
+      properties:
+        email_address:
+          type: string
+          title: Email Address
+        role:
+          type: string
+          enum:
+          - member
+          - admin
+          title: Role
+          default: member
+      type: object
+      required:
+      - email_address
+      title: EnvironmentUserInvite
+    EnvironmentUserResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        email_address:
+          type: string
+          title: Email Address
+        role:
+          type: string
+          title: Role
+        status:
+          type: string
+          title: Status
+        created_at:
+          type: integer
+          title: Created At
+        updated_at:
+          type: integer
+          title: Updated At
+      type: object
+      required:
+      - id
+      - email_address
+      - role
+      - status
+      - created_at
+      - updated_at
+      title: EnvironmentUserResponse
+    EnvironmentUserUpdate:
+      properties:
+        role:
+          type: string
+          enum:
+          - member
+          - admin
+          title: Role
+      type: object
+      required:
+      - role
+      title: EnvironmentUserUpdate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ImageBlock:
+      properties:
+        block_type:
+          type: string
+          const: image
+          title: Block Type
+          default: image
+        image:
+          type: string
+          format: binary
+          nullable: true
+        path:
+          type: string
+          format: file-path
+          nullable: true
+        url:
+          anyOf:
+          - type: string
+            minLength: 1
+            format: uri
+          - type: string
+          - type: 'null'
+          title: Url
+        image_mimetype:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+      type: object
+      title: ImageBlock
+      description: A representation of image data to directly pass to/from the LLM.
+    MCPEndpointCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        url:
+          type: string
+          title: Url
+        description:
+          type: string
+          nullable: true
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+          default: {}
+        devgraph_auth:
+          type: boolean
+          title: Devgraph Auth
+          default: false
+        supports_resources:
+          type: boolean
+          title: Supports Resources
+          default: false
+        oauth_service_id:
+          type: string
+          format: uuid
+          nullable: true
+        immutable:
+          type: boolean
+          title: Immutable
+          default: false
+        active:
+          type: boolean
+          title: Active
+          default: true
+        allowed_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+        denied_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+      type: object
+      required:
+      - name
+      - url
+      title: MCPEndpointCreate
+    MCPEndpointResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        url:
+          type: string
+          title: Url
+        description:
+          type: string
+          nullable: true
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          title: Headers
+          default: {}
+        devgraph_auth:
+          type: boolean
+          title: Devgraph Auth
+          default: false
+        supports_resources:
+          type: boolean
+          title: Supports Resources
+          default: false
+        oauth_service_id:
+          type: string
+          format: uuid
+          nullable: true
+        immutable:
+          type: boolean
+          title: Immutable
+          default: false
+        active:
+          type: boolean
+          title: Active
+          default: true
+        allowed_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+        denied_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+      type: object
+      required:
+      - id
+      - name
+      - url
+      title: MCPEndpointResponse
+    MCPEndpointUpdate:
+      properties:
+        name:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        headers:
+          additionalProperties:
+            type: string
+          type: object
+          nullable: true
+        devgraph_auth:
+          type: boolean
+          nullable: true
+        supports_resources:
+          type: boolean
+          nullable: true
+        oauth_service_id:
+          type: string
+          format: uuid
+          nullable: true
+        immutable:
+          type: boolean
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+        allowed_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+        denied_tools:
+          items:
+            type: string
+          type: array
+          nullable: true
+      type: object
+      title: MCPEndpointUpdate
+    MCPToolEntityAssociationCreate:
+      properties:
+        mcp_endpoint_name:
+          type: string
+          title: Mcp Endpoint Name
+        tool_name:
+          type: string
+          title: Tool Name
+        entity_definition_id:
+          type: string
+          format: uuid
+          title: Entity Definition Id
+        entity_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        tool_config:
+          additionalProperties: true
+          type: object
+          nullable: true
+      type: object
+      required:
+      - mcp_endpoint_name
+      - tool_name
+      - entity_definition_id
+      title: MCPToolEntityAssociationCreate
+    MCPToolEntityAssociationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        mcp_endpoint_name:
+          type: string
+          title: Mcp Endpoint Name
+        tool_name:
+          type: string
+          title: Tool Name
+        entity_definition_id:
+          type: string
+          format: uuid
+          title: Entity Definition Id
+        entity_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        tool_config:
+          additionalProperties: true
+          type: object
+          nullable: true
+        environment_id:
+          type: string
+          format: uuid
+          title: Environment Id
+        created_at:
+          type: string
+          title: Created At
+        updated_at:
+          type: string
+          title: Updated At
+      type: object
+      required:
+      - id
+      - mcp_endpoint_name
+      - tool_name
+      - entity_definition_id
+      - environment_id
+      - created_at
+      - updated_at
+      title: MCPToolEntityAssociationResponse
+    MessageRole:
+      type: string
+      enum:
+      - system
+      - developer
+      - user
+      - assistant
+      - function
+      - tool
+      - chatbot
+      - model
+      title: MessageRole
+      description: Message role.
+    MigrationResult:
+      properties:
+        provider_id:
+          type: string
+          format: uuid
+          title: Provider Id
+        success:
+          type: boolean
+          title: Success
+        old_version:
+          type: integer
+          title: Old Version
+        new_version:
+          type: integer
+          nullable: true
+        error:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - provider_id
+      - success
+      - old_version
+      title: MigrationResult
+      description: Result of a config migration.
+    MigrationResultsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/MigrationResult'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: MigrationResultsResponse
+      description: Response containing multiple migration results.
+    ModelCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          nullable: true
+        provider_id:
+          type: string
+          format: uuid
+          title: Provider Id
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - name
+      - provider_id
+      title: ModelCreate
+    ModelProviderCreate:
+      properties:
+        data:
+          oneOf:
+          - $ref: '#/components/schemas/OpenAIModelProviderCreate'
+          - $ref: '#/components/schemas/XAIModelProviderCreate'
+          - $ref: '#/components/schemas/AnthropicModelProviderCreate'
+          title: Data
+          discriminator:
+            propertyName: type
+            mapping:
+              anthropic: '#/components/schemas/AnthropicModelProviderCreate'
+              openai: '#/components/schemas/OpenAIModelProviderCreate'
+              xai: '#/components/schemas/XAIModelProviderCreate'
+      type: object
+      required:
+      - data
+      title: ModelProviderCreate
+    ModelProviderResponse:
+      oneOf:
+      - $ref: '#/components/schemas/OpenAIModelProviderResponse'
+      - $ref: '#/components/schemas/XAIModelProviderResponse'
+      - $ref: '#/components/schemas/AnthropicModelProviderResponse'
+      title: ModelProviderResponse
+      discriminator:
+        propertyName: type
+        mapping:
+          anthropic: '#/components/schemas/AnthropicModelProviderResponse'
+          openai: '#/components/schemas/OpenAIModelProviderResponse'
+          xai: '#/components/schemas/XAIModelProviderResponse'
+    ModelProviderUpdate:
+      properties:
+        name:
+          type: string
+          nullable: true
+        api_key:
+          type: string
+          nullable: true
+        default:
+          type: boolean
+          nullable: true
+      type: object
+      title: ModelProviderUpdate
+    ModelResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          nullable: true
+        provider_id:
+          type: string
+          format: uuid
+          title: Provider Id
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      - provider_id
+      title: ModelResponse
+    ModelUpdate:
+      properties:
+        description:
+          type: string
+          nullable: true
+        provider_id:
+          type: string
+          format: uuid
+          nullable: true
+        default:
+          type: boolean
+          nullable: true
+      type: object
+      title: ModelUpdate
+    NullBooleanEnum:
+      type: string
+      enum:
+      - 'null'
+      - 'true'
+      - 'false'
+      title: NullBooleanEnum
+    OAuthAuthorizationRequest:
+      properties:
+        service_id:
+          type: string
+          format: uuid
+          title: Service Id
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        redirect_uri:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - service_id
+      title: OAuthAuthorizationRequest
+    OAuthAuthorizationResponse:
+      properties:
+        authorization_url:
+          type: string
+          title: Authorization Url
+        state:
+          type: string
+          title: State
+      type: object
+      required:
+      - authorization_url
+      - state
+      title: OAuthAuthorizationResponse
+    OAuthServiceCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        description:
+          type: string
+          nullable: true
+        client_id:
+          type: string
+          title: Client Id
+        client_secret:
+          type: string
+          title: Client Secret
+        authorization_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Authorization Url
+        token_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Token Url
+        userinfo_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        default_scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        supported_grant_types:
+          items:
+            type: string
+          type: array
+          title: Supported Grant Types
+          default:
+          - authorization_code
+        is_active:
+          type: boolean
+          title: Is Active
+          default: true
+        icon_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        homepage_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        additional_params:
+          additionalProperties: true
+          type: object
+          nullable: true
+      type: object
+      required:
+      - name
+      - display_name
+      - client_id
+      - client_secret
+      - authorization_url
+      - token_url
+      title: OAuthServiceCreate
+    OAuthServiceListResponse:
+      properties:
+        services:
+          items:
+            $ref: '#/components/schemas/OAuthServiceResponse'
+          type: array
+          title: Services
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - services
+      - total
+      title: OAuthServiceListResponse
+    OAuthServiceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        description:
+          type: string
+          nullable: true
+        authorization_url:
+          type: string
+          title: Authorization Url
+        token_url:
+          type: string
+          title: Token Url
+        userinfo_url:
+          type: string
+          nullable: true
+        default_scopes:
+          items:
+            type: string
+          type: array
+          title: Default Scopes
+        supported_grant_types:
+          items:
+            type: string
+          type: array
+          title: Supported Grant Types
+        is_active:
+          type: boolean
+          title: Is Active
+        icon_url:
+          type: string
+          nullable: true
+        homepage_url:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - name
+      - display_name
+      - description
+      - authorization_url
+      - token_url
+      - userinfo_url
+      - default_scopes
+      - supported_grant_types
+      - is_active
+      - icon_url
+      - homepage_url
+      - created_at
+      - updated_at
+      title: OAuthServiceResponse
+    OAuthServiceUpdate:
+      properties:
+        display_name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        client_id:
+          type: string
+          nullable: true
+        client_secret:
+          type: string
+          nullable: true
+        authorization_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        token_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        userinfo_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        default_scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        supported_grant_types:
+          items:
+            type: string
+          type: array
+          nullable: true
+        is_active:
+          type: boolean
+          nullable: true
+        icon_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        homepage_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          nullable: true
+        additional_params:
+          additionalProperties: true
+          type: object
+          nullable: true
+      type: object
+      title: OAuthServiceUpdate
+    OAuthTokenExchange:
+      properties:
+        service_id:
+          type: string
+          format: uuid
+          title: Service Id
+        code:
+          type: string
+          title: Code
+        state:
+          type: string
+          nullable: true
+        redirect_uri:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - service_id
+      - code
+      title: OAuthTokenExchange
+    OAuthTokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          title: Token Type
+        expires_in:
+          type: integer
+          nullable: true
+        refresh_token:
+          type: string
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          title: Scopes
+      type: object
+      required:
+      - access_token
+      - token_type
+      - scopes
+      title: OAuthTokenResponse
+    OpenAIModelProviderCreate:
+      properties:
+        type:
+          type: string
+          const: openai
+          title: Type
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - name
+      - api_key
+      title: OpenAIModelProviderCreate
+    OpenAIModelProviderResponse:
+      properties:
+        type:
+          type: string
+          const: openai
+          title: Type
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - id
+      - name
+      - api_key
+      title: OpenAIModelProviderResponse
+    PendingInvitationResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        email_address:
+          type: string
+          title: Email Address
+        role:
+          type: string
+          title: Role
+        status:
+          type: string
+          title: Status
+        created_at:
+          type: integer
+          title: Created At
+        updated_at:
+          type: integer
+          title: Updated At
+        expires_at:
+          type: integer
+          nullable: true
+      type: object
+      required:
+      - id
+      - email_address
+      - role
+      - status
+      - created_at
+      - updated_at
+      title: PendingInvitationResponse
+    PromptCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        content:
+          type: string
+          title: Content
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+          title: Active
+          default: true
+        is_default:
+          type: boolean
+          title: Is Default
+          default: false
+      type: object
+      required:
+      - name
+      - content
+      title: PromptCreate
+    PromptResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        content:
+          type: string
+          title: Content
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+          title: Active
+          default: true
+        is_default:
+          type: boolean
+          title: Is Default
+          default: false
+        environment_id:
+          type: string
+          format: uuid
+          title: Environment Id
+        created_at:
+          type: string
+          title: Created At
+        updated_at:
+          type: string
+          title: Updated At
+      type: object
+      required:
+      - id
+      - name
+      - content
+      - environment_id
+      - created_at
+      - updated_at
+      title: PromptResponse
+    PromptUpdate:
+      properties:
+        content:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+        is_default:
+          type: boolean
+          nullable: true
+      type: object
+      title: PromptUpdate
+    ProviderTypeVersionInfo:
+      properties:
+        provider_type:
+          type: string
+          title: Provider Type
+        current_version:
+          type: integer
+          title: Current Version
+        supported_versions:
+          items:
+            $ref: '#/components/schemas/ProviderVersionInfo'
+          type: array
+          title: Supported Versions
+      type: object
+      required:
+      - provider_type
+      - current_version
+      - supported_versions
+      title: ProviderTypeVersionInfo
+      description: Version information for a provider type.
+    ProviderVersionInfo:
+      properties:
+        version:
+          type: integer
+          title: Version
+        current:
+          type: boolean
+          title: Current
+        deprecated:
+          type: boolean
+          title: Deprecated
+        deprecated_at:
+          type: string
+          nullable: true
+        removal_at:
+          type: string
+          nullable: true
+        deprecation_message:
+          type: string
+          nullable: true
+        days_until_removal:
+          type: integer
+          nullable: true
+      type: object
+      required:
+      - version
+      - current
+      - deprecated
+      title: ProviderVersionInfo
+      description: Information about a provider config version.
+    ResponseFormat:
+      properties:
+        type:
+          type: string
+          enum:
+          - text
+          - json_object
+          title: Type
+          description: The format of the response
+          default: text
+      type: object
+      title: ResponseFormat
+    SubscriptionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        stripe_subscription_id:
+          type: string
+          title: Stripe Subscription Id
+        environment_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Environment Ids
+          default: []
+        status:
+          type: string
+          title: Status
+        plan_name:
+          type: string
+          nullable: true
+        current_period_start:
+          type: integer
+          nullable: true
+        current_period_end:
+          type: integer
+          nullable: true
+        entitlements:
+          items:
+            $ref: '#/components/schemas/EntitlementResponse'
+          type: array
+          title: Entitlements
+          default: []
+      type: object
+      required:
+      - id
+      - stripe_subscription_id
+      - status
+      title: SubscriptionResponse
+    TextBlock:
+      properties:
+        block_type:
+          type: string
+          const: text
+          title: Block Type
+          default: text
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
+      - text
+      title: TextBlock
+      description: A representation of text data to directly pass to/from the LLM.
+    ThinkingBlock:
+      properties:
+        block_type:
+          type: string
+          const: thinking
+          title: Block Type
+          default: thinking
+        content:
+          type: string
+          nullable: true
+        num_tokens:
+          type: integer
+          nullable: true
+        additional_information:
+          additionalProperties: true
+          type: object
+          title: Additional Information
+          description: Additional information related to the thinking/reasoning process,
+            if available
+      type: object
+      title: ThinkingBlock
+      description: A representation of the content streamed from reasoning/thinking
+        processes by LLMs
+    ToolCallBlock:
+      properties:
+        block_type:
+          type: string
+          const: tool_call
+          title: Block Type
+          default: tool_call
+        tool_call_id:
+          type: string
+          nullable: true
+        tool_name:
+          type: string
+          title: Tool Name
+          description: Name of the called tool
+        tool_kwargs:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: string
+          title: Tool Kwargs
+          description: Arguments provided to the tool, if available
+      type: object
+      required:
+      - tool_name
+      title: ToolCallBlock
+    TypedChatMessageContent:
+      properties:
+        type:
+          type: string
+          title: Type
+        text:
+          type: string
+          nullable: true
+        reasoning:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - type
+      title: TypedChatMessageContent
+    Usage:
+      properties:
+        prompt_tokens:
+          type: integer
+          title: Prompt Tokens
+        completion_tokens:
+          type: integer
+          title: Completion Tokens
+        total_tokens:
+          type: integer
+          title: Total Tokens
+      type: object
+      required:
+      - prompt_tokens
+      - completion_tokens
+      - total_tokens
+      title: Usage
+    UserEntitlementsResponse:
+      properties:
+        entitlements:
+          additionalProperties:
+            $ref: '#/components/schemas/EntitlementDetail'
+          type: object
+          title: Entitlements
+      type: object
+      required:
+      - entitlements
+      title: UserEntitlementsResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VideoBlock:
+      properties:
+        block_type:
+          type: string
+          const: video
+          title: Block Type
+          default: video
+        video:
+          type: string
+          format: binary
+          nullable: true
+        path:
+          type: string
+          format: file-path
+          nullable: true
+        url:
+          anyOf:
+          - type: string
+            minLength: 1
+            format: uri
+          - type: string
+          - type: 'null'
+          title: Url
+        video_mimetype:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        fps:
+          type: integer
+          nullable: true
+      type: object
+      title: VideoBlock
+      description: A representation of video data to directly pass to/from the LLM.
+    XAIModelProviderCreate:
+      properties:
+        type:
+          type: string
+          const: xai
+          title: Type
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - name
+      - api_key
+      title: XAIModelProviderCreate
+    XAIModelProviderResponse:
+      properties:
+        type:
+          type: string
+          const: xai
+          title: Type
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        api_key:
+          type: string
+          title: Api Key
+        default:
+          type: boolean
+          title: Default
+          default: false
+      type: object
+      required:
+      - type
+      - id
+      - name
+      - api_key
+      title: XAIModelProviderResponse
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /
