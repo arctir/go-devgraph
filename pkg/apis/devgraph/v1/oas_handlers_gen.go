@@ -1774,7 +1774,7 @@ func (s *Server) handleCreateEntityRequest(args [4]string, argsEscaped bool, w h
 
 // handleCreateEntityDefinitionRequest handles create_entity_definition operation.
 //
-// Create Entity Definition.
+// Create a new entity definition with schema and storage configuration.
 //
 // POST /api/v1/entities/definitions
 func (s *Server) handleCreateEntityDefinitionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

@@ -89,7 +89,7 @@ type Invoker interface {
 	CreateEntity(ctx context.Context, request *Entity, params CreateEntityParams) (CreateEntityRes, error)
 	// CreateEntityDefinition invokes create_entity_definition operation.
 	//
-	// Create Entity Definition.
+	// Create a new entity definition with schema and storage configuration.
 	//
 	// POST /api/v1/entities/definitions
 	CreateEntityDefinition(ctx context.Context, request *EntityDefinitionSpec) (CreateEntityDefinitionRes, error)
@@ -1846,7 +1846,7 @@ func (c *Client) sendCreateEntity(ctx context.Context, request *Entity, params C
 
 // CreateEntityDefinition invokes create_entity_definition operation.
 //
-// Create Entity Definition.
+// Create a new entity definition with schema and storage configuration.
 //
 // POST /api/v1/entities/definitions
 func (c *Client) CreateEntityDefinition(ctx context.Context, request *EntityDefinitionSpec) (CreateEntityDefinitionRes, error) {

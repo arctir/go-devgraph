@@ -69,7 +69,7 @@ type Handler interface {
 	CreateEntity(ctx context.Context, req *Entity, params CreateEntityParams) (CreateEntityRes, error)
 	// CreateEntityDefinition implements create_entity_definition operation.
 	//
-	// Create Entity Definition.
+	// Create a new entity definition with schema and storage configuration.
 	//
 	// POST /api/v1/entities/definitions
 	CreateEntityDefinition(ctx context.Context, req *EntityDefinitionSpec) (CreateEntityDefinitionRes, error)

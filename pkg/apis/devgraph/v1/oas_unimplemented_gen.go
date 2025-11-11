@@ -101,7 +101,7 @@ func (UnimplementedHandler) CreateEntity(ctx context.Context, req *Entity, param
 
 // CreateEntityDefinition implements create_entity_definition operation.
 //
-// Create Entity Definition.
+// Create a new entity definition with schema and storage configuration.
 //
 // POST /api/v1/entities/definitions
 func (UnimplementedHandler) CreateEntityDefinition(ctx context.Context, req *EntityDefinitionSpec) (r CreateEntityDefinitionRes, _ error) {
