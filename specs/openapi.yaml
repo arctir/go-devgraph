@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.18
+  version: 1.0.0-beta.19
 paths:
   /api/v1/entities/definitions:
     get:
@@ -613,7 +613,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
       - OAuth2PasswordBearer: []
-  /api/v1/chats/suggestions:
+  /api/v1/chat/suggestions:
     post:
       tags:
       - chats
@@ -677,7 +677,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/chats/suggestions/{suggestion_id}:
+  /api/v1/chat/suggestions/{suggestion_id}:
     delete:
       tags:
       - chats

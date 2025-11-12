@@ -61,32 +61,21 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'c': // Prefix: "chats/"
+			case 'c': // Prefix: "chat"
 
-				if l := len("chats/"); len(elem) >= l && elem[0:l] == "chats/" {
+				if l := len("chat"); len(elem) >= l && elem[0:l] == "chat" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					switch r.Method {
-					case "DELETE":
-						s.handleDeleteChatsBulkRequest([0]string{}, elemIsEscaped, w, r)
-					case "GET":
-						s.handleGetChatsRequest([0]string{}, elemIsEscaped, w, r)
-					case "POST":
-						s.handleCreateChatRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "DELETE,GET,POST")
-					}
-
-					return
+					break
 				}
 				switch elem[0] {
-				case 's': // Prefix: "suggestions"
-					origElem := elem
-					if l := len("suggestions"); len(elem) >= l && elem[0:l] == "suggestions" {
+				case '/': // Prefix: "/suggestions"
+
+					if l := len("/suggestions"); len(elem) >= l && elem[0:l] == "/suggestions" {
 						elem = elem[l:]
 					} else {
 						break
@@ -138,83 +127,107 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-					elem = origElem
-				case 't': // Prefix: "title"
-					origElem := elem
-					if l := len("title"); len(elem) >= l && elem[0:l] == "title" {
+				case 's': // Prefix: "s/"
+
+					if l := len("s/"); len(elem) >= l && elem[0:l] == "s/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
 						switch r.Method {
-						case "POST":
-							s.handleCreateChatTitleRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
-						}
-
-						return
-					}
-
-					elem = origElem
-				}
-				// Param: "chat_id"
-				// Match until "/"
-				idx := strings.IndexByte(elem, '/')
-				if idx < 0 {
-					idx = len(elem)
-				}
-				args[0] = elem[:idx]
-				elem = elem[idx:]
-
-				if len(elem) == 0 {
-					switch r.Method {
-					case "DELETE":
-						s.handleDeleteChatRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
-					case "GET":
-						s.handleGetChatRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
-					case "PUT":
-						s.handleUpdateChatRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "DELETE,GET,PUT")
-					}
-
-					return
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/messages"
-
-					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
+						case "DELETE":
+							s.handleDeleteChatsBulkRequest([0]string{}, elemIsEscaped, w, r)
 						case "GET":
-							s.handleGetChatMessagesRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
+							s.handleGetChatsRequest([0]string{}, elemIsEscaped, w, r)
 						case "POST":
-							s.handlePostChatMessagesRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
+							s.handleCreateChatRequest([0]string{}, elemIsEscaped, w, r)
 						default:
-							s.notAllowed(w, r, "GET,POST")
+							s.notAllowed(w, r, "DELETE,GET,POST")
 						}
 
 						return
+					}
+					switch elem[0] {
+					case 't': // Prefix: "title"
+						origElem := elem
+						if l := len("title"); len(elem) >= l && elem[0:l] == "title" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleCreateChatTitleRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+						elem = origElem
+					}
+					// Param: "chat_id"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
+					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "DELETE":
+							s.handleDeleteChatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleGetChatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PUT":
+							s.handleUpdateChatRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "DELETE,GET,PUT")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/messages"
+
+						if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleGetChatMessagesRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "POST":
+								s.handlePostChatMessagesRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET,POST")
+							}
+
+							return
+						}
+
 					}
 
 				}
@@ -2038,48 +2051,21 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'c': // Prefix: "chats/"
+			case 'c': // Prefix: "chat"
 
-				if l := len("chats/"); len(elem) >= l && elem[0:l] == "chats/" {
+				if l := len("chat"); len(elem) >= l && elem[0:l] == "chat" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					switch method {
-					case "DELETE":
-						r.name = DeleteChatsBulkOperation
-						r.summary = "Delete Chats Bulk"
-						r.operationID = "delete_chats_bulk"
-						r.pathPattern = "/api/v1/chats/"
-						r.args = args
-						r.count = 0
-						return r, true
-					case "GET":
-						r.name = GetChatsOperation
-						r.summary = "Get Chats"
-						r.operationID = "get_chats"
-						r.pathPattern = "/api/v1/chats/"
-						r.args = args
-						r.count = 0
-						return r, true
-					case "POST":
-						r.name = CreateChatOperation
-						r.summary = "Create Chat"
-						r.operationID = "create_chat"
-						r.pathPattern = "/api/v1/chats/"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
-					}
+					break
 				}
 				switch elem[0] {
-				case 's': // Prefix: "suggestions"
-					origElem := elem
-					if l := len("suggestions"); len(elem) >= l && elem[0:l] == "suggestions" {
+				case '/': // Prefix: "/suggestions"
+
+					if l := len("/suggestions"); len(elem) >= l && elem[0:l] == "/suggestions" {
 						elem = elem[l:]
 					} else {
 						break
@@ -2091,7 +2077,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListChatSuggestionsOperation
 							r.summary = "List Chat Suggestions"
 							r.operationID = "list_chat_suggestions"
-							r.pathPattern = "/api/v1/chats/suggestions"
+							r.pathPattern = "/api/v1/chat/suggestions"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -2099,7 +2085,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateChatSuggestionOperation
 							r.summary = "Create Chat Suggestion"
 							r.operationID = "create_chat_suggestion"
-							r.pathPattern = "/api/v1/chats/suggestions"
+							r.pathPattern = "/api/v1/chat/suggestions"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -2132,7 +2118,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteChatSuggestionOperation
 								r.summary = "Delete Chat Suggestion"
 								r.operationID = "delete_chat_suggestion"
-								r.pathPattern = "/api/v1/chats/suggestions/{suggestion_id}"
+								r.pathPattern = "/api/v1/chat/suggestions/{suggestion_id}"
 								r.args = args
 								r.count = 1
 								return r, true
@@ -2143,23 +2129,37 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 					}
 
-					elem = origElem
-				case 't': // Prefix: "title"
-					origElem := elem
-					if l := len("title"); len(elem) >= l && elem[0:l] == "title" {
+				case 's': // Prefix: "s/"
+
+					if l := len("s/"); len(elem) >= l && elem[0:l] == "s/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
 						switch method {
+						case "DELETE":
+							r.name = DeleteChatsBulkOperation
+							r.summary = "Delete Chats Bulk"
+							r.operationID = "delete_chats_bulk"
+							r.pathPattern = "/api/v1/chats/"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "GET":
+							r.name = GetChatsOperation
+							r.summary = "Get Chats"
+							r.operationID = "get_chats"
+							r.pathPattern = "/api/v1/chats/"
+							r.args = args
+							r.count = 0
+							return r, true
 						case "POST":
-							r.name = CreateChatTitleOperation
-							r.summary = "Post Chat Title"
-							r.operationID = "create_chat_title"
-							r.pathPattern = "/api/v1/chats/title"
+							r.name = CreateChatOperation
+							r.summary = "Create Chat"
+							r.operationID = "create_chat"
+							r.pathPattern = "/api/v1/chats/"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -2167,79 +2167,105 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							return
 						}
 					}
+					switch elem[0] {
+					case 't': // Prefix: "title"
+						origElem := elem
+						if l := len("title"); len(elem) >= l && elem[0:l] == "title" {
+							elem = elem[l:]
+						} else {
+							break
+						}
 
-					elem = origElem
-				}
-				// Param: "chat_id"
-				// Match until "/"
-				idx := strings.IndexByte(elem, '/')
-				if idx < 0 {
-					idx = len(elem)
-				}
-				args[0] = elem[:idx]
-				elem = elem[idx:]
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = CreateChatTitleOperation
+								r.summary = "Post Chat Title"
+								r.operationID = "create_chat_title"
+								r.pathPattern = "/api/v1/chats/title"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
 
-				if len(elem) == 0 {
-					switch method {
-					case "DELETE":
-						r.name = DeleteChatOperation
-						r.summary = "Delete Chat"
-						r.operationID = "delete_chat"
-						r.pathPattern = "/api/v1/chats/{chat_id}"
-						r.args = args
-						r.count = 1
-						return r, true
-					case "GET":
-						r.name = GetChatOperation
-						r.summary = "Get Chat"
-						r.operationID = "get_chat"
-						r.pathPattern = "/api/v1/chats/{chat_id}"
-						r.args = args
-						r.count = 1
-						return r, true
-					case "PUT":
-						r.name = UpdateChatOperation
-						r.summary = "Update Chat"
-						r.operationID = "update_chat"
-						r.pathPattern = "/api/v1/chats/{chat_id}"
-						r.args = args
-						r.count = 1
-						return r, true
-					default:
-						return
+						elem = origElem
 					}
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/messages"
-
-					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
-						elem = elem[l:]
-					} else {
-						break
+					// Param: "chat_id"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
 					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
 
 					if len(elem) == 0 {
-						// Leaf node.
 						switch method {
-						case "GET":
-							r.name = GetChatMessagesOperation
-							r.summary = "Get Chat Messages"
-							r.operationID = "get_chat_messages"
-							r.pathPattern = "/api/v1/chats/{chat_id}/messages"
+						case "DELETE":
+							r.name = DeleteChatOperation
+							r.summary = "Delete Chat"
+							r.operationID = "delete_chat"
+							r.pathPattern = "/api/v1/chats/{chat_id}"
 							r.args = args
 							r.count = 1
 							return r, true
-						case "POST":
-							r.name = PostChatMessagesOperation
-							r.summary = "Post Chat Messages"
-							r.operationID = "post_chat_messages"
-							r.pathPattern = "/api/v1/chats/{chat_id}/messages"
+						case "GET":
+							r.name = GetChatOperation
+							r.summary = "Get Chat"
+							r.operationID = "get_chat"
+							r.pathPattern = "/api/v1/chats/{chat_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PUT":
+							r.name = UpdateChatOperation
+							r.summary = "Update Chat"
+							r.operationID = "update_chat"
+							r.pathPattern = "/api/v1/chats/{chat_id}"
 							r.args = args
 							r.count = 1
 							return r, true
 						default:
 							return
 						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/messages"
+
+						if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = GetChatMessagesOperation
+								r.summary = "Get Chat Messages"
+								r.operationID = "get_chat_messages"
+								r.pathPattern = "/api/v1/chats/{chat_id}/messages"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "POST":
+								r.name = PostChatMessagesOperation
+								r.summary = "Post Chat Messages"
+								r.operationID = "post_chat_messages"
+								r.pathPattern = "/api/v1/chats/{chat_id}/messages"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
 					}
 
 				}

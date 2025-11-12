@@ -56,7 +56,7 @@ type Invoker interface {
 	//
 	// Create a new chat suggestion for the environment.
 	//
-	// POST /api/v1/chats/suggestions
+	// POST /api/v1/chat/suggestions
 	CreateChatSuggestion(ctx context.Context, request *ChatSuggestionCreate) (CreateChatSuggestionRes, error)
 	// CreateChatTitle invokes create_chat_title operation.
 	//
@@ -168,7 +168,7 @@ type Invoker interface {
 	//
 	// Delete a chat suggestion owned by the user.
 	//
-	// DELETE /api/v1/chats/suggestions/{suggestion_id}
+	// DELETE /api/v1/chat/suggestions/{suggestion_id}
 	DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error)
 	// DeleteChatsBulk invokes delete_chats_bulk operation.
 	//
@@ -461,7 +461,7 @@ type Invoker interface {
 	//
 	// List chat suggestions including system-wide and user-specific ones.
 	//
-	// GET /api/v1/chats/suggestions
+	// GET /api/v1/chat/suggestions
 	ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error)
 	// ListConfiguredProviders invokes list_configured_providers operation.
 	//
@@ -1148,7 +1148,7 @@ func (c *Client) sendCreateChat(ctx context.Context, request *ChatSessionCreate)
 //
 // Create a new chat suggestion for the environment.
 //
-// POST /api/v1/chats/suggestions
+// POST /api/v1/chat/suggestions
 func (c *Client) CreateChatSuggestion(ctx context.Context, request *ChatSuggestionCreate) (CreateChatSuggestionRes, error) {
 	res, err := c.sendCreateChatSuggestion(ctx, request)
 	return res, err
@@ -1158,7 +1158,7 @@ func (c *Client) sendCreateChatSuggestion(ctx context.Context, request *ChatSugg
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("create_chat_suggestion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/api/v1/chats/suggestions"),
+		semconv.URLTemplateKey.String("/api/v1/chat/suggestions"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1192,7 +1192,7 @@ func (c *Client) sendCreateChatSuggestion(ctx context.Context, request *ChatSugg
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/api/v1/chats/suggestions"
+	pathParts[0] = "/api/v1/chat/suggestions"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -3301,7 +3301,7 @@ func (c *Client) sendDeleteChat(ctx context.Context, params DeleteChatParams) (r
 //
 // Delete a chat suggestion owned by the user.
 //
-// DELETE /api/v1/chats/suggestions/{suggestion_id}
+// DELETE /api/v1/chat/suggestions/{suggestion_id}
 func (c *Client) DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error) {
 	res, err := c.sendDeleteChatSuggestion(ctx, params)
 	return res, err
@@ -3311,7 +3311,7 @@ func (c *Client) sendDeleteChatSuggestion(ctx context.Context, params DeleteChat
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("delete_chat_suggestion"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/api/v1/chats/suggestions/{suggestion_id}"),
+		semconv.URLTemplateKey.String("/api/v1/chat/suggestions/{suggestion_id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3345,7 +3345,7 @@ func (c *Client) sendDeleteChatSuggestion(ctx context.Context, params DeleteChat
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/api/v1/chats/suggestions/"
+	pathParts[0] = "/api/v1/chat/suggestions/"
 	{
 		// Encode "suggestion_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9456,7 +9456,7 @@ func (c *Client) sendInviteEnvironmentUser(ctx context.Context, request *Environ
 //
 // List chat suggestions including system-wide and user-specific ones.
 //
-// GET /api/v1/chats/suggestions
+// GET /api/v1/chat/suggestions
 func (c *Client) ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error) {
 	res, err := c.sendListChatSuggestions(ctx, params)
 	return res, err
@@ -9466,7 +9466,7 @@ func (c *Client) sendListChatSuggestions(ctx context.Context, params ListChatSug
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("list_chat_suggestions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/chats/suggestions"),
+		semconv.URLTemplateKey.String("/api/v1/chat/suggestions"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9500,7 +9500,7 @@ func (c *Client) sendListChatSuggestions(ctx context.Context, params ListChatSug
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/api/v1/chats/suggestions"
+	pathParts[0] = "/api/v1/chat/suggestions"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"

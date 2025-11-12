@@ -792,14 +792,14 @@ func (s *Server) handleCreateChatRequest(args [0]string, argsEscaped bool, w htt
 //
 // Create a new chat suggestion for the environment.
 //
-// POST /api/v1/chats/suggestions
+// POST /api/v1/chat/suggestions
 func (s *Server) handleCreateChatSuggestionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("create_chat_suggestion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/api/v1/chats/suggestions"),
+		semconv.HTTPRouteKey.String("/api/v1/chat/suggestions"),
 	}
 
 	// Start a span for this request.
@@ -4210,14 +4210,14 @@ func (s *Server) handleDeleteChatRequest(args [1]string, argsEscaped bool, w htt
 //
 // Delete a chat suggestion owned by the user.
 //
-// DELETE /api/v1/chats/suggestions/{suggestion_id}
+// DELETE /api/v1/chat/suggestions/{suggestion_id}
 func (s *Server) handleDeleteChatSuggestionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("delete_chat_suggestion"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/api/v1/chats/suggestions/{suggestion_id}"),
+		semconv.HTTPRouteKey.String("/api/v1/chat/suggestions/{suggestion_id}"),
 	}
 
 	// Start a span for this request.
@@ -13024,14 +13024,14 @@ func (s *Server) handleInviteEnvironmentUserRequest(args [1]string, argsEscaped 
 //
 // List chat suggestions including system-wide and user-specific ones.
 //
-// GET /api/v1/chats/suggestions
+// GET /api/v1/chat/suggestions
 func (s *Server) handleListChatSuggestionsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("list_chat_suggestions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/chats/suggestions"),
+		semconv.HTTPRouteKey.String("/api/v1/chat/suggestions"),
 	}
 
 	// Start a span for this request.

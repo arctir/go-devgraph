@@ -53,7 +53,7 @@ func (UnimplementedHandler) CreateChat(ctx context.Context, req *ChatSessionCrea
 //
 // Create a new chat suggestion for the environment.
 //
-// POST /api/v1/chats/suggestions
+// POST /api/v1/chat/suggestions
 func (UnimplementedHandler) CreateChatSuggestion(ctx context.Context, req *ChatSuggestionCreate) (r CreateChatSuggestionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -219,7 +219,7 @@ func (UnimplementedHandler) DeleteChat(ctx context.Context, params DeleteChatPar
 //
 // Delete a chat suggestion owned by the user.
 //
-// DELETE /api/v1/chats/suggestions/{suggestion_id}
+// DELETE /api/v1/chat/suggestions/{suggestion_id}
 func (UnimplementedHandler) DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (r DeleteChatSuggestionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -657,7 +657,7 @@ func (UnimplementedHandler) InviteEnvironmentUser(ctx context.Context, req *Envi
 //
 // List chat suggestions including system-wide and user-specific ones.
 //
-// GET /api/v1/chats/suggestions
+// GET /api/v1/chat/suggestions
 func (UnimplementedHandler) ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (r ListChatSuggestionsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }

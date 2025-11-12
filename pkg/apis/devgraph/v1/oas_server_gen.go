@@ -36,7 +36,7 @@ type Handler interface {
 	//
 	// Create a new chat suggestion for the environment.
 	//
-	// POST /api/v1/chats/suggestions
+	// POST /api/v1/chat/suggestions
 	CreateChatSuggestion(ctx context.Context, req *ChatSuggestionCreate) (CreateChatSuggestionRes, error)
 	// CreateChatTitle implements create_chat_title operation.
 	//
@@ -148,7 +148,7 @@ type Handler interface {
 	//
 	// Delete a chat suggestion owned by the user.
 	//
-	// DELETE /api/v1/chats/suggestions/{suggestion_id}
+	// DELETE /api/v1/chat/suggestions/{suggestion_id}
 	DeleteChatSuggestion(ctx context.Context, params DeleteChatSuggestionParams) (DeleteChatSuggestionRes, error)
 	// DeleteChatsBulk implements delete_chats_bulk operation.
 	//
@@ -441,7 +441,7 @@ type Handler interface {
 	//
 	// List chat suggestions including system-wide and user-specific ones.
 	//
-	// GET /api/v1/chats/suggestions
+	// GET /api/v1/chat/suggestions
 	ListChatSuggestions(ctx context.Context, params ListChatSuggestionsParams) (ListChatSuggestionsRes, error)
 	// ListConfiguredProviders implements list_configured_providers operation.
 	//
