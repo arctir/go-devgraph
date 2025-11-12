@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.17
+  version: 1.0.0-beta.18
 paths:
   /api/v1/entities/definitions:
     get:
@@ -613,6 +613,98 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
       - OAuth2PasswordBearer: []
+  /api/v1/chats/suggestions:
+    post:
+      tags:
+      - chats
+      summary: Create Chat Suggestion
+      description: Create a new chat suggestion for the environment
+      operationId: create_chat_suggestion
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSuggestionCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSuggestionResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - chats
+      summary: List Chat Suggestions
+      description: List chat suggestions including system-wide and user-specific ones
+      operationId: list_chat_suggestions
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+          title: Active Only
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatSuggestionResponse'
+                title: Response List Chat Suggestions
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chats/suggestions/{suggestion_id}:
+    delete:
+      tags:
+      - chats
+      summary: Delete Chat Suggestion
+      description: Delete a chat suggestion owned by the user
+      operationId: delete_chat_suggestion
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: suggestion_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Suggestion Id
+      responses:
+        '204':
+          description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/v1/chats/title:
     post:
       tags:
@@ -928,98 +1020,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/ChatMessageRouter'
                 title: Response Post Chat Messages
-        '404':
-          description: Not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/chats/suggestions:
-    post:
-      tags:
-      - chats
-      summary: Create Chat Suggestion
-      description: Create a new chat suggestion for the environment
-      operationId: create_chat_suggestion
-      security:
-      - OAuth2PasswordBearer: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatSuggestionCreate'
-      responses:
-        '201':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatSuggestionResponse'
-        '404':
-          description: Not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    get:
-      tags:
-      - chats
-      summary: List Chat Suggestions
-      description: List chat suggestions including system-wide and user-specific ones
-      operationId: list_chat_suggestions
-      security:
-      - OAuth2PasswordBearer: []
-      parameters:
-      - name: active_only
-        in: query
-        required: false
-        schema:
-          type: boolean
-          default: true
-          title: Active Only
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ChatSuggestionResponse'
-                title: Response List Chat Suggestions
-        '404':
-          description: Not found
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/v1/chats/suggestions/{suggestion_id}:
-    delete:
-      tags:
-      - chats
-      summary: Delete Chat Suggestion
-      description: Delete a chat suggestion owned by the user
-      operationId: delete_chat_suggestion
-      security:
-      - OAuth2PasswordBearer: []
-      parameters:
-      - name: suggestion_id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-          title: Suggestion Id
-      responses:
-        '204':
-          description: Successful Response
         '404':
           description: Not found
         '422':
