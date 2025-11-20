@@ -11,8 +11,6 @@ on:
         description: "Devgraph commit SHA that triggered this"
         required: true
         type: string
-  schedule:
-    - cron: "0 3 * * *" # Daily at 3am UTC
 
 jobs:
   regenerate:
@@ -28,8 +26,8 @@ jobs:
       - name: Download API spec
         run: |
           mkdir -p specs
-          curl -o specs/openapi.yaml \
-            https://raw.githubusercontent.com/arctir/devgraph-api/v${{ inputs.spec_version }}/v1/spec.yaml
+          curl -f -o specs/openapi.yaml \
+            https://raw.githubusercontent.com/arctir/devgraph-api/refs/tags/v${{ inputs.spec_version }}/v1/spec.yaml
           echo "✓ Downloaded API spec v${{ inputs.spec_version }}"
 
       - name: Remove old generated code
