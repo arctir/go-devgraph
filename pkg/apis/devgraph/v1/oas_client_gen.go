@@ -433,6 +433,16 @@ type Invoker interface {
 	//
 	// GET /api/v1/prompts/{prompt_id}
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
+	// GetRendererAllowlistAPIV1RenderersAllowlistGet invokes get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
+	//
+	// Get the list of allowed renderer domains.
+	// In production, this could be loaded from:
+	// - Database
+	// - Environment variables
+	// - External config service.
+	//
+	// GET /api/v1/renderers/allowlist
+	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
 	// List all subscriptions for the authenticated user.
@@ -7005,6 +7015,23 @@ func (c *Client) sendGetEntityByUID(ctx context.Context, params GetEntityByUIDPa
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "depth" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "depth",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Depth.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -8999,6 +9026,83 @@ func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPromptResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetRendererAllowlistAPIV1RenderersAllowlistGet invokes get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
+//
+// Get the list of allowed renderer domains.
+// In production, this could be loaded from:
+// - Database
+// - Environment variables
+// - External config service.
+//
+// GET /api/v1/renderers/allowlist
+func (c *Client) GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error) {
+	res, err := c.sendGetRendererAllowlistAPIV1RenderersAllowlistGet(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) (res []RendererManifest, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_renderer_allowlist_api_v1_renderers_allowlist_get"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/renderers/allowlist"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetRendererAllowlistAPIV1RenderersAllowlistGetOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/renderers/allowlist"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetRendererAllowlistAPIV1RenderersAllowlistGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

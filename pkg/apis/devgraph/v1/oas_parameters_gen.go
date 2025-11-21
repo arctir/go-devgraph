@@ -3490,6 +3490,9 @@ func decodeGetEntityParams(args [5]string, argsEscaped bool, r *http.Request) (p
 type GetEntityByUIDParams struct {
 	UID       string
 	Namespace OptString `json:",omitempty,omitzero"`
+	// Number of relationship hops to traverse (1-5). Higher values return more related entities but may
+	// be slower.
+	Depth OptInt `json:",omitempty,omitzero"`
 }
 
 func unpackGetEntityByUIDParams(packed middleware.Parameters) (params GetEntityByUIDParams) {
@@ -3507,6 +3510,15 @@ func unpackGetEntityByUIDParams(packed middleware.Parameters) (params GetEntityB
 		}
 		if v, ok := packed[key]; ok {
 			params.Namespace = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "depth",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Depth = v.(OptInt)
 		}
 	}
 	return params
@@ -3601,6 +3613,76 @@ func decodeGetEntityByUIDParams(args [1]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "namespace",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: depth.
+	{
+		val := int(1)
+		params.Depth.SetTo(val)
+	}
+	// Decode query: depth.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "depth",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDepthVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDepthVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Depth.SetTo(paramsDotDepthVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Depth.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           5,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "depth",
 			In:   "query",
 			Err:  err,
 		}

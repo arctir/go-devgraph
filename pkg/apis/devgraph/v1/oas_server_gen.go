@@ -413,6 +413,16 @@ type Handler interface {
 	//
 	// GET /api/v1/prompts/{prompt_id}
 	GetPrompt(ctx context.Context, params GetPromptParams) (GetPromptRes, error)
+	// GetRendererAllowlistAPIV1RenderersAllowlistGet implements get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
+	//
+	// Get the list of allowed renderer domains.
+	// In production, this could be loaded from:
+	// - Database
+	// - Environment variables
+	// - External config service.
+	//
+	// GET /api/v1/renderers/allowlist
+	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)
 	// GetSubscriptions implements get_subscriptions operation.
 	//
 	// List all subscriptions for the authenticated user.

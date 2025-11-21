@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.22
+  version: 1.0.0-beta.24
 paths:
   /api/v1/entities/definitions:
     get:
@@ -316,6 +316,19 @@ paths:
           type: string
           default: default
           title: Namespace
+      - name: depth
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 5
+          minimum: 1
+          description: Number of relationship hops to traverse (1-5). Higher values
+            return more related entities but may be slower.
+          default: 1
+          title: Depth
+        description: Number of relationship hops to traverse (1-5). Higher values
+          return more related entities but may be slower.
       responses:
         '200':
           description: Successful Response
@@ -2293,6 +2306,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/renderers/allowlist:
+    get:
+      tags:
+      - renderers
+      summary: Get Renderer Allowlist
+      description: 'Get the list of allowed renderer domains.
+
+
+        In production, this could be loaded from:
+
+        - Database
+
+        - Environment variables
+
+        - External config service'
+      operationId: get_renderer_allowlist_api_v1_renderers_allowlist_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RendererManifest'
+                type: array
+                title: Response Get Renderer Allowlist Api V1 Renderers Allowlist
+                  Get
   /api/v1/subscriptions:
     get:
       tags:
@@ -5481,6 +5521,28 @@ components:
       - deprecated
       title: ProviderVersionInfo
       description: Information about a provider config version.
+    RendererManifest:
+      properties:
+        domain:
+          type: string
+          title: Domain
+        trusted:
+          type: boolean
+          title: Trusted
+        capabilities:
+          items:
+            type: string
+          type: array
+          nullable: true
+        expiresAt:
+          type: integer
+          nullable: true
+      type: object
+      required:
+      - domain
+      - trusted
+      title: RendererManifest
+      description: Manifest describing an allowed renderer domain.
     ResponseFormat:
       properties:
         type:

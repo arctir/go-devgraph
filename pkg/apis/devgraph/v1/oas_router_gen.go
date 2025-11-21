@@ -1879,6 +1879,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 				}
 
+			case 'r': // Prefix: "renderers/allowlist"
+
+				if l := len("renderers/allowlist"); len(elem) >= l && elem[0:l] == "renderers/allowlist" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleGetRendererAllowlistAPIV1RenderersAllowlistGetRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+
 			case 's': // Prefix: "subscriptions"
 
 				if l := len("subscriptions"); len(elem) >= l && elem[0:l] == "subscriptions" {
@@ -4168,6 +4188,30 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
+				}
+
+			case 'r': // Prefix: "renderers/allowlist"
+
+				if l := len("renderers/allowlist"); len(elem) >= l && elem[0:l] == "renderers/allowlist" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = GetRendererAllowlistAPIV1RenderersAllowlistGetOperation
+						r.summary = "Get Renderer Allowlist"
+						r.operationID = "get_renderer_allowlist_api_v1_renderers_allowlist_get"
+						r.pathPattern = "/api/v1/renderers/allowlist"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
 				}
 
 			case 's': // Prefix: "subscriptions"

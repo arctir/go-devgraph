@@ -7648,6 +7648,55 @@ func (s *ProviderVersionInfo) SetDaysUntilRemoval(val OptNilInt) {
 	s.DaysUntilRemoval = val
 }
 
+// Manifest describing an allowed renderer domain.
+// Ref: #/components/schemas/RendererManifest
+type RendererManifest struct {
+	Domain       string            `json:"domain"`
+	Trusted      bool              `json:"trusted"`
+	Capabilities OptNilStringArray `json:"capabilities"`
+	ExpiresAt    OptNilInt         `json:"expiresAt"`
+}
+
+// GetDomain returns the value of Domain.
+func (s *RendererManifest) GetDomain() string {
+	return s.Domain
+}
+
+// GetTrusted returns the value of Trusted.
+func (s *RendererManifest) GetTrusted() bool {
+	return s.Trusted
+}
+
+// GetCapabilities returns the value of Capabilities.
+func (s *RendererManifest) GetCapabilities() OptNilStringArray {
+	return s.Capabilities
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *RendererManifest) GetExpiresAt() OptNilInt {
+	return s.ExpiresAt
+}
+
+// SetDomain sets the value of Domain.
+func (s *RendererManifest) SetDomain(val string) {
+	s.Domain = val
+}
+
+// SetTrusted sets the value of Trusted.
+func (s *RendererManifest) SetTrusted(val bool) {
+	s.Trusted = val
+}
+
+// SetCapabilities sets the value of Capabilities.
+func (s *RendererManifest) SetCapabilities(val OptNilStringArray) {
+	s.Capabilities = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *RendererManifest) SetExpiresAt(val OptNilInt) {
+	s.ExpiresAt = val
+}
+
 // RevokeOAuthTokenNoContent is response for RevokeOAuthToken operation.
 type RevokeOAuthTokenNoContent struct{}
 
