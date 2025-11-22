@@ -239,6 +239,14 @@ func (s *MCPEndpointResponse) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *MCPToolsResponse) setDefaults() {
+	{
+		val := float64(0)
+		s.LoadTime.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *ModelCreate) setDefaults() {
 	{
 		val := bool(false)

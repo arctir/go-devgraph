@@ -3610,6 +3610,11 @@ type InviteEnvironmentUserNotFound struct{}
 
 func (*InviteEnvironmentUserNotFound) inviteEnvironmentUserRes() {}
 
+// ListAllMcpToolsNotFound is response for ListAllMcpTools operation.
+type ListAllMcpToolsNotFound struct{}
+
+func (*ListAllMcpToolsNotFound) listAllMcpToolsRes() {}
+
 // ListChatSuggestionsNotFound is response for ListChatSuggestions operation.
 type ListChatSuggestionsNotFound struct{}
 
@@ -4294,6 +4299,106 @@ func (s *MCPToolEntityAssociationResponseToolConfig) init() MCPToolEntityAssocia
 	m := *s
 	if m == nil {
 		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Information about a single MCP tool.
+// Ref: #/components/schemas/MCPToolInfo
+type MCPToolInfo struct {
+	Name         string       `json:"name"`
+	OriginalName string       `json:"original_name"`
+	Description  OptNilString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *MCPToolInfo) GetName() string {
+	return s.Name
+}
+
+// GetOriginalName returns the value of OriginalName.
+func (s *MCPToolInfo) GetOriginalName() string {
+	return s.OriginalName
+}
+
+// GetDescription returns the value of Description.
+func (s *MCPToolInfo) GetDescription() OptNilString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *MCPToolInfo) SetName(val string) {
+	s.Name = val
+}
+
+// SetOriginalName sets the value of OriginalName.
+func (s *MCPToolInfo) SetOriginalName(val string) {
+	s.OriginalName = val
+}
+
+// SetDescription sets the value of Description.
+func (s *MCPToolInfo) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// Response containing all MCP tools grouped by server.
+// Ref: #/components/schemas/MCPToolsResponse
+type MCPToolsResponse struct {
+	Tools          MCPToolsResponseTools `json:"tools"`
+	TotalTools     int                   `json:"total_tools"`
+	TotalEndpoints int                   `json:"total_endpoints"`
+	LoadTime       OptFloat64            `json:"load_time"`
+}
+
+// GetTools returns the value of Tools.
+func (s *MCPToolsResponse) GetTools() MCPToolsResponseTools {
+	return s.Tools
+}
+
+// GetTotalTools returns the value of TotalTools.
+func (s *MCPToolsResponse) GetTotalTools() int {
+	return s.TotalTools
+}
+
+// GetTotalEndpoints returns the value of TotalEndpoints.
+func (s *MCPToolsResponse) GetTotalEndpoints() int {
+	return s.TotalEndpoints
+}
+
+// GetLoadTime returns the value of LoadTime.
+func (s *MCPToolsResponse) GetLoadTime() OptFloat64 {
+	return s.LoadTime
+}
+
+// SetTools sets the value of Tools.
+func (s *MCPToolsResponse) SetTools(val MCPToolsResponseTools) {
+	s.Tools = val
+}
+
+// SetTotalTools sets the value of TotalTools.
+func (s *MCPToolsResponse) SetTotalTools(val int) {
+	s.TotalTools = val
+}
+
+// SetTotalEndpoints sets the value of TotalEndpoints.
+func (s *MCPToolsResponse) SetTotalEndpoints(val int) {
+	s.TotalEndpoints = val
+}
+
+// SetLoadTime sets the value of LoadTime.
+func (s *MCPToolsResponse) SetLoadTime(val OptFloat64) {
+	s.LoadTime = val
+}
+
+func (*MCPToolsResponse) listAllMcpToolsRes() {}
+
+type MCPToolsResponseTools map[string][]MCPToolInfo
+
+func (s *MCPToolsResponseTools) init() MCPToolsResponseTools {
+	m := *s
+	if m == nil {
+		m = map[string][]MCPToolInfo{}
 		*s = m
 	}
 	return m
@@ -6168,6 +6273,52 @@ func (o OptEnvironmentUserInviteRole) Get() (v EnvironmentUserInviteRole, ok boo
 
 // Or returns value if set, or given parameter if does not.
 func (o OptEnvironmentUserInviteRole) Or(d EnvironmentUserInviteRole) EnvironmentUserInviteRole {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptFloat64 returns new OptFloat64 with value set to v.
+func NewOptFloat64(v float64) OptFloat64 {
+	return OptFloat64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptFloat64 is optional float64.
+type OptFloat64 struct {
+	Value float64
+	Set   bool
+}
+
+// IsSet returns true if OptFloat64 was set.
+func (o OptFloat64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptFloat64) Reset() {
+	var v float64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptFloat64) SetTo(v float64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptFloat64) Get() (v float64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptFloat64) Or(d float64) float64 {
 	if v, ok := o.Get(); ok {
 		return v
 	}

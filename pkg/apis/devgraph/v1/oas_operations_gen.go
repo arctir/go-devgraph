@@ -77,6 +77,7 @@ const (
 	GetSystemDefaultPromptOperation                         OperationName = "GetSystemDefaultPrompt"
 	GetTokensOperation                                      OperationName = "GetTokens"
 	InviteEnvironmentUserOperation                          OperationName = "InviteEnvironmentUser"
+	ListAllMcpToolsOperation                                OperationName = "ListAllMcpTools"
 	ListChatSuggestionsOperation                            OperationName = "ListChatSuggestions"
 	ListConfiguredProvidersOperation                        OperationName = "ListConfiguredProviders"
 	ListDiscoveryProvidersOperation                         OperationName = "ListDiscoveryProviders"

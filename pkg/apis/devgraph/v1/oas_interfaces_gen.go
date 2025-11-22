@@ -281,6 +281,10 @@ type InviteEnvironmentUserRes interface {
 	inviteEnvironmentUserRes()
 }
 
+type ListAllMcpToolsRes interface {
+	listAllMcpToolsRes()
+}
+
 type ListChatSuggestionsRes interface {
 	listChatSuggestionsRes()
 }

@@ -447,6 +447,12 @@ type Handler interface {
 	//
 	// POST /api/v1/environments/{environment_id}/users/invite
 	InviteEnvironmentUser(ctx context.Context, req *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error)
+	// ListAllMcpTools implements list_all_mcp_tools operation.
+	//
+	// List all available MCP tools grouped by server for the environment.
+	//
+	// GET /api/v1/mcp/tools
+	ListAllMcpTools(ctx context.Context) (ListAllMcpToolsRes, error)
 	// ListChatSuggestions implements list_chat_suggestions operation.
 	//
 	// List chat suggestions including system-wide and user-specific ones.

@@ -666,6 +666,15 @@ func (UnimplementedHandler) InviteEnvironmentUser(ctx context.Context, req *Envi
 	return r, ht.ErrNotImplemented
 }
 
+// ListAllMcpTools implements list_all_mcp_tools operation.
+//
+// List all available MCP tools grouped by server for the environment.
+//
+// GET /api/v1/mcp/tools
+func (UnimplementedHandler) ListAllMcpTools(ctx context.Context) (r ListAllMcpToolsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListChatSuggestions implements list_chat_suggestions operation.
 //
 // List chat suggestions including system-wide and user-specific ones.

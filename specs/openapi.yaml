@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.24
+  version: 1.0.0-beta.25
 paths:
   /api/v1/entities/definitions:
     get:
@@ -1697,6 +1697,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/mcp/tools:
+    get:
+      tags:
+      - mcp
+      summary: List All Mcp Tools
+      description: List all available MCP tools grouped by server for the environment
+      operationId: list_all_mcp_tools
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPToolsResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
   /api/v1/mcp/tool-associations:
     post:
       tags:
@@ -4846,6 +4864,49 @@ components:
       - created_at
       - updated_at
       title: MCPToolEntityAssociationResponse
+    MCPToolInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        original_name:
+          type: string
+          title: Original Name
+        description:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - name
+      - original_name
+      title: MCPToolInfo
+      description: Information about a single MCP tool.
+    MCPToolsResponse:
+      properties:
+        tools:
+          additionalProperties:
+            items:
+              $ref: '#/components/schemas/MCPToolInfo'
+            type: array
+          type: object
+          title: Tools
+        total_tools:
+          type: integer
+          title: Total Tools
+        total_endpoints:
+          type: integer
+          title: Total Endpoints
+        load_time:
+          type: number
+          title: Load Time
+          default: 0.0
+      type: object
+      required:
+      - tools
+      - total_tools
+      - total_endpoints
+      title: MCPToolsResponse
+      description: Response containing all MCP tools grouped by server.
     MessageRole:
       type: string
       enum:

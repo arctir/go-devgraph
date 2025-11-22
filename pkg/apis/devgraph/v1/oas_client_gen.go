@@ -467,6 +467,12 @@ type Invoker interface {
 	//
 	// POST /api/v1/environments/{environment_id}/users/invite
 	InviteEnvironmentUser(ctx context.Context, request *EnvironmentUserInvite, params InviteEnvironmentUserParams) (InviteEnvironmentUserRes, error)
+	// ListAllMcpTools invokes list_all_mcp_tools operation.
+	//
+	// List all available MCP tools grouped by server for the environment.
+	//
+	// GET /api/v1/mcp/tools
+	ListAllMcpTools(ctx context.Context) (ListAllMcpToolsRes, error)
 	// ListChatSuggestions invokes list_chat_suggestions operation.
 	//
 	// List chat suggestions including system-wide and user-specific ones.
@@ -9549,6 +9555,112 @@ func (c *Client) sendInviteEnvironmentUser(ctx context.Context, request *Environ
 
 	stage = "DecodeResponse"
 	result, err := decodeInviteEnvironmentUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListAllMcpTools invokes list_all_mcp_tools operation.
+//
+// List all available MCP tools grouped by server for the environment.
+//
+// GET /api/v1/mcp/tools
+func (c *Client) ListAllMcpTools(ctx context.Context) (ListAllMcpToolsRes, error) {
+	res, err := c.sendListAllMcpTools(ctx)
+	return res, err
+}
+
+func (c *Client) sendListAllMcpTools(ctx context.Context) (res ListAllMcpToolsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_all_mcp_tools"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/mcp/tools"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListAllMcpToolsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mcp/tools"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, ListAllMcpToolsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListAllMcpToolsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

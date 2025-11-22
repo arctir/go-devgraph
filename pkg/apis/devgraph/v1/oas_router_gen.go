@@ -1436,51 +1436,85 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 						}
 
-					case 't': // Prefix: "tool-associations"
+					case 't': // Prefix: "tool"
 
-						if l := len("tool-associations"); len(elem) >= l && elem[0:l] == "tool-associations" {
+						if l := len("tool"); len(elem) >= l && elem[0:l] == "tool" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							switch r.Method {
-							case "POST":
-								s.handleCreateMcpToolAssociationRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "POST")
-							}
-
-							return
+							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/"
+						case '-': // Prefix: "-associations"
 
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							if l := len("-associations"); len(elem) >= l && elem[0:l] == "-associations" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
-							// Param: "association_id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
+							if len(elem) == 0 {
+								switch r.Method {
+								case "POST":
+									s.handleCreateMcpToolAssociationRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "association_id"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "DELETE":
+										s.handleDeleteMcpToolAssociationRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "DELETE")
+									}
+
+									return
+								}
+
+							}
+
+						case 's': // Prefix: "s"
+
+							if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								elem = elem[l:]
+							} else {
 								break
 							}
-							args[0] = elem
-							elem = ""
 
 							if len(elem) == 0 {
 								// Leaf node.
 								switch r.Method {
-								case "DELETE":
-									s.handleDeleteMcpToolAssociationRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleListAllMcpToolsRequest([0]string{}, elemIsEscaped, w, r)
 								default:
-									s.notAllowed(w, r, "DELETE")
+									s.notAllowed(w, r, "GET")
 								}
 
 								return
@@ -3643,56 +3677,94 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 						}
 
-					case 't': // Prefix: "tool-associations"
+					case 't': // Prefix: "tool"
 
-						if l := len("tool-associations"); len(elem) >= l && elem[0:l] == "tool-associations" {
+						if l := len("tool"); len(elem) >= l && elem[0:l] == "tool" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							switch method {
-							case "POST":
-								r.name = CreateMcpToolAssociationOperation
-								r.summary = "Create Mcp Tool Association"
-								r.operationID = "create_mcp_tool_association"
-								r.pathPattern = "/api/v1/mcp/tool-associations"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
+							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/"
+						case '-': // Prefix: "-associations"
 
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							if l := len("-associations"); len(elem) >= l && elem[0:l] == "-associations" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
-							// Param: "association_id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
+							if len(elem) == 0 {
+								switch method {
+								case "POST":
+									r.name = CreateMcpToolAssociationOperation
+									r.summary = "Create Mcp Tool Association"
+									r.operationID = "create_mcp_tool_association"
+									r.pathPattern = "/api/v1/mcp/tool-associations"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "association_id"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "DELETE":
+										r.name = DeleteMcpToolAssociationOperation
+										r.summary = "Delete Mcp Tool Association"
+										r.operationID = "delete_mcp_tool_association"
+										r.pathPattern = "/api/v1/mcp/tool-associations/{association_id}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						case 's': // Prefix: "s"
+
+							if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								elem = elem[l:]
+							} else {
 								break
 							}
-							args[0] = elem
-							elem = ""
 
 							if len(elem) == 0 {
 								// Leaf node.
 								switch method {
-								case "DELETE":
-									r.name = DeleteMcpToolAssociationOperation
-									r.summary = "Delete Mcp Tool Association"
-									r.operationID = "delete_mcp_tool_association"
-									r.pathPattern = "/api/v1/mcp/tool-associations/{association_id}"
+								case "GET":
+									r.name = ListAllMcpToolsOperation
+									r.summary = "List All Mcp Tools"
+									r.operationID = "list_all_mcp_tools"
+									r.pathPattern = "/api/v1/mcp/tools"
 									r.args = args
-									r.count = 1
+									r.count = 0
 									return r, true
 								default:
 									return
