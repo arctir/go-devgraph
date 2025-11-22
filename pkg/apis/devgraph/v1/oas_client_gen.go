@@ -436,10 +436,8 @@ type Invoker interface {
 	// GetRendererAllowlistAPIV1RenderersAllowlistGet invokes get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
 	//
 	// Get the list of allowed renderer domains.
-	// In production, this could be loaded from:
-	// - Database
-	// - Environment variables
-	// - External config service.
+	// Returns static allowlist plus dynamically loaded domains from
+	// MCP endpoints with allow_renderers enabled.
 	//
 	// GET /api/v1/renderers/allowlist
 	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)
@@ -9042,10 +9040,8 @@ func (c *Client) sendGetPrompt(ctx context.Context, params GetPromptParams) (res
 // GetRendererAllowlistAPIV1RenderersAllowlistGet invokes get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
 //
 // Get the list of allowed renderer domains.
-// In production, this could be loaded from:
-// - Database
-// - Environment variables
-// - External config service.
+// Returns static allowlist plus dynamically loaded domains from
+// MCP endpoints with allow_renderers enabled.
 //
 // GET /api/v1/renderers/allowlist
 func (c *Client) GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error) {
@@ -9098,6 +9094,39 @@ func (c *Client) sendGetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetRendererAllowlistAPIV1RenderersAllowlistGetOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"

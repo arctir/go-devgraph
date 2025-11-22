@@ -12317,10 +12317,8 @@ func (s *Server) handleGetPromptRequest(args [1]string, argsEscaped bool, w http
 // handleGetRendererAllowlistAPIV1RenderersAllowlistGetRequest handles get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
 //
 // Get the list of allowed renderer domains.
-// In production, this could be loaded from:
-// - Database
-// - Environment variables
-// - External config service.
+// Returns static allowlist plus dynamically loaded domains from
+// MCP endpoints with allow_renderers enabled.
 //
 // GET /api/v1/renderers/allowlist
 func (s *Server) handleGetRendererAllowlistAPIV1RenderersAllowlistGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -12386,8 +12384,56 @@ func (s *Server) handleGetRendererAllowlistAPIV1RenderersAllowlistGetRequest(arg
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetRendererAllowlistAPIV1RenderersAllowlistGetOperation,
+			ID:   "get_renderer_allowlist_api_v1_renderers_allowlist_get",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityOAuth2PasswordBearer(ctx, GetRendererAllowlistAPIV1RenderersAllowlistGetOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "OAuth2PasswordBearer",
+					Err:              err,
+				}
+				defer recordError("Security:OAuth2PasswordBearer", err)
+				s.cfg.ErrorHandler(ctx, w, r, err)
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			defer recordError("Security", err)
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+	}
 
 	var rawBody []byte
 

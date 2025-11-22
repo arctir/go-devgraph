@@ -3708,6 +3708,7 @@ type MCPEndpointCreate struct {
 	Active            OptBool                     `json:"active"`
 	AllowedTools      OptNilStringArray           `json:"allowed_tools"`
 	DeniedTools       OptNilStringArray           `json:"denied_tools"`
+	AllowRenderers    OptBool                     `json:"allow_renderers"`
 }
 
 // GetName returns the value of Name.
@@ -3765,6 +3766,11 @@ func (s *MCPEndpointCreate) GetDeniedTools() OptNilStringArray {
 	return s.DeniedTools
 }
 
+// GetAllowRenderers returns the value of AllowRenderers.
+func (s *MCPEndpointCreate) GetAllowRenderers() OptBool {
+	return s.AllowRenderers
+}
+
 // SetName sets the value of Name.
 func (s *MCPEndpointCreate) SetName(val string) {
 	s.Name = val
@@ -3820,6 +3826,11 @@ func (s *MCPEndpointCreate) SetDeniedTools(val OptNilStringArray) {
 	s.DeniedTools = val
 }
 
+// SetAllowRenderers sets the value of AllowRenderers.
+func (s *MCPEndpointCreate) SetAllowRenderers(val OptBool) {
+	s.AllowRenderers = val
+}
+
 type MCPEndpointCreateHeaders map[string]string
 
 func (s *MCPEndpointCreateHeaders) init() MCPEndpointCreateHeaders {
@@ -3845,6 +3856,7 @@ type MCPEndpointResponse struct {
 	Active            OptBool                       `json:"active"`
 	AllowedTools      OptNilStringArray             `json:"allowed_tools"`
 	DeniedTools       OptNilStringArray             `json:"denied_tools"`
+	AllowRenderers    OptBool                       `json:"allow_renderers"`
 }
 
 // GetID returns the value of ID.
@@ -3907,6 +3919,11 @@ func (s *MCPEndpointResponse) GetDeniedTools() OptNilStringArray {
 	return s.DeniedTools
 }
 
+// GetAllowRenderers returns the value of AllowRenderers.
+func (s *MCPEndpointResponse) GetAllowRenderers() OptBool {
+	return s.AllowRenderers
+}
+
 // SetID sets the value of ID.
 func (s *MCPEndpointResponse) SetID(val uuid.UUID) {
 	s.ID = val
@@ -3967,6 +3984,11 @@ func (s *MCPEndpointResponse) SetDeniedTools(val OptNilStringArray) {
 	s.DeniedTools = val
 }
 
+// SetAllowRenderers sets the value of AllowRenderers.
+func (s *MCPEndpointResponse) SetAllowRenderers(val OptBool) {
+	s.AllowRenderers = val
+}
+
 func (*MCPEndpointResponse) createMcpendpointRes() {}
 func (*MCPEndpointResponse) getMcpendpointRes()    {}
 func (*MCPEndpointResponse) updateMcpendpointRes() {}
@@ -3995,6 +4017,7 @@ type MCPEndpointUpdate struct {
 	Active            OptNilBool                     `json:"active"`
 	AllowedTools      OptNilStringArray              `json:"allowed_tools"`
 	DeniedTools       OptNilStringArray              `json:"denied_tools"`
+	AllowRenderers    OptNilBool                     `json:"allow_renderers"`
 }
 
 // GetName returns the value of Name.
@@ -4052,6 +4075,11 @@ func (s *MCPEndpointUpdate) GetDeniedTools() OptNilStringArray {
 	return s.DeniedTools
 }
 
+// GetAllowRenderers returns the value of AllowRenderers.
+func (s *MCPEndpointUpdate) GetAllowRenderers() OptNilBool {
+	return s.AllowRenderers
+}
+
 // SetName sets the value of Name.
 func (s *MCPEndpointUpdate) SetName(val OptNilString) {
 	s.Name = val
@@ -4105,6 +4133,11 @@ func (s *MCPEndpointUpdate) SetAllowedTools(val OptNilStringArray) {
 // SetDeniedTools sets the value of DeniedTools.
 func (s *MCPEndpointUpdate) SetDeniedTools(val OptNilStringArray) {
 	s.DeniedTools = val
+}
+
+// SetAllowRenderers sets the value of AllowRenderers.
+func (s *MCPEndpointUpdate) SetAllowRenderers(val OptNilBool) {
+	s.AllowRenderers = val
 }
 
 type MCPEndpointUpdateHeaders map[string]string

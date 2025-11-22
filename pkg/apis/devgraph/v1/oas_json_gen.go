@@ -9655,9 +9655,15 @@ func (s *MCPEndpointCreate) encodeFields(e *jx.Encoder) {
 			s.DeniedTools.Encode(e)
 		}
 	}
+	{
+		if s.AllowRenderers.Set {
+			e.FieldStart("allow_renderers")
+			s.AllowRenderers.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointCreate = [11]string{
+var jsonFieldsNameOfMCPEndpointCreate = [12]string{
 	0:  "name",
 	1:  "url",
 	2:  "description",
@@ -9669,6 +9675,7 @@ var jsonFieldsNameOfMCPEndpointCreate = [11]string{
 	8:  "active",
 	9:  "allowed_tools",
 	10: "denied_tools",
+	11: "allow_renderers",
 }
 
 // Decode decodes MCPEndpointCreate from json.
@@ -9794,6 +9801,16 @@ func (s *MCPEndpointCreate) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
+		case "allow_renderers":
+			if err := func() error {
+				s.AllowRenderers.Reset()
+				if err := s.AllowRenderers.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allow_renderers\"")
 			}
 		default:
 			return d.Skip()
@@ -9983,9 +10000,15 @@ func (s *MCPEndpointResponse) encodeFields(e *jx.Encoder) {
 			s.DeniedTools.Encode(e)
 		}
 	}
+	{
+		if s.AllowRenderers.Set {
+			e.FieldStart("allow_renderers")
+			s.AllowRenderers.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointResponse = [12]string{
+var jsonFieldsNameOfMCPEndpointResponse = [13]string{
 	0:  "id",
 	1:  "name",
 	2:  "url",
@@ -9998,6 +10021,7 @@ var jsonFieldsNameOfMCPEndpointResponse = [12]string{
 	9:  "active",
 	10: "allowed_tools",
 	11: "denied_tools",
+	12: "allow_renderers",
 }
 
 // Decode decodes MCPEndpointResponse from json.
@@ -10135,6 +10159,16 @@ func (s *MCPEndpointResponse) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
+		case "allow_renderers":
+			if err := func() error {
+				s.AllowRenderers.Reset()
+				if err := s.AllowRenderers.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allow_renderers\"")
 			}
 		default:
 			return d.Skip()
@@ -10324,9 +10358,15 @@ func (s *MCPEndpointUpdate) encodeFields(e *jx.Encoder) {
 			s.DeniedTools.Encode(e)
 		}
 	}
+	{
+		if s.AllowRenderers.Set {
+			e.FieldStart("allow_renderers")
+			s.AllowRenderers.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfMCPEndpointUpdate = [11]string{
+var jsonFieldsNameOfMCPEndpointUpdate = [12]string{
 	0:  "name",
 	1:  "url",
 	2:  "description",
@@ -10338,6 +10378,7 @@ var jsonFieldsNameOfMCPEndpointUpdate = [11]string{
 	8:  "active",
 	9:  "allowed_tools",
 	10: "denied_tools",
+	11: "allow_renderers",
 }
 
 // Decode decodes MCPEndpointUpdate from json.
@@ -10457,6 +10498,16 @@ func (s *MCPEndpointUpdate) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"denied_tools\"")
+			}
+		case "allow_renderers":
+			if err := func() error {
+				s.AllowRenderers.Reset()
+				if err := s.AllowRenderers.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"allow_renderers\"")
 			}
 		default:
 			return d.Skip()

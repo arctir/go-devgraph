@@ -416,10 +416,8 @@ type Handler interface {
 	// GetRendererAllowlistAPIV1RenderersAllowlistGet implements get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
 	//
 	// Get the list of allowed renderer domains.
-	// In production, this could be loaded from:
-	// - Database
-	// - Environment variables
-	// - External config service.
+	// Returns static allowlist plus dynamically loaded domains from
+	// MCP endpoints with allow_renderers enabled.
 	//
 	// GET /api/v1/renderers/allowlist
 	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)

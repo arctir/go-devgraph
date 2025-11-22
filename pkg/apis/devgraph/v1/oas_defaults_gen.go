@@ -216,6 +216,10 @@ func (s *MCPEndpointCreate) setDefaults() {
 		val := bool(true)
 		s.Active.SetTo(val)
 	}
+	{
+		val := bool(false)
+		s.AllowRenderers.SetTo(val)
+	}
 }
 
 // setDefaults set default value of fields.
@@ -235,6 +239,10 @@ func (s *MCPEndpointResponse) setDefaults() {
 	{
 		val := bool(true)
 		s.Active.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.AllowRenderers.SetTo(val)
 	}
 }
 

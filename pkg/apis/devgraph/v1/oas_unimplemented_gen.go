@@ -620,10 +620,8 @@ func (UnimplementedHandler) GetPrompt(ctx context.Context, params GetPromptParam
 // GetRendererAllowlistAPIV1RenderersAllowlistGet implements get_renderer_allowlist_api_v1_renderers_allowlist_get operation.
 //
 // Get the list of allowed renderer domains.
-// In production, this could be loaded from:
-// - Database
-// - Environment variables
-// - External config service.
+// Returns static allowlist plus dynamically loaded domains from
+// MCP endpoints with allow_renderers enabled.
 //
 // GET /api/v1/renderers/allowlist
 func (UnimplementedHandler) GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) (r []RendererManifest, _ error) {

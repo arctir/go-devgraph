@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.25
+  version: 1.0.0-beta.27
 paths:
   /api/v1/entities/definitions:
     get:
@@ -2332,13 +2332,9 @@ paths:
       description: 'Get the list of allowed renderer domains.
 
 
-        In production, this could be loaded from:
+        Returns static allowlist plus dynamically loaded domains from
 
-        - Database
-
-        - Environment variables
-
-        - External config service'
+        MCP endpoints with allow_renderers enabled.'
       operationId: get_renderer_allowlist_api_v1_renderers_allowlist_get
       responses:
         '200':
@@ -2351,6 +2347,8 @@ paths:
                 type: array
                 title: Response Get Renderer Allowlist Api V1 Renderers Allowlist
                   Get
+      security:
+      - OAuth2PasswordBearer: []
   /api/v1/subscriptions:
     get:
       tags:
@@ -4688,6 +4686,10 @@ components:
             type: string
           type: array
           nullable: true
+        allow_renderers:
+          type: boolean
+          title: Allow Renderers
+          default: false
       type: object
       required:
       - name
@@ -4744,6 +4746,10 @@ components:
             type: string
           type: array
           nullable: true
+        allow_renderers:
+          type: boolean
+          title: Allow Renderers
+          default: false
       type: object
       required:
       - id
@@ -4791,6 +4797,9 @@ components:
           items:
             type: string
           type: array
+          nullable: true
+        allow_renderers:
+          type: boolean
           nullable: true
       type: object
       title: MCPEndpointUpdate
