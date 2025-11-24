@@ -209,6 +209,10 @@ type GetEntityToolsRes interface {
 	getEntityToolsRes()
 }
 
+type GetEnvironmentDiscoverySettingsRes interface {
+	getEnvironmentDiscoverySettingsRes()
+}
+
 type GetEnvironmentStatusRes interface {
 	getEnvironmentStatusRes()
 }
@@ -343,6 +347,10 @@ type UpdateChatRes interface {
 
 type UpdateConfiguredProviderRes interface {
 	updateConfiguredProviderRes()
+}
+
+type UpdateEnvironmentDiscoverySettingsRes interface {
+	updateEnvironmentDiscoverySettingsRes()
 }
 
 type UpdateEnvironmentUserRes interface {

@@ -1013,6 +1013,32 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 							switch elem[0] {
+							case 'd': // Prefix: "discovery-settings"
+
+								if l := len("discovery-settings"); len(elem) >= l && elem[0:l] == "discovery-settings" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetEnvironmentDiscoverySettingsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									case "PATCH":
+										s.handleUpdateEnvironmentDiscoverySettingsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET,PATCH")
+									}
+
+									return
+								}
+
 							case 's': // Prefix: "status"
 
 								if l := len("status"); len(elem) >= l && elem[0:l] == "status" {
@@ -3206,6 +3232,38 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 							switch elem[0] {
+							case 'd': // Prefix: "discovery-settings"
+
+								if l := len("discovery-settings"); len(elem) >= l && elem[0:l] == "discovery-settings" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetEnvironmentDiscoverySettingsOperation
+										r.summary = "Get Environment Discovery Settings"
+										r.operationID = "get_environment_discovery_settings"
+										r.pathPattern = "/api/v1/environments/{env_id}/discovery-settings"
+										r.args = args
+										r.count = 1
+										return r, true
+									case "PATCH":
+										r.name = UpdateEnvironmentDiscoverySettingsOperation
+										r.summary = "Update Environment Discovery Settings"
+										r.operationID = "update_environment_discovery_settings"
+										r.pathPattern = "/api/v1/environments/{env_id}/discovery-settings"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
 							case 's': // Prefix: "status"
 
 								if l := len("status"); len(elem) >= l && elem[0:l] == "status" {

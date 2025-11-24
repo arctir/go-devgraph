@@ -329,6 +329,12 @@ type Handler interface {
 	//
 	// GET /api/v1/mcp/entity-definitions/{entity_definition_id}/tools
 	GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error)
+	// GetEnvironmentDiscoverySettings implements get_environment_discovery_settings operation.
+	//
+	// Get discovery settings for an environment.
+	//
+	// GET /api/v1/environments/{env_id}/discovery-settings
+	GetEnvironmentDiscoverySettings(ctx context.Context, params GetEnvironmentDiscoverySettingsParams) (GetEnvironmentDiscoverySettingsRes, error)
 	// GetEnvironmentStatus implements get_environment_status operation.
 	//
 	// Get Environment Status.
@@ -544,6 +550,12 @@ type Handler interface {
 	//
 	// PUT /api/v1/discovery/configured-providers/{provider_id}
 	UpdateConfiguredProvider(ctx context.Context, req *ConfiguredProviderUpdate, params UpdateConfiguredProviderParams) (UpdateConfiguredProviderRes, error)
+	// UpdateEnvironmentDiscoverySettings implements update_environment_discovery_settings operation.
+	//
+	// Update discovery settings for an environment.
+	//
+	// PATCH /api/v1/environments/{env_id}/discovery-settings
+	UpdateEnvironmentDiscoverySettings(ctx context.Context, req *EnvironmentDiscoverySettingsUpdate, params UpdateEnvironmentDiscoverySettingsParams) (UpdateEnvironmentDiscoverySettingsRes, error)
 	// UpdateEnvironmentUser implements update_environment_user operation.
 	//
 	// Update an environment user's role.

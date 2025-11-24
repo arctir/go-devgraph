@@ -349,6 +349,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/mcp/entity-definitions/{entity_definition_id}/tools
 	GetEntityTools(ctx context.Context, params GetEntityToolsParams) (GetEntityToolsRes, error)
+	// GetEnvironmentDiscoverySettings invokes get_environment_discovery_settings operation.
+	//
+	// Get discovery settings for an environment.
+	//
+	// GET /api/v1/environments/{env_id}/discovery-settings
+	GetEnvironmentDiscoverySettings(ctx context.Context, params GetEnvironmentDiscoverySettingsParams) (GetEnvironmentDiscoverySettingsRes, error)
 	// GetEnvironmentStatus invokes get_environment_status operation.
 	//
 	// Get Environment Status.
@@ -564,6 +570,12 @@ type Invoker interface {
 	//
 	// PUT /api/v1/discovery/configured-providers/{provider_id}
 	UpdateConfiguredProvider(ctx context.Context, request *ConfiguredProviderUpdate, params UpdateConfiguredProviderParams) (UpdateConfiguredProviderRes, error)
+	// UpdateEnvironmentDiscoverySettings invokes update_environment_discovery_settings operation.
+	//
+	// Update discovery settings for an environment.
+	//
+	// PATCH /api/v1/environments/{env_id}/discovery-settings
+	UpdateEnvironmentDiscoverySettings(ctx context.Context, request *EnvironmentDiscoverySettingsUpdate, params UpdateEnvironmentDiscoverySettingsParams) (UpdateEnvironmentDiscoverySettingsRes, error)
 	// UpdateEnvironmentUser invokes update_environment_user operation.
 	//
 	// Update an environment user's role.
@@ -7345,6 +7357,131 @@ func (c *Client) sendGetEntityTools(ctx context.Context, params GetEntityToolsPa
 	return result, nil
 }
 
+// GetEnvironmentDiscoverySettings invokes get_environment_discovery_settings operation.
+//
+// Get discovery settings for an environment.
+//
+// GET /api/v1/environments/{env_id}/discovery-settings
+func (c *Client) GetEnvironmentDiscoverySettings(ctx context.Context, params GetEnvironmentDiscoverySettingsParams) (GetEnvironmentDiscoverySettingsRes, error) {
+	res, err := c.sendGetEnvironmentDiscoverySettings(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetEnvironmentDiscoverySettings(ctx context.Context, params GetEnvironmentDiscoverySettingsParams) (res GetEnvironmentDiscoverySettingsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_environment_discovery_settings"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/environments/{env_id}/discovery-settings"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetEnvironmentDiscoverySettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/v1/environments/"
+	{
+		// Encode "env_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "env_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.EnvID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/discovery-settings"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetEnvironmentDiscoverySettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetEnvironmentDiscoverySettingsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetEnvironmentStatus invokes get_environment_status operation.
 //
 // Get Environment Status.
@@ -11527,6 +11664,134 @@ func (c *Client) sendUpdateConfiguredProvider(ctx context.Context, request *Conf
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateConfiguredProviderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateEnvironmentDiscoverySettings invokes update_environment_discovery_settings operation.
+//
+// Update discovery settings for an environment.
+//
+// PATCH /api/v1/environments/{env_id}/discovery-settings
+func (c *Client) UpdateEnvironmentDiscoverySettings(ctx context.Context, request *EnvironmentDiscoverySettingsUpdate, params UpdateEnvironmentDiscoverySettingsParams) (UpdateEnvironmentDiscoverySettingsRes, error) {
+	res, err := c.sendUpdateEnvironmentDiscoverySettings(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateEnvironmentDiscoverySettings(ctx context.Context, request *EnvironmentDiscoverySettingsUpdate, params UpdateEnvironmentDiscoverySettingsParams) (res UpdateEnvironmentDiscoverySettingsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("update_environment_discovery_settings"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/api/v1/environments/{env_id}/discovery-settings"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateEnvironmentDiscoverySettingsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/v1/environments/"
+	{
+		// Encode "env_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "env_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.EnvID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/discovery-settings"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateEnvironmentDiscoverySettingsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, UpdateEnvironmentDiscoverySettingsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateEnvironmentDiscoverySettingsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

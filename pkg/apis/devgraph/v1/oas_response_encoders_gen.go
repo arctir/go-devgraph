@@ -1888,6 +1888,45 @@ func encodeGetEntityToolsResponse(response GetEntityToolsRes, w http.ResponseWri
 	}
 }
 
+func encodeGetEnvironmentDiscoverySettingsResponse(response GetEnvironmentDiscoverySettingsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *EnvironmentDiscoverySettingsResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *GetEnvironmentDiscoverySettingsNotFound:
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetEnvironmentStatusResponse(response GetEnvironmentStatusRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *EnvironmentStatusResponse:
@@ -3059,6 +3098,45 @@ func encodeUpdateConfiguredProviderResponse(response UpdateConfiguredProviderRes
 		return nil
 
 	case *UpdateConfiguredProviderNotFound:
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeUpdateEnvironmentDiscoverySettingsResponse(response UpdateEnvironmentDiscoverySettingsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *EnvironmentDiscoverySettingsResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *UpdateEnvironmentDiscoverySettingsNotFound:
 		w.WriteHeader(404)
 		span.SetStatus(codes.Error, http.StatusText(404))
 

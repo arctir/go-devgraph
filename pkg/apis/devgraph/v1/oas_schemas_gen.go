@@ -2923,6 +2923,61 @@ func (s *EnvironmentCreate) SetInstanceURL(val string) {
 	s.InstanceURL = val
 }
 
+// Ref: #/components/schemas/EnvironmentDiscoverySettingsResponse
+type EnvironmentDiscoverySettingsResponse struct {
+	DiscoveryEnabled bool       `json:"discovery_enabled"`
+	DiscoveryImageID OptNilUUID `json:"discovery_image_id"`
+}
+
+// GetDiscoveryEnabled returns the value of DiscoveryEnabled.
+func (s *EnvironmentDiscoverySettingsResponse) GetDiscoveryEnabled() bool {
+	return s.DiscoveryEnabled
+}
+
+// GetDiscoveryImageID returns the value of DiscoveryImageID.
+func (s *EnvironmentDiscoverySettingsResponse) GetDiscoveryImageID() OptNilUUID {
+	return s.DiscoveryImageID
+}
+
+// SetDiscoveryEnabled sets the value of DiscoveryEnabled.
+func (s *EnvironmentDiscoverySettingsResponse) SetDiscoveryEnabled(val bool) {
+	s.DiscoveryEnabled = val
+}
+
+// SetDiscoveryImageID sets the value of DiscoveryImageID.
+func (s *EnvironmentDiscoverySettingsResponse) SetDiscoveryImageID(val OptNilUUID) {
+	s.DiscoveryImageID = val
+}
+
+func (*EnvironmentDiscoverySettingsResponse) getEnvironmentDiscoverySettingsRes()    {}
+func (*EnvironmentDiscoverySettingsResponse) updateEnvironmentDiscoverySettingsRes() {}
+
+// Ref: #/components/schemas/EnvironmentDiscoverySettingsUpdate
+type EnvironmentDiscoverySettingsUpdate struct {
+	DiscoveryEnabled OptNilBool `json:"discovery_enabled"`
+	DiscoveryImageID OptNilUUID `json:"discovery_image_id"`
+}
+
+// GetDiscoveryEnabled returns the value of DiscoveryEnabled.
+func (s *EnvironmentDiscoverySettingsUpdate) GetDiscoveryEnabled() OptNilBool {
+	return s.DiscoveryEnabled
+}
+
+// GetDiscoveryImageID returns the value of DiscoveryImageID.
+func (s *EnvironmentDiscoverySettingsUpdate) GetDiscoveryImageID() OptNilUUID {
+	return s.DiscoveryImageID
+}
+
+// SetDiscoveryEnabled sets the value of DiscoveryEnabled.
+func (s *EnvironmentDiscoverySettingsUpdate) SetDiscoveryEnabled(val OptNilBool) {
+	s.DiscoveryEnabled = val
+}
+
+// SetDiscoveryImageID sets the value of DiscoveryImageID.
+func (s *EnvironmentDiscoverySettingsUpdate) SetDiscoveryImageID(val OptNilUUID) {
+	s.DiscoveryImageID = val
+}
+
 // Ref: #/components/schemas/EnvironmentResponse
 type EnvironmentResponse struct {
 	ID                  uuid.UUID `json:"id"`
@@ -3393,6 +3448,11 @@ type GetEntityToolsOKApplicationJSON []MCPToolEntityAssociationResponse
 
 func (*GetEntityToolsOKApplicationJSON) getEntityToolsRes() {}
 
+// GetEnvironmentDiscoverySettingsNotFound is response for GetEnvironmentDiscoverySettings operation.
+type GetEnvironmentDiscoverySettingsNotFound struct{}
+
+func (*GetEnvironmentDiscoverySettingsNotFound) getEnvironmentDiscoverySettingsRes() {}
+
 // GetEnvironmentStatusNotFound is response for GetEnvironmentStatus operation.
 type GetEnvironmentStatusNotFound struct{}
 
@@ -3525,85 +3585,87 @@ func (s *HTTPValidationError) SetDetail(val []ValidationError) {
 	s.Detail = val
 }
 
-func (*HTTPValidationError) bulkInviteEnvironmentUsersRes()       {}
-func (*HTTPValidationError) checkEntitlementRes()                 {}
-func (*HTTPValidationError) cleanupOrphanedEntitiesRes()          {}
-func (*HTTPValidationError) createChatRes()                       {}
-func (*HTTPValidationError) createChatSuggestionRes()             {}
-func (*HTTPValidationError) createChatTitleRes()                  {}
-func (*HTTPValidationError) createConfiguredProviderRes()         {}
-func (*HTTPValidationError) createEntitiesBulkRes()               {}
-func (*HTTPValidationError) createEntityDefinitionRes()           {}
-func (*HTTPValidationError) createEntityRelationRes()             {}
-func (*HTTPValidationError) createEntityRelationsBulkRes()        {}
-func (*HTTPValidationError) createEntityRes()                     {}
-func (*HTTPValidationError) createEnvironmentRes()                {}
-func (*HTTPValidationError) createEnvironmentUserRes()            {}
-func (*HTTPValidationError) createMcpToolAssociationRes()         {}
-func (*HTTPValidationError) createMcpendpointRes()                {}
-func (*HTTPValidationError) createModelRes()                      {}
-func (*HTTPValidationError) createModelproviderRes()              {}
-func (*HTTPValidationError) createOAuthServiceRes()               {}
-func (*HTTPValidationError) createPromptRes()                     {}
-func (*HTTPValidationError) createTokenRes()                      {}
-func (*HTTPValidationError) deleteChatRes()                       {}
-func (*HTTPValidationError) deleteChatSuggestionRes()             {}
-func (*HTTPValidationError) deleteChatsBulkRes()                  {}
-func (*HTTPValidationError) deleteConfiguredProviderRes()         {}
-func (*HTTPValidationError) deleteEntityDefinitionRes()           {}
-func (*HTTPValidationError) deleteEntityRelationRes()             {}
-func (*HTTPValidationError) deleteEntityRes()                     {}
-func (*HTTPValidationError) deleteEnvironmentInvitationRes()      {}
-func (*HTTPValidationError) deleteEnvironmentRes()                {}
-func (*HTTPValidationError) deleteEnvironmentUserRes()            {}
-func (*HTTPValidationError) deleteMcpToolAssociationRes()         {}
-func (*HTTPValidationError) deleteMcpendpointRes()                {}
-func (*HTTPValidationError) deleteModelRes()                      {}
-func (*HTTPValidationError) deleteModelproviderRes()              {}
-func (*HTTPValidationError) deleteOAuthServiceRes()               {}
-func (*HTTPValidationError) deletePromptRes()                     {}
-func (*HTTPValidationError) deleteTokenRes()                      {}
-func (*HTTPValidationError) exchangeOAuthTokenRes()               {}
-func (*HTTPValidationError) getChatMessagesRes()                  {}
-func (*HTTPValidationError) getChatRes()                          {}
-func (*HTTPValidationError) getChatsRes()                         {}
-func (*HTTPValidationError) getConfiguredProviderRes()            {}
-func (*HTTPValidationError) getDeprecatedProviderConfigsRes()     {}
-func (*HTTPValidationError) getDiscoveryProviderConfigSchemaRes() {}
-func (*HTTPValidationError) getEntitiesRes()                      {}
-func (*HTTPValidationError) getEntityByUIDRes()                   {}
-func (*HTTPValidationError) getEntityRes()                        {}
-func (*HTTPValidationError) getEntityToolsRes()                   {}
-func (*HTTPValidationError) getEnvironmentStatusRes()             {}
-func (*HTTPValidationError) getEnvironmentUserRes()               {}
-func (*HTTPValidationError) getMcpEndpointEntityTypesRes()        {}
-func (*HTTPValidationError) getMcpendpointRes()                   {}
-func (*HTTPValidationError) getModelRes()                         {}
-func (*HTTPValidationError) getModelproviderRes()                 {}
-func (*HTTPValidationError) getOAuthAuthorizationURLRes()         {}
-func (*HTTPValidationError) getOAuthServiceRes()                  {}
-func (*HTTPValidationError) getPendingInvitationsRes()            {}
-func (*HTTPValidationError) getPromptRes()                        {}
-func (*HTTPValidationError) inviteEnvironmentUserRes()            {}
-func (*HTTPValidationError) listChatSuggestionsRes()              {}
-func (*HTTPValidationError) listEnvironmentUsersRes()             {}
-func (*HTTPValidationError) listMcpendpointToolsRes()             {}
-func (*HTTPValidationError) listOAuthServicesRes()                {}
-func (*HTTPValidationError) listOrphanedEntitiesRes()             {}
-func (*HTTPValidationError) listPromptsRes()                      {}
-func (*HTTPValidationError) migrateAllDeprecatedConfigsRes()      {}
-func (*HTTPValidationError) migrateProviderConfigRes()            {}
-func (*HTTPValidationError) postChatMessagesRes()                 {}
-func (*HTTPValidationError) revokeOAuthTokenRes()                 {}
-func (*HTTPValidationError) updateChatRes()                       {}
-func (*HTTPValidationError) updateConfiguredProviderRes()         {}
-func (*HTTPValidationError) updateEnvironmentUserRes()            {}
-func (*HTTPValidationError) updateMcpendpointRes()                {}
-func (*HTTPValidationError) updateModelRes()                      {}
-func (*HTTPValidationError) updateModelproviderRes()              {}
-func (*HTTPValidationError) updateOAuthServiceRes()               {}
-func (*HTTPValidationError) updatePromptRes()                     {}
-func (*HTTPValidationError) updateTokenRes()                      {}
+func (*HTTPValidationError) bulkInviteEnvironmentUsersRes()         {}
+func (*HTTPValidationError) checkEntitlementRes()                   {}
+func (*HTTPValidationError) cleanupOrphanedEntitiesRes()            {}
+func (*HTTPValidationError) createChatRes()                         {}
+func (*HTTPValidationError) createChatSuggestionRes()               {}
+func (*HTTPValidationError) createChatTitleRes()                    {}
+func (*HTTPValidationError) createConfiguredProviderRes()           {}
+func (*HTTPValidationError) createEntitiesBulkRes()                 {}
+func (*HTTPValidationError) createEntityDefinitionRes()             {}
+func (*HTTPValidationError) createEntityRelationRes()               {}
+func (*HTTPValidationError) createEntityRelationsBulkRes()          {}
+func (*HTTPValidationError) createEntityRes()                       {}
+func (*HTTPValidationError) createEnvironmentRes()                  {}
+func (*HTTPValidationError) createEnvironmentUserRes()              {}
+func (*HTTPValidationError) createMcpToolAssociationRes()           {}
+func (*HTTPValidationError) createMcpendpointRes()                  {}
+func (*HTTPValidationError) createModelRes()                        {}
+func (*HTTPValidationError) createModelproviderRes()                {}
+func (*HTTPValidationError) createOAuthServiceRes()                 {}
+func (*HTTPValidationError) createPromptRes()                       {}
+func (*HTTPValidationError) createTokenRes()                        {}
+func (*HTTPValidationError) deleteChatRes()                         {}
+func (*HTTPValidationError) deleteChatSuggestionRes()               {}
+func (*HTTPValidationError) deleteChatsBulkRes()                    {}
+func (*HTTPValidationError) deleteConfiguredProviderRes()           {}
+func (*HTTPValidationError) deleteEntityDefinitionRes()             {}
+func (*HTTPValidationError) deleteEntityRelationRes()               {}
+func (*HTTPValidationError) deleteEntityRes()                       {}
+func (*HTTPValidationError) deleteEnvironmentInvitationRes()        {}
+func (*HTTPValidationError) deleteEnvironmentRes()                  {}
+func (*HTTPValidationError) deleteEnvironmentUserRes()              {}
+func (*HTTPValidationError) deleteMcpToolAssociationRes()           {}
+func (*HTTPValidationError) deleteMcpendpointRes()                  {}
+func (*HTTPValidationError) deleteModelRes()                        {}
+func (*HTTPValidationError) deleteModelproviderRes()                {}
+func (*HTTPValidationError) deleteOAuthServiceRes()                 {}
+func (*HTTPValidationError) deletePromptRes()                       {}
+func (*HTTPValidationError) deleteTokenRes()                        {}
+func (*HTTPValidationError) exchangeOAuthTokenRes()                 {}
+func (*HTTPValidationError) getChatMessagesRes()                    {}
+func (*HTTPValidationError) getChatRes()                            {}
+func (*HTTPValidationError) getChatsRes()                           {}
+func (*HTTPValidationError) getConfiguredProviderRes()              {}
+func (*HTTPValidationError) getDeprecatedProviderConfigsRes()       {}
+func (*HTTPValidationError) getDiscoveryProviderConfigSchemaRes()   {}
+func (*HTTPValidationError) getEntitiesRes()                        {}
+func (*HTTPValidationError) getEntityByUIDRes()                     {}
+func (*HTTPValidationError) getEntityRes()                          {}
+func (*HTTPValidationError) getEntityToolsRes()                     {}
+func (*HTTPValidationError) getEnvironmentDiscoverySettingsRes()    {}
+func (*HTTPValidationError) getEnvironmentStatusRes()               {}
+func (*HTTPValidationError) getEnvironmentUserRes()                 {}
+func (*HTTPValidationError) getMcpEndpointEntityTypesRes()          {}
+func (*HTTPValidationError) getMcpendpointRes()                     {}
+func (*HTTPValidationError) getModelRes()                           {}
+func (*HTTPValidationError) getModelproviderRes()                   {}
+func (*HTTPValidationError) getOAuthAuthorizationURLRes()           {}
+func (*HTTPValidationError) getOAuthServiceRes()                    {}
+func (*HTTPValidationError) getPendingInvitationsRes()              {}
+func (*HTTPValidationError) getPromptRes()                          {}
+func (*HTTPValidationError) inviteEnvironmentUserRes()              {}
+func (*HTTPValidationError) listChatSuggestionsRes()                {}
+func (*HTTPValidationError) listEnvironmentUsersRes()               {}
+func (*HTTPValidationError) listMcpendpointToolsRes()               {}
+func (*HTTPValidationError) listOAuthServicesRes()                  {}
+func (*HTTPValidationError) listOrphanedEntitiesRes()               {}
+func (*HTTPValidationError) listPromptsRes()                        {}
+func (*HTTPValidationError) migrateAllDeprecatedConfigsRes()        {}
+func (*HTTPValidationError) migrateProviderConfigRes()              {}
+func (*HTTPValidationError) postChatMessagesRes()                   {}
+func (*HTTPValidationError) revokeOAuthTokenRes()                   {}
+func (*HTTPValidationError) updateChatRes()                         {}
+func (*HTTPValidationError) updateConfiguredProviderRes()           {}
+func (*HTTPValidationError) updateEnvironmentDiscoverySettingsRes() {}
+func (*HTTPValidationError) updateEnvironmentUserRes()              {}
+func (*HTTPValidationError) updateMcpendpointRes()                  {}
+func (*HTTPValidationError) updateModelRes()                        {}
+func (*HTTPValidationError) updateModelproviderRes()                {}
+func (*HTTPValidationError) updateOAuthServiceRes()                 {}
+func (*HTTPValidationError) updatePromptRes()                       {}
+func (*HTTPValidationError) updateTokenRes()                        {}
 
 // InviteEnvironmentUserNotFound is response for InviteEnvironmentUser operation.
 type InviteEnvironmentUserNotFound struct{}
@@ -8029,6 +8091,11 @@ func (*UpdateChatNotFound) updateChatRes() {}
 type UpdateConfiguredProviderNotFound struct{}
 
 func (*UpdateConfiguredProviderNotFound) updateConfiguredProviderRes() {}
+
+// UpdateEnvironmentDiscoverySettingsNotFound is response for UpdateEnvironmentDiscoverySettings operation.
+type UpdateEnvironmentDiscoverySettingsNotFound struct{}
+
+func (*UpdateEnvironmentDiscoverySettingsNotFound) updateEnvironmentDiscoverySettingsRes() {}
 
 // UpdateEnvironmentUserNotFound is response for UpdateEnvironmentUser operation.
 type UpdateEnvironmentUserNotFound struct{}

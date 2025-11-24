@@ -3807,6 +3807,71 @@ func decodeGetEntityToolsParams(args [1]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
+// GetEnvironmentDiscoverySettingsParams is parameters of get_environment_discovery_settings operation.
+type GetEnvironmentDiscoverySettingsParams struct {
+	EnvID uuid.UUID
+}
+
+func unpackGetEnvironmentDiscoverySettingsParams(packed middleware.Parameters) (params GetEnvironmentDiscoverySettingsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "env_id",
+			In:   "path",
+		}
+		params.EnvID = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeGetEnvironmentDiscoverySettingsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetEnvironmentDiscoverySettingsParams, _ error) {
+	// Decode path: env_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "env_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.EnvID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "env_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetEnvironmentStatusParams is parameters of get_environment_status operation.
 type GetEnvironmentStatusParams struct {
 	EnvID uuid.UUID
@@ -5367,6 +5432,71 @@ func decodeUpdateConfiguredProviderParams(args [1]string, argsEscaped bool, r *h
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "provider_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateEnvironmentDiscoverySettingsParams is parameters of update_environment_discovery_settings operation.
+type UpdateEnvironmentDiscoverySettingsParams struct {
+	EnvID uuid.UUID
+}
+
+func unpackUpdateEnvironmentDiscoverySettingsParams(packed middleware.Parameters) (params UpdateEnvironmentDiscoverySettingsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "env_id",
+			In:   "path",
+		}
+		params.EnvID = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeUpdateEnvironmentDiscoverySettingsParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateEnvironmentDiscoverySettingsParams, _ error) {
+	// Decode path: env_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "env_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.EnvID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "env_id",
 			In:   "path",
 			Err:  err,
 		}

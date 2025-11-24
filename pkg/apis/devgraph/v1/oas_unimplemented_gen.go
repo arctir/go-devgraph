@@ -491,6 +491,15 @@ func (UnimplementedHandler) GetEntityTools(ctx context.Context, params GetEntity
 	return r, ht.ErrNotImplemented
 }
 
+// GetEnvironmentDiscoverySettings implements get_environment_discovery_settings operation.
+//
+// Get discovery settings for an environment.
+//
+// GET /api/v1/environments/{env_id}/discovery-settings
+func (UnimplementedHandler) GetEnvironmentDiscoverySettings(ctx context.Context, params GetEnvironmentDiscoverySettingsParams) (r GetEnvironmentDiscoverySettingsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetEnvironmentStatus implements get_environment_status operation.
 //
 // Get Environment Status.
@@ -808,6 +817,15 @@ func (UnimplementedHandler) UpdateChat(ctx context.Context, req *ChatSessionUpda
 //
 // PUT /api/v1/discovery/configured-providers/{provider_id}
 func (UnimplementedHandler) UpdateConfiguredProvider(ctx context.Context, req *ConfiguredProviderUpdate, params UpdateConfiguredProviderParams) (r UpdateConfiguredProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateEnvironmentDiscoverySettings implements update_environment_discovery_settings operation.
+//
+// Update discovery settings for an environment.
+//
+// PATCH /api/v1/environments/{env_id}/discovery-settings
+func (UnimplementedHandler) UpdateEnvironmentDiscoverySettings(ctx context.Context, req *EnvironmentDiscoverySettingsUpdate, params UpdateEnvironmentDiscoverySettingsParams) (r UpdateEnvironmentDiscoverySettingsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

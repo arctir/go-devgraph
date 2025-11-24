@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.29
+  version: 1.0.0-beta.30
 paths:
   /api/v1/entities/definitions:
     get:
@@ -1172,6 +1172,75 @@ paths:
       responses:
         '204':
           description: Successful Response
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/environments/{env_id}/discovery-settings:
+    get:
+      tags:
+      - environments
+      summary: Get Environment Discovery Settings
+      description: Get discovery settings for an environment
+      operationId: get_environment_discovery_settings
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: env_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Env Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentDiscoverySettingsResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - environments
+      summary: Update Environment Discovery Settings
+      description: Update discovery settings for an environment
+      operationId: update_environment_discovery_settings
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: env_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Env Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentDiscoverySettingsUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentDiscoverySettingsResponse'
         '404':
           description: Not found
         '422':
@@ -4470,6 +4539,30 @@ components:
       - stripe_subscription_id
       - instance_url
       title: EnvironmentCreate
+    EnvironmentDiscoverySettingsResponse:
+      properties:
+        discovery_enabled:
+          type: boolean
+          title: Discovery Enabled
+        discovery_image_id:
+          type: string
+          format: uuid
+          nullable: true
+      type: object
+      required:
+      - discovery_enabled
+      title: EnvironmentDiscoverySettingsResponse
+    EnvironmentDiscoverySettingsUpdate:
+      properties:
+        discovery_enabled:
+          type: boolean
+          nullable: true
+        discovery_image_id:
+          type: string
+          format: uuid
+          nullable: true
+      type: object
+      title: EnvironmentDiscoverySettingsUpdate
     EnvironmentResponse:
       properties:
         id:
