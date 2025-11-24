@@ -297,6 +297,10 @@ type ListConfiguredProvidersRes interface {
 	listConfiguredProvidersRes()
 }
 
+type ListDiscoveryImagesRes interface {
+	listDiscoveryImagesRes()
+}
+
 type ListDiscoveryProvidersRes interface {
 	listDiscoveryProvidersRes()
 }

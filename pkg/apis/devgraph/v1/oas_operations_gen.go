@@ -81,6 +81,7 @@ const (
 	ListAllMcpToolsOperation                                OperationName = "ListAllMcpTools"
 	ListChatSuggestionsOperation                            OperationName = "ListChatSuggestions"
 	ListConfiguredProvidersOperation                        OperationName = "ListConfiguredProviders"
+	ListDiscoveryImagesOperation                            OperationName = "ListDiscoveryImages"
 	ListDiscoveryProvidersOperation                         OperationName = "ListDiscoveryProviders"
 	ListEnvironmentUsersOperation                           OperationName = "ListEnvironmentUsers"
 	ListMcpendpointToolsOperation                           OperationName = "ListMcpendpointTools"

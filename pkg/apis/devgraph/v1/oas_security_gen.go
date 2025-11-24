@@ -107,6 +107,7 @@ var oauth2ScopesOAuth2PasswordBearer = map[string][]string{
 	ListAllMcpToolsOperation:                                []string{},
 	ListChatSuggestionsOperation:                            []string{},
 	ListConfiguredProvidersOperation:                        []string{},
+	ListDiscoveryImagesOperation:                            []string{},
 	ListDiscoveryProvidersOperation:                         []string{},
 	ListEnvironmentUsersOperation:                           []string{},
 	ListMcpendpointToolsOperation:                           []string{},

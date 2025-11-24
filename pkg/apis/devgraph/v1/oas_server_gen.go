@@ -470,6 +470,12 @@ type Handler interface {
 	//
 	// GET /api/v1/discovery/configured-providers
 	ListConfiguredProviders(ctx context.Context) (ListConfiguredProvidersRes, error)
+	// ListDiscoveryImages implements list_discovery_images operation.
+	//
+	// List all approved discovery images.
+	//
+	// GET /api/v1/discovery/images
+	ListDiscoveryImages(ctx context.Context) (ListDiscoveryImagesRes, error)
 	// ListDiscoveryProviders implements list_discovery_providers operation.
 	//
 	// List all available discovery provider types with their configuration schemas.

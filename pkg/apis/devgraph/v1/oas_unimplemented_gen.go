@@ -701,6 +701,15 @@ func (UnimplementedHandler) ListConfiguredProviders(ctx context.Context) (r List
 	return r, ht.ErrNotImplemented
 }
 
+// ListDiscoveryImages implements list_discovery_images operation.
+//
+// List all approved discovery images.
+//
+// GET /api/v1/discovery/images
+func (UnimplementedHandler) ListDiscoveryImages(ctx context.Context) (r ListDiscoveryImagesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListDiscoveryProviders implements list_discovery_providers operation.
 //
 // List all available discovery provider types with their configuration schemas.

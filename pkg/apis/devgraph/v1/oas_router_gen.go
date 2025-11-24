@@ -306,6 +306,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'i': // Prefix: "images"
+
+					if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleListDiscoveryImagesRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
 				case 'p': // Prefix: "providers"
 
 					if l := len("providers"); len(elem) >= l && elem[0:l] == "providers" {
@@ -2442,6 +2462,30 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 						}
 
+					}
+
+				case 'i': // Prefix: "images"
+
+					if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = ListDiscoveryImagesOperation
+							r.summary = "List Discovery Images"
+							r.operationID = "list_discovery_images"
+							r.pathPattern = "/api/v1/discovery/images"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 
 				case 'p': // Prefix: "providers"

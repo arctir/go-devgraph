@@ -1710,6 +1710,128 @@ func (s *DeprecatedProvidersResponse) SetDeprecatedProviders(val []DeprecatedPro
 
 func (*DeprecatedProvidersResponse) getDeprecatedProviderConfigsRes() {}
 
+// Response for listing discovery images.
+// Ref: #/components/schemas/DiscoveryImageListResponse
+type DiscoveryImageListResponse struct {
+	Images []DiscoveryImageResponse `json:"images"`
+	Count  int                      `json:"count"`
+}
+
+// GetImages returns the value of Images.
+func (s *DiscoveryImageListResponse) GetImages() []DiscoveryImageResponse {
+	return s.Images
+}
+
+// GetCount returns the value of Count.
+func (s *DiscoveryImageListResponse) GetCount() int {
+	return s.Count
+}
+
+// SetImages sets the value of Images.
+func (s *DiscoveryImageListResponse) SetImages(val []DiscoveryImageResponse) {
+	s.Images = val
+}
+
+// SetCount sets the value of Count.
+func (s *DiscoveryImageListResponse) SetCount(val int) {
+	s.Count = val
+}
+
+func (*DiscoveryImageListResponse) listDiscoveryImagesRes() {}
+
+// Response for a discovery image.
+// Ref: #/components/schemas/DiscoveryImageResponse
+type DiscoveryImageResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Image       string    `json:"image"`
+	Tag         string    `json:"tag"`
+	Digest      NilString `json:"digest"`
+	Description NilString `json:"description"`
+	IsDefault   bool      `json:"is_default"`
+	ApprovedBy  NilString `json:"approved_by"`
+	ApprovedAt  string    `json:"approved_at"`
+}
+
+// GetID returns the value of ID.
+func (s *DiscoveryImageResponse) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetImage returns the value of Image.
+func (s *DiscoveryImageResponse) GetImage() string {
+	return s.Image
+}
+
+// GetTag returns the value of Tag.
+func (s *DiscoveryImageResponse) GetTag() string {
+	return s.Tag
+}
+
+// GetDigest returns the value of Digest.
+func (s *DiscoveryImageResponse) GetDigest() NilString {
+	return s.Digest
+}
+
+// GetDescription returns the value of Description.
+func (s *DiscoveryImageResponse) GetDescription() NilString {
+	return s.Description
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *DiscoveryImageResponse) GetIsDefault() bool {
+	return s.IsDefault
+}
+
+// GetApprovedBy returns the value of ApprovedBy.
+func (s *DiscoveryImageResponse) GetApprovedBy() NilString {
+	return s.ApprovedBy
+}
+
+// GetApprovedAt returns the value of ApprovedAt.
+func (s *DiscoveryImageResponse) GetApprovedAt() string {
+	return s.ApprovedAt
+}
+
+// SetID sets the value of ID.
+func (s *DiscoveryImageResponse) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetImage sets the value of Image.
+func (s *DiscoveryImageResponse) SetImage(val string) {
+	s.Image = val
+}
+
+// SetTag sets the value of Tag.
+func (s *DiscoveryImageResponse) SetTag(val string) {
+	s.Tag = val
+}
+
+// SetDigest sets the value of Digest.
+func (s *DiscoveryImageResponse) SetDigest(val NilString) {
+	s.Digest = val
+}
+
+// SetDescription sets the value of Description.
+func (s *DiscoveryImageResponse) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *DiscoveryImageResponse) SetIsDefault(val bool) {
+	s.IsDefault = val
+}
+
+// SetApprovedBy sets the value of ApprovedBy.
+func (s *DiscoveryImageResponse) SetApprovedBy(val NilString) {
+	s.ApprovedBy = val
+}
+
+// SetApprovedAt sets the value of ApprovedAt.
+func (s *DiscoveryImageResponse) SetApprovedAt(val string) {
+	s.ApprovedAt = val
+}
+
 // Metadata about a discovery provider.
 // Ref: #/components/schemas/DiscoveryProviderMetadata
 type DiscoveryProviderMetadata struct {
@@ -3690,6 +3812,11 @@ func (*ListChatSuggestionsOKApplicationJSON) listChatSuggestionsRes() {}
 type ListConfiguredProvidersNotFound struct{}
 
 func (*ListConfiguredProvidersNotFound) listConfiguredProvidersRes() {}
+
+// ListDiscoveryImagesNotFound is response for ListDiscoveryImages operation.
+type ListDiscoveryImagesNotFound struct{}
+
+func (*ListDiscoveryImagesNotFound) listDiscoveryImagesRes() {}
 
 // ListDiscoveryProvidersNotFound is response for ListDiscoveryProviders operation.
 type ListDiscoveryProvidersNotFound struct{}

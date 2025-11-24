@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.30
+  version: 1.0.0-beta.31
 paths:
   /api/v1/entities/definitions:
     get:
@@ -3187,6 +3187,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/discovery/images:
+    get:
+      tags:
+      - discovery
+      summary: List Discovery Images
+      description: List all approved discovery images
+      operationId: list_discovery_images
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryImageListResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
 components:
   schemas:
     AllProviderVersionsResponse:
@@ -4027,6 +4045,61 @@ components:
       - deprecated_providers
       title: DeprecatedProvidersResponse
       description: Response containing deprecated provider configs.
+    DiscoveryImageListResponse:
+      properties:
+        images:
+          items:
+            $ref: '#/components/schemas/DiscoveryImageResponse'
+          type: array
+          title: Images
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - images
+      - count
+      title: DiscoveryImageListResponse
+      description: Response for listing discovery images.
+    DiscoveryImageResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        image:
+          type: string
+          title: Image
+        tag:
+          type: string
+          title: Tag
+        digest:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        is_default:
+          type: boolean
+          title: Is Default
+        approved_by:
+          type: string
+          nullable: true
+        approved_at:
+          type: string
+          title: Approved At
+      type: object
+      required:
+      - id
+      - image
+      - tag
+      - digest
+      - description
+      - is_default
+      - approved_by
+      - approved_at
+      title: DiscoveryImageResponse
+      description: Response for a discovery image.
     DiscoveryProviderMetadata:
       properties:
         type:
