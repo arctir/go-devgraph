@@ -22,3 +22,5 @@ go.work
 
 # OS
 .DS_Store
+
+config.yaml
