@@ -1750,6 +1750,8 @@ type DiscoveryImageResponse struct {
 	IsDefault   bool      `json:"is_default"`
 	ApprovedBy  NilString `json:"approved_by"`
 	ApprovedAt  string    `json:"approved_at"`
+	// Molecules in this image.
+	Molecules []MoleculeData `json:"molecules"`
 }
 
 // GetID returns the value of ID.
@@ -1792,6 +1794,11 @@ func (s *DiscoveryImageResponse) GetApprovedAt() string {
 	return s.ApprovedAt
 }
 
+// GetMolecules returns the value of Molecules.
+func (s *DiscoveryImageResponse) GetMolecules() []MoleculeData {
+	return s.Molecules
+}
+
 // SetID sets the value of ID.
 func (s *DiscoveryImageResponse) SetID(val uuid.UUID) {
 	s.ID = val
@@ -1832,6 +1839,11 @@ func (s *DiscoveryImageResponse) SetApprovedAt(val string) {
 	s.ApprovedAt = val
 }
 
+// SetMolecules sets the value of Molecules.
+func (s *DiscoveryImageResponse) SetMolecules(val []MoleculeData) {
+	s.Molecules = val
+}
+
 // Metadata about a discovery provider.
 // Ref: #/components/schemas/DiscoveryProviderMetadata
 type DiscoveryProviderMetadata struct {
@@ -1839,7 +1851,7 @@ type DiscoveryProviderMetadata struct {
 	DisplayName  string                                `json:"display_name"`
 	Description  string                                `json:"description"`
 	ConfigSchema DiscoveryProviderMetadataConfigSchema `json:"config_schema"`
-	Logo         OptNilString                          `json:"logo"`
+	Logo         jx.Raw                                `json:"logo"`
 }
 
 // GetType returns the value of Type.
@@ -1863,7 +1875,7 @@ func (s *DiscoveryProviderMetadata) GetConfigSchema() DiscoveryProviderMetadataC
 }
 
 // GetLogo returns the value of Logo.
-func (s *DiscoveryProviderMetadata) GetLogo() OptNilString {
+func (s *DiscoveryProviderMetadata) GetLogo() jx.Raw {
 	return s.Logo
 }
 
@@ -1888,7 +1900,7 @@ func (s *DiscoveryProviderMetadata) SetConfigSchema(val DiscoveryProviderMetadat
 }
 
 // SetLogo sets the value of Logo.
-func (s *DiscoveryProviderMetadata) SetLogo(val OptNilString) {
+func (s *DiscoveryProviderMetadata) SetLogo(val jx.Raw) {
 	s.Logo = val
 }
 
@@ -2602,10 +2614,12 @@ func (s *EntityReferenceResponse) SetID(val string) {
 
 // Ref: #/components/schemas/EntityRelation
 type EntityRelation struct {
-	Namespace OptString       `json:"namespace"`
-	Relation  string          `json:"relation"`
-	Source    EntityReference `json:"source"`
-	Target    EntityReference `json:"target"`
+	Namespace OptString             `json:"namespace"`
+	Relation  string                `json:"relation"`
+	Source    EntityReference       `json:"source"`
+	Target    EntityReference       `json:"target"`
+	Metadata  OptRelationMetadata   `json:"metadata"`
+	Spec      OptEntityRelationSpec `json:"spec"`
 }
 
 // GetNamespace returns the value of Namespace.
@@ -2628,6 +2642,16 @@ func (s *EntityRelation) GetTarget() EntityReference {
 	return s.Target
 }
 
+// GetMetadata returns the value of Metadata.
+func (s *EntityRelation) GetMetadata() OptRelationMetadata {
+	return s.Metadata
+}
+
+// GetSpec returns the value of Spec.
+func (s *EntityRelation) GetSpec() OptEntityRelationSpec {
+	return s.Spec
+}
+
 // SetNamespace sets the value of Namespace.
 func (s *EntityRelation) SetNamespace(val OptString) {
 	s.Namespace = val
@@ -2648,12 +2672,24 @@ func (s *EntityRelation) SetTarget(val EntityReference) {
 	s.Target = val
 }
 
+// SetMetadata sets the value of Metadata.
+func (s *EntityRelation) SetMetadata(val OptRelationMetadata) {
+	s.Metadata = val
+}
+
+// SetSpec sets the value of Spec.
+func (s *EntityRelation) SetSpec(val OptEntityRelationSpec) {
+	s.Spec = val
+}
+
 // Ref: #/components/schemas/EntityRelationResponse
 type EntityRelationResponse struct {
-	Namespace OptString               `json:"namespace"`
-	Relation  string                  `json:"relation"`
-	Source    EntityReferenceResponse `json:"source"`
-	Target    EntityReferenceResponse `json:"target"`
+	Namespace OptString                     `json:"namespace"`
+	Relation  string                        `json:"relation"`
+	Source    EntityReferenceResponse       `json:"source"`
+	Target    EntityReferenceResponse       `json:"target"`
+	Metadata  OptRelationMetadata           `json:"metadata"`
+	Spec      OptEntityRelationResponseSpec `json:"spec"`
 }
 
 // GetNamespace returns the value of Namespace.
@@ -2676,6 +2712,16 @@ func (s *EntityRelationResponse) GetTarget() EntityReferenceResponse {
 	return s.Target
 }
 
+// GetMetadata returns the value of Metadata.
+func (s *EntityRelationResponse) GetMetadata() OptRelationMetadata {
+	return s.Metadata
+}
+
+// GetSpec returns the value of Spec.
+func (s *EntityRelationResponse) GetSpec() OptEntityRelationResponseSpec {
+	return s.Spec
+}
+
 // SetNamespace sets the value of Namespace.
 func (s *EntityRelationResponse) SetNamespace(val OptString) {
 	s.Namespace = val
@@ -2696,7 +2742,39 @@ func (s *EntityRelationResponse) SetTarget(val EntityReferenceResponse) {
 	s.Target = val
 }
 
+// SetMetadata sets the value of Metadata.
+func (s *EntityRelationResponse) SetMetadata(val OptRelationMetadata) {
+	s.Metadata = val
+}
+
+// SetSpec sets the value of Spec.
+func (s *EntityRelationResponse) SetSpec(val OptEntityRelationResponseSpec) {
+	s.Spec = val
+}
+
 func (*EntityRelationResponse) createEntityRelationRes() {}
+
+type EntityRelationResponseSpec map[string]jx.Raw
+
+func (s *EntityRelationResponseSpec) init() EntityRelationResponseSpec {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type EntityRelationSpec map[string]jx.Raw
+
+func (s *EntityRelationSpec) init() EntityRelationSpec {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
 
 // Ref: #/components/schemas/EntityResponse
 type EntityResponse struct {
@@ -3655,6 +3733,11 @@ type GetOAuthServiceNotFound struct{}
 
 func (*GetOAuthServiceNotFound) getOAuthServiceRes() {}
 
+// GetOidcConfigurationNotFound is response for GetOidcConfiguration operation.
+type GetOidcConfigurationNotFound struct{}
+
+func (*GetOidcConfigurationNotFound) getOidcConfigurationRes() {}
+
 // GetPendingInvitationsNotFound is response for GetPendingInvitations operation.
 type GetPendingInvitationsNotFound struct{}
 
@@ -3769,6 +3852,7 @@ func (*HTTPValidationError) getPendingInvitationsRes()              {}
 func (*HTTPValidationError) getPromptRes()                          {}
 func (*HTTPValidationError) inviteEnvironmentUserRes()              {}
 func (*HTTPValidationError) listChatSuggestionsRes()                {}
+func (*HTTPValidationError) listEntityRelationsRes()                {}
 func (*HTTPValidationError) listEnvironmentUsersRes()               {}
 func (*HTTPValidationError) listMcpendpointToolsRes()               {}
 func (*HTTPValidationError) listOAuthServicesRes()                  {}
@@ -3822,6 +3906,15 @@ func (*ListDiscoveryImagesNotFound) listDiscoveryImagesRes() {}
 type ListDiscoveryProvidersNotFound struct{}
 
 func (*ListDiscoveryProvidersNotFound) listDiscoveryProvidersRes() {}
+
+// ListEntityRelationsNotFound is response for ListEntityRelations operation.
+type ListEntityRelationsNotFound struct{}
+
+func (*ListEntityRelationsNotFound) listEntityRelationsRes() {}
+
+type ListEntityRelationsOKApplicationJSON []EntityRelationResponse
+
+func (*ListEntityRelationsOKApplicationJSON) listEntityRelationsRes() {}
 
 // ListEnvironmentUsersNotFound is response for ListEnvironmentUsers operation.
 type ListEnvironmentUsersNotFound struct{}
@@ -5113,6 +5206,196 @@ func (s *ModelUpdate) SetDefault(val OptNilBool) {
 	s.Default = val
 }
 
+// Molecule metadata from discovery pod.
+// Ref: #/components/schemas/MoleculeData
+type MoleculeData struct {
+	// Machine-readable molecule name.
+	Name string `json:"name"`
+	// Semantic version.
+	Version string `json:"version"`
+	// Human-readable name.
+	DisplayName string       `json:"display_name"`
+	Description OptNilString `json:"description"`
+	// Capabilities like discovery, mcp.
+	Capabilities []string `json:"capabilities"`
+	// Entity types created.
+	EntityTypes []string `json:"entity_types"`
+	// Relation types created.
+	RelationTypes []string `json:"relation_types"`
+	// Whether auth is required.
+	RequiresAuth OptBool `json:"requires_auth"`
+	// Supported auth types.
+	AuthTypes   []string     `json:"auth_types"`
+	HomepageURL OptNilString `json:"homepage_url"`
+	DocsURL     OptNilString `json:"docs_url"`
+	// Whether deprecated.
+	Deprecated   OptBool                        `json:"deprecated"`
+	Replacement  OptNilString                   `json:"replacement"`
+	ConfigSchema OptNilMoleculeDataConfigSchema `json:"config_schema"`
+	Logo         jx.Raw                         `json:"logo"`
+}
+
+// GetName returns the value of Name.
+func (s *MoleculeData) GetName() string {
+	return s.Name
+}
+
+// GetVersion returns the value of Version.
+func (s *MoleculeData) GetVersion() string {
+	return s.Version
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *MoleculeData) GetDisplayName() string {
+	return s.DisplayName
+}
+
+// GetDescription returns the value of Description.
+func (s *MoleculeData) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetCapabilities returns the value of Capabilities.
+func (s *MoleculeData) GetCapabilities() []string {
+	return s.Capabilities
+}
+
+// GetEntityTypes returns the value of EntityTypes.
+func (s *MoleculeData) GetEntityTypes() []string {
+	return s.EntityTypes
+}
+
+// GetRelationTypes returns the value of RelationTypes.
+func (s *MoleculeData) GetRelationTypes() []string {
+	return s.RelationTypes
+}
+
+// GetRequiresAuth returns the value of RequiresAuth.
+func (s *MoleculeData) GetRequiresAuth() OptBool {
+	return s.RequiresAuth
+}
+
+// GetAuthTypes returns the value of AuthTypes.
+func (s *MoleculeData) GetAuthTypes() []string {
+	return s.AuthTypes
+}
+
+// GetHomepageURL returns the value of HomepageURL.
+func (s *MoleculeData) GetHomepageURL() OptNilString {
+	return s.HomepageURL
+}
+
+// GetDocsURL returns the value of DocsURL.
+func (s *MoleculeData) GetDocsURL() OptNilString {
+	return s.DocsURL
+}
+
+// GetDeprecated returns the value of Deprecated.
+func (s *MoleculeData) GetDeprecated() OptBool {
+	return s.Deprecated
+}
+
+// GetReplacement returns the value of Replacement.
+func (s *MoleculeData) GetReplacement() OptNilString {
+	return s.Replacement
+}
+
+// GetConfigSchema returns the value of ConfigSchema.
+func (s *MoleculeData) GetConfigSchema() OptNilMoleculeDataConfigSchema {
+	return s.ConfigSchema
+}
+
+// GetLogo returns the value of Logo.
+func (s *MoleculeData) GetLogo() jx.Raw {
+	return s.Logo
+}
+
+// SetName sets the value of Name.
+func (s *MoleculeData) SetName(val string) {
+	s.Name = val
+}
+
+// SetVersion sets the value of Version.
+func (s *MoleculeData) SetVersion(val string) {
+	s.Version = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *MoleculeData) SetDisplayName(val string) {
+	s.DisplayName = val
+}
+
+// SetDescription sets the value of Description.
+func (s *MoleculeData) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetCapabilities sets the value of Capabilities.
+func (s *MoleculeData) SetCapabilities(val []string) {
+	s.Capabilities = val
+}
+
+// SetEntityTypes sets the value of EntityTypes.
+func (s *MoleculeData) SetEntityTypes(val []string) {
+	s.EntityTypes = val
+}
+
+// SetRelationTypes sets the value of RelationTypes.
+func (s *MoleculeData) SetRelationTypes(val []string) {
+	s.RelationTypes = val
+}
+
+// SetRequiresAuth sets the value of RequiresAuth.
+func (s *MoleculeData) SetRequiresAuth(val OptBool) {
+	s.RequiresAuth = val
+}
+
+// SetAuthTypes sets the value of AuthTypes.
+func (s *MoleculeData) SetAuthTypes(val []string) {
+	s.AuthTypes = val
+}
+
+// SetHomepageURL sets the value of HomepageURL.
+func (s *MoleculeData) SetHomepageURL(val OptNilString) {
+	s.HomepageURL = val
+}
+
+// SetDocsURL sets the value of DocsURL.
+func (s *MoleculeData) SetDocsURL(val OptNilString) {
+	s.DocsURL = val
+}
+
+// SetDeprecated sets the value of Deprecated.
+func (s *MoleculeData) SetDeprecated(val OptBool) {
+	s.Deprecated = val
+}
+
+// SetReplacement sets the value of Replacement.
+func (s *MoleculeData) SetReplacement(val OptNilString) {
+	s.Replacement = val
+}
+
+// SetConfigSchema sets the value of ConfigSchema.
+func (s *MoleculeData) SetConfigSchema(val OptNilMoleculeDataConfigSchema) {
+	s.ConfigSchema = val
+}
+
+// SetLogo sets the value of Logo.
+func (s *MoleculeData) SetLogo(val jx.Raw) {
+	s.Logo = val
+}
+
+type MoleculeDataConfigSchema map[string]jx.Raw
+
+func (s *MoleculeDataConfigSchema) init() MoleculeDataConfigSchema {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
 // NewNilString returns new NilString with value set to v.
 func NewNilString(v string) NilString {
 	return NilString{
@@ -5934,6 +6217,70 @@ func (s *OAuthTokenResponse) SetScopes(val []string) {
 
 func (*OAuthTokenResponse) exchangeOAuthTokenRes() {}
 
+// OIDC configuration for CLI authentication.
+// This provides the necessary information for the CLI to authenticate
+// users via the configured OIDC provider (e.g., Clerk).
+// Ref: #/components/schemas/OIDCConfigurationResponse
+type OIDCConfigurationResponse struct {
+	IssuerURL             string       `json:"issuer_url"`
+	ClientID              string       `json:"client_id"`
+	AuthorizationEndpoint OptNilString `json:"authorization_endpoint"`
+	TokenEndpoint         OptNilString `json:"token_endpoint"`
+	JwksURI               OptNilString `json:"jwks_uri"`
+}
+
+// GetIssuerURL returns the value of IssuerURL.
+func (s *OIDCConfigurationResponse) GetIssuerURL() string {
+	return s.IssuerURL
+}
+
+// GetClientID returns the value of ClientID.
+func (s *OIDCConfigurationResponse) GetClientID() string {
+	return s.ClientID
+}
+
+// GetAuthorizationEndpoint returns the value of AuthorizationEndpoint.
+func (s *OIDCConfigurationResponse) GetAuthorizationEndpoint() OptNilString {
+	return s.AuthorizationEndpoint
+}
+
+// GetTokenEndpoint returns the value of TokenEndpoint.
+func (s *OIDCConfigurationResponse) GetTokenEndpoint() OptNilString {
+	return s.TokenEndpoint
+}
+
+// GetJwksURI returns the value of JwksURI.
+func (s *OIDCConfigurationResponse) GetJwksURI() OptNilString {
+	return s.JwksURI
+}
+
+// SetIssuerURL sets the value of IssuerURL.
+func (s *OIDCConfigurationResponse) SetIssuerURL(val string) {
+	s.IssuerURL = val
+}
+
+// SetClientID sets the value of ClientID.
+func (s *OIDCConfigurationResponse) SetClientID(val string) {
+	s.ClientID = val
+}
+
+// SetAuthorizationEndpoint sets the value of AuthorizationEndpoint.
+func (s *OIDCConfigurationResponse) SetAuthorizationEndpoint(val OptNilString) {
+	s.AuthorizationEndpoint = val
+}
+
+// SetTokenEndpoint sets the value of TokenEndpoint.
+func (s *OIDCConfigurationResponse) SetTokenEndpoint(val OptNilString) {
+	s.TokenEndpoint = val
+}
+
+// SetJwksURI sets the value of JwksURI.
+func (s *OIDCConfigurationResponse) SetJwksURI(val OptNilString) {
+	s.JwksURI = val
+}
+
+func (*OIDCConfigurationResponse) getOidcConfigurationRes() {}
+
 // Ref: #/components/schemas/OpenAIModelProviderCreate
 type OpenAIModelProviderCreate struct {
 	Type    string  `json:"type"`
@@ -6265,6 +6612,98 @@ func (o OptEntityMetadataLabels) Get() (v EntityMetadataLabels, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptEntityMetadataLabels) Or(d EntityMetadataLabels) EntityMetadataLabels {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEntityRelationResponseSpec returns new OptEntityRelationResponseSpec with value set to v.
+func NewOptEntityRelationResponseSpec(v EntityRelationResponseSpec) OptEntityRelationResponseSpec {
+	return OptEntityRelationResponseSpec{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEntityRelationResponseSpec is optional EntityRelationResponseSpec.
+type OptEntityRelationResponseSpec struct {
+	Value EntityRelationResponseSpec
+	Set   bool
+}
+
+// IsSet returns true if OptEntityRelationResponseSpec was set.
+func (o OptEntityRelationResponseSpec) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEntityRelationResponseSpec) Reset() {
+	var v EntityRelationResponseSpec
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEntityRelationResponseSpec) SetTo(v EntityRelationResponseSpec) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEntityRelationResponseSpec) Get() (v EntityRelationResponseSpec, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEntityRelationResponseSpec) Or(d EntityRelationResponseSpec) EntityRelationResponseSpec {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEntityRelationSpec returns new OptEntityRelationSpec with value set to v.
+func NewOptEntityRelationSpec(v EntityRelationSpec) OptEntityRelationSpec {
+	return OptEntityRelationSpec{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEntityRelationSpec is optional EntityRelationSpec.
+type OptEntityRelationSpec struct {
+	Value EntityRelationSpec
+	Set   bool
+}
+
+// IsSet returns true if OptEntityRelationSpec was set.
+func (o OptEntityRelationSpec) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEntityRelationSpec) Reset() {
+	var v EntityRelationSpec
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEntityRelationSpec) SetTo(v EntityRelationSpec) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEntityRelationSpec) Get() (v EntityRelationSpec, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEntityRelationSpec) Or(d EntityRelationSpec) EntityRelationSpec {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -7126,6 +7565,69 @@ func (o OptNilMCPToolEntityAssociationResponseToolConfig) Or(d MCPToolEntityAsso
 	return d
 }
 
+// NewOptNilMoleculeDataConfigSchema returns new OptNilMoleculeDataConfigSchema with value set to v.
+func NewOptNilMoleculeDataConfigSchema(v MoleculeDataConfigSchema) OptNilMoleculeDataConfigSchema {
+	return OptNilMoleculeDataConfigSchema{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilMoleculeDataConfigSchema is optional nullable MoleculeDataConfigSchema.
+type OptNilMoleculeDataConfigSchema struct {
+	Value MoleculeDataConfigSchema
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilMoleculeDataConfigSchema was set.
+func (o OptNilMoleculeDataConfigSchema) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilMoleculeDataConfigSchema) Reset() {
+	var v MoleculeDataConfigSchema
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilMoleculeDataConfigSchema) SetTo(v MoleculeDataConfigSchema) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilMoleculeDataConfigSchema) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilMoleculeDataConfigSchema) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v MoleculeDataConfigSchema
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilMoleculeDataConfigSchema) Get() (v MoleculeDataConfigSchema, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilMoleculeDataConfigSchema) Or(d MoleculeDataConfigSchema) MoleculeDataConfigSchema {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptNilOAuthServiceCreateAdditionalParams returns new OptNilOAuthServiceCreateAdditionalParams with value set to v.
 func NewOptNilOAuthServiceCreateAdditionalParams(v OAuthServiceCreateAdditionalParams) OptNilOAuthServiceCreateAdditionalParams {
 	return OptNilOAuthServiceCreateAdditionalParams{
@@ -7544,6 +8046,144 @@ func (o OptNullBooleanEnum) Get() (v NullBooleanEnum, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptNullBooleanEnum) Or(d NullBooleanEnum) NullBooleanEnum {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRelationMetadata returns new OptRelationMetadata with value set to v.
+func NewOptRelationMetadata(v RelationMetadata) OptRelationMetadata {
+	return OptRelationMetadata{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRelationMetadata is optional RelationMetadata.
+type OptRelationMetadata struct {
+	Value RelationMetadata
+	Set   bool
+}
+
+// IsSet returns true if OptRelationMetadata was set.
+func (o OptRelationMetadata) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRelationMetadata) Reset() {
+	var v RelationMetadata
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRelationMetadata) SetTo(v RelationMetadata) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRelationMetadata) Get() (v RelationMetadata, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRelationMetadata) Or(d RelationMetadata) RelationMetadata {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRelationMetadataAnnotations returns new OptRelationMetadataAnnotations with value set to v.
+func NewOptRelationMetadataAnnotations(v RelationMetadataAnnotations) OptRelationMetadataAnnotations {
+	return OptRelationMetadataAnnotations{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRelationMetadataAnnotations is optional RelationMetadataAnnotations.
+type OptRelationMetadataAnnotations struct {
+	Value RelationMetadataAnnotations
+	Set   bool
+}
+
+// IsSet returns true if OptRelationMetadataAnnotations was set.
+func (o OptRelationMetadataAnnotations) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRelationMetadataAnnotations) Reset() {
+	var v RelationMetadataAnnotations
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRelationMetadataAnnotations) SetTo(v RelationMetadataAnnotations) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRelationMetadataAnnotations) Get() (v RelationMetadataAnnotations, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRelationMetadataAnnotations) Or(d RelationMetadataAnnotations) RelationMetadataAnnotations {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRelationMetadataLabels returns new OptRelationMetadataLabels with value set to v.
+func NewOptRelationMetadataLabels(v RelationMetadataLabels) OptRelationMetadataLabels {
+	return OptRelationMetadataLabels{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRelationMetadataLabels is optional RelationMetadataLabels.
+type OptRelationMetadataLabels struct {
+	Value RelationMetadataLabels
+	Set   bool
+}
+
+// IsSet returns true if OptRelationMetadataLabels was set.
+func (o OptRelationMetadataLabels) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRelationMetadataLabels) Reset() {
+	var v RelationMetadataLabels
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRelationMetadataLabels) SetTo(v RelationMetadataLabels) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRelationMetadataLabels) Get() (v RelationMetadataLabels, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRelationMetadataLabels) Or(d RelationMetadataLabels) RelationMetadataLabels {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -8019,6 +8659,55 @@ func (s *ProviderVersionInfo) SetDeprecationMessage(val OptNilString) {
 // SetDaysUntilRemoval sets the value of DaysUntilRemoval.
 func (s *ProviderVersionInfo) SetDaysUntilRemoval(val OptNilInt) {
 	s.DaysUntilRemoval = val
+}
+
+// Metadata for a relation, following Kubernetes-style conventions.
+// Ref: #/components/schemas/RelationMetadata
+type RelationMetadata struct {
+	Labels      OptRelationMetadataLabels      `json:"labels"`
+	Annotations OptRelationMetadataAnnotations `json:"annotations"`
+}
+
+// GetLabels returns the value of Labels.
+func (s *RelationMetadata) GetLabels() OptRelationMetadataLabels {
+	return s.Labels
+}
+
+// GetAnnotations returns the value of Annotations.
+func (s *RelationMetadata) GetAnnotations() OptRelationMetadataAnnotations {
+	return s.Annotations
+}
+
+// SetLabels sets the value of Labels.
+func (s *RelationMetadata) SetLabels(val OptRelationMetadataLabels) {
+	s.Labels = val
+}
+
+// SetAnnotations sets the value of Annotations.
+func (s *RelationMetadata) SetAnnotations(val OptRelationMetadataAnnotations) {
+	s.Annotations = val
+}
+
+type RelationMetadataAnnotations map[string]string
+
+func (s *RelationMetadataAnnotations) init() RelationMetadataAnnotations {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+type RelationMetadataLabels map[string]string
+
+func (s *RelationMetadataLabels) init() RelationMetadataLabels {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
 }
 
 // Manifest describing an allowed renderer domain.

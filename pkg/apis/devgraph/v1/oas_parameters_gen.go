@@ -2412,6 +2412,7 @@ func decodeGetChatMessagesParams(args [1]string, argsEscaped bool, r *http.Reque
 							MaxExclusive:  false,
 							MultipleOfSet: false,
 							MultipleOf:    0,
+							Pattern:       nil,
 						}).Validate(int64(value)); err != nil {
 							return errors.Wrap(err, "int")
 						}
@@ -2482,6 +2483,7 @@ func decodeGetChatMessagesParams(args [1]string, argsEscaped bool, r *http.Reque
 							MaxExclusive:  false,
 							MultipleOfSet: false,
 							MultipleOf:    0,
+							Pattern:       nil,
 						}).Validate(int64(value)); err != nil {
 							return errors.Wrap(err, "int")
 						}
@@ -2585,6 +2587,7 @@ func decodeGetChatsParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 							MaxExclusive:  false,
 							MultipleOfSet: false,
 							MultipleOf:    0,
+							Pattern:       nil,
 						}).Validate(int64(value)); err != nil {
 							return errors.Wrap(err, "int")
 						}
@@ -2655,6 +2658,7 @@ func decodeGetChatsParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 							MaxExclusive:  false,
 							MultipleOfSet: false,
 							MultipleOf:    0,
+							Pattern:       nil,
 						}).Validate(int64(value)); err != nil {
 							return errors.Wrap(err, "int")
 						}
@@ -3666,6 +3670,7 @@ func decodeGetEntityByUIDParams(args [1]string, argsEscaped bool, r *http.Reques
 							MaxExclusive:  false,
 							MultipleOfSet: false,
 							MultipleOf:    0,
+							Pattern:       nil,
 						}).Validate(int64(value)); err != nil {
 							return errors.Wrap(err, "int")
 						}
@@ -4689,6 +4694,219 @@ func decodeListChatSuggestionsParams(args [0]string, argsEscaped bool, r *http.R
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "active_only",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListEntityRelationsParams is parameters of list_entity_relations operation.
+type ListEntityRelationsParams struct {
+	Namespace string
+	// Filter by managed-by label.
+	ManagedBy OptNilString `json:",omitempty,omitzero"`
+	// Filter by source-type label.
+	SourceType OptNilString `json:",omitempty,omitzero"`
+	// Filter by relation type.
+	RelationType OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListEntityRelationsParams(packed middleware.Parameters) (params ListEntityRelationsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "namespace",
+			In:   "query",
+		}
+		params.Namespace = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "managed_by",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ManagedBy = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "source_type",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SourceType = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "relation_type",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.RelationType = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListEntityRelationsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListEntityRelationsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: namespace.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Namespace = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "namespace",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: managed_by.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "managed_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotManagedByVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotManagedByVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ManagedBy.SetTo(paramsDotManagedByVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "managed_by",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: source_type.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "source_type",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSourceTypeVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSourceTypeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SourceType.SetTo(paramsDotSourceTypeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_type",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: relation_type.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "relation_type",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotRelationTypeVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotRelationTypeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.RelationType.SetTo(paramsDotRelationTypeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "relation_type",
 			In:   "query",
 			Err:  err,
 		}

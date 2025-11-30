@@ -109,6 +109,7 @@ var oauth2ScopesOAuth2PasswordBearer = map[string][]string{
 	ListConfiguredProvidersOperation:                        []string{},
 	ListDiscoveryImagesOperation:                            []string{},
 	ListDiscoveryProvidersOperation:                         []string{},
+	ListEntityRelationsOperation:                            []string{},
 	ListEnvironmentUsersOperation:                           []string{},
 	ListMcpendpointToolsOperation:                           []string{},
 	ListOAuthServicesOperation:                              []string{},

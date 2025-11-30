@@ -261,6 +261,10 @@ type GetOAuthServiceRes interface {
 	getOAuthServiceRes()
 }
 
+type GetOidcConfigurationRes interface {
+	getOidcConfigurationRes()
+}
+
 type GetPendingInvitationsRes interface {
 	getPendingInvitationsRes()
 }
@@ -303,6 +307,10 @@ type ListDiscoveryImagesRes interface {
 
 type ListDiscoveryProvidersRes interface {
 	listDiscoveryProvidersRes()
+}
+
+type ListEntityRelationsRes interface {
+	listEntityRelationsRes()
 }
 
 type ListEnvironmentUsersRes interface {

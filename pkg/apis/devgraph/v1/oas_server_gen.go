@@ -407,6 +407,12 @@ type Handler interface {
 	//
 	// GET /api/v1/oauth/services/{service_id}
 	GetOAuthService(ctx context.Context, params GetOAuthServiceParams) (GetOAuthServiceRes, error)
+	// GetOidcConfiguration implements get_oidc_configuration operation.
+	//
+	// Get OIDC configuration for CLI authentication (unauthenticated).
+	//
+	// GET /api/v1/oauth/oidc-config
+	GetOidcConfiguration(ctx context.Context) (GetOidcConfigurationRes, error)
 	// GetPendingInvitations implements get_pending_invitations operation.
 	//
 	// Get all pending invitations for an environment.
@@ -482,6 +488,13 @@ type Handler interface {
 	//
 	// GET /api/v1/discovery/providers
 	ListDiscoveryProviders(ctx context.Context) (ListDiscoveryProvidersRes, error)
+	// ListEntityRelations implements list_entity_relations operation.
+	//
+	// Lists all relations in the namespace with optional filtering by labels. Requires
+	// 'read:entityrelations' permission.
+	//
+	// GET /api/v1/entities/relations
+	ListEntityRelations(ctx context.Context, params ListEntityRelationsParams) (ListEntityRelationsRes, error)
 	// ListEnvironmentUsers implements list_environment_users operation.
 	//
 	// List all users in an environment.

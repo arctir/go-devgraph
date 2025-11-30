@@ -661,10 +661,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								switch r.Method {
 								case "DELETE":
 									s.handleDeleteEntityRelationRequest([0]string{}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleListEntityRelationsRequest([0]string{}, elemIsEscaped, w, r)
 								case "POST":
 									s.handleCreateEntityRelationRequest([0]string{}, elemIsEscaped, w, r)
 								default:
-									s.notAllowed(w, r, "DELETE,POST")
+									s.notAllowed(w, r, "DELETE,GET,POST")
 								}
 
 								return
@@ -1734,6 +1736,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
+				case 'o': // Prefix: "oidc-config"
+
+					if l := len("oidc-config"); len(elem) >= l && elem[0:l] == "oidc-config" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetOidcConfigurationRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
 				case 's': // Prefix: "services"
 
 					if l := len("services"); len(elem) >= l && elem[0:l] == "services" {
@@ -2066,12 +2088,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Route is route object.
 type Route struct {
-	name        string
-	summary     string
-	operationID string
-	pathPattern string
-	count       int
-	args        [5]string
+	name           string
+	summary        string
+	operationID    string
+	operationGroup string
+	pathPattern    string
+	count          int
+	args           [5]string
 }
 
 // Name returns ogen operation name.
@@ -2089,6 +2112,11 @@ func (r Route) Summary() string {
 // OperationID returns OpenAPI operationId.
 func (r Route) OperationID() string {
 	return r.operationID
+}
+
+// OperationGroup returns the x-ogen-operation-group value.
+func (r Route) OperationGroup() string {
+	return r.operationGroup
 }
 
 // PathPattern returns OpenAPI path.
@@ -2177,6 +2205,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListChatSuggestionsOperation
 							r.summary = "List Chat Suggestions"
 							r.operationID = "list_chat_suggestions"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chat/suggestions"
 							r.args = args
 							r.count = 0
@@ -2185,6 +2214,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateChatSuggestionOperation
 							r.summary = "Create Chat Suggestion"
 							r.operationID = "create_chat_suggestion"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chat/suggestions"
 							r.args = args
 							r.count = 0
@@ -2218,6 +2248,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteChatSuggestionOperation
 								r.summary = "Delete Chat Suggestion"
 								r.operationID = "delete_chat_suggestion"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/chat/suggestions/{suggestion_id}"
 								r.args = args
 								r.count = 1
@@ -2243,6 +2274,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = DeleteChatsBulkOperation
 							r.summary = "Delete Chats Bulk"
 							r.operationID = "delete_chats_bulk"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/"
 							r.args = args
 							r.count = 0
@@ -2251,6 +2283,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetChatsOperation
 							r.summary = "Get Chats"
 							r.operationID = "get_chats"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/"
 							r.args = args
 							r.count = 0
@@ -2259,6 +2292,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateChatOperation
 							r.summary = "Create Chat"
 							r.operationID = "create_chat"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/"
 							r.args = args
 							r.count = 0
@@ -2283,6 +2317,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = CreateChatTitleOperation
 								r.summary = "Post Chat Title"
 								r.operationID = "create_chat_title"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/chats/title"
 								r.args = args
 								r.count = 0
@@ -2309,6 +2344,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = DeleteChatOperation
 							r.summary = "Delete Chat"
 							r.operationID = "delete_chat"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/{chat_id}"
 							r.args = args
 							r.count = 1
@@ -2317,6 +2353,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetChatOperation
 							r.summary = "Get Chat"
 							r.operationID = "get_chat"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/{chat_id}"
 							r.args = args
 							r.count = 1
@@ -2325,6 +2362,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = UpdateChatOperation
 							r.summary = "Update Chat"
 							r.operationID = "update_chat"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/chats/{chat_id}"
 							r.args = args
 							r.count = 1
@@ -2349,6 +2387,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetChatMessagesOperation
 								r.summary = "Get Chat Messages"
 								r.operationID = "get_chat_messages"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/chats/{chat_id}/messages"
 								r.args = args
 								r.count = 1
@@ -2357,6 +2396,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = PostChatMessagesOperation
 								r.summary = "Post Chat Messages"
 								r.operationID = "post_chat_messages"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/chats/{chat_id}/messages"
 								r.args = args
 								r.count = 1
@@ -2396,6 +2436,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListConfiguredProvidersOperation
 							r.summary = "List Configured Providers"
 							r.operationID = "list_configured_providers"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/discovery/configured-providers"
 							r.args = args
 							r.count = 0
@@ -2404,6 +2445,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateConfiguredProviderOperation
 							r.summary = "Create Configured Provider"
 							r.operationID = "create_configured_provider"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/discovery/configured-providers"
 							r.args = args
 							r.count = 0
@@ -2437,6 +2479,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteConfiguredProviderOperation
 								r.summary = "Delete Configured Provider"
 								r.operationID = "delete_configured_provider"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/discovery/configured-providers/{provider_id}"
 								r.args = args
 								r.count = 1
@@ -2445,6 +2488,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetConfiguredProviderOperation
 								r.summary = "Get Configured Provider"
 								r.operationID = "get_configured_provider"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/discovery/configured-providers/{provider_id}"
 								r.args = args
 								r.count = 1
@@ -2453,6 +2497,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = UpdateConfiguredProviderOperation
 								r.summary = "Update Configured Provider"
 								r.operationID = "update_configured_provider"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/discovery/configured-providers/{provider_id}"
 								r.args = args
 								r.count = 1
@@ -2479,6 +2524,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListDiscoveryImagesOperation
 							r.summary = "List Discovery Images"
 							r.operationID = "list_discovery_images"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/discovery/images"
 							r.args = args
 							r.count = 0
@@ -2502,6 +2548,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListDiscoveryProvidersOperation
 							r.summary = "List Discovery Providers"
 							r.operationID = "list_discovery_providers"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/discovery/providers"
 							r.args = args
 							r.count = 0
@@ -2547,6 +2594,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetDiscoveryProviderConfigSchemaOperation
 									r.summary = "Get Discovery Provider Config Schema"
 									r.operationID = "get_discovery_provider_config_schema"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/discovery/providers/{provider_type}/config-schema"
 									r.args = args
 									r.count = 1
@@ -2574,6 +2622,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetAllProviderVersionsOperation
 							r.summary = "Get All Provider Versions"
 							r.operationID = "get_all_provider_versions"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/discovery/versions"
 							r.args = args
 							r.count = 0
@@ -2610,6 +2659,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetDeprecatedProviderConfigsOperation
 									r.summary = "Get Deprecated Provider Configs"
 									r.operationID = "get_deprecated_provider_configs"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/discovery/versions/deprecated"
 									r.args = args
 									r.count = 0
@@ -2635,6 +2685,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = MigrateAllDeprecatedConfigsOperation
 									r.summary = "Migrate All Deprecated Configs"
 									r.operationID = "migrate_all_deprecated_configs"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/discovery/versions/migrate-all"
 									r.args = args
 									r.count = 0
@@ -2674,6 +2725,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = MigrateProviderConfigOperation
 									r.summary = "Migrate Provider Config"
 									r.operationID = "migrate_provider_config"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/discovery/versions/{provider_id}/migrate"
 									r.args = args
 									r.count = 1
@@ -2727,6 +2779,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetEntitiesOperation
 								r.summary = "Query entities with optional field selectors"
 								r.operationID = "get_entities"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/entities/"
 								r.args = args
 								r.count = 0
@@ -2751,6 +2804,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateEntitiesBulkOperation
 									r.summary = "Create multiple entities in bulk"
 									r.operationID = "create_entities_bulk"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/bulk"
 									r.args = args
 									r.count = 0
@@ -2775,6 +2829,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetEntityDefinitionsOperation
 									r.summary = "Retrieve all entity definitions with their versions"
 									r.operationID = "get_entity_definitions"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/definitions"
 									r.args = args
 									r.count = 0
@@ -2783,6 +2838,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateEntityDefinitionOperation
 									r.summary = "Create Entity Definition"
 									r.operationID = "create_entity_definition"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/definitions"
 									r.args = args
 									r.count = 0
@@ -2816,6 +2872,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = DeleteEntityDefinitionOperation
 										r.summary = "Delete an entity definition"
 										r.operationID = "delete_entity_definition"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/entities/definitions/{definition_id}"
 										r.args = args
 										r.count = 1
@@ -2843,6 +2900,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CleanupOrphanedEntitiesOperation
 									r.summary = "Clean up orphaned entities"
 									r.operationID = "cleanup_orphaned_entities"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/orphans"
 									r.args = args
 									r.count = 0
@@ -2851,6 +2909,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = ListOrphanedEntitiesOperation
 									r.summary = "List orphaned entities"
 									r.operationID = "list_orphaned_entities"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/orphans"
 									r.args = args
 									r.count = 0
@@ -2875,6 +2934,16 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = DeleteEntityRelationOperation
 									r.summary = "Delete a relation between entities"
 									r.operationID = "delete_entity_relation"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/entities/relations"
+									r.args = args
+									r.count = 0
+									return r, true
+								case "GET":
+									r.name = ListEntityRelationsOperation
+									r.summary = "List relations with optional filtering"
+									r.operationID = "list_entity_relations"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/relations"
 									r.args = args
 									r.count = 0
@@ -2883,6 +2952,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateEntityRelationOperation
 									r.summary = "Create Entity Relation"
 									r.operationID = "create_entity_relation"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/relations"
 									r.args = args
 									r.count = 0
@@ -2907,6 +2977,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = CreateEntityRelationsBulkOperation
 										r.summary = "Create multiple entity relations in bulk"
 										r.operationID = "create_entity_relations_bulk"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/entities/relations/bulk"
 										r.args = args
 										r.count = 0
@@ -2943,6 +3014,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetEntityByUIDOperation
 									r.summary = "Retrieve a specific entity by UID with its relations"
 									r.operationID = "get_entity_by_uid"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entities/uid/{uid}"
 									r.args = args
 									r.count = 1
@@ -3045,6 +3117,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = CreateEntityOperation
 												r.summary = "Create a resource based on an entity definition"
 												r.operationID = "create_entity"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/entities/{group}/{version}/namespace/{namespace}/{plural}"
 												r.args = args
 												r.count = 4
@@ -3116,6 +3189,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = DeleteEntityOperation
 												r.summary = "Delete a specific entity"
 												r.operationID = "delete_entity"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}"
 												r.args = args
 												r.count = 5
@@ -3124,6 +3198,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = GetEntityOperation
 												r.summary = "Retrieve a specific entity by name with its relations"
 												r.operationID = "get_entity"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/entities/{group}/{version}/{kind}/{namespace}/{name}"
 												r.args = args
 												r.count = 5
@@ -3155,6 +3230,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetEntitlementsOperation
 								r.summary = "Get Entitlements"
 								r.operationID = "get_entitlements"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/entitlements"
 								r.args = args
 								r.count = 0
@@ -3188,6 +3264,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CheckEntitlementOperation
 									r.summary = "Check Entitlement"
 									r.operationID = "check_entitlement"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/entitlements/check/{entitlement_type}"
 									r.args = args
 									r.count = 1
@@ -3215,6 +3292,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetEnvironmentsOperation
 							r.summary = "Get Environments"
 							r.operationID = "get_environments"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/environments"
 							r.args = args
 							r.count = 0
@@ -3223,6 +3301,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateEnvironmentOperation
 							r.summary = "Create Environment"
 							r.operationID = "create_environment"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/environments"
 							r.args = args
 							r.count = 0
@@ -3255,6 +3334,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteEnvironmentOperation
 								r.summary = "Delete Environment"
 								r.operationID = "delete_environment"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/environments/{env_id}"
 								r.args = args
 								r.count = 1
@@ -3291,6 +3371,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = GetEnvironmentDiscoverySettingsOperation
 										r.summary = "Get Environment Discovery Settings"
 										r.operationID = "get_environment_discovery_settings"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/environments/{env_id}/discovery-settings"
 										r.args = args
 										r.count = 1
@@ -3299,6 +3380,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = UpdateEnvironmentDiscoverySettingsOperation
 										r.summary = "Update Environment Discovery Settings"
 										r.operationID = "update_environment_discovery_settings"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/environments/{env_id}/discovery-settings"
 										r.args = args
 										r.count = 1
@@ -3323,6 +3405,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = GetEnvironmentStatusOperation
 										r.summary = "Get Environment Status"
 										r.operationID = "get_environment_status"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/environments/{env_id}/status"
 										r.args = args
 										r.count = 1
@@ -3346,6 +3429,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = ListEnvironmentUsersOperation
 										r.summary = "List Environment Users"
 										r.operationID = "list_environment_users"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/environments/{environment_id}/users"
 										r.args = args
 										r.count = 1
@@ -3354,6 +3438,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = CreateEnvironmentUserOperation
 										r.summary = "Create Environment User"
 										r.operationID = "create_environment_user"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/environments/{environment_id}/users"
 										r.args = args
 										r.count = 1
@@ -3390,6 +3475,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = BulkInviteEnvironmentUsersOperation
 												r.summary = "Bulk Invite Environment Users"
 												r.operationID = "bulk_invite_environment_users"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/environments/{environment_id}/users/bulk-invite"
 												r.args = args
 												r.count = 1
@@ -3436,6 +3522,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.name = DeleteEnvironmentInvitationOperation
 													r.summary = "Delete Environment Invitation"
 													r.operationID = "delete_environment_invitation"
+													r.operationGroup = ""
 													r.pathPattern = "/api/v1/environments/{environment_id}/users/invitations/{invitation_id}"
 													r.args = args
 													r.count = 2
@@ -3460,6 +3547,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.name = InviteEnvironmentUserOperation
 													r.summary = "Invite Environment User"
 													r.operationID = "invite_environment_user"
+													r.operationGroup = ""
 													r.pathPattern = "/api/v1/environments/{environment_id}/users/invite"
 													r.args = args
 													r.count = 1
@@ -3487,6 +3575,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = GetPendingInvitationsOperation
 												r.summary = "Get Pending Invitations"
 												r.operationID = "get_pending_invitations"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/environments/{environment_id}/users/pending"
 												r.args = args
 												r.count = 1
@@ -3514,6 +3603,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.name = DeleteEnvironmentUserOperation
 											r.summary = "Delete Environment User"
 											r.operationID = "delete_environment_user"
+											r.operationGroup = ""
 											r.pathPattern = "/api/v1/environments/{environment_id}/users/{user_id}"
 											r.args = args
 											r.count = 2
@@ -3522,6 +3612,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.name = GetEnvironmentUserOperation
 											r.summary = "Get Environment User"
 											r.operationID = "get_environment_user"
+											r.operationGroup = ""
 											r.pathPattern = "/api/v1/environments/{environment_id}/users/{user_id}"
 											r.args = args
 											r.count = 2
@@ -3530,6 +3621,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.name = UpdateEnvironmentUserOperation
 											r.summary = "Update Environment User"
 											r.operationID = "update_environment_user"
+											r.operationGroup = ""
 											r.pathPattern = "/api/v1/environments/{environment_id}/users/{user_id}"
 											r.args = args
 											r.count = 2
@@ -3599,6 +3691,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetMcpendpointsOperation
 									r.summary = "Get Mcpendpoints"
 									r.operationID = "get_mcpendpoints"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/mcp/endpoints"
 									r.args = args
 									r.count = 0
@@ -3607,6 +3700,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateMcpendpointOperation
 									r.summary = "Create Mcpendpoint"
 									r.operationID = "create_mcpendpoint"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/mcp/endpoints"
 									r.args = args
 									r.count = 0
@@ -3639,6 +3733,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = DeleteMcpendpointOperation
 										r.summary = "Delete Mcpendpoint"
 										r.operationID = "delete_mcpendpoint"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/mcp/endpoints/{mcpendpoint_id}"
 										r.args = args
 										r.count = 1
@@ -3647,6 +3742,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = GetMcpendpointOperation
 										r.summary = "Get Mcpendpoint"
 										r.operationID = "get_mcpendpoint"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/mcp/endpoints/{mcpendpoint_id}"
 										r.args = args
 										r.count = 1
@@ -3655,6 +3751,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = UpdateMcpendpointOperation
 										r.summary = "Update Mcpendpoint"
 										r.operationID = "update_mcpendpoint"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/mcp/endpoints/{mcpendpoint_id}"
 										r.args = args
 										r.count = 1
@@ -3691,6 +3788,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = GetMcpEndpointEntityTypesOperation
 												r.summary = "Get Mcp Endpoint Entity Types"
 												r.operationID = "get_mcp_endpoint_entity_types"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/mcp/endpoints/{mcpendpoint_name}/entity-types"
 												r.args = args
 												r.count = 1
@@ -3715,6 +3813,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.name = ListMcpendpointToolsOperation
 												r.summary = "List Mcpendpoint Tools"
 												r.operationID = "list_mcpendpoint_tools"
+												r.operationGroup = ""
 												r.pathPattern = "/api/v1/mcp/endpoints/{mcpendpoint_id}/tools"
 												r.args = args
 												r.count = 1
@@ -3766,6 +3865,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = GetEntityToolsOperation
 										r.summary = "Get Entity Tools"
 										r.operationID = "get_entity_tools"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/mcp/entity-definitions/{entity_definition_id}/tools"
 										r.args = args
 										r.count = 1
@@ -3805,6 +3905,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateMcpToolAssociationOperation
 									r.summary = "Create Mcp Tool Association"
 									r.operationID = "create_mcp_tool_association"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/mcp/tool-associations"
 									r.args = args
 									r.count = 0
@@ -3838,6 +3939,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = DeleteMcpToolAssociationOperation
 										r.summary = "Delete Mcp Tool Association"
 										r.operationID = "delete_mcp_tool_association"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/mcp/tool-associations/{association_id}"
 										r.args = args
 										r.count = 1
@@ -3864,6 +3966,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = ListAllMcpToolsOperation
 									r.summary = "List All Mcp Tools"
 									r.operationID = "list_all_mcp_tools"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/mcp/tools"
 									r.args = args
 									r.count = 0
@@ -3891,6 +3994,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetModelsOperation
 							r.summary = "Get Models"
 							r.operationID = "get_models"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/models"
 							r.args = args
 							r.count = 0
@@ -3899,6 +4003,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateModelOperation
 							r.summary = "Create Model"
 							r.operationID = "create_model"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/models"
 							r.args = args
 							r.count = 0
@@ -3934,6 +4039,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetModelprovidersOperation
 									r.summary = "Get Modelproviders"
 									r.operationID = "get_modelproviders"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/models/providers"
 									r.args = args
 									r.count = 0
@@ -3942,6 +4048,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = CreateModelproviderOperation
 									r.summary = "Create Modelprovider"
 									r.operationID = "create_modelprovider"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/models/providers"
 									r.args = args
 									r.count = 0
@@ -3975,6 +4082,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = DeleteModelproviderOperation
 										r.summary = "Delete Modelprovider"
 										r.operationID = "delete_modelprovider"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/models/providers/{provider_id}"
 										r.args = args
 										r.count = 1
@@ -3983,6 +4091,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = GetModelproviderOperation
 										r.summary = "Get Modelprovider"
 										r.operationID = "get_modelprovider"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/models/providers/{provider_id}"
 										r.args = args
 										r.count = 1
@@ -3991,6 +4100,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.name = UpdateModelproviderOperation
 										r.summary = "Update Modelprovider"
 										r.operationID = "update_modelprovider"
+										r.operationGroup = ""
 										r.pathPattern = "/api/v1/models/providers/{provider_id}"
 										r.args = args
 										r.count = 1
@@ -4020,6 +4130,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteModelOperation
 								r.summary = "Delete Model"
 								r.operationID = "delete_model"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/models/{model_name}"
 								r.args = args
 								r.count = 1
@@ -4028,6 +4139,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetModelOperation
 								r.summary = "Get Model"
 								r.operationID = "get_model"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/models/{model_name}"
 								r.args = args
 								r.count = 1
@@ -4036,6 +4148,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = UpdateModelOperation
 								r.summary = "Update Model"
 								r.operationID = "update_model"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/models/{model_name}"
 								r.args = args
 								r.count = 1
@@ -4076,7 +4189,33 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetOAuthAuthorizationURLOperation
 							r.summary = "Get Authorization Url"
 							r.operationID = "get_oauth_authorization_url"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/oauth/authorize"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 'o': // Prefix: "oidc-config"
+
+					if l := len("oidc-config"); len(elem) >= l && elem[0:l] == "oidc-config" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetOidcConfigurationOperation
+							r.summary = "Get OIDC Configuration"
+							r.operationID = "get_oidc_configuration"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/oauth/oidc-config"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -4099,6 +4238,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ListOAuthServicesOperation
 							r.summary = "List Oauth Services"
 							r.operationID = "list_oauth_services"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/oauth/services"
 							r.args = args
 							r.count = 0
@@ -4107,6 +4247,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateOAuthServiceOperation
 							r.summary = "Create Oauth Service"
 							r.operationID = "create_oauth_service"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/oauth/services"
 							r.args = args
 							r.count = 0
@@ -4140,6 +4281,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteOAuthServiceOperation
 								r.summary = "Delete Oauth Service"
 								r.operationID = "delete_oauth_service"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/oauth/services/{service_id}"
 								r.args = args
 								r.count = 1
@@ -4148,6 +4290,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetOAuthServiceOperation
 								r.summary = "Get Oauth Service"
 								r.operationID = "get_oauth_service"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/oauth/services/{service_id}"
 								r.args = args
 								r.count = 1
@@ -4156,6 +4299,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = UpdateOAuthServiceOperation
 								r.summary = "Update Oauth Service"
 								r.operationID = "update_oauth_service"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/oauth/services/{service_id}"
 								r.args = args
 								r.count = 1
@@ -4181,6 +4325,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = ExchangeOAuthTokenOperation
 							r.summary = "Exchange Code For Token"
 							r.operationID = "exchange_oauth_token"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/oauth/token"
 							r.args = args
 							r.count = 0
@@ -4204,6 +4349,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = ListOAuthTokensOperation
 								r.summary = "List User Tokens"
 								r.operationID = "list_oauth_tokens"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/oauth/tokens"
 								r.args = args
 								r.count = 0
@@ -4237,6 +4383,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = RevokeOAuthTokenOperation
 									r.summary = "Revoke Token"
 									r.operationID = "revoke_oauth_token"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/oauth/tokens/{service_name}"
 									r.args = args
 									r.count = 1
@@ -4266,6 +4413,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = ListPromptsOperation
 						r.summary = "List Prompts"
 						r.operationID = "list_prompts"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/prompts"
 						r.args = args
 						r.count = 0
@@ -4274,6 +4422,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = CreatePromptOperation
 						r.summary = "Create Prompt"
 						r.operationID = "create_prompt"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/prompts"
 						r.args = args
 						r.count = 0
@@ -4310,6 +4459,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetSystemDefaultPromptOperation
 								r.summary = "Get System Default Prompt"
 								r.operationID = "get_system_default_prompt"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/prompts/system-default"
 								r.args = args
 								r.count = 0
@@ -4337,6 +4487,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = DeletePromptOperation
 							r.summary = "Delete Prompt"
 							r.operationID = "delete_prompt"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/prompts/{prompt_id}"
 							r.args = args
 							r.count = 1
@@ -4345,6 +4496,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetPromptOperation
 							r.summary = "Get Prompt"
 							r.operationID = "get_prompt"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/prompts/{prompt_id}"
 							r.args = args
 							r.count = 1
@@ -4353,6 +4505,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = UpdatePromptOperation
 							r.summary = "Update Prompt"
 							r.operationID = "update_prompt"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/prompts/{prompt_id}"
 							r.args = args
 							r.count = 1
@@ -4379,6 +4532,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = GetRendererAllowlistAPIV1RenderersAllowlistGetOperation
 						r.summary = "Get Renderer Allowlist"
 						r.operationID = "get_renderer_allowlist_api_v1_renderers_allowlist_get"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/renderers/allowlist"
 						r.args = args
 						r.count = 0
@@ -4403,6 +4557,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = GetSubscriptionsOperation
 						r.summary = "Get Subscriptions"
 						r.operationID = "get_subscriptions"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/subscriptions"
 						r.args = args
 						r.count = 0
@@ -4426,6 +4581,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = GetTokensOperation
 						r.summary = "Get Tokens"
 						r.operationID = "get_tokens"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/tokens"
 						r.args = args
 						r.count = 0
@@ -4434,6 +4590,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = CreateTokenOperation
 						r.summary = "Create Token"
 						r.operationID = "create_token"
+						r.operationGroup = ""
 						r.pathPattern = "/api/v1/tokens"
 						r.args = args
 						r.count = 0
@@ -4467,6 +4624,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = DeleteTokenOperation
 							r.summary = "Delete Token"
 							r.operationID = "delete_token"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/tokens/{token_id}"
 							r.args = args
 							r.count = 1
@@ -4475,6 +4633,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = UpdateTokenOperation
 							r.summary = "Update Token"
 							r.operationID = "update_token"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/tokens/{token_id}"
 							r.args = args
 							r.count = 1

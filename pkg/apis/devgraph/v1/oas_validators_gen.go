@@ -356,6 +356,7 @@ func (s *ConfiguredProviderCreate) Validate() error {
 					MaxExclusive:  false,
 					MultipleOfSet: false,
 					MultipleOf:    0,
+					Pattern:       nil,
 				}).Validate(int64(value)); err != nil {
 					return errors.Wrap(err, "int")
 				}
@@ -395,6 +396,7 @@ func (s *ConfiguredProviderUpdate) Validate() error {
 					MaxExclusive:  false,
 					MultipleOfSet: false,
 					MultipleOf:    0,
+					Pattern:       nil,
 				}).Validate(int64(value)); err != nil {
 					return errors.Wrap(err, "int")
 				}
@@ -518,13 +520,17 @@ func (s *EntityDefinitionResponse) Validate() error {
 		if value, ok := s.Plural.Get(); ok {
 			if err := func() error {
 				if err := (validate.String{
-					MinLength:    1,
-					MinLengthSet: true,
-					MaxLength:    0,
-					MaxLengthSet: false,
-					Email:        false,
-					Hostname:     false,
-					Regex:        nil,
+					MinLength:     1,
+					MinLengthSet:  true,
+					MaxLength:     0,
+					MaxLengthSet:  false,
+					Email:         false,
+					Hostname:      false,
+					Regex:         nil,
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
 				}).Validate(string(value)); err != nil {
 					return errors.Wrap(err, "string")
 				}
@@ -556,13 +562,17 @@ func (s *EntityDefinitionSpec) Validate() error {
 		if value, ok := s.Plural.Get(); ok {
 			if err := func() error {
 				if err := (validate.String{
-					MinLength:    1,
-					MinLengthSet: true,
-					MaxLength:    0,
-					MaxLengthSet: false,
-					Email:        false,
-					Hostname:     false,
-					Regex:        nil,
+					MinLength:     1,
+					MinLengthSet:  true,
+					MaxLength:     0,
+					MaxLengthSet:  false,
+					Email:         false,
+					Hostname:      false,
+					Regex:         nil,
+					MinNumeric:    0,
+					MinNumericSet: false,
+					MaxNumeric:    0,
+					MaxNumericSet: false,
 				}).Validate(string(value)); err != nil {
 					return errors.Wrap(err, "string")
 				}
@@ -960,6 +970,14 @@ func (s *HTTPValidationError) Validate() error {
 
 func (s ListChatSuggestionsOKApplicationJSON) Validate() error {
 	alias := ([]ChatSuggestionResponse)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s ListEntityRelationsOKApplicationJSON) Validate() error {
+	alias := ([]EntityRelationResponse)(s)
 	if alias == nil {
 		return errors.New("nil is invalid value")
 	}

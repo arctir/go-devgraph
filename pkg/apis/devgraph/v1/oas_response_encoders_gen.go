@@ -2343,6 +2343,32 @@ func encodeGetOAuthServiceResponse(response GetOAuthServiceRes, w http.ResponseW
 	}
 }
 
+func encodeGetOidcConfigurationResponse(response GetOidcConfigurationRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *OIDCConfigurationResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *GetOidcConfigurationNotFound:
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetPendingInvitationsResponse(response GetPendingInvitationsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetPendingInvitationsOKApplicationJSON:
@@ -2691,6 +2717,45 @@ func encodeListDiscoveryProvidersResponse(response ListDiscoveryProvidersRes, w 
 	case *ListDiscoveryProvidersNotFound:
 		w.WriteHeader(404)
 		span.SetStatus(codes.Error, http.StatusText(404))
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeListEntityRelationsResponse(response ListEntityRelationsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListEntityRelationsOKApplicationJSON:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ListEntityRelationsNotFound:
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 

@@ -271,6 +271,18 @@ func (s *ModelResponse) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *MoleculeData) setDefaults() {
+	{
+		val := bool(false)
+		s.RequiresAuth.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Deprecated.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *OAuthServiceCreate) setDefaults() {
 	{
 		val := bool(true)

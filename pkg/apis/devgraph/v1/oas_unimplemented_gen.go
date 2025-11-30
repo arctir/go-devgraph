@@ -608,6 +608,15 @@ func (UnimplementedHandler) GetOAuthService(ctx context.Context, params GetOAuth
 	return r, ht.ErrNotImplemented
 }
 
+// GetOidcConfiguration implements get_oidc_configuration operation.
+//
+// Get OIDC configuration for CLI authentication (unauthenticated).
+//
+// GET /api/v1/oauth/oidc-config
+func (UnimplementedHandler) GetOidcConfiguration(ctx context.Context) (r GetOidcConfigurationRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetPendingInvitations implements get_pending_invitations operation.
 //
 // Get all pending invitations for an environment.
@@ -716,6 +725,16 @@ func (UnimplementedHandler) ListDiscoveryImages(ctx context.Context) (r ListDisc
 //
 // GET /api/v1/discovery/providers
 func (UnimplementedHandler) ListDiscoveryProviders(ctx context.Context) (r ListDiscoveryProvidersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListEntityRelations implements list_entity_relations operation.
+//
+// Lists all relations in the namespace with optional filtering by labels. Requires
+// 'read:entityrelations' permission.
+//
+// GET /api/v1/entities/relations
+func (UnimplementedHandler) ListEntityRelations(ctx context.Context, params ListEntityRelationsParams) (r ListEntityRelationsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -4267,9 +4267,19 @@ func (s *DiscoveryImageResponse) encodeFields(e *jx.Encoder) {
 		e.FieldStart("approved_at")
 		e.Str(s.ApprovedAt)
 	}
+	{
+		if s.Molecules != nil {
+			e.FieldStart("molecules")
+			e.ArrStart()
+			for _, elem := range s.Molecules {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
 }
 
-var jsonFieldsNameOfDiscoveryImageResponse = [8]string{
+var jsonFieldsNameOfDiscoveryImageResponse = [9]string{
 	0: "id",
 	1: "image",
 	2: "tag",
@@ -4278,6 +4288,7 @@ var jsonFieldsNameOfDiscoveryImageResponse = [8]string{
 	5: "is_default",
 	6: "approved_by",
 	7: "approved_at",
+	8: "molecules",
 }
 
 // Decode decodes DiscoveryImageResponse from json.
@@ -4285,7 +4296,7 @@ func (s *DiscoveryImageResponse) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode DiscoveryImageResponse to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -4379,6 +4390,23 @@ func (s *DiscoveryImageResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"approved_at\"")
 			}
+		case "molecules":
+			if err := func() error {
+				s.Molecules = make([]MoleculeData, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MoleculeData
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Molecules = append(s.Molecules, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"molecules\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -4388,8 +4416,9 @@ func (s *DiscoveryImageResponse) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
+	for i, mask := range [2]uint8{
 		0b11111111,
+		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -4461,9 +4490,9 @@ func (s *DiscoveryProviderMetadata) encodeFields(e *jx.Encoder) {
 		s.ConfigSchema.Encode(e)
 	}
 	{
-		if s.Logo.Set {
+		if len(s.Logo) != 0 {
 			e.FieldStart("logo")
-			s.Logo.Encode(e)
+			e.Raw(s.Logo)
 		}
 	}
 }
@@ -4533,8 +4562,9 @@ func (s *DiscoveryProviderMetadata) Decode(d *jx.Decoder) error {
 			}
 		case "logo":
 			if err := func() error {
-				s.Logo.Reset()
-				if err := s.Logo.Decode(d); err != nil {
+				v, err := d.RawAppend(nil)
+				s.Logo = jx.Raw(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -6612,13 +6642,27 @@ func (s *EntityRelation) encodeFields(e *jx.Encoder) {
 		e.FieldStart("target")
 		s.Target.Encode(e)
 	}
+	{
+		if s.Metadata.Set {
+			e.FieldStart("metadata")
+			s.Metadata.Encode(e)
+		}
+	}
+	{
+		if s.Spec.Set {
+			e.FieldStart("spec")
+			s.Spec.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfEntityRelation = [4]string{
+var jsonFieldsNameOfEntityRelation = [6]string{
 	0: "namespace",
 	1: "relation",
 	2: "source",
 	3: "target",
+	4: "metadata",
+	5: "spec",
 }
 
 // Decode decodes EntityRelation from json.
@@ -6672,6 +6716,26 @@ func (s *EntityRelation) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"target\"")
+			}
+		case "metadata":
+			if err := func() error {
+				s.Metadata.Reset()
+				if err := s.Metadata.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata\"")
+			}
+		case "spec":
+			if err := func() error {
+				s.Spec.Reset()
+				if err := s.Spec.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"spec\"")
 			}
 		default:
 			return d.Skip()
@@ -6756,13 +6820,27 @@ func (s *EntityRelationResponse) encodeFields(e *jx.Encoder) {
 		e.FieldStart("target")
 		s.Target.Encode(e)
 	}
+	{
+		if s.Metadata.Set {
+			e.FieldStart("metadata")
+			s.Metadata.Encode(e)
+		}
+	}
+	{
+		if s.Spec.Set {
+			e.FieldStart("spec")
+			s.Spec.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfEntityRelationResponse = [4]string{
+var jsonFieldsNameOfEntityRelationResponse = [6]string{
 	0: "namespace",
 	1: "relation",
 	2: "source",
 	3: "target",
+	4: "metadata",
+	5: "spec",
 }
 
 // Decode decodes EntityRelationResponse from json.
@@ -6817,6 +6895,26 @@ func (s *EntityRelationResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"target\"")
 			}
+		case "metadata":
+			if err := func() error {
+				s.Metadata.Reset()
+				if err := s.Metadata.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata\"")
+			}
+		case "spec":
+			if err := func() error {
+				s.Spec.Reset()
+				if err := s.Spec.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"spec\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -6869,6 +6967,122 @@ func (s *EntityRelationResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *EntityRelationResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s EntityRelationResponseSpec) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s EntityRelationResponseSpec) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
+	}
+}
+
+// Decode decodes EntityRelationResponseSpec from json.
+func (s *EntityRelationResponseSpec) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EntityRelationResponseSpec to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EntityRelationResponseSpec")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EntityRelationResponseSpec) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EntityRelationResponseSpec) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s EntityRelationSpec) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s EntityRelationSpec) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
+	}
+}
+
+// Decode decodes EntityRelationSpec from json.
+func (s *EntityRelationSpec) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EntityRelationSpec to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EntityRelationSpec")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EntityRelationSpec) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EntityRelationSpec) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -9805,6 +10019,56 @@ func (s ListChatSuggestionsOKApplicationJSON) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ListChatSuggestionsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ListEntityRelationsOKApplicationJSON as json.
+func (s ListEntityRelationsOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []EntityRelationResponse(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes ListEntityRelationsOKApplicationJSON from json.
+func (s *ListEntityRelationsOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ListEntityRelationsOKApplicationJSON to nil")
+	}
+	var unwrapped []EntityRelationResponse
+	if err := func() error {
+		unwrapped = make([]EntityRelationResponse, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem EntityRelationResponse
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = ListEntityRelationsOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ListEntityRelationsOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ListEntityRelationsOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -13150,6 +13414,453 @@ func (s *ModelUpdate) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode implements json.Marshaler.
+func (s *MoleculeData) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MoleculeData) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
+		e.FieldStart("version")
+		e.Str(s.Version)
+	}
+	{
+		e.FieldStart("display_name")
+		e.Str(s.DisplayName)
+	}
+	{
+		if s.Description.Set {
+			e.FieldStart("description")
+			s.Description.Encode(e)
+		}
+	}
+	{
+		if s.Capabilities != nil {
+			e.FieldStart("capabilities")
+			e.ArrStart()
+			for _, elem := range s.Capabilities {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.EntityTypes != nil {
+			e.FieldStart("entity_types")
+			e.ArrStart()
+			for _, elem := range s.EntityTypes {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.RelationTypes != nil {
+			e.FieldStart("relation_types")
+			e.ArrStart()
+			for _, elem := range s.RelationTypes {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.RequiresAuth.Set {
+			e.FieldStart("requires_auth")
+			s.RequiresAuth.Encode(e)
+		}
+	}
+	{
+		if s.AuthTypes != nil {
+			e.FieldStart("auth_types")
+			e.ArrStart()
+			for _, elem := range s.AuthTypes {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.HomepageURL.Set {
+			e.FieldStart("homepage_url")
+			s.HomepageURL.Encode(e)
+		}
+	}
+	{
+		if s.DocsURL.Set {
+			e.FieldStart("docs_url")
+			s.DocsURL.Encode(e)
+		}
+	}
+	{
+		if s.Deprecated.Set {
+			e.FieldStart("deprecated")
+			s.Deprecated.Encode(e)
+		}
+	}
+	{
+		if s.Replacement.Set {
+			e.FieldStart("replacement")
+			s.Replacement.Encode(e)
+		}
+	}
+	{
+		if s.ConfigSchema.Set {
+			e.FieldStart("config_schema")
+			s.ConfigSchema.Encode(e)
+		}
+	}
+	{
+		if len(s.Logo) != 0 {
+			e.FieldStart("logo")
+			e.Raw(s.Logo)
+		}
+	}
+}
+
+var jsonFieldsNameOfMoleculeData = [15]string{
+	0:  "name",
+	1:  "version",
+	2:  "display_name",
+	3:  "description",
+	4:  "capabilities",
+	5:  "entity_types",
+	6:  "relation_types",
+	7:  "requires_auth",
+	8:  "auth_types",
+	9:  "homepage_url",
+	10: "docs_url",
+	11: "deprecated",
+	12: "replacement",
+	13: "config_schema",
+	14: "logo",
+}
+
+// Decode decodes MoleculeData from json.
+func (s *MoleculeData) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MoleculeData to nil")
+	}
+	var requiredBitSet [2]uint8
+	s.setDefaults()
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "name":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "version":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Version = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"version\"")
+			}
+		case "display_name":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.DisplayName = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"display_name\"")
+			}
+		case "description":
+			if err := func() error {
+				s.Description.Reset()
+				if err := s.Description.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"description\"")
+			}
+		case "capabilities":
+			if err := func() error {
+				s.Capabilities = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Capabilities = append(s.Capabilities, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"capabilities\"")
+			}
+		case "entity_types":
+			if err := func() error {
+				s.EntityTypes = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.EntityTypes = append(s.EntityTypes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"entity_types\"")
+			}
+		case "relation_types":
+			if err := func() error {
+				s.RelationTypes = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.RelationTypes = append(s.RelationTypes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"relation_types\"")
+			}
+		case "requires_auth":
+			if err := func() error {
+				s.RequiresAuth.Reset()
+				if err := s.RequiresAuth.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"requires_auth\"")
+			}
+		case "auth_types":
+			if err := func() error {
+				s.AuthTypes = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.AuthTypes = append(s.AuthTypes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"auth_types\"")
+			}
+		case "homepage_url":
+			if err := func() error {
+				s.HomepageURL.Reset()
+				if err := s.HomepageURL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"homepage_url\"")
+			}
+		case "docs_url":
+			if err := func() error {
+				s.DocsURL.Reset()
+				if err := s.DocsURL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"docs_url\"")
+			}
+		case "deprecated":
+			if err := func() error {
+				s.Deprecated.Reset()
+				if err := s.Deprecated.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"deprecated\"")
+			}
+		case "replacement":
+			if err := func() error {
+				s.Replacement.Reset()
+				if err := s.Replacement.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"replacement\"")
+			}
+		case "config_schema":
+			if err := func() error {
+				s.ConfigSchema.Reset()
+				if err := s.ConfigSchema.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"config_schema\"")
+			}
+		case "logo":
+			if err := func() error {
+				v, err := d.RawAppend(nil)
+				s.Logo = jx.Raw(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"logo\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MoleculeData")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000111,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfMoleculeData) {
+					name = jsonFieldsNameOfMoleculeData[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MoleculeData) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MoleculeData) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s MoleculeDataConfigSchema) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s MoleculeDataConfigSchema) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		if len(elem) != 0 {
+			e.Raw(elem)
+		}
+	}
+}
+
+// Decode decodes MoleculeDataConfigSchema from json.
+func (s *MoleculeDataConfigSchema) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MoleculeDataConfigSchema to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem jx.Raw
+		if err := func() error {
+			v, err := d.RawAppend(nil)
+			elem = jx.Raw(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MoleculeDataConfigSchema")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MoleculeDataConfigSchema) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MoleculeDataConfigSchema) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes string as json.
 func (o NilString) Encode(e *jx.Encoder) {
 	if o.Null {
@@ -14952,6 +15663,170 @@ func (s *OAuthTokenResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *OIDCConfigurationResponse) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *OIDCConfigurationResponse) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("issuer_url")
+		e.Str(s.IssuerURL)
+	}
+	{
+		e.FieldStart("client_id")
+		e.Str(s.ClientID)
+	}
+	{
+		if s.AuthorizationEndpoint.Set {
+			e.FieldStart("authorization_endpoint")
+			s.AuthorizationEndpoint.Encode(e)
+		}
+	}
+	{
+		if s.TokenEndpoint.Set {
+			e.FieldStart("token_endpoint")
+			s.TokenEndpoint.Encode(e)
+		}
+	}
+	{
+		if s.JwksURI.Set {
+			e.FieldStart("jwks_uri")
+			s.JwksURI.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfOIDCConfigurationResponse = [5]string{
+	0: "issuer_url",
+	1: "client_id",
+	2: "authorization_endpoint",
+	3: "token_endpoint",
+	4: "jwks_uri",
+}
+
+// Decode decodes OIDCConfigurationResponse from json.
+func (s *OIDCConfigurationResponse) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode OIDCConfigurationResponse to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "issuer_url":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.IssuerURL = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"issuer_url\"")
+			}
+		case "client_id":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.ClientID = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"client_id\"")
+			}
+		case "authorization_endpoint":
+			if err := func() error {
+				s.AuthorizationEndpoint.Reset()
+				if err := s.AuthorizationEndpoint.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"authorization_endpoint\"")
+			}
+		case "token_endpoint":
+			if err := func() error {
+				s.TokenEndpoint.Reset()
+				if err := s.TokenEndpoint.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"token_endpoint\"")
+			}
+		case "jwks_uri":
+			if err := func() error {
+				s.JwksURI.Reset()
+				if err := s.JwksURI.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"jwks_uri\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode OIDCConfigurationResponse")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfOIDCConfigurationResponse) {
+					name = jsonFieldsNameOfOIDCConfigurationResponse[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *OIDCConfigurationResponse) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OIDCConfigurationResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *OpenAIModelProviderCreate) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -15431,6 +16306,74 @@ func (s OptEntityMetadataLabels) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptEntityMetadataLabels) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EntityRelationResponseSpec as json.
+func (o OptEntityRelationResponseSpec) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EntityRelationResponseSpec from json.
+func (o *OptEntityRelationResponseSpec) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEntityRelationResponseSpec to nil")
+	}
+	o.Set = true
+	o.Value = make(EntityRelationResponseSpec)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEntityRelationResponseSpec) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEntityRelationResponseSpec) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EntityRelationSpec as json.
+func (o OptEntityRelationSpec) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EntityRelationSpec from json.
+func (o *OptEntityRelationSpec) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEntityRelationSpec to nil")
+	}
+	o.Set = true
+	o.Value = make(EntityRelationSpec)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEntityRelationSpec) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEntityRelationSpec) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -16093,6 +17036,56 @@ func (s *OptNilMCPToolEntityAssociationResponseToolConfig) UnmarshalJSON(data []
 	return s.Decode(d)
 }
 
+// Encode encodes MoleculeDataConfigSchema as json.
+func (o OptNilMoleculeDataConfigSchema) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MoleculeDataConfigSchema from json.
+func (o *OptNilMoleculeDataConfigSchema) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilMoleculeDataConfigSchema to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v MoleculeDataConfigSchema
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	o.Value = make(MoleculeDataConfigSchema)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilMoleculeDataConfigSchema) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilMoleculeDataConfigSchema) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes OAuthServiceCreateAdditionalParams as json.
 func (o OptNilOAuthServiceCreateAdditionalParams) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -16405,6 +17398,107 @@ func (s OptNilUUID) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptNilUUID) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RelationMetadata as json.
+func (o OptRelationMetadata) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RelationMetadata from json.
+func (o *OptRelationMetadata) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRelationMetadata to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRelationMetadata) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRelationMetadata) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RelationMetadataAnnotations as json.
+func (o OptRelationMetadataAnnotations) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RelationMetadataAnnotations from json.
+func (o *OptRelationMetadataAnnotations) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRelationMetadataAnnotations to nil")
+	}
+	o.Set = true
+	o.Value = make(RelationMetadataAnnotations)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRelationMetadataAnnotations) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRelationMetadataAnnotations) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RelationMetadataLabels as json.
+func (o OptRelationMetadataLabels) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RelationMetadataLabels from json.
+func (o *OptRelationMetadataLabels) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRelationMetadataLabels to nil")
+	}
+	o.Set = true
+	o.Value = make(RelationMetadataLabels)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRelationMetadataLabels) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRelationMetadataLabels) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -17539,6 +18633,198 @@ func (s *ProviderVersionInfo) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ProviderVersionInfo) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RelationMetadata) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RelationMetadata) encodeFields(e *jx.Encoder) {
+	{
+		if s.Labels.Set {
+			e.FieldStart("labels")
+			s.Labels.Encode(e)
+		}
+	}
+	{
+		if s.Annotations.Set {
+			e.FieldStart("annotations")
+			s.Annotations.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRelationMetadata = [2]string{
+	0: "labels",
+	1: "annotations",
+}
+
+// Decode decodes RelationMetadata from json.
+func (s *RelationMetadata) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RelationMetadata to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "labels":
+			if err := func() error {
+				s.Labels.Reset()
+				if err := s.Labels.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"labels\"")
+			}
+		case "annotations":
+			if err := func() error {
+				s.Annotations.Reset()
+				if err := s.Annotations.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"annotations\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RelationMetadata")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RelationMetadata) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RelationMetadata) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s RelationMetadataAnnotations) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s RelationMetadataAnnotations) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes RelationMetadataAnnotations from json.
+func (s *RelationMetadataAnnotations) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RelationMetadataAnnotations to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RelationMetadataAnnotations")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s RelationMetadataAnnotations) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RelationMetadataAnnotations) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s RelationMetadataLabels) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s RelationMetadataLabels) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.Str(elem)
+	}
+}
+
+// Decode decodes RelationMetadataLabels from json.
+func (s *RelationMetadataLabels) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RelationMetadataLabels to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem string
+		if err := func() error {
+			v, err := d.Str()
+			elem = string(v)
+			if err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RelationMetadataLabels")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s RelationMetadataLabels) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RelationMetadataLabels) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

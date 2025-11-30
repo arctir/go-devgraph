@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.32
+  version: 1.0.0-beta.47
 paths:
   /api/v1/entities/definitions:
     get:
@@ -553,6 +553,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityRelationResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - entities
+      summary: List relations with optional filtering
+      description: Lists all relations in the namespace with optional filtering by
+        labels. Requires 'read:entityrelations' permission.
+      operationId: list_entity_relations
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: namespace
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Namespace
+      - name: managed_by
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+        description: Filter by managed-by label
+      - name: source_type
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+        description: Filter by source-type label
+      - name: relation_type
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+        description: Filter by relation type
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityRelationResponse'
+                title: Response List Entity Relations
         '404':
           description: Not found
         '422':
@@ -2603,6 +2658,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/oauth/oidc-config:
+    get:
+      tags:
+      - oauth
+      summary: Get OIDC Configuration
+      description: Get OIDC configuration for CLI authentication (unauthenticated)
+      operationId: get_oidc_configuration
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCConfigurationResponse'
+        '404':
+          description: Not found
   /api/v1/oauth/services:
     post:
       tags:
@@ -4088,6 +4159,12 @@ components:
         approved_at:
           type: string
           title: Approved At
+        molecules:
+          items:
+            $ref: '#/components/schemas/MoleculeData'
+          type: array
+          title: Molecules
+          description: Molecules in this image
       type: object
       required:
       - id
@@ -4116,7 +4193,6 @@ components:
           type: object
           title: Config Schema
         logo:
-          type: string
           nullable: true
       type: object
       required:
@@ -4433,6 +4509,12 @@ components:
           $ref: '#/components/schemas/EntityReference'
         target:
           $ref: '#/components/schemas/EntityReference'
+        metadata:
+          $ref: '#/components/schemas/RelationMetadata'
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
       type: object
       required:
       - relation
@@ -4452,6 +4534,12 @@ components:
           $ref: '#/components/schemas/EntityReferenceResponse'
         target:
           $ref: '#/components/schemas/EntityReferenceResponse'
+        metadata:
+          $ref: '#/components/schemas/RelationMetadata'
+        spec:
+          additionalProperties: true
+          type: object
+          title: Spec
       type: object
       required:
       - relation
@@ -5236,6 +5324,79 @@ components:
           nullable: true
       type: object
       title: ModelUpdate
+    MoleculeData:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Machine-readable molecule name
+        version:
+          type: string
+          title: Version
+          description: Semantic version
+        display_name:
+          type: string
+          title: Display Name
+          description: Human-readable name
+        description:
+          type: string
+          nullable: true
+        capabilities:
+          items:
+            type: string
+          type: array
+          title: Capabilities
+          description: Capabilities like discovery, mcp
+        entity_types:
+          items:
+            type: string
+          type: array
+          title: Entity Types
+          description: Entity types created
+        relation_types:
+          items:
+            type: string
+          type: array
+          title: Relation Types
+          description: Relation types created
+        requires_auth:
+          type: boolean
+          title: Requires Auth
+          description: Whether auth is required
+          default: false
+        auth_types:
+          items:
+            type: string
+          type: array
+          title: Auth Types
+          description: Supported auth types
+        homepage_url:
+          type: string
+          nullable: true
+        docs_url:
+          type: string
+          nullable: true
+        deprecated:
+          type: boolean
+          title: Deprecated
+          description: Whether deprecated
+          default: false
+        replacement:
+          type: string
+          nullable: true
+        config_schema:
+          additionalProperties: true
+          type: object
+          nullable: true
+        logo:
+          nullable: true
+      type: object
+      required:
+      - name
+      - version
+      - display_name
+      title: MoleculeData
+      description: Molecule metadata from discovery pod.
     NullBooleanEnum:
       type: string
       enum:
@@ -5544,6 +5705,34 @@ components:
       - token_type
       - scopes
       title: OAuthTokenResponse
+    OIDCConfigurationResponse:
+      properties:
+        issuer_url:
+          type: string
+          title: Issuer Url
+        client_id:
+          type: string
+          title: Client Id
+        authorization_endpoint:
+          type: string
+          nullable: true
+        token_endpoint:
+          type: string
+          nullable: true
+        jwks_uri:
+          type: string
+          nullable: true
+      type: object
+      required:
+      - issuer_url
+      - client_id
+      title: OIDCConfigurationResponse
+      description: 'OIDC configuration for CLI authentication.
+
+
+        This provides the necessary information for the CLI to authenticate
+
+        users via the configured OIDC provider (e.g., Clerk).'
     OpenAIModelProviderCreate:
       properties:
         type:
@@ -5757,6 +5946,21 @@ components:
       - deprecated
       title: ProviderVersionInfo
       description: Information about a provider config version.
+    RelationMetadata:
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+          title: Labels
+        annotations:
+          additionalProperties:
+            type: string
+          type: object
+          title: Annotations
+      type: object
+      title: RelationMetadata
+      description: Metadata for a relation, following Kubernetes-style conventions.
     RendererManifest:
       properties:
         domain:
