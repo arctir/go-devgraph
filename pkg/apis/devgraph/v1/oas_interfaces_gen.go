@@ -185,6 +185,10 @@ type GetDiscoveryProviderConfigSchemaRes interface {
 	getDiscoveryProviderConfigSchemaRes()
 }
 
+type GetEntitiesByUIDBatchRes interface {
+	getEntitiesByUIDBatchRes()
+}
+
 type GetEntitiesRes interface {
 	getEntitiesRes()
 }

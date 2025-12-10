@@ -80,6 +80,7 @@ var oauth2ScopesOAuth2PasswordBearer = map[string][]string{
 	GetDeprecatedProviderConfigsOperation:                   []string{},
 	GetDiscoveryProviderConfigSchemaOperation:               []string{},
 	GetEntitiesOperation:                                    []string{},
+	GetEntitiesByUIDBatchOperation:                          []string{},
 	GetEntitlementsOperation:                                []string{},
 	GetEntityByUIDOperation:                                 []string{},
 	GetEntityDefinitionsOperation:                           []string{},

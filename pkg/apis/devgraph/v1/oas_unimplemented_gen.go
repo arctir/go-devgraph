@@ -443,6 +443,16 @@ func (UnimplementedHandler) GetEntities(ctx context.Context, params GetEntitiesP
 	return r, ht.ErrNotImplemented
 }
 
+// GetEntitiesByUIDBatch implements get_entities_by_uid_batch operation.
+//
+// Fetches multiple entities by their unique identifiers (UIDs) in a single request. More efficient
+// than multiple individual requests. Requires 'read:entities' permission.
+//
+// POST /api/v1/entities/uid/batch
+func (UnimplementedHandler) GetEntitiesByUIDBatch(ctx context.Context, params GetEntitiesByUIDBatchParams) (r GetEntitiesByUIDBatchRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetEntitlements implements get_entitlements operation.
 //
 // Get all entitlements and current usage for the authenticated user.
@@ -466,7 +476,7 @@ func (UnimplementedHandler) GetEntity(ctx context.Context, params GetEntityParam
 //
 // Fetches a specific entity by its unique identifier (UID), including related entities and relations.
 //
-//	Requires 'read:entities' permission.
+//	Supports optional field projection. Requires 'read:entities' permission.
 //
 // GET /api/v1/entities/uid/{uid}
 func (UnimplementedHandler) GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (r GetEntityByUIDRes, _ error) {

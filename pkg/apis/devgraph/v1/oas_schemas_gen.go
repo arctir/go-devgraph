@@ -2958,7 +2958,8 @@ func (s *EntityResultSetResponse) SetRelations(val []EntityRelationResponse) {
 	s.Relations = val
 }
 
-func (*EntityResultSetResponse) getEntitiesRes() {}
+func (*EntityResultSetResponse) getEntitiesByUIDBatchRes() {}
+func (*EntityResultSetResponse) getEntitiesRes()           {}
 
 type EntitySpec map[string]jx.Raw
 
@@ -3610,6 +3611,11 @@ type GetDiscoveryProviderConfigSchemaOKApplicationJSON jx.Raw
 
 func (*GetDiscoveryProviderConfigSchemaOKApplicationJSON) getDiscoveryProviderConfigSchemaRes() {}
 
+// GetEntitiesByUIDBatchNotFound is response for GetEntitiesByUIDBatch operation.
+type GetEntitiesByUIDBatchNotFound struct{}
+
+func (*GetEntitiesByUIDBatchNotFound) getEntitiesByUIDBatchRes() {}
+
 // GetEntitiesNotFound is response for GetEntities operation.
 type GetEntitiesNotFound struct{}
 
@@ -3835,6 +3841,7 @@ func (*HTTPValidationError) getChatsRes()                           {}
 func (*HTTPValidationError) getConfiguredProviderRes()              {}
 func (*HTTPValidationError) getDeprecatedProviderConfigsRes()       {}
 func (*HTTPValidationError) getDiscoveryProviderConfigSchemaRes()   {}
+func (*HTTPValidationError) getEntitiesByUIDBatchRes()              {}
 func (*HTTPValidationError) getEntitiesRes()                        {}
 func (*HTTPValidationError) getEntityByUIDRes()                     {}
 func (*HTTPValidationError) getEntityRes()                          {}

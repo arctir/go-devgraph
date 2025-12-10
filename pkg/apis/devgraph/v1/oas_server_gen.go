@@ -297,6 +297,13 @@ type Handler interface {
 	//
 	// GET /api/v1/entities/
 	GetEntities(ctx context.Context, params GetEntitiesParams) (GetEntitiesRes, error)
+	// GetEntitiesByUIDBatch implements get_entities_by_uid_batch operation.
+	//
+	// Fetches multiple entities by their unique identifiers (UIDs) in a single request. More efficient
+	// than multiple individual requests. Requires 'read:entities' permission.
+	//
+	// POST /api/v1/entities/uid/batch
+	GetEntitiesByUIDBatch(ctx context.Context, params GetEntitiesByUIDBatchParams) (GetEntitiesByUIDBatchRes, error)
 	// GetEntitlements implements get_entitlements operation.
 	//
 	// Get all entitlements and current usage for the authenticated user.
@@ -313,7 +320,7 @@ type Handler interface {
 	// GetEntityByUID implements get_entity_by_uid operation.
 	//
 	// Fetches a specific entity by its unique identifier (UID), including related entities and relations.
-	//  Requires 'read:entities' permission.
+	//  Supports optional field projection. Requires 'read:entities' permission.
 	//
 	// GET /api/v1/entities/uid/{uid}
 	GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (GetEntityByUIDRes, error)

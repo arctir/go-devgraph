@@ -317,6 +317,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/entities/
 	GetEntities(ctx context.Context, params GetEntitiesParams) (GetEntitiesRes, error)
+	// GetEntitiesByUIDBatch invokes get_entities_by_uid_batch operation.
+	//
+	// Fetches multiple entities by their unique identifiers (UIDs) in a single request. More efficient
+	// than multiple individual requests. Requires 'read:entities' permission.
+	//
+	// POST /api/v1/entities/uid/batch
+	GetEntitiesByUIDBatch(ctx context.Context, params GetEntitiesByUIDBatchParams) (GetEntitiesByUIDBatchRes, error)
 	// GetEntitlements invokes get_entitlements operation.
 	//
 	// Get all entitlements and current usage for the authenticated user.
@@ -333,7 +340,7 @@ type Invoker interface {
 	// GetEntityByUID invokes get_entity_by_uid operation.
 	//
 	// Fetches a specific entity by its unique identifier (UID), including related entities and relations.
-	//  Requires 'read:entities' permission.
+	//  Supports optional field projection. Requires 'read:entities' permission.
 	//
 	// GET /api/v1/entities/uid/{uid}
 	GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (GetEntityByUIDRes, error)
@@ -6686,6 +6693,191 @@ func (c *Client) sendGetEntities(ctx context.Context, params GetEntitiesParams) 
 	return result, nil
 }
 
+// GetEntitiesByUIDBatch invokes get_entities_by_uid_batch operation.
+//
+// Fetches multiple entities by their unique identifiers (UIDs) in a single request. More efficient
+// than multiple individual requests. Requires 'read:entities' permission.
+//
+// POST /api/v1/entities/uid/batch
+func (c *Client) GetEntitiesByUIDBatch(ctx context.Context, params GetEntitiesByUIDBatchParams) (GetEntitiesByUIDBatchRes, error) {
+	res, err := c.sendGetEntitiesByUIDBatch(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetEntitiesByUIDBatch(ctx context.Context, params GetEntitiesByUIDBatchParams) (res GetEntitiesByUIDBatchRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_entities_by_uid_batch"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/entities/uid/batch"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetEntitiesByUIDBatchOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/entities/uid/batch"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "uids" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "uids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeArray(func(e uri.Encoder) error {
+				for i, item := range params.Uids {
+					if err := func() error {
+						return e.EncodeValue(conv.StringToString(item))
+					}(); err != nil {
+						return errors.Wrapf(err, "[%d]", i)
+					}
+				}
+				return nil
+			})
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "namespace" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Namespace.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "depth" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "depth",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Depth.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "fields" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "fields",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Fields.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, GetEntitiesByUIDBatchOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetEntitiesByUIDBatchResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetEntitlements invokes get_entitlements operation.
 //
 // Get all entitlements and current usage for the authenticated user.
@@ -6964,7 +7156,7 @@ func (c *Client) sendGetEntity(ctx context.Context, params GetEntityParams) (res
 //
 // Fetches a specific entity by its unique identifier (UID), including related entities and relations.
 //
-//	Requires 'read:entities' permission.
+//	Supports optional field projection. Requires 'read:entities' permission.
 //
 // GET /api/v1/entities/uid/{uid}
 func (c *Client) GetEntityByUID(ctx context.Context, params GetEntityByUIDParams) (GetEntityByUIDRes, error) {
@@ -7061,6 +7253,23 @@ func (c *Client) sendGetEntityByUID(ctx context.Context, params GetEntityByUIDPa
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Depth.Get(); ok {
 				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "fields" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "fields",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Fields.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
 		}); err != nil {

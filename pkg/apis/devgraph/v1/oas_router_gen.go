@@ -703,6 +703,32 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'b': // Prefix: "batch"
+								origElem := elem
+								if l := len("batch"); len(elem) >= l && elem[0:l] == "batch" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleGetEntitiesByUIDBatchRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+								elem = origElem
+							}
 							// Param: "uid"
 							// Leaf parameter, slashes are prohibited
 							idx := strings.IndexByte(elem, '/')
@@ -2998,6 +3024,37 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'b': // Prefix: "batch"
+								origElem := elem
+								if l := len("batch"); len(elem) >= l && elem[0:l] == "batch" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = GetEntitiesByUIDBatchOperation
+										r.summary = "Retrieve multiple entities by UIDs in a single request"
+										r.operationID = "get_entities_by_uid_batch"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/entities/uid/batch"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+								elem = origElem
+							}
 							// Param: "uid"
 							// Leaf parameter, slashes are prohibited
 							idx := strings.IndexByte(elem, '/')

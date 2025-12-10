@@ -53,6 +53,7 @@ const (
 	GetDeprecatedProviderConfigsOperation                   OperationName = "GetDeprecatedProviderConfigs"
 	GetDiscoveryProviderConfigSchemaOperation               OperationName = "GetDiscoveryProviderConfigSchema"
 	GetEntitiesOperation                                    OperationName = "GetEntities"
+	GetEntitiesByUIDBatchOperation                          OperationName = "GetEntitiesByUIDBatch"
 	GetEntitlementsOperation                                OperationName = "GetEntitlements"
 	GetEntityOperation                                      OperationName = "GetEntity"
 	GetEntityByUIDOperation                                 OperationName = "GetEntityByUID"

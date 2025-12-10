@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.49
+  version: 1.0.0-beta.50
 paths:
   /api/v1/entities/definitions:
     get:
@@ -292,13 +292,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/entities/uid/batch:
+    post:
+      tags:
+      - entities
+      summary: Retrieve multiple entities by UIDs in a single request
+      description: Fetches multiple entities by their unique identifiers (UIDs) in
+        a single request. More efficient than multiple individual requests. Requires
+        'read:entities' permission.
+      operationId: get_entities_by_uid_batch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: uids
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+          description: List of entity UIDs to fetch
+          title: Uids
+        description: List of entity UIDs to fetch
+      - name: namespace
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Namespace to query
+          default: default
+          title: Namespace
+        description: Namespace to query
+      - name: depth
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 5
+          minimum: 0
+          description: Number of relationship hops to traverse (0-5). 0 = no relationships.
+          default: 1
+          title: Depth
+        description: Number of relationship hops to traverse (0-5). 0 = no relationships.
+      - name: fields
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+        description: Comma-separated list of fields to include (e.g., 'name,kind,spec.url').
+          If not specified, returns all fields.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResultSetResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/v1/entities/uid/{uid}:
     get:
       tags:
       - entities
       summary: Retrieve a specific entity by UID with its relations
       description: Fetches a specific entity by its unique identifier (UID), including
-        related entities and relations. Requires 'read:entities' permission.
+        related entities and relations. Supports optional field projection. Requires
+        'read:entities' permission.
       operationId: get_entity_by_uid
       security:
       - OAuth2PasswordBearer: []
@@ -322,13 +388,19 @@ paths:
         schema:
           type: integer
           maximum: 5
-          minimum: 1
-          description: Number of relationship hops to traverse (1-5). Higher values
-            return more related entities but may be slower.
+          minimum: 0
+          description: Number of relationship hops to traverse (0-5). 0 = no relationships.
           default: 1
           title: Depth
-        description: Number of relationship hops to traverse (1-5). Higher values
-          return more related entities but may be slower.
+        description: Number of relationship hops to traverse (0-5). 0 = no relationships.
+      - name: fields
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+        description: Comma-separated list of fields to include (e.g., 'name,kind,spec.url').
+          If not specified, returns all fields.
       responses:
         '200':
           description: Successful Response

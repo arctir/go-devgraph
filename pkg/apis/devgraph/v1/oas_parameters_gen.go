@@ -3213,6 +3213,273 @@ func decodeGetEntitiesParams(args [0]string, argsEscaped bool, r *http.Request) 
 	return params, nil
 }
 
+// GetEntitiesByUIDBatchParams is parameters of get_entities_by_uid_batch operation.
+type GetEntitiesByUIDBatchParams struct {
+	// List of entity UIDs to fetch.
+	Uids []string `json:",omitempty"`
+	// Namespace to query.
+	Namespace OptString `json:",omitempty,omitzero"`
+	// Number of relationship hops to traverse (0-5). 0 = no relationships.
+	Depth OptInt `json:",omitempty,omitzero"`
+	// Comma-separated list of fields to include (e.g., 'name,kind,spec.url'). If not specified, returns
+	// all fields.
+	Fields OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetEntitiesByUIDBatchParams(packed middleware.Parameters) (params GetEntitiesByUIDBatchParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "uids",
+			In:   "query",
+		}
+		params.Uids = packed[key].([]string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "namespace",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Namespace = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "depth",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Depth = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "fields",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Fields = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetEntitiesByUIDBatchParams(args [0]string, argsEscaped bool, r *http.Request) (params GetEntitiesByUIDBatchParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: uids.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "uids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				return d.DecodeArray(func(d uri.Decoder) error {
+					var paramsDotUidsVal string
+					if err := func() error {
+						val, err := d.DecodeValue()
+						if err != nil {
+							return err
+						}
+
+						c, err := conv.ToString(val)
+						if err != nil {
+							return err
+						}
+
+						paramsDotUidsVal = c
+						return nil
+					}(); err != nil {
+						return err
+					}
+					params.Uids = append(params.Uids, paramsDotUidsVal)
+					return nil
+				})
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if params.Uids == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "uids",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: namespace.
+	{
+		val := string("default")
+		params.Namespace.SetTo(val)
+	}
+	// Decode query: namespace.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "namespace",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotNamespaceVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotNamespaceVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Namespace.SetTo(paramsDotNamespaceVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "namespace",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: depth.
+	{
+		val := int(1)
+		params.Depth.SetTo(val)
+	}
+	// Decode query: depth.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "depth",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDepthVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDepthVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Depth.SetTo(paramsDotDepthVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Depth.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           0,
+							MaxSet:        true,
+							Max:           5,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "depth",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: fields.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "fields",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotFieldsVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotFieldsVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Fields.SetTo(paramsDotFieldsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "fields",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetEntityParams is parameters of get_entity operation.
 type GetEntityParams struct {
 	Group     string
@@ -3494,9 +3761,11 @@ func decodeGetEntityParams(args [5]string, argsEscaped bool, r *http.Request) (p
 type GetEntityByUIDParams struct {
 	UID       string
 	Namespace OptString `json:",omitempty,omitzero"`
-	// Number of relationship hops to traverse (1-5). Higher values return more related entities but may
-	// be slower.
+	// Number of relationship hops to traverse (0-5). 0 = no relationships.
 	Depth OptInt `json:",omitempty,omitzero"`
+	// Comma-separated list of fields to include (e.g., 'name,kind,spec.url'). If not specified, returns
+	// all fields.
+	Fields OptNilString `json:",omitempty,omitzero"`
 }
 
 func unpackGetEntityByUIDParams(packed middleware.Parameters) (params GetEntityByUIDParams) {
@@ -3523,6 +3792,15 @@ func unpackGetEntityByUIDParams(packed middleware.Parameters) (params GetEntityB
 		}
 		if v, ok := packed[key]; ok {
 			params.Depth = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "fields",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Fields = v.(OptNilString)
 		}
 	}
 	return params
@@ -3663,7 +3941,7 @@ func decodeGetEntityByUIDParams(args [1]string, argsEscaped bool, r *http.Reques
 					if err := func() error {
 						if err := (validate.Int{
 							MinSet:        true,
-							Min:           1,
+							Min:           0,
 							MaxSet:        true,
 							Max:           5,
 							MinExclusive:  false,
@@ -3688,6 +3966,47 @@ func decodeGetEntityByUIDParams(args [1]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "depth",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: fields.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "fields",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotFieldsVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotFieldsVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Fields.SetTo(paramsDotFieldsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "fields",
 			In:   "query",
 			Err:  err,
 		}
