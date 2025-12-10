@@ -460,6 +460,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/renderers/allowlist
 	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)
+	// GetScopesMetadata invokes get_scopes_metadata operation.
+	//
+	// Get metadata about available API scopes and permissions (public endpoint, no authentication
+	// required).
+	//
+	// GET /api/v1/auth/scopes
+	GetScopesMetadata(ctx context.Context) (GetScopesMetadataRes, error)
 	// GetSubscriptions invokes get_subscriptions operation.
 	//
 	// List all subscriptions for the authenticated user.
@@ -478,6 +485,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/tokens
 	GetTokens(ctx context.Context) (GetTokensRes, error)
+	// IntrospectToken invokes introspect_token operation.
+	//
+	// Introspect the current access token to see granted scopes and user information.
+	//
+	// GET /api/v1/auth/token/introspect
+	IntrospectToken(ctx context.Context) (IntrospectTokenRes, error)
 	// InviteEnvironmentUser invokes invite_environment_user operation.
 	//
 	// Invite a user to an environment.
@@ -9583,6 +9596,80 @@ func (c *Client) sendGetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.
 	return result, nil
 }
 
+// GetScopesMetadata invokes get_scopes_metadata operation.
+//
+// Get metadata about available API scopes and permissions (public endpoint, no authentication
+// required).
+//
+// GET /api/v1/auth/scopes
+func (c *Client) GetScopesMetadata(ctx context.Context) (GetScopesMetadataRes, error) {
+	res, err := c.sendGetScopesMetadata(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetScopesMetadata(ctx context.Context) (res GetScopesMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_scopes_metadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/auth/scopes"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetScopesMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/scopes"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetScopesMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetSubscriptions invokes get_subscriptions operation.
 //
 // List all subscriptions for the authenticated user.
@@ -9894,6 +9981,112 @@ func (c *Client) sendGetTokens(ctx context.Context) (res GetTokensRes, err error
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTokensResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// IntrospectToken invokes introspect_token operation.
+//
+// Introspect the current access token to see granted scopes and user information.
+//
+// GET /api/v1/auth/token/introspect
+func (c *Client) IntrospectToken(ctx context.Context) (IntrospectTokenRes, error) {
+	res, err := c.sendIntrospectToken(ctx)
+	return res, err
+}
+
+func (c *Client) sendIntrospectToken(ctx context.Context) (res IntrospectTokenRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("introspect_token"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/auth/token/introspect"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, IntrospectTokenOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/token/introspect"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:OAuth2PasswordBearer"
+			switch err := c.securityOAuth2PasswordBearer(ctx, IntrospectTokenOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"OAuth2PasswordBearer\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeIntrospectTokenResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

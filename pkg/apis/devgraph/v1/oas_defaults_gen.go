@@ -331,6 +331,14 @@ func (s *PromptResponse) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *TokenIntrospectionResponse) setDefaults() {
+	{
+		val := string("Bearer")
+		s.TokenType.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *XAIModelProviderCreate) setDefaults() {
 	{
 		val := bool(false)

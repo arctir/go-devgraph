@@ -656,6 +656,16 @@ func (UnimplementedHandler) GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx c
 	return r, ht.ErrNotImplemented
 }
 
+// GetScopesMetadata implements get_scopes_metadata operation.
+//
+// Get metadata about available API scopes and permissions (public endpoint, no authentication
+// required).
+//
+// GET /api/v1/auth/scopes
+func (UnimplementedHandler) GetScopesMetadata(ctx context.Context) (r GetScopesMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSubscriptions implements get_subscriptions operation.
 //
 // List all subscriptions for the authenticated user.
@@ -680,6 +690,15 @@ func (UnimplementedHandler) GetSystemDefaultPrompt(ctx context.Context) (r GetSy
 //
 // GET /api/v1/tokens
 func (UnimplementedHandler) GetTokens(ctx context.Context) (r GetTokensRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// IntrospectToken implements introspect_token operation.
+//
+// Introspect the current access token to see granted scopes and user information.
+//
+// GET /api/v1/auth/token/introspect
+func (UnimplementedHandler) IntrospectToken(ctx context.Context) (r IntrospectTokenRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

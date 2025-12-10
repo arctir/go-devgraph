@@ -104,6 +104,7 @@ var oauth2ScopesOAuth2PasswordBearer = map[string][]string{
 	GetSubscriptionsOperation:                               []string{},
 	GetSystemDefaultPromptOperation:                         []string{},
 	GetTokensOperation:                                      []string{},
+	IntrospectTokenOperation:                                []string{},
 	InviteEnvironmentUserOperation:                          []string{},
 	ListAllMcpToolsOperation:                                []string{},
 	ListChatSuggestionsOperation:                            []string{},

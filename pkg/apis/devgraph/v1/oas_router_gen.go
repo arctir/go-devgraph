@@ -61,6 +61,60 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
+			case 'a': // Prefix: "auth/"
+
+				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 's': // Prefix: "scopes"
+
+					if l := len("scopes"); len(elem) >= l && elem[0:l] == "scopes" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetScopesMetadataRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+				case 't': // Prefix: "token/introspect"
+
+					if l := len("token/introspect"); len(elem) >= l && elem[0:l] == "token/introspect" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleIntrospectTokenRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+				}
+
 			case 'c': // Prefix: "chat"
 
 				if l := len("chat"); len(elem) >= l && elem[0:l] == "chat" {
@@ -2205,6 +2259,70 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
+			case 'a': // Prefix: "auth/"
+
+				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 's': // Prefix: "scopes"
+
+					if l := len("scopes"); len(elem) >= l && elem[0:l] == "scopes" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetScopesMetadataOperation
+							r.summary = "Get API Scopes Metadata"
+							r.operationID = "get_scopes_metadata"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/auth/scopes"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 't': // Prefix: "token/introspect"
+
+					if l := len("token/introspect"); len(elem) >= l && elem[0:l] == "token/introspect" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = IntrospectTokenOperation
+							r.summary = "Introspect Access Token"
+							r.operationID = "introspect_token"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/auth/token/introspect"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
 			case 'c': // Prefix: "chat"
 
 				if l := len("chat"); len(elem) >= l && elem[0:l] == "chat" {

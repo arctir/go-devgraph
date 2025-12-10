@@ -440,6 +440,13 @@ type Handler interface {
 	//
 	// GET /api/v1/renderers/allowlist
 	GetRendererAllowlistAPIV1RenderersAllowlistGet(ctx context.Context) ([]RendererManifest, error)
+	// GetScopesMetadata implements get_scopes_metadata operation.
+	//
+	// Get metadata about available API scopes and permissions (public endpoint, no authentication
+	// required).
+	//
+	// GET /api/v1/auth/scopes
+	GetScopesMetadata(ctx context.Context) (GetScopesMetadataRes, error)
 	// GetSubscriptions implements get_subscriptions operation.
 	//
 	// List all subscriptions for the authenticated user.
@@ -458,6 +465,12 @@ type Handler interface {
 	//
 	// GET /api/v1/tokens
 	GetTokens(ctx context.Context) (GetTokensRes, error)
+	// IntrospectToken implements introspect_token operation.
+	//
+	// Introspect the current access token to see granted scopes and user information.
+	//
+	// GET /api/v1/auth/token/introspect
+	IntrospectToken(ctx context.Context) (IntrospectTokenRes, error)
 	// InviteEnvironmentUser implements invite_environment_user operation.
 	//
 	// Invite a user to an environment.

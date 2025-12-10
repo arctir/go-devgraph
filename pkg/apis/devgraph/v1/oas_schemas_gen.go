@@ -3758,6 +3758,11 @@ type GetPromptNotFound struct{}
 
 func (*GetPromptNotFound) getPromptRes() {}
 
+// GetScopesMetadataNotFound is response for GetScopesMetadata operation.
+type GetScopesMetadataNotFound struct{}
+
+func (*GetScopesMetadataNotFound) getScopesMetadataRes() {}
+
 // GetSubscriptionsNotFound is response for GetSubscriptions operation.
 type GetSubscriptionsNotFound struct{}
 
@@ -3879,6 +3884,11 @@ func (*HTTPValidationError) updateModelproviderRes()                {}
 func (*HTTPValidationError) updateOAuthServiceRes()                 {}
 func (*HTTPValidationError) updatePromptRes()                       {}
 func (*HTTPValidationError) updateTokenRes()                        {}
+
+// IntrospectTokenNotFound is response for IntrospectToken operation.
+type IntrospectTokenNotFound struct{}
+
+func (*IntrospectTokenNotFound) introspectTokenRes() {}
 
 // InviteEnvironmentUserNotFound is response for InviteEnvironmentUser operation.
 type InviteEnvironmentUserNotFound struct{}
@@ -8776,6 +8786,128 @@ type RevokeOAuthTokenNotFound struct{}
 
 func (*RevokeOAuthTokenNotFound) revokeOAuthTokenRes() {}
 
+// Information about a single scope.
+// Ref: #/components/schemas/ScopeInfo
+type ScopeInfo struct {
+	Description string `json:"description"`
+	Resource    string `json:"resource"`
+	Action      string `json:"action"`
+	MinimumRole string `json:"minimum_role"`
+}
+
+// GetDescription returns the value of Description.
+func (s *ScopeInfo) GetDescription() string {
+	return s.Description
+}
+
+// GetResource returns the value of Resource.
+func (s *ScopeInfo) GetResource() string {
+	return s.Resource
+}
+
+// GetAction returns the value of Action.
+func (s *ScopeInfo) GetAction() string {
+	return s.Action
+}
+
+// GetMinimumRole returns the value of MinimumRole.
+func (s *ScopeInfo) GetMinimumRole() string {
+	return s.MinimumRole
+}
+
+// SetDescription sets the value of Description.
+func (s *ScopeInfo) SetDescription(val string) {
+	s.Description = val
+}
+
+// SetResource sets the value of Resource.
+func (s *ScopeInfo) SetResource(val string) {
+	s.Resource = val
+}
+
+// SetAction sets the value of Action.
+func (s *ScopeInfo) SetAction(val string) {
+	s.Action = val
+}
+
+// SetMinimumRole sets the value of MinimumRole.
+func (s *ScopeInfo) SetMinimumRole(val string) {
+	s.MinimumRole = val
+}
+
+// Response model for the scopes metadata endpoint.
+// Ref: #/components/schemas/ScopesResponse
+type ScopesResponse struct {
+	Scopes         ScopesResponseScopes         `json:"scopes"`
+	ResourceGroups ScopesResponseResourceGroups `json:"resource_groups"`
+	Roles          ScopesResponseRoles          `json:"roles"`
+}
+
+// GetScopes returns the value of Scopes.
+func (s *ScopesResponse) GetScopes() ScopesResponseScopes {
+	return s.Scopes
+}
+
+// GetResourceGroups returns the value of ResourceGroups.
+func (s *ScopesResponse) GetResourceGroups() ScopesResponseResourceGroups {
+	return s.ResourceGroups
+}
+
+// GetRoles returns the value of Roles.
+func (s *ScopesResponse) GetRoles() ScopesResponseRoles {
+	return s.Roles
+}
+
+// SetScopes sets the value of Scopes.
+func (s *ScopesResponse) SetScopes(val ScopesResponseScopes) {
+	s.Scopes = val
+}
+
+// SetResourceGroups sets the value of ResourceGroups.
+func (s *ScopesResponse) SetResourceGroups(val ScopesResponseResourceGroups) {
+	s.ResourceGroups = val
+}
+
+// SetRoles sets the value of Roles.
+func (s *ScopesResponse) SetRoles(val ScopesResponseRoles) {
+	s.Roles = val
+}
+
+func (*ScopesResponse) getScopesMetadataRes() {}
+
+type ScopesResponseResourceGroups map[string][]string
+
+func (s *ScopesResponseResourceGroups) init() ScopesResponseResourceGroups {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+type ScopesResponseRoles map[string][]string
+
+func (s *ScopesResponseRoles) init() ScopesResponseRoles {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+type ScopesResponseScopes map[string]ScopeInfo
+
+func (s *ScopesResponseScopes) init() ScopesResponseScopes {
+	m := *s
+	if m == nil {
+		m = map[string]ScopeInfo{}
+		*s = m
+	}
+	return m
+}
+
 // Ref: #/components/schemas/SubscriptionResponse
 type SubscriptionResponse struct {
 	ID                   uuid.UUID             `json:"id"`
@@ -8867,6 +8999,68 @@ func (s *SubscriptionResponse) SetCurrentPeriodEnd(val OptNilInt) {
 func (s *SubscriptionResponse) SetEntitlements(val []EntitlementResponse) {
 	s.Entitlements = val
 }
+
+// Response model for token introspection endpoint.
+// Ref: #/components/schemas/TokenIntrospectionResponse
+type TokenIntrospectionResponse struct {
+	Active      bool         `json:"active"`
+	User        OptNilString `json:"user"`
+	Environment OptNilString `json:"environment"`
+	Scopes      []string     `json:"scopes"`
+	TokenType   OptString    `json:"token_type"`
+}
+
+// GetActive returns the value of Active.
+func (s *TokenIntrospectionResponse) GetActive() bool {
+	return s.Active
+}
+
+// GetUser returns the value of User.
+func (s *TokenIntrospectionResponse) GetUser() OptNilString {
+	return s.User
+}
+
+// GetEnvironment returns the value of Environment.
+func (s *TokenIntrospectionResponse) GetEnvironment() OptNilString {
+	return s.Environment
+}
+
+// GetScopes returns the value of Scopes.
+func (s *TokenIntrospectionResponse) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetTokenType returns the value of TokenType.
+func (s *TokenIntrospectionResponse) GetTokenType() OptString {
+	return s.TokenType
+}
+
+// SetActive sets the value of Active.
+func (s *TokenIntrospectionResponse) SetActive(val bool) {
+	s.Active = val
+}
+
+// SetUser sets the value of User.
+func (s *TokenIntrospectionResponse) SetUser(val OptNilString) {
+	s.User = val
+}
+
+// SetEnvironment sets the value of Environment.
+func (s *TokenIntrospectionResponse) SetEnvironment(val OptNilString) {
+	s.Environment = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *TokenIntrospectionResponse) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetTokenType sets the value of TokenType.
+func (s *TokenIntrospectionResponse) SetTokenType(val OptString) {
+	s.TokenType = val
+}
+
+func (*TokenIntrospectionResponse) introspectTokenRes() {}
 
 // Ref: #/components/schemas/TypedChatMessageContent
 type TypedChatMessageContent struct {

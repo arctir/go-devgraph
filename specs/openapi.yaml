@@ -2,8 +2,44 @@ openapi: 3.1.0
 info:
   title: Devgraph AI API
   description: The Devgraph AI ontology engine and entity management API
-  version: 1.0.0-beta.50
+  version: 1.0.0-beta.51
 paths:
+  /api/v1/auth/scopes:
+    get:
+      tags:
+      - auth
+      summary: Get API Scopes Metadata
+      description: Get metadata about available API scopes and permissions (public
+        endpoint, no authentication required)
+      operationId: get_scopes_metadata
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScopesResponse'
+        '404':
+          description: Not found
+  /api/v1/auth/token/introspect:
+    get:
+      tags:
+      - auth
+      summary: Introspect Access Token
+      description: Introspect the current access token to see granted scopes and user
+        information
+      operationId: introspect_token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenIntrospectionResponse'
+        '404':
+          description: Not found
+      security:
+      - OAuth2PasswordBearer: []
   /api/v1/entities/definitions:
     get:
       tags:
@@ -6067,6 +6103,56 @@ components:
           default: text
       type: object
       title: ResponseFormat
+    ScopeInfo:
+      properties:
+        description:
+          type: string
+          title: Description
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+        minimum_role:
+          type: string
+          title: Minimum Role
+      type: object
+      required:
+      - description
+      - resource
+      - action
+      - minimum_role
+      title: ScopeInfo
+      description: Information about a single scope.
+    ScopesResponse:
+      properties:
+        scopes:
+          additionalProperties:
+            $ref: '#/components/schemas/ScopeInfo'
+          type: object
+          title: Scopes
+        resource_groups:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+          title: Resource Groups
+        roles:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+          title: Roles
+      type: object
+      required:
+      - scopes
+      - resource_groups
+      - roles
+      title: ScopesResponse
+      description: Response model for the scopes metadata endpoint.
     SubscriptionResponse:
       properties:
         id:
@@ -6145,6 +6231,32 @@ components:
       title: ThinkingBlock
       description: A representation of the content streamed from reasoning/thinking
         processes by LLMs
+    TokenIntrospectionResponse:
+      properties:
+        active:
+          type: boolean
+          title: Active
+        user:
+          type: string
+          nullable: true
+        environment:
+          type: string
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          title: Scopes
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+      type: object
+      required:
+      - active
+      - scopes
+      title: TokenIntrospectionResponse
+      description: Response model for token introspection endpoint.
     ToolCallBlock:
       properties:
         block_type:

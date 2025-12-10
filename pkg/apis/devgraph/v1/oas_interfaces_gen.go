@@ -277,6 +277,10 @@ type GetPromptRes interface {
 	getPromptRes()
 }
 
+type GetScopesMetadataRes interface {
+	getScopesMetadataRes()
+}
+
 type GetSubscriptionsRes interface {
 	getSubscriptionsRes()
 }
@@ -287,6 +291,10 @@ type GetSystemDefaultPromptRes interface {
 
 type GetTokensRes interface {
 	getTokensRes()
+}
+
+type IntrospectTokenRes interface {
+	introspectTokenRes()
 }
 
 type InviteEnvironmentUserRes interface {
